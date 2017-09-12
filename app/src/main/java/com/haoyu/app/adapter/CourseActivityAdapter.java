@@ -7,8 +7,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.BaseViewHolder;
+import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
 import com.haoyu.app.entity.CourseSectionActivity;
 import com.haoyu.app.entity.VideoMobileEntity;
 import com.haoyu.app.lego.student.R;
@@ -30,13 +29,13 @@ import java.util.Map;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class CourseActivityAdapter extends BaseQuickAdapter<CourseSectionActivity, BaseViewHolder> {
+public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectionActivity> {
     private Context context;
     private String pressId;
     private Map<String, View> viewMap = new HashMap<>();
 
     public CourseActivityAdapter(Context context, List<CourseSectionActivity> mDatas) {
-        super(R.layout.course_activity_item, mDatas);
+        super(mDatas);
         this.context = context;
     }
 
@@ -45,15 +44,19 @@ public class CourseActivityAdapter extends BaseQuickAdapter<CourseSectionActivit
         notifyDataSetChanged();
     }
 
+    @Override
+    public int bindView(int viewtype) {
+        return R.layout.course_section_activity_item;
+    }
 
     @Override
-    protected void convert(BaseViewHolder helper, CourseSectionActivity activity) {
-        ImageView iv_type = helper.getView(R.id.iv_type);
-        TextView tv_title = helper.getView(R.id.tv_title);
-        ImageView icState = helper.getView(R.id.ic_state);
-        ImageView ic_download = helper.getView(R.id.ic_download);
-        final RelativeLayout rl_download = helper.getView(R.id.rl_download);
-        final CircleProgressBar progressBar = helper.getView(R.id.progressBar);
+    public void onBindHoder(RecyclerHolder holder, CourseSectionActivity activity, int position) {
+        ImageView iv_type = holder.obtainView(R.id.iv_type);
+        TextView tv_title = holder.obtainView(R.id.tv_title);
+        ImageView icState = holder.obtainView(R.id.ic_state);
+        ImageView ic_download = holder.obtainView(R.id.ic_download);
+        final RelativeLayout rl_download = holder.obtainView(R.id.rl_download);
+        final CircleProgressBar progressBar = holder.obtainView(R.id.progressBar);
         if (activity.getType() != null && activity.getType().equals("video")) {
             if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
                 iv_type.setImageResource(R.drawable.progress_video_press);
@@ -180,7 +183,7 @@ public class CourseActivityAdapter extends BaseQuickAdapter<CourseSectionActivit
                 }
             }
         });
-        viewMap.put(url, helper.itemView);
+        viewMap.put(url, holder.itemView);
     }
 
     private void beginDownload(final String url) {
@@ -263,4 +266,5 @@ public class CourseActivityAdapter extends BaseQuickAdapter<CourseSectionActivit
             }
         }
     };
+
 }

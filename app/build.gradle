@@ -41,7 +41,6 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp-urlconnection:3.6.0'
     /*project*/
     compile project(':zxingLib')
-    compile project(':baserecycleview_adapter')
     /*gson*/
     compile 'com.google.code.gson:gson:2.8.0'
     /*fileDownloader*/

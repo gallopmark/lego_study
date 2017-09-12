@@ -45,7 +45,7 @@ public class CourseMobileEntity implements Serializable {
     private TimePeriod timePeriod;
     @SerializedName("mSections")
     @Expose
-    private List<SectionMobileEntity> mSections = new ArrayList<>();
+    private List<CourseSectionEntity> mSections = new ArrayList<>();
 
     /**
      * @return The id
@@ -124,11 +124,11 @@ public class CourseMobileEntity implements Serializable {
         this.type = type;
     }
 
-    public List<SectionMobileEntity> getmSections() {
+    public List<CourseSectionEntity> getmSections() {
         return mSections;
     }
 
-    public void setmSections(List<SectionMobileEntity> mSections) {
+    public void setmSections(List<CourseSectionEntity> mSections) {
         this.mSections = mSections;
     }
 

@@ -1,9 +1,8 @@
 package com.haoyu.app.entity;
 
-import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.haoyu.app.adapter.CourseSectionAdapter;
+import com.haoyu.app.adapter.CourseStudyAdapter;
 
 import java.io.Serializable;
 
@@ -48,6 +47,8 @@ public class CourseSectionActivity implements MultiItemEntity, Serializable {
     @Expose
     @SerializedName("inCurrentDate")
     private boolean inCurrentDate;  //是否在活动时间内
+
+    private boolean visiable;
 
     public String getId() {
         return id;
@@ -153,6 +154,14 @@ public class CourseSectionActivity implements MultiItemEntity, Serializable {
         return inCurrentDate;
     }
 
+    public boolean isVisiable() {
+        return visiable;
+    }
+
+    public void setVisiable(boolean visiable) {
+        this.visiable = visiable;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof CourseSectionActivity) {
@@ -166,6 +175,6 @@ public class CourseSectionActivity implements MultiItemEntity, Serializable {
 
     @Override
     public int getItemType() {
-        return CourseSectionAdapter.TYPE_LEVEL_2;
+        return CourseStudyAdapter.TYPE_LEVEL_2;
     }
 }

@@ -9,8 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haoyu.app.activity.AppSurveyHomeActivity;
@@ -23,17 +21,19 @@ import com.haoyu.app.activity.TeachingDiscussionActivity;
 import com.haoyu.app.activity.TestAssignmentActivity;
 import com.haoyu.app.activity.VideoPlayerActivity;
 import com.haoyu.app.adapter.CourseActivityAdapter;
-import com.haoyu.app.adapter.CourseSectionAdapter;
+import com.haoyu.app.adapter.CourseStudyAdapter;
 import com.haoyu.app.base.BaseFragment;
+import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.AppActivityViewEntity;
 import com.haoyu.app.entity.AppActivityViewResult;
-import com.haoyu.app.entity.ChildSectionMobileEntity;
 import com.haoyu.app.entity.CourseActivityListResult;
+import com.haoyu.app.entity.CourseChildSectionEntity;
 import com.haoyu.app.entity.CourseSectionActivity;
+import com.haoyu.app.entity.CourseSectionEntity;
 import com.haoyu.app.entity.CourseSectionResult;
 import com.haoyu.app.entity.DiscussEntity;
-import com.haoyu.app.entity.SectionMobileEntity;
+import com.haoyu.app.entity.MultiItemEntity;
 import com.haoyu.app.entity.VideoMobileEntity;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Constants;
@@ -72,7 +72,7 @@ public class PageCourseFragment extends BaseFragment {
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     List<MultiItemEntity> courseSections = new ArrayList<>();
-    private CourseSectionAdapter sectionAdapter;
+    private CourseStudyAdapter sectionAdapter;
     private final int STUDY_CODE = 1;
 
     @Override
@@ -90,7 +90,7 @@ public class PageCourseFragment extends BaseFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
-        sectionAdapter = new CourseSectionAdapter(context, courseSections);
+        sectionAdapter = new CourseStudyAdapter(context, courseSections);
         recyclerView.setAdapter(sectionAdapter);
     }
 
@@ -194,29 +194,29 @@ public class PageCourseFragment extends BaseFragment {
         return result;
     }
 
-    private void updateUI(List<SectionMobileEntity> mDatas) {
+    private void updateUI(List<CourseSectionEntity> mDatas) {
         recyclerView.setVisibility(View.VISIBLE);
         for (int i = 0; i < mDatas.size(); i++) {
-            SectionMobileEntity entity = mDatas.get(i);
+            CourseSectionEntity entity = mDatas.get(i);
             courseSections.add(entity);
             if (entity.getChildSections() != null && entity.getChildSections().size() > 0) {
                 for (int j = 0; j < entity.getChildSections().size(); j++) {
-                    ChildSectionMobileEntity childEntity = entity.getChildSections().get(j);
-                    entity.addSubItem(childEntity);
-                }
-            }
-        }
-        sectionAdapter.expandAll();
-        for (int i = 0; i < courseSections.size(); i++) {
-            if (courseSections.get(i) instanceof ChildSectionMobileEntity) {
-                ChildSectionMobileEntity childEntity = (ChildSectionMobileEntity) courseSections.get(i);
-                for (int k = 0; k < childEntity.getActivities().size(); k++) {
-                    childEntity.addSubItem(childEntity.getActivities().get(k));
+                    CourseChildSectionEntity childEntity = entity.getChildSections().get(j);
+                    courseSections.add(childEntity);
+                    if (childEntity.getActivities() != null && childEntity.getActivities().size() > 0) {
+                        for (int k = 0; k < childEntity.getActivities().size(); k++)
+                            courseSections.add(childEntity.getActivities().get(k));
+                    }
                 }
             }
         }
         sectionAdapter.notifyDataSetChanged();
-        sectionAdapter.setOnActivityClickCallBack(new CourseSectionAdapter.OnActivityClickCallBack() {
+        sectionAdapter.setOnItemClickListener(new CourseStudyAdapter.OnItemClickListener() {
+            @Override
+            public void onChildSectionClick(int position) {
+                recyclerView.smoothScrollToPosition(position);
+            }
+
             @Override
             public void onActivityClick(CourseSectionActivity activity) {
                 enterActivity(activity);
@@ -228,9 +228,9 @@ public class PageCourseFragment extends BaseFragment {
         recyclerView.setVisibility(View.VISIBLE);
         final CourseActivityAdapter mAdapter = new CourseActivityAdapter(context, mDatas);
         recyclerView.setAdapter(mAdapter);
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                 mAdapter.setSelected(mDatas.get(position).getId());
                 CourseSectionActivity activity = mDatas.get(position);
                 enterActivity(activity);
@@ -300,7 +300,7 @@ public class PageCourseFragment extends BaseFragment {
                 toast("系统暂不支持浏览，请到网站完成。");
             }
         } else {
-            toast("无法进入此活动");
+            toast("系统暂不支持浏览，请到网站完成。");
         }
     }
 
@@ -509,37 +509,13 @@ public class PageCourseFragment extends BaseFragment {
             case STUDY_CODE:
                 if (resultCode == Activity.RESULT_OK && data != null) {
                     CourseSectionActivity activity = (CourseSectionActivity) data.getSerializableExtra("activity");
-                    for (int i = 0; i < courseSections.size(); i++) {
-                        if (courseSections.get(i) instanceof ChildSectionMobileEntity) {
-                            ChildSectionMobileEntity childEntity = (ChildSectionMobileEntity) courseSections.get(i);
-                            if (childEntity.contains(activity)) {
-                                childEntity.removeSubItem(activity);
-                                childEntity.addSubItem(childEntity.getSubItemPosition(activity), activity);
-                                if (childEntity.getActivities() != null && childEntity.getActivities().size() > 0) {
-                                    int completeCount = 0;
-                                    for (int k = 0; k < childEntity.getActivities().size(); k++) {
-                                        if (childEntity.getActivities().contains(activity))
-                                            childEntity.getActivities().set(k, activity);
-                                        CourseSectionActivity sectionActivity = childEntity.getActivities().get(k);
-                                        if (sectionActivity.getCompleteState() != null && (sectionActivity.getCompleteState().equals("已完成") || sectionActivity.getCompleteState().equals("complete"))) {
-                                            completeCount++;
-                                        }
-                                    }
-                                    if (completeCount == childEntity.getActivities().size())
-                                        childEntity.setCompleteState("complete");
-                                    else if (0 < completeCount && completeCount < childEntity.getActivities().size())
-                                        childEntity.setCompleteState("in_progress");
-                                    else
-                                        childEntity.setCompleteState("not_attempt");
-                                    courseSections.set(i, childEntity);
-                                }
-                                break;
-                            }
-                        }
+                    if (courseSections.indexOf(activity) != -1) {
+                        int index = courseSections.indexOf(activity);
+                        CourseSectionActivity entity = (CourseSectionActivity) courseSections.get(index);
+                        entity.setCompleteState(activity.getCompleteState());
+                        courseSections.set(index, entity);
+                        sectionAdapter.notifyDataSetChanged();
                     }
-                    if (courseSections.indexOf(activity) != -1)
-                        courseSections.set(courseSections.indexOf(activity), activity);
-                    sectionAdapter.notifyDataSetChanged();
                 }
                 break;
         }
