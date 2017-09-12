@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/margin_size_10"
+    android:paddingRight="@dimen/margin_size_30">
+
+    <LinearLayout
+        android:id="@+id/layout_line"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <View
+            android:id="@+id/topLine"
+            android:layout_width="@dimen/margin_size_2"
+            android:layout_height="@dimen/margin_size_10"
+            android:layout_gravity="center"
+            android:background="@color/spaceColor" />
+
+        <TextView
+            android:id="@+id/tv_position"
+            android:layout_width="@dimen/margin_size_28"
+            android:layout_height="@dimen/margin_size_28"
+            android:background="@drawable/test_select_check"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLength="2"
+            android:text="01"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_14" />
+
+        <LinearLayout
+            android:layout_width="@dimen/margin_size_2"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@color/spaceColor" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_size_12"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/task_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_10"
+            android:background="@drawable/shape_course_type"
+            android:ellipsize="end"
+            android:hint="点击输入标题"
+            android:maxLines="1"
+            android:paddingBottom="@dimen/margin_size_8"
+            android:paddingLeft="@dimen/margin_size_16"
+            android:paddingRight="@dimen/margin_size_16"
+            android:paddingTop="@dimen/margin_size_8"
+            android:textColorHint="@color/blow_gray"
+            android:textSize="@dimen/font_size_16" />
+
+        <TextView
+            android:id="@+id/tv_researchTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_size_16"
+            android:layout_marginTop="@dimen/margin_size_16"
+            android:background="@drawable/shape_course_type"
+            android:ellipsize="end"
+            android:hint="点击选择研修时间"
+            android:maxLines="1"
+            android:paddingBottom="@dimen/margin_size_8"
+            android:paddingLeft="@dimen/margin_size_16"
+            android:paddingRight="@dimen/margin_size_16"
+            android:paddingTop="@dimen/margin_size_8"
+            android:textColorHint="@color/blow_gray"
+            android:textSize="@dimen/font_size_16" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:orientation="horizontal">
+
+
+            <TextView
+                android:id="@+id/task_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/title_cancel"
+                android:paddingBottom="@dimen/margin_size_6"
+                android:paddingLeft="@dimen/margin_size_16"
+                android:paddingRight="@dimen/margin_size_16"
+                android:paddingTop="@dimen/margin_size_6"
+                android:text="取消"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:id="@+id/task_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_16"
+                android:background="@drawable/title_selected"
+                android:paddingBottom="@dimen/margin_size_6"
+                android:paddingLeft="@dimen/margin_size_16"
+                android:paddingRight="@dimen/margin_size_16"
+                android:paddingTop="@dimen/margin_size_6"
+                android:text="确认"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

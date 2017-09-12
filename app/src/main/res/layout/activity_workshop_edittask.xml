@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:right_button_text="提交"
+        app:show_right_button="true"
+        app:title_text="修改阶段" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_16"
+        android:background="@color/spaceColor" />
+
+    <EditText
+        android:id="@+id/et_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:drawablePadding="@dimen/margin_size_5"
+        android:drawableRight="@drawable/download_more"
+        android:gravity="left|center"
+        android:hint="输入阶段标题"
+        android:maxLines="1"
+        android:padding="@dimen/margin_size_12"
+        android:textColorHint="@color/gray"
+        android:textSize="@dimen/font_size_16">
+
+        <requestFocus />
+    </EditText>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_20"
+        android:background="@color/spaceColor" />
+
+    <TextView
+        android:id="@+id/tv_picker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dictionary_background"
+        android:drawablePadding="10dp"
+        android:drawableRight="@drawable/course_dictionary_xiala"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:hint="点击选择研修时间"
+        android:maxLines="1"
+        android:padding="@dimen/margin_size_12"
+        android:textSize="@dimen/font_size_16" />
+
+    <LinearLayout
+        android:id="@+id/pickerContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dictionary_background"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_10"
+                android:text="请选择开始时间"
+                android:textSize="@dimen/font_size_16" />
+
+            <View
+                android:layout_width="@dimen/margin_size_1"
+                android:layout_height="match_parent"
+                android:background="@color/train_item_press" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_10"
+                android:text="请结束开始时间"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_1"
+            android:background="@color/train_item_press" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <DatePicker
+                android:id="@+id/startDatePicker"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:calendarViewShown="false" />
+
+            <View
+                android:layout_width="@dimen/margin_size_1"
+                android:layout_height="match_parent"
+                android:background="@color/train_item_press" />
+
+            <DatePicker
+                android:id="@+id/endDatePicker"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:calendarViewShown="false" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_1"
+            android:background="@color/train_item_press" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_cancel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/item_click_selector"
+                android:gravity="center"
+                android:padding="@dimen/margin_size_12"
+                android:text="取消"
+                android:textColor="@color/gray"
+                android:textSize="16sp" />
+
+            <View
+                android:layout_width="@dimen/margin_size_1"
+                android:layout_height="match_parent"
+                android:background="@color/train_item_press" />
+
+            <TextView
+                android:id="@+id/tv_confirm"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/item_click_selector"
+                android:gravity="center"
+                android:padding="@dimen/margin_size_12"
+                android:text="完成"
+                android:textColor="#62B542"
+                android:textSize="16sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_1"
+            android:background="@color/train_item_press" />
+    </LinearLayout>
+</LinearLayout>

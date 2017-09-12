@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/survey_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/survey_result_red"
+            android:paddingLeft="2dp"
+            android:paddingTop="2dp"
+            android:text="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_12" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="-18dp"
+            android:padding="4dp">
+
+            <TextView
+                android:id="@+id/test_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_size_10"
+                android:background="@drawable/test_type_bg"
+                android:paddingBottom="@dimen/margin_size_2"
+                android:paddingLeft="@dimen/margin_size_5"
+                android:paddingRight="@dimen/margin_size_5"
+                android:paddingTop="@dimen/margin_size_2"
+                android:text="单选题"
+                android:textColor="@color/defaultColor"
+                android:textSize="@dimen/font_size_12" />
+
+            <TextView
+                android:id="@+id/test_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:padding="@dimen/margin_size_10"
+                android:text="\u3000\u3000\u3000\u2000您对本课程的满意程度如何？"
+                android:textSize="@dimen/font_size_15" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/spaceColor" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never" />
+
+    <Button
+        android:id="@+id/bt_expand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="@dimen/margin_size_10"
+        android:layout_marginTop="@dimen/margin_size_10"
+        android:background="@drawable/test_type_bg"
+        android:drawablePadding="@dimen/margin_size_6"
+        android:drawableRight="@drawable/course_zhankai"
+        android:paddingBottom="@dimen/margin_size_6"
+        android:paddingLeft="@dimen/margin_size_8"
+        android:paddingRight="@dimen/margin_size_8"
+        android:paddingTop="@dimen/margin_size_6"
+        android:text="展开所有答案"
+        android:textColor="@color/defaultColor"
+        android:textSize="@dimen/font_size_14" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_8"
+        android:background="@color/spaceColor" />
+</LinearLayout>

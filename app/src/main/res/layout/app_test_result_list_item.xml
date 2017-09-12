@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_12"
+        android:background="@color/spaceColor" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_testIndex"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:background="@drawable/app_test_answer_correct"
+            android:maxLength="2"
+            android:padding="@dimen/margin_size_3"
+            android:scaleType="center"
+            android:text="1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_10" />
+
+        <TextView
+            android:id="@+id/test_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_size_14"
+            android:background="@drawable/test_type_bg"
+            android:paddingBottom="@dimen/margin_size_2"
+            android:paddingLeft="@dimen/margin_size_5"
+            android:paddingRight="@dimen/margin_size_5"
+            android:paddingTop="@dimen/margin_size_2"
+            android:text="单选题"
+            android:textColor="@color/defaultColor"
+            android:textSize="@dimen/font_size_12" />
+
+        <TextView
+            android:id="@+id/test_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/margin_size_3"
+            android:padding="@dimen/margin_size_14"
+            android:text="\u3000\u3000\u3000\u2000失忆症是由于神经中枢病损导致抽象信号思维障碍，而丧失口语、文字的表达和领悟能力的临床症候群。\n根据上述定义，下列可能患失忆症的是:"
+            android:textSize="@dimen/font_size_14" />
+    </FrameLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:paddingBottom="@dimen/margin_size_10"
+        android:paddingLeft="@dimen/margin_size_14"
+        android:paddingRight="@dimen/margin_size_14" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+
+    <LinearLayout
+        android:id="@+id/tipLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/shape_test_result_error"
+        android:padding="@dimen/margin_size_2">
+
+        <TextView
+            android:id="@+id/tv_correct"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_8"
+            android:text="×"
+            android:textColor="@color/red"
+            android:textSize="@dimen/font_size_24" />
+
+        <TextView
+            android:id="@+id/tv_isCorrect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_6"
+            android:text="错误"
+            android:textColor="@color/red"
+            android:textSize="@dimen/font_size_13" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/tv_correctAnswer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="@dimen/margin_size_10"
+            android:text="正确答案：D"
+            android:textColor="@color/defaultColor"
+            android:textSize="@dimen/font_size_13"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

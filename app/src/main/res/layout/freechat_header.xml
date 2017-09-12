@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_size_12">
+
+        <com.haoyu.app.view.ExpandableTextView
+            android:id="@+id/tv_discussion_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:textColor="@color/gray"
+            android:visibility="gone"
+            expandableTextView:collapseText="收起内容"
+            expandableTextView:expandText="展开内容"
+            expandableTextView:maxCollapsedLines="5">
+
+            <org.sufficientlysecure.htmltextview.HtmlTextView
+                android:id="@id/expandable_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:textSize="@dimen/font_size_16" />
+
+            <Button
+                android:id="@id/expand_collapse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@color/transparent"
+                android:textColor="@color/defaultColor"
+                android:textSize="@dimen/font_size_16"
+                android:visibility="invisible" />
+        </com.haoyu.app.view.ExpandableTextView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_16">
+
+            <ImageView
+                android:id="@+id/ic_user"
+                android:layout_width="@dimen/margin_size_30"
+                android:layout_height="@dimen/margin_size_30"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/tv_userName"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_size_8"
+                android:gravity="center"
+                android:maxLength="8"
+                android:textColor="@color/defaultColor"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:id="@+id/tv_createTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_size_8"
+                android:gravity="center|right"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_commentCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/spaceColor"
+        android:drawableLeft="@drawable/discussion_pinglun"
+        android:drawablePadding="@dimen/margin_size_6"
+        android:padding="@dimen/margin_size_12"
+        android:textSize="@dimen/font_size_16" />
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_size_16"
+        android:text="暂时没有人发表评论，你可以点击下面的按钮发表您的评论！"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
+</LinearLayout>

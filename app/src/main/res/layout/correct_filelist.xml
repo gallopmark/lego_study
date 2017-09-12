@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/file_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="@dimen/margin_size_10"
+            android:paddingTop="@dimen/margin_size_10"
+            android:src="@drawable/resources_doc" />
+
+        <TextView
+            android:id="@+id/file_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/file_img"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margin_size_5"
+            android:paddingLeft="@dimen/margin_size_10"
+            android:paddingTop="@dimen/margin_size_5"
+            android:text="作业文档.doc"
+            android:textSize="@dimen/font_size_12" />
+    </RelativeLayout>
+</LinearLayout>

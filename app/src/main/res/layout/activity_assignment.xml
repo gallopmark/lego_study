@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_button_image="@drawable/app_back"
+        app:title_text="" />
+    <ScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolBar"
+        android:fadingEdge="none"
+        android:scrollbars="none"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:id="@+id/mcontent_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@color/bisque"
+                    android:gravity="center_horizontal">
+
+                    <TextView
+                        android:id="@+id/timelimt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:drawableLeft="@drawable/assignment_timer"
+                        android:drawablePadding="@dimen/margin_size_5"
+                        android:paddingBottom="@dimen/margin_size_12"
+                        android:paddingTop="@dimen/margin_size_12"
+                        android:text=""
+                        android:textSize="@dimen/font_size_16" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_size_12"
+                    android:background="@color/spaceColor" />
+
+                <RelativeLayout
+                    android:id="@+id/assign_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <RelativeLayout
+                        android:id="@+id/rl_top"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/work_describe"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_size_12"
+                            android:layout_marginTop="@dimen/margin_size_12"
+                            android:drawableLeft="@drawable/assignment_pinglun"
+                            android:drawablePadding="@dimen/margin_size_5"
+                            android:paddingLeft="@dimen/margin_size_10"
+                            android:paddingRight="@dimen/margin_size_10"
+                            android:text="作业描述"
+                            android:textSize="@dimen/font_size_16" />
+
+                        <ImageView
+                            android:id="@+id/in_control_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentRight="true"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginTop="@dimen/margin_size_16"
+                            android:paddingBottom="@dimen/margin_size_10"
+                            android:paddingLeft="@dimen/margin_size_10"
+                            android:paddingRight="@dimen/margin_size_10"
+                            android:src="@drawable/course_dictionary_xiala" />
+                    </RelativeLayout>
+
+
+                    <View
+                        android:id="@+id/border_line"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_1"
+                        android:layout_below="@+id/rl_top"
+                        android:background="@color/spaceColor" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/border_line"
+                        android:orientation="vertical">
+
+                        <com.haoyu.app.view.ExpandableTextView
+                            android:id="@+id/at_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="12dp"
+                            android:textColor="@color/gray"
+                            android:visibility="gone"
+                            expandableTextView:collapseText="收起内容"
+                            expandableTextView:expandText="展开内容"
+                            expandableTextView:maxCollapsedLines="3">
+
+                            <org.sufficientlysecure.htmltextview.HtmlTextView
+                                android:id="@id/expandable_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:lineSpacingExtra="@dimen/margin_size_4"
+                                android:textSize="@dimen/font_size_16" />
+
+                            <Button
+                                android:id="@id/expand_collapse"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:background="@color/transparent"
+                                android:textColor="@color/defaultColor"
+                                android:textSize="@dimen/font_size_16"
+                                android:visibility="invisible" />
+                        </com.haoyu.app.view.ExpandableTextView>
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/xRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_size_10"
+                    android:background="@color/spaceColor" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/wancheng_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_size_10"
+                        android:layout_marginLeft="@dimen/margin_size_10"
+                        android:layout_marginTop="@dimen/margin_size_10"
+                        android:src="@drawable/assignment_performance"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_size_10"
+                        android:layout_toRightOf="@+id/wancheng_view"
+                        android:drawableLeft="@drawable/assignment_performance"
+                        android:drawablePadding="@dimen/margin_size_5"
+                        android:paddingBottom="@dimen/margin_size_10"
+                        android:paddingEnd="@dimen/margin_size_10"
+                        android:paddingStart="@dimen/margin_size_10"
+                        android:text="完成情况"
+                        android:textSize="@dimen/font_size_15" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_size_1"
+                    android:background="@color/spaceColor" />
+
+                <RelativeLayout
+                    android:id="@+id/assignment_commit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_size_10">
+
+                    <TextView
+                        android:id="@+id/alerady_provider"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_size_10"
+                        android:layout_marginTop="@dimen/margin_size_15"
+                        android:layout_toRightOf="@+id/provide_homework"
+                        android:gravity="start"
+                        android:text="已提交0个/1个"
+                        android:textSize="@dimen/font_size_12" />
+
+                    <TextView
+                        android:id="@+id/own_percent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_size_15"
+                        android:layout_toLeftOf="@+id/quxiang"
+                        android:gravity="right"
+                        android:paddingRight="@dimen/margin_size_10"
+                        android:text="占总分0%"
+                        android:textSize="@dimen/font_size_12" />
+
+                    <TextView
+                        android:id="@+id/provide_homework"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/alerady_provider"
+                        android:layout_marginLeft="@dimen/margin_size_10"
+                        android:drawableLeft="@drawable/assignment_zuoye"
+                        android:drawablePadding="@dimen/margin_size_5"
+                        android:padding="@dimen/margin_size_5"
+                        android:text="提交作业"
+                        android:textSize="@dimen/font_size_15" />
+
+
+                    <ImageView
+                        android:id="@+id/quxiang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/own_percent"
+                        android:layout_marginRight="@dimen/margin_size_10"
+                        android:layout_marginTop="@dimen/margin_size_5"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal"
+                        android:src="@drawable/go_into" />
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_1"
+                        android:layout_below="@+id/quxiang"
+                        android:layout_marginTop="@dimen/margin_size_20"
+                        android:background="@color/spaceColor" />
+
+                    <com.haoyu.app.view.RoundRectProgressBar
+                        android:id="@+id/own_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_12"
+                        android:layout_alignTop="@+id/quxiang"
+                        android:layout_marginLeft="@dimen/margin_size_10"
+                        android:layout_marginRight="@dimen/margin_size_10"
+
+                        android:layout_marginTop="@dimen/margin_size_2"
+                        android:layout_toLeftOf="@+id/quxiang"
+                        android:layout_toRightOf="@+id/provide_homework"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:paddingBottom="@dimen/margin_size_2"
+                        android:progress="0"
+                        app:progress_background_color="@color/bootom_borderline"
+                        app:progress_color="@color/defaultColor" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/huping"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/already_assessment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_size_5"
+                        android:layout_marginTop="@dimen/margin_size_10"
+                        android:layout_toRightOf="@+id/markType"
+                        android:paddingLeft="@dimen/margin_size_10"
+                        android:text="已互评0个/0个"
+                        android:textSize="@dimen/font_size_12" />
+
+                    <TextView
+                        android:id="@+id/owntotal_percent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/margin_size_10"
+                        android:layout_toLeftOf="@+id/quxiang2"
+                        android:gravity="right"
+                        android:paddingRight="@dimen/margin_size_10"
+                        android:text="占总分0%"
+                        android:textSize="@dimen/font_size_12" />
+
+                    <com.haoyu.app.view.RoundRectProgressBar
+                        android:id="@+id/own_progress2"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_12"
+                        android:layout_alignLeft="@+id/already_assessment"
+                        android:layout_below="@+id/already_assessment"
+                        android:layout_marginBottom="@dimen/margin_size_10"
+                        android:layout_marginLeft="@dimen/margin_size_10"
+                        android:layout_marginRight="@dimen/margin_size_10"
+                        android:layout_marginTop="@dimen/margin_size_10"
+                        android:layout_toLeftOf="@+id/quxiang2"
+                        android:layout_toRightOf="@+id/markType"
+                        android:indeterminate="false"
+                        android:max="100"
+                        android:progress="0"
+                        app:progress_background_color="@color/bootom_borderline"
+                        app:progress_color="@color/defaultColor" />
+
+                    <TextView
+                        android:id="@+id/markType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/already_assessment"
+                        android:layout_marginLeft="@dimen/margin_size_10"
+                        android:drawableLeft="@drawable/assignment_zuoye"
+                        android:drawablePadding="@dimen/margin_size_5"
+                        android:paddingLeft="@dimen/margin_size_5"
+                        android:paddingTop="@dimen/margin_size_5"
+                        android:text="学员互评"
+                        android:textSize="@dimen/font_size_15" />
+
+
+                    <ImageView
+                        android:id="@+id/quxiang2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_below="@+id/already_assessment"
+                        android:layout_centerHorizontal="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/margin_size_10"
+                        android:layout_marginTop="@dimen/margin_size_5"
+                        android:gravity="center_horizontal"
+                        android:src="@drawable/go_into" />
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_1"
+                        android:layout_below="@+id/quxiang2"
+                        android:layout_marginTop="@dimen/margin_size_20"
+                        android:background="@color/spaceColor"
+                        android:visibility="invisible" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_size_12"
+                    android:layout_marginTop="@dimen/margin_size_5"
+                    android:background="@color/spaceColor" />
+
+                <RelativeLayout
+                    android:id="@+id/own_score"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_size_10"
+                    android:layout_marginTop="@dimen/margin_size_10">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/margin_size_10"
+                        android:layout_marginTop="@dimen/margin_size_15"
+                        android:drawableLeft="@drawable/assignment_scores"
+                        android:drawablePadding="@dimen/margin_size_8"
+                        android:gravity="center_vertical"
+                        android:text="我的作业得分"
+                        android:textSize="@dimen/font_size_15" />
+
+                    <TextView
+                        android:id="@+id/myhomeworkScore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/margin_size_20"
+                        android:drawablePadding="@dimen/margin_size_5"
+                        android:drawableRight="@drawable/go_into"
+                        android:gravity="clip_vertical"
+                        android:text=""
+                        android:textColor="@color/orange"
+                        android:textSize="@dimen/font_size_15" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_size_1"
+                    android:layout_marginBottom="@dimen/margin_size_10"
+                    android:background="@color/bootom_borderline" />
+
+                <TextView
+                    android:id="@+id/reBack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/margin_size_20"
+                    android:background="@drawable/round_label"
+                    android:paddingBottom="@dimen/margin_size_5"
+                    android:paddingLeft="@dimen/margin_size_15"
+                    android:paddingRight="@dimen/margin_size_15"
+                    android:paddingTop="@dimen/margin_size_5"
+                    android:text="申请退回"
+                    android:textColor="@color/defaultColor"
+                    android:textSize="@dimen/font_size_15"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tv_warn"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="请稍后重试"
+        android:textSize="@dimen/font_size_18"
+        android:visibility="gone" />
+
+    <include layout="@layout/include_loading" />
+
+</RelativeLayout>

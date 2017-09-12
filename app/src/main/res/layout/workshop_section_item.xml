@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/margin_size_10">
+
+        <LinearLayout
+            android:id="@+id/layout_line"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/topLine"
+                android:layout_width="@dimen/margin_size_2"
+                android:layout_height="@dimen/margin_size_9"
+                android:layout_gravity="center"
+                android:background="@color/spaceColor" />
+
+            <TextView
+                android:id="@+id/tv_position"
+                android:layout_width="@dimen/margin_size_28"
+                android:layout_height="@dimen/margin_size_28"
+                android:layout_gravity="center"
+                android:background="@drawable/test_select_check"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLength="2"
+                android:text="01"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_14" />
+
+            <LinearLayout
+                android:layout_width="@dimen/margin_size_2"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/spaceColor" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="-14dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="22dp"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="导入新课的创新构思和运用"
+                android:textSize="@dimen/font_size_18"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_researchTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="22dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/shape_workshop_research_time"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="研修时间：2016年12月-2017年2月"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_14" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never" />
+
+            <LinearLayout
+                android:id="@+id/ll_visiable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="@dimen/margin_size_10"
+                    android:layout_height="@dimen/margin_size_10"
+                    android:layout_marginRight="@dimen/margin_size_6"
+                    android:src="@drawable/announcements_yuandian" />
+
+                <ImageView
+                    android:layout_width="@dimen/margin_size_10"
+                    android:layout_height="@dimen/margin_size_10"
+                    android:layout_marginRight="@dimen/margin_size_6"
+                    android:src="@drawable/announcements_yuandian" />
+
+                <ImageView
+                    android:layout_width="@dimen/margin_size_10"
+                    android:layout_height="@dimen/margin_size_10"
+                    android:src="@drawable/announcements_yuandian" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

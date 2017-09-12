@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:show_right_button="false"
+        app:title_text="设置" />
+
+    <LinearLayout
+        android:id="@+id/ll_clear_the_cache"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_size_16"
+        android:background="@drawable/item_click_selector"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/margin_size_14"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_14">
+
+        <TextView
+            android:id="@+id/tv_clearCache"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/clear_the_cache"
+            android:drawablePadding="@dimen/margin_size_12"
+            android:text="清除缓存"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_18" />
+
+        <TextView
+            android:id="@+id/tv_cacheSize"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_12"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/margin_size_6"
+            android:drawableRight="@drawable/go_into"
+            android:gravity="right"
+            android:paddingRight="@dimen/margin_size_16"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/font_size_16" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+
+    <LinearLayout
+        android:id="@+id/ll_clear_the_download"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_click_selector"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/margin_size_14"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_14">
+
+        <TextView
+            android:id="@+id/tv_clearDownload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/delete_load"
+            android:drawablePadding="@dimen/margin_size_12"
+            android:text="清除离线下载内容"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_18" />
+
+        <TextView
+            android:id="@+id/tv_cacheDownloadSize"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_12"
+            android:layout_weight="1"
+            android:drawablePadding="@dimen/margin_size_6"
+            android:drawableRight="@drawable/go_into"
+            android:gravity="right"
+            android:paddingRight="@dimen/margin_size_16"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/font_size_16" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+
+    <TextView
+        android:id="@+id/tv_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/item_click_selector"
+        android:drawableLeft="@drawable/feedback"
+        android:drawablePadding="@dimen/margin_size_12"
+        android:drawableRight="@drawable/go_into"
+        android:paddingBottom="@dimen/margin_size_14"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_14"
+        android:text="意见反馈"
+        android:textColor="@color/blow_gray"
+        android:textSize="@dimen/font_size_18" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+
+    <TextView
+        android:id="@+id/tv_about_us"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@drawable/item_click_selector"
+        android:drawableLeft="@drawable/about_us"
+        android:drawablePadding="@dimen/margin_size_12"
+        android:drawableRight="@drawable/go_into"
+        android:paddingBottom="@dimen/margin_size_14"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_14"
+        android:text="关于我们"
+        android:textColor="@color/blow_gray"
+        android:textSize="@dimen/font_size_18" />
+
+    <Button
+        android:id="@+id/bt_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_size_30"
+        android:background="@drawable/item_click_selector"
+        android:padding="@dimen/margin_size_14"
+        android:text="退出登录"
+        android:textColor="@color/red"
+        android:textSize="@dimen/font_size_18" />
+
+</LinearLayout>

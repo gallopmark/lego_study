@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#EEEEEE"
+    android:gravity="bottom">
+
+    <RelativeLayout
+        android:id="@+id/listview_header_content"
+        android:layout_width="fill_parent"
+        android:layout_height="66dp">
+
+        <LinearLayout
+            android:id="@+id/listview_header_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:minWidth="100dip"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/refresh_status_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/xrecyclerview_header_hint_normal"
+                android:textColor="@color/refresh_text"
+                android:textSize="@dimen/font_size_15" />
+
+            <TextView
+                android:id="@+id/xlistview_header_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="@string/xrecyclerview_header_last_time"
+                android:textColor="@color/refresh_text"
+                android:textSize="@dimen/font_size_14"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/listview_header_arrow"
+            android:layout_width="40dp"
+            android:layout_height="45dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_size_20"
+            android:layout_toLeftOf="@id/listview_header_text"
+            android:src="@drawable/refresh_arrow" />
+
+        <ImageView
+            android:id="@+id/listview_refresh_statu"
+            android:layout_width="@dimen/margin_size_26"
+            android:layout_height="@dimen/margin_size_26"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_size_20"
+            android:src="@drawable/refresh_succeed"
+            android:layout_toLeftOf="@id/listview_header_text"
+            android:visibility="gone" />
+
+        <com.haoyu.app.view.CircularProgressView
+            android:id="@+id/progressView"
+            app:angleAnimationDurationMillis="@integer/circular_default_angleAnimationDurationMillis"
+            app:border_Width="@dimen/margin_size_2"
+            app:colorSequence="@array/circular_loading_color_sequence"
+            app:minSweepAngle="40"
+            app:sweepAnimationDurationMillis="@integer/circular_default_sweepAnimationDuration"
+            android:layout_width="@dimen/margin_size_20"
+            android:layout_height="@dimen/margin_size_20"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_size_20"
+            android:visibility="invisible"
+            android:layout_toLeftOf="@+id/listview_header_text" />
+
+        <ImageView
+            android:id="@+id/xlistview_header_icLoading"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/margin_size_20"
+            android:layout_toLeftOf="@+id/listview_header_text"
+            android:src="@drawable/anim_loading"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/spaceColor">
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_size_10"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_allQuestion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/faq_left_corners_selector"
+                android:button="@color/transparent"
+                android:checked="true"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_8"
+                android:paddingTop="@dimen/margin_size_8"
+                android:text="@string/allQuestion"
+                android:textColor="@color/tab_faq_textcolor_selector"
+                android:textSize="@dimen/font_size_16" />
+
+            <RadioButton
+                android:id="@+id/rb_myNotice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/faq_middle_corners_selector"
+                android:button="@color/transparent"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_8"
+                android:paddingTop="@dimen/margin_size_8"
+                android:text="@string/myNoticeQurstion"
+                android:textColor="@color/tab_faq_textcolor_selector"
+                android:textSize="@dimen/font_size_16" />
+
+            <RadioButton
+                android:id="@+id/rb_myQuestion"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/faq_right_corners_selector"
+                android:button="@color/transparent"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_8"
+                android:paddingTop="@dimen/margin_size_8"
+                android:text="@string/myAskQuestion"
+                android:textColor="@color/tab_faq_textcolor_selector"
+                android:textSize="@dimen/font_size_16" />
+        </RadioGroup>
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/layout_top" />
+
+    <Button
+        android:id="@+id/bt_createQA"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/margin_size_12"
+        android:background="@drawable/wenda_create" />
+
+</RelativeLayout>

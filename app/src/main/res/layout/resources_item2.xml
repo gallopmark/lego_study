@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/file_click"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_size_16">
+
+        <ImageView
+            android:id="@+id/resourcesType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/resources_unknown" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_5"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/resourcesName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="教育系统突发公共事件"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/font_size_13" />
+
+            <TextView
+                android:id="@+id/resourcesSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:text="20M"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/font_size_13" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

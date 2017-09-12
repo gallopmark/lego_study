@@ -1,0 +1,188 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:right_button_text="编辑"
+        app:show_right_button="true"
+        app:title_text="下载详情" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/defaultColor">
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/margin_size_10"
+            android:layout_marginLeft="@dimen/margin_size_30"
+            android:layout_marginRight="@dimen/margin_size_30"
+            android:layout_marginTop="@dimen/margin_size_10"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rb_downloading"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/course_left_selector"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_10"
+                android:text="正在下载"
+                android:textColor="@color/tab_download_color_selector"
+                android:textSize="@dimen/font_size_16" />
+
+            <RadioButton
+                android:id="@+id/rb_downloadComplete"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/course_right_selector"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_10"
+                android:text="已下载"
+                android:textColor="@color/tab_download_color_selector"
+                android:textSize="@dimen/font_size_16" />
+        </RadioGroup>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_downloading"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvDownloading"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never" />
+
+        <TextView
+            android:id="@+id/tv_empty1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawablePadding="@dimen/margin_size_12"
+            android:drawableTop="@drawable/empty_list"
+            android:gravity="center"
+            android:text="无下载任务"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_complete"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvComplete"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never" />
+
+        <TextView
+            android:id="@+id/tv_empty2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawablePadding="@dimen/margin_size_12"
+            android:drawableTop="@drawable/empty_list"
+            android:gravity="center"
+            android:text="无下载记录"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_16" />
+    </RelativeLayout>
+
+    <FrameLayout
+        android:id="@+id/fl_memory"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_30">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_totalSize"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/defaultColor" />
+
+            <TextView
+                android:id="@+id/tv_availableSize"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@color/gray_text" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_memorySize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white" />
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="bottom"
+        android:paddingBottom="@dimen/margin_size_12"
+        android:paddingTop="@dimen/margin_size_12"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/bt_selectAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/round_label"
+            android:drawableLeft="@drawable/download_checkall"
+            android:drawablePadding="@dimen/margin_size_6"
+            android:paddingBottom="@dimen/margin_size_8"
+            android:paddingLeft="@dimen/margin_size_20"
+            android:paddingRight="@dimen/margin_size_20"
+            android:paddingTop="@dimen/margin_size_8"
+            android:text="全选"
+            android:textColor="@color/defaultColor"
+            android:textSize="@dimen/font_size_16" />
+
+        <Button
+            android:id="@+id/bt_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_30"
+            android:background="@drawable/round_label"
+            android:drawableLeft="@drawable/download_delete_more"
+            android:drawablePadding="@dimen/margin_size_6"
+            android:paddingBottom="@dimen/margin_size_8"
+            android:paddingLeft="@dimen/margin_size_16"
+            android:paddingRight="@dimen/margin_size_16"
+            android:paddingTop="@dimen/margin_size_8"
+            android:text="删除"
+            android:textColor="@color/defaultColor"
+            android:textSize="@dimen/font_size_16" />
+
+    </LinearLayout>
+</LinearLayout>

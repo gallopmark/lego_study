@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/item_click_selector"
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/layout_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/margin_size_10"
+        android:paddingRight="@dimen/margin_size_10">
+
+        <LinearLayout
+            android:id="@+id/time_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_size_6"
+                android:text="16:20"
+                android:textSize="@dimen/font_size_26" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_size_4"
+                android:text="2016/07/06"
+                android:textColor="#ff9b9ea5"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_line"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginLeft="@dimen/margin_size_10"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/topLine"
+                android:layout_width="@dimen/margin_size_1"
+                android:layout_height="@dimen/margin_size_10"
+                android:layout_gravity="center"
+                android:background="@color/spaceColor" />
+
+            <ImageView
+                android:id="@+id/ic_circle"
+                android:layout_width="@dimen/margin_size_14"
+                android:layout_height="@dimen/margin_size_14"
+                android:background="@drawable/note_circle" />
+
+            <TextView
+                android:layout_width="@dimen/margin_size_1"
+                android:layout_height="fill_parent"
+                android:layout_gravity="center"
+                android:background="@color/spaceColor" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_size_10"
+            android:layout_marginLeft="@dimen/margin_size_10"
+            android:layout_toRightOf="@+id/time_layout"
+            android:paddingBottom="@dimen/margin_size_10">
+
+            <TextView
+                android:id="@+id/content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_8"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:minLines="2"
+                android:text="这个是浏览器显示问题，你可以将字复制到其他地方。"
+                android:textSize="@dimen/font_size_18" />
+
+            <TextView
+                android:id="@+id/detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/content"
+                android:layout_below="@+id/content"
+                android:layout_marginTop="@dimen/margin_size_10"
+                android:background="@drawable/note_item_biaoqian"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:maxLines="2"
+                android:padding="@dimen/margin_size_6"
+                android:text="教育系统突发公共事件简介"
+                android:textColor="@color/defaultColor"
+                android:textSize="@dimen/font_size_16" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

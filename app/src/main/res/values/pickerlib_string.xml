@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="myPhotos">我的相册</string>
+    <string name="myVideos">我的视频</string>
+    <string name="preView">预览</string>
+    <string name="finish">完成</string>
+</resources>

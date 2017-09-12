@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:star="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_size_10"
+        android:text="免费看书都没法说没法看了萨芬穆斯林的父母双方"
+        android:textSize="@dimen/font_size_15" />
+
+
+    <TextView
+        android:id="@+id/tv_score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/linearLayout"
+        android:drawablePadding="@dimen/margin_size_5"
+        android:drawableRight="@drawable/teach_study_go"
+        android:gravity="center"
+        android:paddingRight="@dimen/margin_size_10"
+        android:text="0"
+        android:textColor="@color/orange"
+        android:textSize="@dimen/font_size_15" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/margin_size_1">
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:text="得分："
+            android:textSize="@dimen/font_size_15" />
+
+        <com.haoyu.app.view.StarBar
+            android:id="@+id/ratingBar1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            star:starDistance="@dimen/margin_size_10"
+            star:starEmpty="@drawable/assignment_default_xing"
+            star:starFill="@drawable/assignment_press_xing"
+            star:starNumber="5"
+            star:starSize="@dimen/margin_size_15" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginTop="@dimen/margin_size_10"
+        android:background="@color/spaceColor" />
+
+</RelativeLayout>

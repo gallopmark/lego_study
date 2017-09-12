@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:right_button_text="编辑"
+        app:show_right_button="false"
+        app:title_text="已选课程" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.haoyu.app.view.LoadingView
+            android:id="@+id/loadingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <com.haoyu.app.view.LoadFailView
+            android:id="@+id/loadFailView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="@dimen/margin_size_60"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/emptyData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawablePadding="@dimen/margin_size_10"
+            android:drawableTop="@drawable/empty_list"
+            android:gravity="center"
+            android:text="无选课信息"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/layout_opreate"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_60"
+            android:layout_alignParentBottom="true"
+            android:descendantFocusability="blocksDescendants"
+            android:gravity="right"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <LinearLayout
+                android:id="@+id/ll_selectAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|right"
+                android:layout_marginLeft="@dimen/margin_size_16"
+                android:layout_marginRight="@dimen/margin_size_16"
+                android:padding="@dimen/margin_size_10">
+
+                <com.haoyu.app.view.AppCheckBox
+                    android:id="@+id/cb_select"
+                    android:layout_width="@dimen/margin_size_20"
+                    android:layout_height="@dimen/margin_size_20"
+                    android:layout_gravity="center"
+                    app:color_checked="@color/defaultColor"
+                    app:color_tick="@color/white"
+                    app:color_unchecked="@color/white"
+                    app:duration="100"
+                    app:stroke_width="@dimen/margin_size_1" />
+
+                <TextView
+                    android:id="@+id/tv_select"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_size_6"
+                    android:text="全选"
+                    android:textColor="@color/defaultColor"
+                    android:textSize="@dimen/font_size_16" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_size_16"
+                android:layout_marginRight="@dimen/margin_size_16"
+                android:background="@drawable/app_button_selector"
+                android:paddingBottom="@dimen/margin_size_10"
+                android:paddingLeft="@dimen/margin_size_16"
+                android:paddingRight="@dimen/margin_size_16"
+                android:paddingTop="@dimen/margin_size_10"
+                android:text="取消选课"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_14"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/bottomView"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_60"
+            android:layout_alignParentBottom="true"
+            android:background="#E6D7D7D7"
+            android:paddingLeft="@dimen/margin_size_12"
+            android:paddingRight="@dimen/margin_size_12"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tv_selectTips"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/bt_submit"
+                android:text="要求52学时，已选2门共12学时"
+                android:textColor="@color/black"
+                android:textSize="@dimen/font_size_16" />
+
+            <Button
+                android:id="@+id/bt_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/app_button_selector"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_10"
+                android:paddingLeft="@dimen/margin_size_12"
+                android:paddingRight="@dimen/margin_size_12"
+                android:paddingTop="@dimen/margin_size_10"
+                android:text="确认提交"
+                android:textColor="@color/white"
+                android:visibility="gone" />
+        </RelativeLayout>
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/show_assignment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/assignment_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/assignment_zuoye"
+            android:drawablePadding="@dimen/margin_size_5"
+            android:gravity="center_vertical"
+            android:padding="@dimen/margin_size_10"
+            android:text="作业1"
+            android:textSize="@dimen/font_size_15" />
+
+        <TextView
+            android:id="@+id/assignment_score"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:layout_toLeftOf="@+id/assignment_img"
+            android:drawablePadding="@dimen/margin_size_5"
+            android:gravity="right"
+            android:padding="@dimen/margin_size_10"
+            android:text="0分/100分"
+            android:textSize="@dimen/font_size_15" />
+
+        <ImageView
+            android:id="@+id/assignment_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:paddingRight="@dimen/margin_size_10"
+            android:src="@drawable/zhankai" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/show_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_1"
+            android:background="@color/spaceColor" />
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/file_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_10"
+            android:background="@color/spaceColor" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/assignment_pinglun"
+            android:drawablePadding="@dimen/margin_size_5"
+            android:paddingBottom="@dimen/margin_size_10"
+            android:paddingLeft="@dimen/margin_size_10"
+            android:paddingRight="@dimen/margin_size_10"
+            android:paddingTop="@dimen/margin_size_10"
+            android:text="评价内容"
+            android:textSize="@dimen/font_size_16" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_1"
+            android:background="@color/spaceColor" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/content_evaluation_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/correct_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/margin_size_15"
+            android:layout_marginTop="@dimen/margin_size_15"
+            android:background="@drawable/my_background_border"
+            android:gravity="center_horizontal"
+            android:paddingBottom="@dimen/margin_size_5"
+            android:paddingLeft="@dimen/margin_size_35"
+            android:paddingRight="@dimen/margin_size_35"
+            android:paddingTop="@dimen/margin_size_5"
+            android:text="提交"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_15" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+
+</LinearLayout>

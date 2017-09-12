@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/picture"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_placeholder" />
+
+    <FrameLayout
+        android:id="@+id/fl_selected"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/picker_media_selected"
+        android:visibility="gone"/>
+
+    <CheckBox
+        android:id="@+id/checkBox"
+        android:layout_width="@dimen/margin_size_20"
+        android:layout_height="@dimen/margin_size_20"
+        android:layout_gravity="right"
+        android:layout_margin="@dimen/margin_size_6"
+        android:background="@drawable/download_checkbox_selector"
+        android:button="@null"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_duration"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="#33fffafa"
+        android:drawableLeft="@drawable/video_icon"
+        android:drawablePadding="@dimen/margin_size_6"
+        android:gravity="center_vertical"
+        android:paddingBottom="@dimen/margin_size_6"
+        android:paddingLeft="@dimen/margin_size_12"
+        android:paddingTop="@dimen/margin_size_6"
+        android:text="00:00"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_12"
+        android:visibility="gone" />
+</FrameLayout>

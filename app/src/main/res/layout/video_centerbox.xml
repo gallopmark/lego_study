@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/linear_centercontroll"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/my_corner_bg_center"
+        android:paddingBottom="@dimen/margin_size_8"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_8"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/ic"
+            android:layout_width="@dimen/margin_size_16"
+            android:layout_height="@dimen/margin_size_16"
+            android:layout_centerVertical="true"
+            android:src="@drawable/video_btn_fast_forword"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@+id/center_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/margin_size_4"
+            android:layout_toRightOf="@+id/ic"
+
+            android:drawablePadding="@dimen/margin_size_5"
+            android:gravity="center"
+            android:text="00/00"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_size_18" />
+
+    </RelativeLayout>
+    <!-- 网络提示 -->
+
+    <LinearLayout
+        android:id="@+id/warn_controll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#33000000"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/warn_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:paddingLeft="@dimen/margin_size_8"
+            android:paddingRight="@dimen/margin_size_8"
+            android:text="您正在使用移动网络播放视频\n可能产生较高流量费用"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_size_14" />
+
+        <TextView
+            android:id="@+id/warn_continue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_jky_player_continue"
+            android:gravity="center"
+            android:paddingBottom="@dimen/margin_size_8"
+            android:paddingLeft="@dimen/margin_size_15"
+            android:paddingRight="@dimen/margin_size_15"
+            android:paddingTop="@dimen/margin_size_8"
+            android:text="继续"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/font_size_15" />
+    </LinearLayout>
+</RelativeLayout>

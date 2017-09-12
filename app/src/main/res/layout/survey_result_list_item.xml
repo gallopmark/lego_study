@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cb_select"
+            android:layout_width="@dimen/margin_size_30"
+            android:layout_height="@dimen/margin_size_30"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_16"
+            android:layout_marginRight="@dimen/margin_size_16"
+            android:background="@drawable/test_select_checkbox"
+            android:button="@color/transparent"
+            android:gravity="center"
+            android:text="A"
+            android:textColor="@color/test_select_checkbox_color"
+            android:textSize="@dimen/font_size_15" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/cb_select"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/margin_size_10">
+
+            <TextView
+                android:id="@+id/detail_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_size_16"
+                android:text="“狼孩”回归社会后无法与人进行语言交流"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/font_size_15" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_size_16"
+                android:layout_marginTop="@dimen/margin_size_6"
+                android:orientation="horizontal">
+
+                <com.haoyu.app.view.RoundRectProgressBar
+                    android:id="@+id/mRrogressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/margin_size_10"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:max="2"
+                    android:progress="1"
+                    android:visibility="visible"
+                    app:progress_background_color="@color/spaceColor"
+                    app:progress_color="@color/defaultColor" />
+
+                <TextView
+                    android:id="@+id/percentage"
+                    android:layout_width="50dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_size_10"
+                    android:layout_toRightOf="@+id/cb_select"
+                    android:gravity="center"
+                    android:text="20%"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/font_size_15" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:layout_marginTop="@dimen/margin_size_10"
+        android:background="@color/spaceColor" />
+</LinearLayout>

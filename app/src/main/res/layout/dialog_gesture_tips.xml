@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_tips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/iv_center"
+        android:layout_centerHorizontal="true"
+        android:text="左右滑动可切换试题"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_18" />
+
+    <ImageView
+        android:id="@+id/iv_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/test_gesture_lf" />
+
+    <Button
+        android:id="@+id/bt_know"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/iv_center"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/margin_size_20"
+        android:background="@drawable/gesture_button"
+        android:padding="@dimen/margin_size_12"
+        android:text="我知道了"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_18" />
+</RelativeLayout>

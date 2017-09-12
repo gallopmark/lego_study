@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/spaceColor"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_button_image="@drawable/app_back"
+        app:right_button_text="发起"
+        app:title_text="@string/study_says" />
+
+    <EditText
+        android:id="@+id/et_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@color/white"
+        android:drawablePadding="5dp"
+        android:drawableRight="@drawable/download_more"
+        android:gravity="left|center"
+        android:hint="请输入标题"
+        android:maxLength="128"
+        android:maxLines="1"
+        android:padding="@dimen/margin_size_16"
+        android:textColorHint="@color/gray"
+        android:textSize="@dimen/font_size_18" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_size_16"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="left"
+            android:hint="内容描述"
+            android:maxLength="1000"
+            android:maxLines="8"
+            android:minLines="7"
+            android:padding="@dimen/margin_size_16"
+            android:textColorHint="@color/gray"
+            android:textSize="@dimen/font_size_18" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/spaceColor" />
+
+            <Button
+                android:id="@+id/bt_insertIco"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:background="@color/white"
+                android:drawableLeft="@drawable/add_pic"
+                android:drawablePadding="5dp"
+                android:padding="@dimen/margin_size_12"
+                android:text="插入图片"
+                android:textColor="@color/defaultColor"
+                android:textSize="@dimen/font_size_16"
+                android:visibility="visible" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

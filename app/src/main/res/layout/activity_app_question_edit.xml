@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:show_right_button="false"
+        app:title_text="提问" />
+
+    <TextView
+        android:id="@+id/tv_questionType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_size_12"
+        android:layout_marginTop="@dimen/margin_size_12"
+        android:text="我要提问题："
+        android:textSize="@dimen/font_size_18" />
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_size_12"
+        android:background="@drawable/square_gray"
+        android:gravity="top"
+        android:hint="提问请简洁，建议不超过30字"
+        android:maxLength="4000"
+        android:maxLines="7"
+        android:minLines="7"
+        android:padding="@dimen/margin_size_10"
+        android:textSize="@dimen/font_size_16">
+
+        <requestFocus />
+    </EditText>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_size_12"
+        android:layout_marginRight="@dimen/margin_size_12"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/ll_tips1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="@dimen/margin_size_18"
+                android:layout_height="@dimen/margin_size_18"
+                android:layout_gravity="center"
+                android:src="@drawable/publish_failure" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_4"
+                android:text="提问注意事项"
+                android:textColor="@color/orangered"
+                android:textSize="@dimen/font_size_18" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/app_toolbar_selector"
+            android:paddingBottom="@dimen/margin_size_8"
+            android:paddingLeft="@dimen/margin_size_20"
+            android:paddingRight="@dimen/margin_size_20"
+            android:paddingTop="@dimen/margin_size_8"
+            android:text="提交"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_tips2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_size_12"
+        android:background="#FFFAF8"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_size_12"
+        android:paddingBottom="@dimen/margin_size_12"
+        android:paddingTop="@dimen/margin_size_12"
+        android:visibility="gone">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="提问注意事项"
+                android:textSize="@dimen/font_size_18" />
+
+            <TextView
+                android:id="@+id/tv_konw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="我知道了"
+                android:textColor="@color/red_text" />
+        </RelativeLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_12"
+            android:lineSpacingExtra="@dimen/margin_size_4"
+            android:text="1、学员每天可以免费提出1个问题，从第二个问题起，每个问题扣除1点研修积分；\n2、提问前请先搜索是否已经有同类问题吧。这样您就省心少打字。\n3、禁止发布本工作坊课题研修无关的信息，一经发现将一律清理并扣研修积分。\n4、不在培训或工作坊开展时间内将不进行积分计算；"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
+</LinearLayout>

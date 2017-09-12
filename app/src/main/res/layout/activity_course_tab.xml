@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:right_button_image="@drawable/course_detail_menu"
+        app:show_right_button="false" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:padding="@dimen/margin_size_6">
+
+            <RadioButton
+                android:id="@+id/rb_section"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/course_tab_selector"
+                android:button="@color/transparent"
+                android:checked="true"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_6"
+                android:paddingTop="@dimen/margin_size_6"
+                android:text="学习"
+                android:textColor="@color/tab_textcolor_selector"
+                android:textSize="@dimen/font_size_16" />
+
+            <RadioButton
+                android:id="@+id/rb_resources"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/course_tab_selector"
+                android:button="@color/transparent"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_6"
+                android:paddingTop="@dimen/margin_size_6"
+                android:text="资源"
+                android:textColor="@color/tab_textcolor_selector"
+                android:textSize="@dimen/font_size_16" />
+
+            <RadioButton
+                android:id="@+id/rb_discuss"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/course_tab_selector"
+                android:button="@color/transparent"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_6"
+                android:paddingTop="@dimen/margin_size_6"
+                android:text="讨论"
+                android:textColor="@color/tab_textcolor_selector"
+                android:textSize="@dimen/font_size_16" />
+
+            <RadioButton
+                android:id="@+id/rb_wenda"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/course_tab_selector"
+                android:button="@color/transparent"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_6"
+                android:paddingTop="@dimen/margin_size_6"
+                android:text="问答"
+                android:textColor="@color/tab_textcolor_selector"
+                android:textSize="@dimen/font_size_16" />
+
+            <RadioButton
+                android:id="@+id/rb_progress"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/course_tab_selector"
+                android:button="@color/transparent"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_6"
+                android:paddingTop="@dimen/margin_size_6"
+                android:text="进度"
+                android:textColor="@color/tab_textcolor_selector"
+                android:textSize="@dimen/font_size_16" />
+
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/bt_download"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            android:gravity="center"
+            android:paddingBottom="@dimen/margin_size_6"
+            android:paddingLeft="@dimen/margin_size_12"
+            android:paddingRight="@dimen/margin_size_12"
+            android:paddingTop="@dimen/margin_size_6"
+            android:text="下载"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/spaceColor" />
+
+</LinearLayout>

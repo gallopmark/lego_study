@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.haoyu.app.lego.student">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!--在sdcard中创建/删除文件的权限 -->
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!--在sdcard中添加写入数据的权限 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />  <!--允许应用写（非读）用户的外部存储器-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <!--语音录制-->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!--扫一扫 照相机、闪光灯权限-->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.VIBRATE" />  <!-- 手机震动 -->
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_MEDIA_STORAGE" />
+
+    <!---->
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+
+    <application
+        android:name="com.haoyu.app.base.GdeiApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/lego_ico"
+        android:label="@string/app_name"
+        android:persistent="true"
+        android:theme="@android:style/Theme.Light.NoTitleBar">
+
+        <!-- 您从百度网站获取的APP KEY -->
+        <meta-data
+            android:name="BaiduMobAd_STAT_ID"
+            android:value="d75ab03add" /> <!-- abcd1234 -->
+
+        <!-- 渠道商编号 -->
+        <meta-data
+            android:name="BaiduMobAd_CHANNEL"
+            android:value="Baidu Market" />
+
+        <!-- 是否开启错误日志统计，默认为false -->
+        <meta-data
+            android:name="BaiduMobAd_EXCEPTION_LOG"
+            android:value="true" />
+        <!-- 日志发送策略，可选值：APP_START、ONCE_A_DAY、SET_TIME_INTERVAL，默认为APP_START -->
+        <meta-data
+            android:name="BaiduMobAd_SEND_STRATEGY"
+            android:value="APP_START" />
+        <!-- 日志发送策略 为SET_TIME_INTERVAL时，需设定时间间隔(取消下行注释)。取值为1-24的整数，默认为1 -->
+        <!-- <meta-data android:name="BaiduMobAd_TIME_INTERVAL" android:value="2" /> -->
+        <!-- 日志仅在wifi网络下发送，默认为false -->
+        <meta-data
+            android:name="BaiduMobAd_ONLY_WIFI"
+            android:value="false" />
+        <!-- 是否获取基站位置信息 ,默认为true -->
+        <meta-data
+            android:name="BaiduMobAd_CELL_LOCATION"
+            android:value="true" />
+        <!-- 是否获取GPS位置信息，默认为true -->
+        <meta-data
+            android:name="BaiduMobAd_GPS_LOCATION"
+            android:value="true" />
+        <!-- 是否获取WIFI位置信息，默认为true -->
+        <meta-data
+            android:name="BaiduMobAd_WIFI_LOCATION"
+            android:value="true" />
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/urcop_file_paths" />
+        </provider>
+
+        <activity android:name="com.haoyu.app.activity.AppSplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.haoyu.app.activity.LoginActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <!--扫一扫功能-->
+        <activity android:name="com.haoyu.app.activity.AppCaptureActivity" />
+
+        <activity android:name="com.haoyu.app.activity.AppHomePageActivity" />
+        <activity android:name="com.haoyu.app.activity.AppUserInfoActivity" />
+        <!--登录，忘记密码，重置密码，问题反馈-->
+        <activity
+            android:name="com.haoyu.app.activity.ForgetPassWordActivity"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name="com.haoyu.app.activity.ResetPasswordActivity"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity
+            android:name="com.haoyu.app.activity.SettingActivity"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+        <activity android:name="com.haoyu.app.activity.AboutUsActivity" />
+        <activity
+            android:name="com.haoyu.app.activity.FeedbackActivity"
+            android:windowSoftInputMode="stateHidden|stateUnchanged" />
+
+        <!--课程章节-->
+        <!--课程章节-->
+        <activity
+            android:name="com.haoyu.app.activity.CourseTabActivity"
+            android:windowSoftInputMode="" />
+        <activity android:name="com.haoyu.app.activity.AppDownloadActivity" />
+        <activity android:name="com.haoyu.app.activity.CourseDetailActivity" />
+        <!--课程学习视频-->
+        <activity
+            android:name="com.haoyu.app.activity.VideoPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <!--课程学习测验-->
+        <activity android:name="com.haoyu.app.activity.AppTestHomeActivity" />
+        <activity android:name="com.haoyu.app.activity.AppTestResultActivity" />
+        <activity android:name="com.haoyu.app.activity.AppPageTestActivity" />
+        <!--活动教学课件-->
+        <activity android:name="com.haoyu.app.activity.CoursewareFileActivity" />
+        <activity
+            android:name="com.haoyu.app.activity.CoursewareLinkActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name="com.haoyu.app.activity.CoursewareEditorActivity" />
+        <!--文件选择-->
+        <activity android:name="com.haoyu.app.filePicker.LFilePickerActivity" />
+        <!--课程学习问卷调查-->
+        <activity
+            android:name="com.haoyu.app.activity.AppSurveyHomeActivity"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
+        <activity
+            android:name="com.haoyu.app.activity.AppPageSurveyActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name="com.haoyu.app.activity.AppSurveyResultActivity" />
+        <!--课程学习研讨-->
+        <activity android:name="com.haoyu.app.activity.TeachingDiscussionActivity" />
+        <!--课程学习作业-->
+        <activity android:name="com.haoyu.app.activity.TestAssignmentActivity" />
+        <activity android:name="com.haoyu.app.activity.TestMyAssignmentActivity" />
+        <activity android:name="com.haoyu.app.activity.MyMarkActivity" />
+
+        <!--创建或者修改笔记-->
+        <activity
+            android:name="com.haoyu.app.activity.CreateOrAlterNoteActivity"
+            android:windowSoftInputMode="stateVisible" />
+        <!--课程章节节点选择-->
+        <!--提问问题或者回答问题-->
+        <activity
+            android:name="com.haoyu.app.activity.AppQuestionEditActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <!--回答详情-->
+        <activity android:name="com.haoyu.app.activity.AppQuestionDetailActivity" />
+        <!--创建讨论，修改讨论，创建回复等-->
+        <activity
+            android:name="com.haoyu.app.activity.CourseDiscussEditActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+
+        <!--更多回复列表-->
+        <!--讨论详情页-->
+        <activity android:name="com.haoyu.app.activity.CourseDiscussDetailActivity" />
+        <!--通知公告列表-->
+        <activity android:name="com.haoyu.app.activity.AnnouncementActivity" />
+        <!--通知公告详情-->
+        <activity android:name="com.haoyu.app.activity.AnnouncementDetailActivity" />
+
+        <!--创建个人工作坊-->
+        <activity
+            android:name="com.haoyu.app.activity.WorkshopCreateActivity"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+        <!--添加研讨-->
+        <activity
+            android:name="com.haoyu.app.activity.WSTeachingDiscussActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <!--教学观摩-->
+        <activity
+            android:name="com.haoyu.app.activity.WSTeachingEmulateActivity"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <!--听课评课-->
+        <activity android:name="com.haoyu.app.activity.WSTeachingStudyEditActivity" />
+        <!--听课评课上传录像-->
+        <activity
+            android:name="com.haoyu.app.activity.WSTeachingStudySubmitActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <!--选择授课人-->
+        <activity android:name="com.haoyu.app.activity.TeachingStudyLeacturerActivity" />
+        <!--教材版本-->
+        <!--工作坊修改阶段任务-->
+        <activity
+            android:name="com.haoyu.app.activity.WorkShopEditTaskActivity"
+            android:theme="@android:style/Theme.Holo.Light"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <!--我的工作坊-->
+        <activity android:name="com.haoyu.app.activity.WorkshopHomeActivity" />
+        <!--工作坊简介-->
+        <activity android:name="com.haoyu.app.activity.WorkShopDetailActivity" />
+        <!--更多工作坊简报-->
+        <activity android:name="com.haoyu.app.activity.BriefingActivity" />
+        <!--工作坊互助问答-->
+        <activity android:name="com.haoyu.app.activity.WorkshopQuestionActivity" />
+        <!--工作坊问卷调查-->
+
+
+        <!--选课中心-->
+        <activity android:name="com.haoyu.app.activity.RegistCouseActivity" />
+        <!--已选课程-->
+        <activity android:name="com.haoyu.app.activity.CourseRegistStateActivity" />
+        <!--工作坊群-->
+        <activity android:name="com.haoyu.app.activity.WorkshopGroupActivity" />
+        <!--短息消息-->
+        <activity android:name="com.haoyu.app.activity.MessageActivity" />
+        <!--消息详情-->
+        <activity android:name="com.haoyu.app.activity.MessageDetailActivity" />
+        <activity android:name="com.haoyu.app.activity.PeerActivity" />
+        <activity android:name="com.haoyu.app.activity.EducationConsultActivity" />
+
+        <!--研说-->
+        <activity android:name="com.haoyu.app.activity.TeachingResearchActivity" />
+        <!--创建研说-->
+        <activity
+            android:name="com.haoyu.app.activity.TeachingResearchCreateSSActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <!--研说详情-->
+        <activity android:name="com.haoyu.app.activity.TeachingResearchSSActivity" />
+        <!--研说评论列表-->
+        <activity android:name="com.haoyu.app.activity.AppMoreMainReplyActivity" />
+        <!--研说评论回复列表-->
+        <activity android:name="com.haoyu.app.activity.AppMoreChildReplyActivity" />
+        <!--创课详情-->
+        <activity android:name="com.haoyu.app.activity.TeachingResearchCCActivity" />
+        <!--创课发起-->
+        <activity
+            android:name="com.haoyu.app.activity.TeachingResearchCreateCCActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <!--创课规则-->
+        <activity android:name="com.haoyu.app.activity.TeachingResearchCCRuleActivity" />
+
+        <!--查看更多建议-->
+        <!--社区活动详情页-->
+        <activity android:name="com.haoyu.app.activity.TeachingResearchATActivity" />
+        <activity android:name="com.haoyu.app.activity.AppMoreCommentActivity" />
+        <activity android:name="com.haoyu.app.activity.AppMoreReplyActivity" />
+
+
+        <activity android:name="com.haoyu.app.activity.FreeChatActiviy" />
+        <activity
+            android:name="com.haoyu.app.activity.FreeChatEditActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity android:name="com.haoyu.app.activity.FreeChatDetailActivity" />
+        <!--提交作业-->
+        <activity android:name="com.haoyu.app.activity.AppSubmitAssignmentActivity" />
+
+        <activity android:name="com.haoyu.app.activity.AppMultiImageShowActivity" />
+
+        <activity android:name="com.haoyu.app.activity.BriefingDetailActivity" />
+        <!--<activity
+            android:name="vn.tungdx.mediapicker.activities.MediaPickerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/MediaPickerTheme" />-->
+        <!--听课评课详情-->
+        <activity android:name="com.haoyu.app.activity.TeachingStudyActivity" />
+        <!--听课评课的结果-->
+        <activity android:name="com.haoyu.app.activity.TeachingStudyResultDetailActiivty" />
+        <!--听课评课的得分明细-->
+        <activity android:name="com.haoyu.app.activity.TeachingStudyDetailScoreActivity" />
+        <!--听课评课发表评论-->
+        <!--填写听课评课-->
+        <activity
+            android:name="com.haoyu.app.activity.TeachingStudyFillActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden|adjustPan" />
+
+        <!--评价总结及建议列表-->
+        <activity android:name="com.haoyu.app.activity.EValuationSummaryActivity" />
+        <!--调查问卷问答更多详情-->
+        <activity android:name="com.haoyu.app.activity.AppSurveyAnswerActivity" />
+
+        <!--多媒体选择器-->
+        <activity android:name="com.haoyu.app.pickerlib.MediaGridActivity" />
+        <activity
+            android:name="com.haoyu.app.pickerlib.MediaFolderActivity"
+            android:launchMode="singleInstance" />
+        <activity android:name="com.haoyu.app.pickerlib.ImageCropActivity" />
+
+        <!--多媒体选择器-->
+
+        <!--文件预览-->
+        <activity android:name="com.haoyu.app.activity.MFileInfoActivity" />
+        <activity
+            android:name="com.haoyu.app.activity.MFileInfoPreViewActivity"
+            android:windowSoftInputMode="stateVisible|adjustResize" />
+        <activity android:name="com.haoyu.app.activity.AppWebViewActivity" />
+
+        <service android:name="com.haoyu.app.service.NetSpeedService" />
+    </application>
+
+</manifest>

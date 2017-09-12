@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/spaceColor"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_size_12"
+        android:layout_marginRight="@dimen/margin_size_12"
+        android:paddingLeft="@dimen/margin_size_12"
+        android:paddingRight="@dimen/margin_size_12"
+        android:background="@drawable/item_click_selector"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/margin_size_12"
+        android:paddingTop="@dimen/margin_size_12">
+
+        <ImageView
+            android:layout_width="@dimen/margin_size_20"
+            android:layout_height="@dimen/margin_size_20"
+            android:layout_gravity="center"
+            android:src="@drawable/course_single_section" />
+
+        <TextView
+            android:id="@+id/tv_selection_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_6"
+            android:layout_marginRight="@dimen/margin_size_6"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:gravity="left|center"
+            android:maxLines="2"
+            android:text="教育系统突发公共时间简介"
+            android:textColor="@color/black"
+            android:textSize="@dimen/font_size_18" />
+
+        <ImageView
+            android:id="@+id/ic_selection_state"
+            android:layout_width="@dimen/margin_size_22"
+            android:layout_height="@dimen/margin_size_22"
+            android:layout_gravity="center"
+            android:src="@drawable/state_hollow_default" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/spaceColor" />
+
+</LinearLayout>

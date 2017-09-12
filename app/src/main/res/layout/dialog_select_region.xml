@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/contentView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/dialog_main_corner"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/spaceColor"
+                android:gravity="center"
+                android:padding="@dimen/margin_size_12"
+                android:text="选择省份"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <ListView
+                android:id="@+id/lvProvince"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/dictionary_background"
+                android:overScrollMode="never" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/margin_size_1"
+            android:layout_height="match_parent"
+            android:background="@color/gainsboro" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/spaceColor"
+                android:gravity="center"
+                android:padding="@dimen/margin_size_12"
+                android:text="选择市"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <ListView
+                android:id="@+id/lvCity"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/dictionary_background"
+                android:overScrollMode="never" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/margin_size_1"
+            android:layout_height="match_parent"
+            android:background="@color/gainsboro" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/spaceColor"
+                android:gravity="center"
+                android:padding="@dimen/margin_size_12"
+                android:text="选择地区"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <ListView
+                android:id="@+id/lvCounties"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/dictionary_background"
+                android:overScrollMode="never" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/item_click_selector"
+            android:padding="@dimen/margin_size_12"
+            android:text="取消"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/font_size_16" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/spaceColor" />
+
+        <Button
+            android:id="@+id/makesure"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/item_click_selector"
+            android:padding="@dimen/margin_size_12"
+            android:text="确定"
+            android:textColor="@color/defaultColor"
+            android:textSize="@dimen/font_size_16" />
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/item_click_selector"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_size_12"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:layout_marginRight="@dimen/margin_size_10"
+        android:layout_marginTop="@dimen/margin_size_12"
+        android:layout_toLeftOf="@+id/layout_state"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/community_img"
+            android:layout_width="100dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_period"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:drawableLeft="@drawable/community_period"
+                android:drawablePadding="@dimen/margin_size_6"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_6"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_studyHour"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/course_period"
+                    android:drawablePadding="@dimen/margin_size_6"
+                    android:gravity="left"
+                    android:textColor="@color/blow_gray"
+                    android:textSize="@dimen/font_size_14" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_6"
+                android:drawableLeft="@drawable/workshop_score"
+                android:drawablePadding="@dimen/margin_size_6"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:background="@color/spaceColor" />
+
+</LinearLayout>

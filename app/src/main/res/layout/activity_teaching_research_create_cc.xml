@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/spaceColor"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:left_button_image="@drawable/app_back"
+        app:right_button_text="发起"
+        app:title_text="@string/gen_class" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_size_12">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/teaching_tips"
+            android:drawablePadding="@dimen/margin_size_5"
+            android:text="请先了解《创课发起规则》！"
+            android:textSize="@dimen/font_size_16" />
+
+        <Button
+            android:id="@+id/bt_enter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin_size_10"
+            android:background="@drawable/round_label"
+            android:paddingBottom="@dimen/margin_size_4"
+            android:paddingLeft="@dimen/margin_size_8"
+            android:paddingRight="@dimen/margin_size_8"
+            android:paddingTop="@dimen/margin_size_4"
+            android:text="点击进入"
+            android:textColor="@color/defaultColor"
+            android:textSize="@dimen/font_size_15" />
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/et_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:drawablePadding="@dimen/margin_size_6"
+        android:drawableRight="@drawable/download_more"
+        android:gravity="left|center"
+        android:hint="请输入标题"
+        android:maxLength="128"
+        android:maxLines="1"
+        android:padding="@dimen/margin_size_12"
+        android:textColorHint="@color/gray"
+        android:textSize="@dimen/font_size_16">
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_size_16"
+        android:background="@color/white"
+        android:gravity="left"
+        android:hint="内容描述"
+        android:maxLength="1000"
+        android:maxLines="6"
+        android:minLines="6"
+        android:padding="@dimen/margin_size_12"
+        android:textColorHint="@color/gray"
+        android:textSize="@dimen/font_size_16" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_size_1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_stage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableRight="@drawable/course_dictionary_xiala"
+            android:padding="@dimen/margin_size_12"
+            android:text="请选择学段"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/font_size_16" />
+
+        <View
+            android:layout_width="@dimen/margin_size_1"
+            android:layout_height="match_parent"
+            android:background="@color/spaceColor" />
+
+        <TextView
+            android:id="@+id/tv_subject"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:drawableRight="@drawable/course_dictionary_xiala"
+            android:hint="请选择学科"
+            android:padding="@dimen/margin_size_12"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="1dp"
+        android:background="@color/white" />
+</LinearLayout>

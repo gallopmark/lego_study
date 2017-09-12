@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:show_right_button="false"
+        app:title_text="意见反馈" />
+
+    <EditText
+        android:id="@+id/et_problem_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_size_2"
+        android:layout_marginRight="@dimen/margin_size_2"
+        android:layout_marginTop="@dimen/margin_size_12"
+        android:background="@color/white"
+        android:gravity="left|top"
+        android:hint="输入问题的详细描述"
+        android:maxLines="10"
+        android:minLines="10"
+        android:padding="@dimen/margin_size_16"
+        android:textColorHint="@color/gray"
+        android:textSize="@dimen/font_size_18">
+
+        <requestFocus />
+    </EditText>
+
+    <Button
+        android:id="@+id/bt_submit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_size_20"
+        android:layout_marginLeft="@dimen/margin_size_30"
+        android:layout_marginRight="@dimen/margin_size_30"
+        android:layout_marginTop="@dimen/margin_size_30"
+        android:background="@drawable/app_button_selector"
+        android:paddingBottom="@dimen/margin_size_12"
+        android:paddingTop="@dimen/margin_size_12"
+        android:text="提交"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_18" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="感谢您提交的反馈信息！"
+        android:textColor="@color/blow_gray"
+        android:textSize="@dimen/font_size_16" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="您的意见将有助于改进我们的平台。"
+        android:textColor="@color/blow_gray"
+        android:textSize="@dimen/font_size_16" />
+</LinearLayout>

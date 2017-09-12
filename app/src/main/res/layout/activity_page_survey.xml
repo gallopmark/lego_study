@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/spaceColor"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.haoyu.app.view.AppToolBar
+            android:id="@+id/toolBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:right_button_image="@drawable/read_icon"
+            app:show_right_button="true" />
+
+        <TextView
+            android:id="@+id/tv_undone"
+            android:layout_width="@dimen/margin_size_8"
+            android:layout_height="@dimen/margin_size_8"
+            android:layout_gravity="right"
+            android:layout_marginRight="@dimen/margin_size_4"
+            android:layout_marginTop="@dimen/margin_size_10"
+            android:background="@drawable/test_orange_dot"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/viewPagerContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/banner"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/bottom"
+            android:background="@color/spaceColor" />
+
+        <RelativeLayout
+            android:id="@+id/bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:paddingBottom="@dimen/margin_size_8"
+            android:paddingRight="@dimen/margin_size_16"
+            android:paddingTop="@dimen/margin_size_8">
+
+            <Button
+                android:id="@+id/bt_commit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/title_selected"
+                android:paddingBottom="@dimen/margin_size_8"
+                android:paddingLeft="@dimen/margin_size_16"
+                android:paddingRight="@dimen/margin_size_16"
+                android:paddingTop="@dimen/margin_size_8"
+                android:text="提交问卷"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_15"
+                android:visibility="invisible" />
+
+            <LinearLayout
+                android:id="@+id/ll_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/iv_prev"
+                    android:layout_width="46dp"
+                    android:layout_height="30dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toLeftOf="@+id/iv_next"
+                    android:background="@drawable/test_prev_selector" />
+
+                <Button
+                    android:id="@+id/iv_next"
+                    android:layout_width="46dp"
+                    android:layout_height="30dp"
+                    android:background="@drawable/test_next_selector" />
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/finishContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/tipContent"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="16dp"
+            android:src="@drawable/course_survey_submit" />
+
+        <LinearLayout
+            android:id="@+id/tipContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="问卷已提交!"
+                android:textSize="@dimen/font_size_22" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="8dp"
+                android:text="谢谢参与！"
+                android:textSize="@dimen/font_size_20" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="30dp"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/bt_close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_size_16"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/shape_course_survey_close"
+                android:paddingBottom="@dimen/margin_size_12"
+                android:paddingTop="@dimen/margin_size_12"
+                android:text="关闭"
+                android:textColor="@color/defaultColor"
+                android:textSize="@dimen/font_size_16" />
+
+            <Button
+                android:id="@+id/bt_check"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:background="@drawable/title_selected"
+                android:paddingBottom="12dp"
+                android:paddingTop="12dp"
+                android:text="查看结果"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+    </RelativeLayout>
+</LinearLayout>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/material_card"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dictionary_background"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="@dimen/margin_size_10"
+            android:paddingTop="@dimen/margin_size_10"
+            android:text="请选择开始时间"
+            android:textSize="@dimen/font_size_16" />
+
+        <View
+            android:layout_width="@dimen/margin_size_1"
+            android:layout_height="match_parent"
+            android:background="@color/train_item_press" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingBottom="@dimen/margin_size_10"
+            android:paddingTop="@dimen/margin_size_10"
+            android:text="请选择结束时间"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <DatePicker
+            android:id="@+id/start_date_picker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/margin_size_6"
+            android:paddingBottom="@dimen/margin_size_6"
+            android:layout_weight="1"
+            android:calendarViewShown="false" />
+
+        <View
+            android:layout_width="@dimen/margin_size_1"
+            android:layout_height="match_parent"
+            android:background="@color/train_item_press" />
+
+        <DatePicker
+            android:id="@+id/end_date_picker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/margin_size_6"
+            android:paddingBottom="@dimen/margin_size_6"
+            android:layout_weight="1"
+            android:calendarViewShown="false" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bt_cancel"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/item_click_selector"
+            android:padding="12dp"
+            android:text="取消"
+            android:textColor="@color/gray"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/spaceColor" />
+
+        <Button
+            android:id="@+id/bt_makesure"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/item_click_selector"
+            android:padding="12dp"
+            android:text="确定"
+            android:textColor="@color/defaultColor"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+</LinearLayout>

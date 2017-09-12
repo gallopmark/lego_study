@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/test_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_size_8"
+            android:background="@drawable/test_type_bg"
+            android:paddingBottom="@dimen/margin_size_2"
+            android:paddingLeft="@dimen/margin_size_6"
+            android:paddingRight="@dimen/margin_size_6"
+            android:paddingTop="@dimen/margin_size_2"
+            android:text="单选题"
+            android:textColor="@color/defaultColor"
+            android:textSize="@dimen/font_size_14" />
+
+        <TextView
+            android:id="@+id/test_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="@dimen/margin_size_5"
+            android:padding="@dimen/margin_size_10"
+            android:text="\u3000\u3000\u3000\u2000失忆症是由于神经中枢病损导致抽象信号思维障碍，而丧失口语、文字的表达和领悟能力的临床症候群。\n根据上述定义，下列可能患失忆症的是:"
+            android:textSize="@dimen/font_size_16" />
+    </FrameLayout>
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/margin_size_12"
+        android:gravity="top"
+        android:lineSpacingExtra="@dimen/margin_size_4"
+        android:background="@color/whitesmoke"
+        android:padding="@dimen/margin_size_12"
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:layout_marginRight="@dimen/margin_size_10"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+</LinearLayout>

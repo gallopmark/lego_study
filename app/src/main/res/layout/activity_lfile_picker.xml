@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/defaultColor">
+
+        <TextView
+            android:id="@+id/tv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_title"
+            android:layout_alignTop="@+id/tv_title"
+            android:background="@drawable/app_toolbar_selector"
+            android:drawableLeft="@drawable/app_back"
+            android:drawablePadding="@dimen/margin_size_6"
+            android:gravity="center"
+            android:paddingLeft="@dimen/margin_size_10"
+            android:paddingRight="@dimen/margin_size_10"
+            android:text="上一级"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:padding="@dimen/title_padding"
+            android:text="选择文件"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title_textsize" />
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_title"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/tv_title"
+            android:background="@drawable/app_toolbar_selector"
+            android:gravity="center"
+            android:paddingLeft="@dimen/margin_size_16"
+            android:paddingRight="@dimen/margin_size_16"
+            android:text="取消"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_tips"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_margin="@dimen/margin_size_16"
+            android:background="@color/white"
+            android:lineSpacingExtra="@dimen/margin_size_2"
+            android:text="存储权限已被禁止，请到【设置】——>【应用管理】——>【岭南研修】——>【权限】选择打开【存储】。"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_16" />
+
+        <Button
+            android:id="@+id/bt_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_tips"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/margin_size_30"
+            android:background="@drawable/app_button_selector"
+            android:paddingBottom="@dimen/margin_size_10"
+            android:paddingLeft="@dimen/margin_size_30"
+            android:paddingRight="@dimen/margin_size_30"
+            android:paddingTop="@dimen/margin_size_10"
+            android:text="打开设置"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_18" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fileContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/btn_addbook"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/app_toolbar_selector"
+            android:paddingBottom="@dimen/margin_size_10"
+            android:paddingTop="@dimen/margin_size_10"
+            android:text="选中"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_18" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recylerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/btn_addbook" />
+
+        <TextView
+            android:id="@+id/emptyView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:drawablePadding="@dimen/margin_size_10"
+            android:drawableTop="@drawable/empty_list"
+            android:gravity="center"
+            android:text="暂无文件"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
+    </RelativeLayout>
+</LinearLayout>

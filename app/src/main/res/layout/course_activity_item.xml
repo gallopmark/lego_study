@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/item_click_selector"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/margin_size_12"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_12">
+
+        <ImageView
+            android:id="@+id/iv_type"
+            android:layout_width="@dimen/margin_size_22"
+            android:layout_height="@dimen/margin_size_22"
+            android:layout_gravity="center"
+            android:src="@drawable/progress_video_default" />
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_8"
+            android:layout_marginRight="@dimen/margin_size_8"
+            android:layout_weight="1"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="初中数学校本研修——领悟理念，确立目标"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_18" />
+
+        <ImageView
+            android:id="@+id/ic_download"
+            android:layout_width="@dimen/margin_size_26"
+            android:layout_height="@dimen/margin_size_26"
+            android:layout_gravity="center"
+            android:src="@drawable/course_download_default" />
+
+        <RelativeLayout
+            android:id="@+id/rl_download"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone">
+
+            <com.haoyu.app.view.CircleProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="@dimen/margin_size_26"
+                android:layout_height="@dimen/margin_size_26"
+                android:layout_centerInParent="true"
+                app:CircleColor="@color/spaceColor"
+                app:CircleProgressColor="@color/defaultColor"
+                app:CircleWidth="@dimen/margin_size_3"
+                app:paintWidth="@dimen/margin_size_3" />
+
+            <ImageView
+                android:id="@+id/downloadOrPause"
+                android:layout_width="@dimen/margin_size_10"
+                android:layout_height="@dimen/margin_size_10"
+                android:layout_centerInParent="true"
+                android:focusable="false"
+                android:src="@drawable/download_pause" />
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/ic_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_12"
+            android:src="@drawable/state_hollow_default" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+</LinearLayout>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center"
+    android:orientation="horizontal"
+    android:background="@color/spaceColor"
+    android:padding="@dimen/margin_size_16">
+
+    <ImageView
+        android:id="@+id/listview_foot_loading"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginRight="@dimen/margin_size_10"
+        android:src="@drawable/anim_loading" />
+
+    <com.haoyu.app.view.CircularProgressView
+        android:id="@+id/progressView"
+        app:angleAnimationDurationMillis="@integer/circular_default_angleAnimationDurationMillis"
+        app:border_Width="@dimen/margin_size_2"
+        app:minSweepAngle="40"
+        app:colorSequence="@array/circular_default_color_sequence"
+        app:sweepAnimationDurationMillis="@integer/circular_default_sweepAnimationDuration"
+        android:layout_width="@dimen/margin_size_20"
+        android:visibility="gone"
+        android:layout_height="@dimen/margin_size_20"
+        android:layout_marginRight="@dimen/margin_size_10" />
+
+    <TextView
+        android:id="@+id/listview_foot_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="加载中..."
+        android:textSize="@dimen/font_size_16" />
+
+</LinearLayout>
