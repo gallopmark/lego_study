@@ -163,7 +163,6 @@ public abstract class BaseFragment extends Fragment {
     }
 
     public void toastFullScreen(String content, boolean success) {
-        Toast toast = new Toast(context);
         View view = LayoutInflater.from(context).inflate(
                 R.layout.toast_publish_question, null);
         ImageView iv_result = view.findViewById(R.id.iv_result);
@@ -173,9 +172,12 @@ public abstract class BaseFragment extends Fragment {
         else
             iv_result.setImageResource(R.drawable.publish_failure);
         tv_result.setText(content);
-        toast.setView(view);
-        toast.setGravity(Gravity.FILL, 0, 0);
-        toast.setDuration(Toast.LENGTH_LONG);
-        toast.show();
+        if (mToast == null) {//只有mToast==null时才重新创建，否则只需更改提示文字
+            mToast = new Toast(context);
+            mToast.setDuration(Toast.LENGTH_LONG);
+            mToast.setGravity(Gravity.FILL, 0, 0);
+            mToast.setView(view);
+        }
+        mToast.show();
     }
 }
