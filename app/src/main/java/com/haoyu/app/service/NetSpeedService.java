@@ -27,20 +27,6 @@ public class NetSpeedService extends Service {
     }
 
     @Override
-    public void onCreate() {
-        // TODO Auto-generated method stub
-        super.onCreate();
-
-        if (timer != null) {
-            timer.cancel();
-        } else {
-            timer = new Timer();
-            timer.schedule(task, 1000, 1 * 1000);
-        }
-
-    }
-
-    @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         // 1s后启动任务，每2s执行一次
