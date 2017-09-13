@@ -17,8 +17,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/title">
+        android:layout_height="match_parent">
 
         <com.haoyu.app.view.LoadingView
             android:id="@+id/loadingView"
@@ -38,7 +37,7 @@
             android:id="@+id/contentView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="visible">
+            android:visibility="gone">
 
             <com.haoyu.app.xrecyclerview.XRecyclerView
                 android:id="@+id/xRecyclerView"
