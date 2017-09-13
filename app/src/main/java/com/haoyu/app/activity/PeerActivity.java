@@ -84,7 +84,10 @@ public class PeerActivity extends BaseActivity implements XRecyclerView.LoadingL
         addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<EducationConsultResult>() {
             @Override
             public void onBefore(Request request) {
-                loadingView.setVisibility(View.VISIBLE);
+                if (isRefresh || isLoadMore)
+                    loadingView.setVisibility(View.GONE);
+                else
+                    loadingView.setVisibility(View.VISIBLE);
             }
 
             @Override
