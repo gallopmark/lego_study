@@ -26,43 +26,17 @@ public class NetSpeedService extends Service {
         return null;
     }
 
-    @Override
-    public void onCreate() {
-        // TODO Auto-generated method stub
-        super.onCreate();
-
-        if (timer != null) {
-            timer.cancel();
-        } else {
-            timer = new Timer();
-            timer.schedule(task, 1000, 1 * 1000);
-        }
-
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
-        // 1s后启动任务，每2s执行一次
-        return super.onStartCommand(intent, flags, startId);
-    }
 
 
     private Handler mHandler = new Handler() {
         public void handleMessage(Message msg) {
 
-            int netType = getNetworkType(getApplicationContext());
-            MessageEvent event = new MessageEvent();
-            event.setAction(Constants.speedAction);
-            event.setObj(netType);
-            RxBus.getDefault().post(event);
+
         }
     };
 
     private void showNetSpeed() {
-        Message msg = mHandler.obtainMessage();
-        msg.what = 100;
-        mHandler.sendMessage(msg);// 更新界面
+
     }
 
 
