@@ -291,10 +291,7 @@
         <activity android:name="com.haoyu.app.activity.AppMultiImageShowActivity" />
 
         <activity android:name="com.haoyu.app.activity.BriefingDetailActivity" />
-        <!--<activity
-            android:name="vn.tungdx.mediapicker.activities.MediaPickerActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/MediaPickerTheme" />-->
+
         <!--听课评课详情-->
         <activity android:name="com.haoyu.app.activity.TeachingStudyActivity" />
         <!--听课评课的结果-->
@@ -327,8 +324,6 @@
             android:name="com.haoyu.app.activity.MFileInfoPreViewActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity android:name="com.haoyu.app.activity.AppWebViewActivity" />
-
-        <service android:name="com.haoyu.app.service.NetSpeedService" />
     </application>
 
 </manifest>
