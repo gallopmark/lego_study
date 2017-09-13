@@ -51,9 +51,9 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
 
     @Override
     public void onBindHoder(RecyclerHolder holder, CourseSectionActivity activity, int position) {
-        ImageView iv_type = holder.obtainView(R.id.iv_type);
-        TextView tv_title = holder.obtainView(R.id.tv_title);
-        ImageView icState = holder.obtainView(R.id.ic_state);
+        ImageView iv_type = holder.obtainView(R.id.ic_selection_activity_type);
+        TextView tv_title = holder.obtainView(R.id.tv_selection_activity_title);
+        ImageView icState = holder.obtainView(R.id.ic_selection_activity_state);
         ImageView ic_download = holder.obtainView(R.id.ic_download);
         final RelativeLayout rl_download = holder.obtainView(R.id.rl_download);
         final CircleProgressBar progressBar = holder.obtainView(R.id.progressBar);

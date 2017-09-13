@@ -102,7 +102,14 @@ public class MFileInfoActivity extends BaseActivity {
         }
         url = mFileInfo.getUrl();
         fileName = mFileInfo.getFileName();
-        previewFile(mFileInfo);
+        if (MediaFile.isImageFileType(url)) {
+            Intent intent = new Intent(context, MFileInfoPreViewActivity.class);
+            intent.putExtra("url", url);
+            intent.putExtra("fileName", fileName);
+            startActivity(intent);
+            finish();
+        } else
+            previewFile(mFileInfo);
     }
 
     private void previewFile(MFileInfo mFileInfo) {
