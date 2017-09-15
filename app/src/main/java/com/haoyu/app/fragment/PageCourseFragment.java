@@ -42,8 +42,10 @@ import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
 
+import org.wlf.filedownloader.DownloadFileInfo;
 import org.wlf.filedownloader.FileDownloader;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -343,16 +345,35 @@ public class PageCourseFragment extends BaseFragment {
             intent.putExtra("summary", videoEntity.getmVideo().getSummary());
             intent.putExtra("videoId", videoEntity.getId());
             if (video != null && video.getUrls() != null && video.getUrls().length() > 0) {
-                intent.putExtra("videoUrl", video.getUrls());
+                DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(video.getUrls());
+                if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
+                    intent.putExtra("videoUrl", fileInfo.getFilePath());
+                    intent.putExtra("fileName", fileInfo.getFileName());
+                } else
+                    intent.putExtra("videoUrl", video.getUrls());
                 startActivity(intent);
             } else if (video != null && video.getVideoFiles() != null && video.getVideoFiles().size() > 0) {
-                intent.putExtra("videoUrl", video.getVideoFiles().get(0).getUrl());
-                intent.putExtra("fileName", video.getVideoFiles().get(0).getFileName());
+                String url = video.getVideoFiles().get(0).getUrl();
+                DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
+                if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
+                    intent.putExtra("videoUrl", fileInfo.getFilePath());
+                    intent.putExtra("fileName", fileInfo.getFileName());
+                } else {
+                    intent.putExtra("videoUrl", url);
+                    intent.putExtra("fileName", video.getVideoFiles().get(0).getFileName());
+                }
                 startActivity(intent);
             } else if (video != null && video.getAttchFiles() != null && video.getAttchFiles().size() > 0) {
                 //教学观摩
-                intent.putExtra("videoUrl", video.getAttchFiles().get(0).getUrl());
-                intent.putExtra("fileName", video.getAttchFiles().get(0).getFileName());
+                String url = video.getAttchFiles().get(0).getUrl();
+                DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
+                if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
+                    intent.putExtra("videoUrl", fileInfo.getFilePath());
+                    intent.putExtra("fileName", fileInfo.getFileName());
+                } else {
+                    intent.putExtra("videoUrl", video.getAttchFiles().get(0).getUrl());
+                    intent.putExtra("fileName", video.getAttchFiles().get(0).getFileName());
+                }
                 startActivity(intent);
             } else {
                 toast("系统暂不支持浏览，请到网站完成。");
