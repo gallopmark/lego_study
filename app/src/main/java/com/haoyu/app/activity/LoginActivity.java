@@ -59,7 +59,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     Button bt_login;
     @BindView(R.id.forget_password)
     TextView forget_password;
-    private boolean requestUN = true;
+    private boolean requestUN = true, remember;
 
     /**
      * 用户名和密码过滤空格符号和回车符号
@@ -87,8 +87,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         forget_password.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG); // 下划线
         forget_password.getPaint().setAntiAlias(true);// 抗锯齿
         et_userName.setText(getAccount());
-        et_passWord.setText(getPassWord());
-        appCheckBox.setChecked(isRemember(), false);
+        remember = isRemember();
+        if (remember)
+            et_passWord.setText(getPassWord());
+        appCheckBox.setChecked(remember, false);
         et_userName.setSelection(et_userName.getText().length());
         controlKeyboardLayout();
     }
@@ -152,6 +154,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 return false;
             }
         });
+        appCheckBox.setOnCheckedChangeListener(new AppCheckBox.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(AppCheckBox checkBox, boolean isChecked) {
+                if (isChecked)
+                    remember = true;
+                else
+                    remember = false;
+            }
+        });
         ll_check.setOnClickListener(context);
     }
 
@@ -208,7 +219,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                         bt_login.setEnabled(true);
                         if (result != null && result.getResponseData() != null && result.getResponseData().getRole() != null
                                 && result.getResponseData().getRole().contains(student)) {
-                            saveUserInfo(result);
+                            saveUserInfo(result.getResponseData());
                             Intent intent = new Intent(context, AppHomePageActivity.class);
                             startActivity(intent);
                             finish();
@@ -248,37 +259,28 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
 
     /**
      * 保存用户信息
-     *
-     * @param result
      */
-    private void saveUserInfo(LoginResult result) {
-        if (result == null) {
-            return;
+    private void saveUserInfo(MobileUser user) {
+        SharePreferenceHelper sharePreferenceHelper = new SharePreferenceHelper(context);
+        Map<String, Object> map = new HashMap<>();
+        map.put("avatar", user.getAvatar());
+        map.put("id", user.getId());
+        map.put("account", et_userName.getText().toString());
+        if (remember) {
+            map.put("firstLogin", false);
+            map.put("remember", true);
+        } else {
+            map.put("firstLogin", true);
+            map.put("remember", false);
         }
-        MobileUser user = result.getResponseData();
-        if (user != null) {
-            SharePreferenceHelper sharePreferenceHelper = new SharePreferenceHelper(context);
-            Map<String, Object> map = new HashMap<>();
-            map.put("avatar", user.getAvatar());
-            map.put("id", user.getId());
-            map.put("account", et_userName.getText().toString());
-            if (appCheckBox.isChecked()) {
-                map.put("password", et_passWord.getText().toString());
-                map.put("firstLogin", false);
-                map.put("remember", true);
-            } else {
-                map.put("password", null);
-                map.put("firstLogin", true);
-                map.put("remember", false);
-            }
-            if (user.getRealName() != null)
-                map.put("realName", user.getRealName());
-            else
-                map.put("realName", user.getUserName());
-            map.put("userName", user.getUserName());
-            map.put("deptName", user.getDeptName());
-            map.put("role", user.getRole());
-            sharePreferenceHelper.saveSharePreference(map);
-        }
+        if (user.getRealName() != null)
+            map.put("realName", user.getRealName());
+        else
+            map.put("realName", user.getUserName());
+        map.put("password", et_passWord.getText().toString());
+        map.put("userName", user.getUserName());
+        map.put("deptName", user.getDeptName());
+        map.put("role", user.getRole());
+        sharePreferenceHelper.saveSharePreference(map);
     }
 }

@@ -110,6 +110,8 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
     }
 
     private void showHeader() {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        headerView.setLayoutParams(params);
         TextView tv_discussion_title = headerView.findViewById(R.id.tv_discussion_title);
         ExpandableTextView tv_discussion_text = headerView.findViewById(R.id.tv_discussion_text);
         ImageView iv_userIco = headerView.findViewById(R.id.ic_user);
@@ -627,7 +629,7 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
             list.remove(replyPosition);
             adapter.notifyDataSetChanged();
             replyNum--;
-            tv_commentCount.setText(text_comment +"(" + (replyNum) + ")");
+            tv_commentCount.setText(text_comment + "(" + (replyNum) + ")");
             tv_comment.setText(String.valueOf(replyNum));
         }
     }

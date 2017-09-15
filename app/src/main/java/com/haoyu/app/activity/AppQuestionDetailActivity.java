@@ -89,8 +89,9 @@ public class AppQuestionDetailActivity extends BaseActivity implements
         type = getIntent().getStringExtra("type");
         faQsEntity = ((FAQsEntity) getIntent().getSerializableExtra("entity"));
         questionId = faQsEntity.getId();
-        headerView = getLayoutInflater().inflate(
-                R.layout.wenda_listview_head_view, null, false);
+        headerView = getLayoutInflater().inflate(R.layout.wenda_listview_head_view, null, false);
+        LinearLayout.LayoutParams headParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        headerView.setLayoutParams(headParams);
         userIco = getView(headerView, R.id.userIco);
         tv_userName = getView(headerView, R.id.tv_userName);
         tv_isCollected = getView(headerView, R.id.tv_guanzhu);
@@ -105,8 +106,7 @@ public class AppQuestionDetailActivity extends BaseActivity implements
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0,
-                (int) (0.22D * tv_question_content.getLineHeight()), 0, 0);
+        params.setMargins(0, (int) (0.22D * tv_question_content.getLineHeight()), 0, 0);
         ic_question.setLayoutParams(params);
         adapter = new AppAnswerListAdapter(context, answerList, getUserId());
         xRecyclerView.addHeaderView(headerView);
@@ -240,17 +240,17 @@ public class AppQuestionDetailActivity extends BaseActivity implements
 
     @Override
     public void setListener() {
-       toolBar.setOnTitleClickListener(new AppToolBar.TitleOnClickListener() {
-           @Override
-           public void onLeftClick(View view) {
-               finish();
-           }
+        toolBar.setOnTitleClickListener(new AppToolBar.TitleOnClickListener() {
+            @Override
+            public void onLeftClick(View view) {
+                finish();
+            }
 
-           @Override
-           public void onRightClick(View view) {
-               bottomDialog();
-           }
-       });
+            @Override
+            public void onRightClick(View view) {
+                bottomDialog();
+            }
+        });
         tv_answer.setOnClickListener(context);
         tv_isCollected.setOnClickListener(context);
         iv_isCollected.setOnClickListener(context);
