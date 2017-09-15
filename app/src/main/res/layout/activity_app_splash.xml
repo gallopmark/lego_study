@@ -11,5 +11,6 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/margin_size_40"
+        android:scaleType="centerCrop"
         android:src="@drawable/lego_logo" />
 </RelativeLayout>
