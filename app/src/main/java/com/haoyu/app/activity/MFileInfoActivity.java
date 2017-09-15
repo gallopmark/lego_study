@@ -235,8 +235,8 @@ public class MFileInfoActivity extends BaseActivity {
 
             @Override
             public void onSuccess(DownloadTask downloadTask, String savePath) {
-                isDownload = true;
                 if (savePath != null && new File(savePath).exists()) {
+                    isDownload = true;
                     filePath = savePath;
                     if (new File(savePath).isFile() && MediaFile.isPdfFileType(url)) {
                         openPdfFile(filePath);
@@ -248,6 +248,10 @@ public class MFileInfoActivity extends BaseActivity {
                         ll_downloadInfo.setVisibility(GONE);
                     }
                 } else {
+                    isDownload = false;
+                    bt_download.setVisibility(VISIBLE);
+                    bt_download.setText("继续下载");
+                    ll_downloadInfo.setVisibility(GONE);
                     toastFullScreen("下载的文件不存在", false);
                 }
                 DownloadFileInfo fileInfo = new DownloadFileInfo();

@@ -170,19 +170,23 @@ public class CoursewareFileActivity extends BaseActivity {
 
             @Override
             public void onSuccess(DownloadTask downloadTask, String savePath) {
-                isDownload = true;
                 if (savePath != null && new File(savePath).exists()) {
+                    isDownload = true;
                     filePath = savePath;
                     if (new File(savePath).isFile() && MediaFile.isPdfFileType(url)) {
                         openPdfFile(filePath);
                     } else if (new File(savePath).isFile() && MediaFile.isTxtFileType(url)) {
                         openTxtFile(filePath);
                     } else {
-                        bt_download.setVisibility(View.VISIBLE);
+                        bt_download.setVisibility(VISIBLE);
                         bt_download.setText("其他应用打开");
-                        ll_downloadInfo.setVisibility(View.GONE);
+                        ll_downloadInfo.setVisibility(GONE);
                     }
                 } else {
+                    isDownload = false;
+                    bt_download.setVisibility(VISIBLE);
+                    bt_download.setText("继续下载");
+                    ll_downloadInfo.setVisibility(GONE);
                     toastFullScreen("下载的文件不存在", false);
                 }
                 DownloadFileInfo fileInfo = new DownloadFileInfo();
