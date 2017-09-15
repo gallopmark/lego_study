@@ -39,9 +39,6 @@ import java.util.Map;
 
 import butterknife.BindView;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
-
 /**
  * 创建日期：2017/9/5 on 15:51
  * 描述:
@@ -187,8 +184,8 @@ public class MFileInfoActivity extends BaseActivity {
                 str = reader.readLine();
             }
             reader.close();
-            ll_fileInfo.setVisibility(GONE);
-            tv_txt.setVisibility(VISIBLE);
+            ll_fileInfo.setVisibility(View.GONE);
+            tv_txt.setVisibility(View.VISIBLE);
             tv_txt.setText(text);
             tv_txt.setMovementMethod(ScrollingMovementMethod.getInstance());
         } catch (Exception e) {
@@ -198,23 +195,23 @@ public class MFileInfoActivity extends BaseActivity {
 
     /*显示文件信息，名称、大小、类型*/
     private void showFileContent(MFileInfo fileInfo) {
-        ll_fileInfo.setVisibility(VISIBLE);
+        ll_fileInfo.setVisibility(View.VISIBLE);
         String url = fileInfo.getUrl();
         Common.setFileType(url, iv_type);
         tv_fileName.setText(fileInfo.getFileName());
         tv_fileSize.setText(FileUtils.getReadableFileSize(fileInfo.getFileSize()));
         if (MediaFile.isOfficeFileType(url)) {
-            ll_support.setVisibility(VISIBLE);
+            ll_support.setVisibility(View.VISIBLE);
         } else {
-            tv_nonsupport.setVisibility(VISIBLE);
+            tv_nonsupport.setVisibility(View.VISIBLE);
         }
         if (isDownload) {
-            bt_download.setVisibility(VISIBLE);
+            bt_download.setVisibility(View.VISIBLE);
             bt_download.setText("其他应用打开");
-            ll_downloadInfo.setVisibility(GONE);
+            ll_downloadInfo.setVisibility(View.GONE);
         } else {
-            bt_download.setVisibility(GONE);
-            ll_downloadInfo.setVisibility(VISIBLE);
+            bt_download.setVisibility(View.GONE);
+            ll_downloadInfo.setVisibility(View.VISIBLE);
         }
     }
 
@@ -243,15 +240,15 @@ public class MFileInfoActivity extends BaseActivity {
                     } else if (new File(savePath).isFile() && MediaFile.isTxtFileType(url)) {
                         openTxtFile(filePath);
                     } else {
-                        bt_download.setVisibility(VISIBLE);
+                        bt_download.setVisibility(View.VISIBLE);
                         bt_download.setText("其他应用打开");
-                        ll_downloadInfo.setVisibility(GONE);
+                        ll_downloadInfo.setVisibility(View.GONE);
                     }
                 } else {
-                    isDownload = false;
-                    bt_download.setVisibility(VISIBLE);
+                    isDownload = true;
+                    bt_download.setVisibility(View.VISIBLE);
                     bt_download.setText("继续下载");
-                    ll_downloadInfo.setVisibility(GONE);
+                    ll_downloadInfo.setVisibility(View.GONE);
                     toastFullScreen("下载的文件不存在", false);
                 }
                 DownloadFileInfo fileInfo = new DownloadFileInfo();
@@ -264,16 +261,16 @@ public class MFileInfoActivity extends BaseActivity {
             @Override
             public void onFailed(DownloadTask downloadTask) {
                 toastFullScreen("文件下载出错", false);
-                bt_download.setVisibility(VISIBLE);
+                bt_download.setVisibility(View.VISIBLE);
                 bt_download.setText("继续下载");
-                ll_downloadInfo.setVisibility(GONE);
+                ll_downloadInfo.setVisibility(View.GONE);
             }
 
             @Override
             public void onPaused(DownloadTask downloadTask) {
-                bt_download.setVisibility(VISIBLE);
+                bt_download.setVisibility(View.VISIBLE);
                 bt_download.setText("继续下载");
-                ll_downloadInfo.setVisibility(GONE);
+                ll_downloadInfo.setVisibility(View.GONE);
             }
 
             @Override

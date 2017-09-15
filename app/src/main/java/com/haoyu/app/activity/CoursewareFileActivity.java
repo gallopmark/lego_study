@@ -52,8 +52,6 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 
 /**
  * 创建日期：2017/9/5 on 14:25
@@ -141,16 +139,16 @@ public class CoursewareFileActivity extends BaseActivity {
     }
 
     private void showFileContent(String url) {
-        ll_fileInfo.setVisibility(VISIBLE);
+        ll_fileInfo.setVisibility(View.VISIBLE);
         Common.setFileType(url, iv_type);
         tv_fileName.setText(Common.getFileName(url));
         if (isDownload) {
-            bt_download.setVisibility(VISIBLE);
+            bt_download.setVisibility(View.VISIBLE);
             bt_download.setText("其他应用打开");
-            ll_downloadInfo.setVisibility(GONE);
+            ll_downloadInfo.setVisibility(View.GONE);
         } else {
-            bt_download.setVisibility(GONE);
-            ll_downloadInfo.setVisibility(VISIBLE);
+            bt_download.setVisibility(View.GONE);
+            ll_downloadInfo.setVisibility(View.VISIBLE);
         }
     }
 
@@ -178,15 +176,15 @@ public class CoursewareFileActivity extends BaseActivity {
                     } else if (new File(savePath).isFile() && MediaFile.isTxtFileType(url)) {
                         openTxtFile(filePath);
                     } else {
-                        bt_download.setVisibility(VISIBLE);
+                        bt_download.setVisibility(View.VISIBLE);
                         bt_download.setText("其他应用打开");
-                        ll_downloadInfo.setVisibility(GONE);
+                        ll_downloadInfo.setVisibility(View.GONE);
                     }
                 } else {
                     isDownload = false;
-                    bt_download.setVisibility(VISIBLE);
+                    bt_download.setVisibility(View.VISIBLE);
                     bt_download.setText("继续下载");
-                    ll_downloadInfo.setVisibility(GONE);
+                    ll_downloadInfo.setVisibility(View.GONE);
                     toastFullScreen("下载的文件不存在", false);
                 }
                 DownloadFileInfo fileInfo = new DownloadFileInfo();
@@ -219,8 +217,8 @@ public class CoursewareFileActivity extends BaseActivity {
     }
 
     private void openPdfFile(String filePath) {
-        ll_fileInfo.setVisibility(GONE);
-        pdfView.setVisibility(VISIBLE);
+        ll_fileInfo.setVisibility(View.GONE);
+        pdfView.setVisibility(View.VISIBLE);
         pdfView.fromFile(new File(filePath))
                 .swipeHorizontal(true)
                 .defaultPage(0)
@@ -301,17 +299,17 @@ public class CoursewareFileActivity extends BaseActivity {
                 str = reader.readLine();
             }
             reader.close();
-            ll_fileInfo.setVisibility(GONE);
-            tv_txt.setVisibility(VISIBLE);
+            ll_fileInfo.setVisibility(View.GONE);
+            tv_txt.setVisibility(View.VISIBLE);
             tv_txt.setText(text);
             tv_txt.setMovementMethod(ScrollingMovementMethod.getInstance());
             if (running && needUpload)
                 updateAttempt();
         } catch (Exception e) {
-            ll_fileInfo.setVisibility(VISIBLE);
-            bt_download.setVisibility(VISIBLE);
+            ll_fileInfo.setVisibility(View.VISIBLE);
+            bt_download.setVisibility(View.VISIBLE);
             bt_download.setText("其他应用打开");
-            ll_downloadInfo.setVisibility(GONE);
+            ll_downloadInfo.setVisibility(View.GONE);
         }
     }
 
