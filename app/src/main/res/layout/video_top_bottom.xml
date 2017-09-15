@@ -15,9 +15,9 @@
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignTop="@+id/video_title"
             android:layout_alignBottom="@+id/video_title"
+            android:layout_alignTop="@+id/video_title"
+            android:layout_centerVertical="true"
             android:paddingLeft="@dimen/margin_size_6"
             android:paddingRight="@dimen/margin_size_6"
             android:src="@drawable/fanhui" />
@@ -41,14 +41,14 @@
             android:id="@+id/my_video_zhangjie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/video_title"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/video_title"
-            android:layout_alignBottom="@+id/video_title"
+            android:drawableLeft="@drawable/zhangjie"
+            android:drawablePadding="@dimen/margin_size_6"
             android:gravity="center"
             android:paddingLeft="@dimen/margin_size_4"
             android:paddingRight="@dimen/margin_size_6"
-            android:drawableLeft="@drawable/zhangjie"
-            android:drawablePadding="@dimen/margin_size_6"
             android:text="课前导读"
             android:textColor="@color/white"
             android:textSize="@dimen/font_size_16" />
@@ -124,7 +124,8 @@
             android:layout_toLeftOf="@+id/download_yun"
             android:text="/00:00"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/font_size_16" />
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
     </RelativeLayout>
 
 </RelativeLayout>
