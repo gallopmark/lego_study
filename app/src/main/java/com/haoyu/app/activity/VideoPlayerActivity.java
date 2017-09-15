@@ -82,8 +82,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     TextView videoTitle;
     @BindView(R.id.currentTime)
     TextView currentTime;
-    @BindView(R.id.totalTime)
-    TextView totalTime;
     @BindView(R.id.iv_back)
     ImageView iv_back;
     @BindView(R.id.video_play)
@@ -280,6 +278,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         videoSeekBar.setEnabled(true);
         audioManager = (AudioManager) context
                 .getSystemService(Context.AUDIO_SERVICE);
+
         mMaxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         updateVideoCatch();
         //开启播放
@@ -434,9 +433,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         String fileName = getIntent().getStringExtra("fileName");
         String activityTitle = getIntent().getStringExtra("activityTitle");
         seekTime = (long) getIntent().getDoubleExtra("lastViewTime", 0);
-        System.out.println("---------------seekTime:" + seekTime);
         interval = getIntent().getIntExtra("interval", 30);
-        System.out.println("--------------interval:" + interval);
         if (fileName != null) {
             videoTitle.setText(fileName);
         } else {
