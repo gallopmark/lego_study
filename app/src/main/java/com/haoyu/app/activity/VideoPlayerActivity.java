@@ -208,16 +208,14 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     if (NONE.equals(netType)) {
                         showWarnControll();
                     } else {
-                        if (mVideoView.getDuration() != -1) {
-                        } else {
-                            if (videoPosition > 0) {
-                                if (mVideoView.isPlaying()) {
-                                    showLoading();
-                                    hideWarnControll();
-                                    videoViewStart();
-                                    mVideoView.seekTo(videoPosition);
-                                }
+                        if (videoPosition > 0) {
+                            if (mVideoView.isPlaying()) {
+                                showLoading();
+                                hideWarnControll();
+                                videoViewStart();
+                                mVideoView.seekTo(videoPosition);
                             }
+
                         }
                     }
 
@@ -305,11 +303,13 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 } else if (WIFI.equals(obj)) {
                     hideWarnControll();
                     if (mVideoView != null && mVideoView.getDuration() != -1) {
+
                         if (!mVideoView.isPlaying()) {
                             mVideoView.start();
                         }
                     }
-                    if (videoPosition == 0 && mVideoView.getDuration() == -1 && videoPosition > 0) {
+                    if (mVideoView.getDuration() == -1 && videoPosition > 0) {
+
                         if (!isReCheck) {
                             isReCheck = true;
                             videoViewStart();
@@ -518,18 +518,18 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             String message;
             switch (errorCode) {
                 case PLMediaPlayer.ERROR_CODE_INVALID_URI:
-                    message = "该视频暂时无法播放1";
+                    message = "该视频暂时无法播放";
                     showToastTips(message);
 
                     videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
                 case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
-                    message = "该视频暂时无法播放2";
+                    message = "该视频暂时无法播放";
                     showToastTips(message);
                     videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
                 case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
-                    message = "该视频暂时无法播放3";
+                    message = "该视频暂时无法播放";
                     showToastTips(message);
                     videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
@@ -546,7 +546,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
                 case PLMediaPlayer.ERROR_CODE_IO_ERROR:
-                    showToastTips("该视频暂时无法播放！4");
+                    showToastTips("该视频暂时无法播放！");
                     hideLoading();
                     videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
