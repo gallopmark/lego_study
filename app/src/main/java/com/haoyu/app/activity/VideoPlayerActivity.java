@@ -212,7 +212,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                         } else {
                             if (videoPosition > 0) {
                                 if (mVideoView.isPlaying()) {
-                                    System.out.println("-----------------comes:");
                                     showLoading();
                                     hideWarnControll();
                                     videoViewStart();
