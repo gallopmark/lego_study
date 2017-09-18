@@ -209,12 +209,11 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                         showWarnControll();
                     } else {
                         if (videoPosition > 0) {
-                            if (mVideoView.isPlaying()) {
-                                showLoading();
-                                hideWarnControll();
-                                videoViewStart();
-                                mVideoView.seekTo(videoPosition);
-                            }
+                            showLoading();
+                            hideWarnControll();
+                            videoViewStart();
+                            mVideoView.seekTo(videoPosition);
+
 
                         }
                     }
@@ -291,9 +290,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         String action = event.getAction();
         if (action.equals(Constants.speedAction)) {
             String obj = event.getObj().toString();
-            if (mVideoView != null && mVideoView.getCurrentPosition() > 0) {
-                videoPosition = mVideoView.getCurrentPosition();
-            }
+
             if (!isLocal) {
                 netType = obj;
                 if (NONE.equals(obj)) {
@@ -303,17 +300,14 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 } else if (WIFI.equals(obj)) {
                     hideWarnControll();
                     if (mVideoView != null && mVideoView.getDuration() != -1) {
-
                         if (!mVideoView.isPlaying()) {
                             mVideoView.start();
                         }
                     }
                     if (mVideoView.getDuration() == -1 && videoPosition > 0) {
+                        videoViewStart();
+                        mVideoView.seekTo(videoPosition);
 
-                        if (!isReCheck) {
-                            isReCheck = true;
-                            videoViewStart();
-                        }
                     }
                 } else {
                     hideWarnControll();
@@ -1075,6 +1069,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         if (mVideoView == null)
             return -1;
         int time = (int) mVideoView.getCurrentPosition();
+        if (time > 0) {
+            videoPosition = time;
+        }
         videoSeekBar.setProgress(time);
         //更新播放时间
         if (mVideoView.getCurrentPosition() / 1000 > 0 && mVideoView.getCurrentPosition() / 1000 % interval == 0 && mVideoView.isPlaying()) {
