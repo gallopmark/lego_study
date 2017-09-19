@@ -1,5 +1,7 @@
 package com.haoyu.app.download;
 
+import android.content.Context;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,12 +51,12 @@ public class DownloadManager {
         }
     }
 
-    public DownloadTask create(String url) {
+    public DownloadTask create(Context context, String url) {
         DownloadTask task;
         if (mDownloadTasks.get(url) != null)
             task = mDownloadTasks.get(url);
         else
-            task = new DownloadTask(url);
+            task = new DownloadTask(context, url);
         mDownloadTasks.put(url, task);
         return task;
     }

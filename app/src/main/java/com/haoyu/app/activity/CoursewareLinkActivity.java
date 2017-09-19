@@ -28,7 +28,6 @@ import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.download.DownloadManager;
 import com.haoyu.app.download.DownloadTask;
 import com.haoyu.app.download.db.DownloadDBManager;
-import com.haoyu.app.download.db.DownloadFileInfo;
 import com.haoyu.app.entity.AppActivityViewResult;
 import com.haoyu.app.entity.CourseSectionActivity;
 import com.haoyu.app.lego.student.R;
@@ -240,7 +239,7 @@ public class CoursewareLinkActivity extends BaseActivity {
         dialog.show();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((ScreenUtils.getScreenWidth(context) / 6 * 5), LinearLayout.LayoutParams.WRAP_CONTENT);
         dialog.setContentView(contentView, params);
-        DownloadManager.getInstance().create(url).setFilePath(Constants.fileDownDir).setFileName(fileName).addListener(new com.haoyu.app.download.DownloadListener() {
+        DownloadManager.getInstance().create(context, url).setFilePath(Constants.fileDownDir).setFileName(fileName).addListener(new com.haoyu.app.download.DownloadListener() {
             @Override
             public void onProgress(DownloadTask downloadTask, long soFarBytes, long totalBytes) {
                 mProgressBar.setProgress((int) soFarBytes);
@@ -255,11 +254,6 @@ public class CoursewareLinkActivity extends BaseActivity {
                     Common.openFile(context, new File(savePath));
                 else
                     toast(context, "下载的文件已被删除");
-                DownloadFileInfo fileInfo = new DownloadFileInfo();
-                fileInfo.setFileName(downloadTask.getFileName());
-                fileInfo.setUrl(downloadTask.getUrl());
-                fileInfo.setFilePath(savePath);
-                dbManager.save(fileInfo);
             }
 
             @Override

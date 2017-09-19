@@ -1,7 +1,10 @@
 package com.haoyu.app.download;
 
+import android.content.Context;
 import android.os.Environment;
 
+import com.haoyu.app.download.db.DownloadDBManager;
+import com.haoyu.app.download.db.DownloadFileInfo;
 import com.haoyu.app.utils.Constants;
 
 import java.io.Closeable;
@@ -39,14 +42,16 @@ public class DownloadTask {
     private String fileName;
     private Headers headers;
     private Disposable disposable;
+    private DownloadDBManager dbManager;
 
-    public DownloadTask(String url) {
+    public DownloadTask(Context context, String url) {
         this.url = url;
         mHttpClient = new OkHttpClient.Builder()
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)//设置读取超时时间
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)//设置写的超时时间
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)//设置连接超时时间
                 .build();
+        dbManager = new DownloadDBManager(context);
     }
 
     public DownloadTask setRetryTime(int retryTime) {
@@ -132,10 +137,12 @@ public class DownloadTask {
             @Override
             public void accept(String savePath) throws Exception {
                 resetStutus();
-                if (mListner != null) {
-                    if (savePath != null)
+                if (savePath != null) {
+                    dbManager.save(new DownloadFileInfo(url, filePath, fileName));
+                    if (mListner != null)
                         mListner.onSuccess(DownloadTask.this, savePath);
-                    else
+                } else {
+                    if (mListner != null)
                         mListner.onFailed(DownloadTask.this);
                 }
             }

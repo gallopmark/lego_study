@@ -19,7 +19,6 @@ import com.haoyu.app.download.DownloadListener;
 import com.haoyu.app.download.DownloadManager;
 import com.haoyu.app.download.DownloadTask;
 import com.haoyu.app.download.db.DownloadDBManager;
-import com.haoyu.app.download.db.DownloadFileInfo;
 import com.haoyu.app.entity.MFileInfo;
 import com.haoyu.app.filePicker.FileUtils;
 import com.haoyu.app.lego.student.R;
@@ -220,7 +219,7 @@ public class MFileInfoActivity extends BaseActivity {
             fileName = Common.getFileName(url);
         Map<String, String> headers = new HashMap<>();
         headers.put("Referer", Constants.REFERER);
-        DownloadManager.getInstance().create(url).setFilePath(Constants.fileDownDir).setFileName(fileName).addHeaders(headers).addListener(new DownloadListener() {
+        DownloadManager.getInstance().create(context, url).setFilePath(Constants.fileDownDir).setFileName(fileName).addHeaders(headers).addListener(new DownloadListener() {
             @Override
             public void onProgress(DownloadTask downloadTask, long soFarBytes, long totalBytes) {
                 String downloadSize = Common.FormetFileSize(soFarBytes);
@@ -251,11 +250,6 @@ public class MFileInfoActivity extends BaseActivity {
                     ll_downloadInfo.setVisibility(View.GONE);
                     toastFullScreen("下载的文件不存在", false);
                 }
-                DownloadFileInfo fileInfo = new DownloadFileInfo();
-                fileInfo.setFileName(downloadTask.getFileName());
-                fileInfo.setUrl(downloadTask.getUrl());
-                fileInfo.setFilePath(savePath);
-                dbManager.save(fileInfo);
             }
 
             @Override
