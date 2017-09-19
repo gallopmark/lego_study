@@ -27,7 +27,6 @@ import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.download.DownloadManager;
 import com.haoyu.app.download.DownloadTask;
-import com.haoyu.app.download.db.DownloadDBManager;
 import com.haoyu.app.entity.AppActivityViewResult;
 import com.haoyu.app.entity.CourseSectionActivity;
 import com.haoyu.app.lego.student.R;
@@ -78,9 +77,10 @@ public class CoursewareLinkActivity extends BaseActivity {
     @BindView(R.id.ll_failure)
     LinearLayout ll_failure;
     private ProgressWebView webView;
-    private DownloadDBManager dbManager;
     private boolean running, needUpload;
     private int viewNum, needViewNum, interval;    //已观看次数，要求观看次数，延时访问时间
+    private String fileRoot = Constants.coursewareDir;
+    private String filePath, fileName;
 
     @Override
     public int setLayoutResID() {
@@ -190,10 +190,10 @@ public class CoursewareLinkActivity extends BaseActivity {
     }
 
     private void onDownload(final String url) {
-        dbManager = new DownloadDBManager(context);
-        String savePath = dbManager.search(url);
-        if (savePath != null && new File(savePath).exists()) {
-            Common.openFile(context, new File(savePath));
+        fileName = Common.getFileName(url);
+        filePath = fileRoot + File.separator + fileName;
+        if (new File(filePath).exists()) {
+            Common.openFile(context, new File(filePath));
         } else {
             if (NetStatusUtil.isConnected(context)) {
                 String message;
@@ -224,7 +224,6 @@ public class CoursewareLinkActivity extends BaseActivity {
     }
 
     private void download(final String url) {
-        String fileName = Common.getFileName(url);
         View contentView = getLayoutInflater().inflate(R.layout.dialog_download, null);
         TextView tv_fileName = contentView.findViewById(R.id.tv_fileName);
         final ProgressBar mProgressBar = contentView.findViewById(R.id.mRrogressBar);
@@ -239,7 +238,7 @@ public class CoursewareLinkActivity extends BaseActivity {
         dialog.show();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams((ScreenUtils.getScreenWidth(context) / 6 * 5), LinearLayout.LayoutParams.WRAP_CONTENT);
         dialog.setContentView(contentView, params);
-        DownloadManager.getInstance().create(context, url).setFilePath(Constants.fileDownDir).setFileName(fileName).addListener(new com.haoyu.app.download.DownloadListener() {
+        DownloadManager.getInstance().create(url).setFilePath(fileRoot).setFileName(fileName).addListener(new com.haoyu.app.download.DownloadListener() {
             @Override
             public void onProgress(DownloadTask downloadTask, long soFarBytes, long totalBytes) {
                 mProgressBar.setProgress((int) soFarBytes);

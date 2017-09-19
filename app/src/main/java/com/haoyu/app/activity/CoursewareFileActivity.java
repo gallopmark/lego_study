@@ -24,7 +24,6 @@ import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.download.DownloadListener;
 import com.haoyu.app.download.DownloadManager;
 import com.haoyu.app.download.DownloadTask;
-import com.haoyu.app.download.db.DownloadDBManager;
 import com.haoyu.app.entity.AppActivityViewResult;
 import com.haoyu.app.entity.CourseSectionActivity;
 import com.haoyu.app.lego.student.R;
@@ -89,8 +88,8 @@ public class CoursewareFileActivity extends BaseActivity {
     TextView tv_txt;
     private boolean running, needUpload, isDownload, isKonw;
     private int viewNum, needViewNum, interval;    //已观看次数，要求观看次数，延时访问时间
-    private String url, filePath;
-    private DownloadDBManager dbManager;
+    private String fileRoot = Constants.coursewareDir;
+    private String url, filePath, fileName;
     private AlertDialog gestureDialog;
 
     @Override
@@ -109,7 +108,6 @@ public class CoursewareFileActivity extends BaseActivity {
         toolBar.setTitle_text(title);
         showTips();
         url = getIntent().getStringExtra("file");
-        dbManager = new DownloadDBManager(context);
         previewFile();
     }
 
@@ -120,8 +118,9 @@ public class CoursewareFileActivity extends BaseActivity {
     }
 
     private void previewFile() {
-        String savePath = dbManager.search(url);
-        if (savePath != null && new File(savePath).exists()) {
+        fileName = Common.getFileName(url);
+        String savePath = fileRoot + File.separator + fileName;
+        if (new File(savePath).exists()) {
             if (new File(savePath).isFile() && MediaFile.isPdfFileType(url)) {
                 openPdfFile(savePath);
             } else if (new File(savePath).isFile() && MediaFile.isTxtFileType(url)) {
@@ -152,10 +151,9 @@ public class CoursewareFileActivity extends BaseActivity {
     }
 
     private void beginDownload() {
-        final String fileName = Common.getFileName(url);
         Map<String, String> headers = new HashMap<>();
         headers.put("Referer", Constants.REFERER);
-        DownloadManager.getInstance().create(context, url).setFilePath(Constants.coursewareDir).setFileName(fileName).addHeaders(headers).addListener(new DownloadListener() {
+        DownloadManager.getInstance().create(url).setFilePath(fileRoot).setFileName(fileName).addHeaders(headers).addListener(new DownloadListener() {
             @Override
             public void onProgress(DownloadTask downloadTask, long soFarBytes, long totalBytes) {
                 String downloadSize = Common.FormetFileSize(soFarBytes);

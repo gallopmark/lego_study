@@ -1,10 +1,7 @@
 package com.haoyu.app.download;
 
-import android.content.Context;
 import android.os.Environment;
 
-import com.haoyu.app.download.db.DownloadDBManager;
-import com.haoyu.app.download.db.DownloadFileInfo;
 import com.haoyu.app.utils.Constants;
 
 import java.io.Closeable;
@@ -42,16 +39,14 @@ public class DownloadTask {
     private String fileName;
     private Headers headers;
     private Disposable disposable;
-    private DownloadDBManager dbManager;
 
-    public DownloadTask(Context context, String url) {
+    public DownloadTask(String url) {
         this.url = url;
         mHttpClient = new OkHttpClient.Builder()
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)//设置读取超时时间
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)//设置写的超时时间
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)//设置连接超时时间
                 .build();
-        dbManager = new DownloadDBManager(context);
     }
 
     public DownloadTask setRetryTime(int retryTime) {
@@ -138,7 +133,6 @@ public class DownloadTask {
             public void accept(String savePath) throws Exception {
                 resetStutus();
                 if (savePath != null) {
-                    dbManager.save(new DownloadFileInfo(url, filePath, fileName));
                     if (mListner != null)
                         mListner.onSuccess(DownloadTask.this, savePath);
                 } else {
@@ -239,6 +233,8 @@ public class DownloadTask {
                             mListner.onProgress(DownloadTask.this, params[0], params[1]);
                     }
                 });
+                if (!isDownloading)
+                    return null;
             }
             response.body().close();
             if (!mTmpFile.exists())
@@ -250,6 +246,7 @@ public class DownloadTask {
                 mTmpFile.renameTo(targetFile);//下载完毕后，重命名目标文件
             return targetFile.getAbsolutePath();
         } catch (Exception e) {
+            e.printStackTrace();
             if (e.getCause().equals(SocketTimeoutException.class) && retryCount < retryTime) {
                 retryCount++;
                 return download(contentLength);
