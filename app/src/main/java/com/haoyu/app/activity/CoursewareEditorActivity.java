@@ -51,7 +51,6 @@ public class CoursewareEditorActivity extends BaseActivity {
     FrameLayout content;
     ProgressWebView webView;
     private boolean running, needUpload;
-    private String activityId;
     private int viewNum, needViewNum, interval;    //已观看次数，要求观看次数，延时访问时间
 
     @Override
@@ -63,7 +62,6 @@ public class CoursewareEditorActivity extends BaseActivity {
     public void initView() {
         running = getIntent().getBooleanExtra("running", false);
         needUpload = getIntent().getBooleanExtra("needUpload", false);
-        activityId = getIntent().getStringExtra("activityId");
         String title = getIntent().getStringExtra("title");
         viewNum = getIntent().getIntExtra("viewNum", 0);
         needViewNum = getIntent().getIntExtra("needViewNum", 0);
