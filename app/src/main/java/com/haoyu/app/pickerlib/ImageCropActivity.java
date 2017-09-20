@@ -5,23 +5,19 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Constants;
+import com.haoyu.app.view.AppToolBar;
 
 import java.io.File;
 
 import butterknife.BindView;
 
-public class ImageCropActivity extends BaseActivity implements View.OnClickListener, CropImageView.OnBitmapSaveCompleteListener {
-    private ImageCropActivity context = this;
-    @BindView(R.id.iv_back)
-    ImageView iv_back;
-    @BindView(R.id.tv_finish)
-    TextView tv_finish;
+public class ImageCropActivity extends BaseActivity implements CropImageView.OnBitmapSaveCompleteListener {
+    @BindView(R.id.toolBar)
+    AppToolBar toolBar;
     @BindView(R.id.cv_crop_image)
     CropImageView mCropImageView;
     private Bitmap mBitmap;
@@ -59,8 +55,19 @@ public class ImageCropActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void setListener() {
-        iv_back.setOnClickListener(context);
-        tv_finish.setOnClickListener(context);
+        toolBar.setOnTitleClickListener(new AppToolBar.TitleOnClickListener() {
+            @Override
+            public void onLeftClick(View view) {
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+
+            @Override
+            public void onRightClick(View view) {
+                File cropFile = new File(Constants.mediaCache, "/crop/");
+                mCropImageView.saveBitmapToFile(cropFile, mOutputX, mOutputY, mIsSaveRectangle);
+            }
+        });
     }
 
     public int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
@@ -75,20 +82,6 @@ public class ImageCropActivity extends BaseActivity implements View.OnClickListe
             }
         }
         return inSampleSize;
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.iv_back:
-                setResult(RESULT_CANCELED);
-                finish();
-                break;
-            case R.id.tv_finish:
-                File cropFile = new File(Constants.mediaCache, "/crop/");
-                mCropImageView.saveBitmapToFile(cropFile, mOutputX, mOutputY, mIsSaveRectangle);
-                break;
-        }
     }
 
     @Override

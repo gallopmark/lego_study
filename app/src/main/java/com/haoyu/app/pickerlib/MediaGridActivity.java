@@ -17,7 +17,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -27,6 +26,7 @@ import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.PixelFormat;
+import com.haoyu.app.view.AppToolBar;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -49,12 +49,8 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class MediaGridActivity extends BaseActivity {
     private MediaGridActivity context = this;
-    @BindView(R.id.iv_back)
-    ImageView iv_back;
-    @BindView(R.id.tv_title)
-    TextView tv_title;
-    @BindView(R.id.tv_cancel)
-    TextView tv_cancel;
+    @BindView(R.id.toolBar)
+    AppToolBar toolBar;
     @BindView(R.id.contentView)
     FrameLayout contentView;
     @BindView(R.id.recyclerView)
@@ -97,9 +93,9 @@ public class MediaGridActivity extends BaseActivity {
         multiMode = option.isMultiMode();
         selectType = option.getSelectType();
         if (selectType == MediaOption.TYPE_VIDEO)
-            tv_title.setText(getResources().getString(R.string.myVideos));
+            toolBar.setTitle_text(getResources().getString(R.string.myVideos));
         else
-            tv_title.setText(getResources().getString(R.string.myPhotos));
+            toolBar.setTitle_text(getResources().getString(R.string.myPhotos));
         if (!hasStoragePermission()) {   //如果没有申请sd卡权限
             ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_STORAGE);
         } else {
@@ -124,7 +120,7 @@ public class MediaGridActivity extends BaseActivity {
         if (mediaFolder == null) {
             getLatelyMedia();
         } else {
-            tv_title.setText(mediaFolder.getName());
+            toolBar.setTitle_text(mediaFolder.getName());
             boolean showCamera;
             if (mediaFolder.getPath() == null)
                 showCamera = true;
@@ -139,9 +135,9 @@ public class MediaGridActivity extends BaseActivity {
 
     private void getLatelyMedia() {
         if (selectType == MediaOption.TYPE_VIDEO)
-            tv_title.setText("最近视频");
+            toolBar.setTitle_text("最近视频");
         else
-            tv_title.setText("最近照片");
+            toolBar.setTitle_text("最近照片");
         Flowable.just(context).map(new Function<MediaGridActivity, List<MediaItem>>() {
             @Override
             public List<MediaItem> apply(MediaGridActivity mediaGridActivity) throws Exception {
@@ -368,29 +364,27 @@ public class MediaGridActivity extends BaseActivity {
 
     @Override
     public void setListener() {
-        View.OnClickListener listener = new View.OnClickListener() {
+        toolBar.setOnTitleClickListener(new AppToolBar.TitleOnClickListener() {
+            @Override
+            public void onLeftClick(View view) {
+                if (hasStoragePermission()) {
+                    startActivity(new Intent(context, MediaFolderActivity.class));
+                    overridePendingTransition(R.anim.fade_in, 0);
+                }
+                finish();
+            }
+
+            @Override
+            public void onRightClick(View view) {
+                finish();
+            }
+        });
+        bt_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.iv_back:
-                        if (hasStoragePermission()) {
-                            startActivity(new Intent(context, MediaFolderActivity.class));
-                            overridePendingTransition(R.anim.fade_in, 0);
-                        }
-                        finish();
-                        return;
-                    case R.id.tv_cancel:
-                        finish();
-                        return;
-                    case R.id.bt_settings:
-                        openSettings();
-                        return;
-                }
+                openSettings();
             }
-        };
-        iv_back.setOnClickListener(listener);
-        tv_cancel.setOnClickListener(listener);
-        bt_settings.setOnClickListener(listener);
+        });
         bottomLayout.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
             @Override
             public void onSystemUiVisibilityChange(int visibile) {

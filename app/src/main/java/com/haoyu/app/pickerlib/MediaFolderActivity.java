@@ -5,13 +5,13 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.PixelFormat;
+import com.haoyu.app.view.AppToolBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,12 +30,8 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class MediaFolderActivity extends BaseActivity {
     private MediaFolderActivity context = this;
-    @BindView(R.id.iv_back)
-    ImageView iv_back;
-    @BindView(R.id.tv_title)
-    TextView tv_title;
-    @BindView(R.id.tv_cancel)
-    TextView tv_cancel;
+    @BindView(R.id.toolBar)
+    AppToolBar toolBar;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.tv_empty)
@@ -54,10 +50,15 @@ public class MediaFolderActivity extends BaseActivity {
     @Override
     public void initView() {
         selectType = MediaPicker.getInstance().getMediaOption().getSelectType();
-        if (selectType == MediaOption.TYPE_VIDEO)
-            tv_title.setText("我的视频");
-        else
-            tv_title.setText("我的相册");
+        if (selectType == MediaOption.TYPE_VIDEO) {
+            toolBar.setTitle_text("我的视频");
+            tv_error.setText("加载视频失败~");
+            tv_empty.setText("没有视频~");
+        } else {
+            toolBar.setTitle_text("我的相册");
+            tv_error.setText("加载相册失败~");
+            tv_empty.setText("没有相片~");
+        }
         recyclerView.addItemDecoration(new RecycleViewDivider(context, LinearLayoutManager.VERTICAL,
                 PixelFormat.dp2px(context, 1), ContextCompat.getColor(context, R.color.spaceColor)));
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
@@ -115,14 +116,12 @@ public class MediaFolderActivity extends BaseActivity {
 
     @Override
     public void setListener() {
-        View.OnClickListener listener = new View.OnClickListener() {
+        toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onLeftClick(View view) {
                 finish();
             }
-        };
-        iv_back.setOnClickListener(listener);
-        tv_cancel.setOnClickListener(listener);
+        });
         folderAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {

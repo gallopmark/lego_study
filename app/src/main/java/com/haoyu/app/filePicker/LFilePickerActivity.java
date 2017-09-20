@@ -11,13 +11,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.view.AppToolBar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,8 +34,8 @@ public class LFilePickerActivity extends BaseActivity {
     private LFilePickerActivity context = this;
     private int REQUEST_READ = 10;
     private boolean requestUI;
-    @BindView(R.id.tv_cancel)
-    TextView tv_cancel;
+    @BindView(R.id.toolBar)
+    AppToolBar toolBar;
     @BindView(R.id.rl_tips)
     RelativeLayout rl_tips;
     @BindView(R.id.tv_tips)
@@ -41,12 +44,14 @@ public class LFilePickerActivity extends BaseActivity {
     Button bt_settings;
     @BindView(R.id.fileContent)
     RelativeLayout fileContent;
+    @BindView(R.id.ll_fileParent)
+    LinearLayout ll_fileParent;
+    @BindView(R.id.tv_parentName)
+    TextView tv_parentName;
     @BindView(R.id.recylerview)
     RecyclerView mRecylerView;
     @BindView(R.id.emptyView)
     TextView emptyView;
-    @BindView(R.id.tv_back)
-    TextView mTvBack;
     @BindView(R.id.btn_addbook)
     Button mBtnAddBook;
     private String mCurrentPath, mStartPath;
@@ -119,10 +124,10 @@ public class LFilePickerActivity extends BaseActivity {
             bt_settings.setVisibility(View.GONE);
             return;
         }
-        mTvBack.setVisibility(View.VISIBLE);
         fileContent.setVisibility(View.VISIBLE);
         mStartPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         mCurrentPath = mStartPath;
+        tv_parentName.setText(mCurrentPath);
         mFilter = new LFileFilter(mFileTypes);
         mListFiles = getFileList(mStartPath);
         filterAdapter = new FileFilterAdapter(mListFiles, mFilter, mMutilyMode);
@@ -134,31 +139,14 @@ public class LFilePickerActivity extends BaseActivity {
 
     private void setOnClickListener() {
         // 返回目录上一级
-        mTvBack.setOnClickListener(new View.OnClickListener() {
+        ll_fileParent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCurrentPath.equals(mStartPath)) {    //如果是开始根目录则不做操作
-                    return;
-                }
                 String tempPath = new File(mCurrentPath).getParent();
-                if (tempPath != null && !new File(tempPath).exists()) {
+                if (tempPath == null || !new File(tempPath).exists())
                     return;
-                }
                 mCurrentPath = tempPath;
-                mListFiles = getFileList(mCurrentPath);
-                if (mListFiles.size() > 0) {
-                    emptyView.setVisibility(View.GONE);
-                    mRecylerView.setVisibility(View.VISIBLE);
-                    filterAdapter.setmListData(mListFiles);
-                    filterAdapter.notifyDataSetChanged();
-                    scrollToPosition();
-                } else {
-                    mRecylerView.setVisibility(View.GONE);
-                    emptyView.setVisibility(View.VISIBLE);
-                }
-                //清除添加集合中数据
-                mListNumbers.clear();
-                mBtnAddBook.setText("选中");
+                updateData();
             }
         });
         filterAdapter.setOnItemClickListener(new FileFilterAdapter.OnItemClickListener() {
@@ -181,10 +169,11 @@ public class LFilePickerActivity extends BaseActivity {
                     //单选模式直接返回
                     if (mListFiles.get(position).isDirectory()) {
                         chekInDirectory(position);
-                        return;
+                    } else {
+                        mListNumbers.clear();
+                        mListNumbers.add(mListFiles.get(position).getAbsolutePath());
+                        chooseDone();
                     }
-                    mListNumbers.add(mListFiles.get(position).getAbsolutePath());
-                    chooseDone();
                 }
 
             }
@@ -205,9 +194,9 @@ public class LFilePickerActivity extends BaseActivity {
 
     @Override
     public void setListener() {
-        tv_cancel.setOnClickListener(new View.OnClickListener() {
+        toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onLeftClick(View view) {
                 finish();
             }
         });
@@ -272,7 +261,12 @@ public class LFilePickerActivity extends BaseActivity {
      */
     private void chekInDirectory(int position) {
         mCurrentPath = mListFiles.get(position).getAbsolutePath();
-        //更新数据源
+        updateData();
+    }
+
+
+    private void updateData() {
+        tv_parentName.setText(mCurrentPath);
         mListFiles = getFileList(mCurrentPath);
         if (mListFiles.size() > 0) {
             emptyView.setVisibility(View.GONE);
@@ -303,6 +297,8 @@ public class LFilePickerActivity extends BaseActivity {
      * @return List<File>
      */
     private List<File> getFileList(String path) {
+        if (path == null || !new File(path).exists())
+            return new ArrayList<>();
         List<File> list = FileUtils.getFileListByDirPath(path, mFilter);
         return list;
     }
@@ -312,5 +308,16 @@ public class LFilePickerActivity extends BaseActivity {
      */
     private boolean checkSDState() {
         return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        String tempPath = new File(mCurrentPath).getParent();
+        if (keyCode == KeyEvent.KEYCODE_BACK && tempPath != null && new File(tempPath).exists()) {
+            mCurrentPath = tempPath;
+            updateData();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

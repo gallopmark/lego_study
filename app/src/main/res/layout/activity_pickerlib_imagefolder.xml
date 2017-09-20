@@ -1,52 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:background="@color/defaultColor">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/tv_title"
-            android:layout_alignTop="@+id/tv_title"
-            android:background="@drawable/app_toolbar_selector"
-            android:paddingLeft="@dimen/back_padding"
-            android:paddingRight="@dimen/back_padding"
-            android:src="@drawable/app_back" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:gravity="center"
-            android:padding="@dimen/title_padding"
-            android:textColor="@color/white"
-            android:textSize="@dimen/title_textsize" />
-
-        <TextView
-            android:id="@+id/tv_cancel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/tv_title"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/tv_title"
-            android:layout_centerVertical="true"
-            android:background="@drawable/app_toolbar_selector"
-            android:gravity="center"
-            android:paddingLeft="@dimen/margin_size_16"
-            android:paddingRight="@dimen/margin_size_16"
-            android:text="取消"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_size_16" />
-    </RelativeLayout>
+        app:show_right_button="false" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -57,18 +20,18 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:overScrollMode="never" />
+
         <TextView
             android:id="@+id/tv_error"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableTop="@drawable/load_failure"
-            android:text="无法加载相册"
+            android:layout_centerInParent="true"
             android:drawablePadding="@dimen/margin_size_10"
+            android:drawableTop="@drawable/load_failure"
             android:gravity="center"
-            android:visibility="gone"
             android:textColor="@color/blow_gray"
             android:textSize="@dimen/font_size_18"
-            android:layout_centerInParent="true" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_empty"
@@ -78,7 +41,6 @@
             android:drawablePadding="@dimen/margin_size_10"
             android:drawableTop="@drawable/empty_list"
             android:gravity="center"
-            android:text="相册空空如也"
             android:textColor="@color/blow_gray"
             android:textSize="@dimen/font_size_18"
             android:visibility="gone" />
