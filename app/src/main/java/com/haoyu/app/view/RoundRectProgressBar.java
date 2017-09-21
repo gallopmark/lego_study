@@ -65,7 +65,6 @@ public class RoundRectProgressBar extends ProgressBar {
     @Override
     protected synchronized void onDraw(Canvas canvas) {
         canvas.save();
-
         // circle radius
         int radius = getHeight() / 2;
 
