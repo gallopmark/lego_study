@@ -7,9 +7,8 @@ import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
+
 
 import com.google.gson.Gson;
 import com.haoyu.app.adapter.FileSubmitAdapter;
@@ -41,7 +40,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-
 /**
  * Created by acer1 on 2017/2/13.
  * 学员提交作业
@@ -50,8 +48,6 @@ public class AppSubmitAssignmentActivity extends BaseActivity implements View.On
     private AppSubmitAssignmentActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
-    @BindView(R.id.get)
-    Button get;
     private String aid;
     private String auid;
     private String uid;
@@ -85,25 +81,10 @@ public class AppSubmitAssignmentActivity extends BaseActivity implements View.On
         recyclerView.setAdapter(adapter);
     }
 
-    private int FILE_TYPE = 1;
-
     @Override
     public void setListener() {
         iv_add.setOnClickListener(context);
-        get.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.setType("*/*");//设置类型
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                try {
-                    startActivityForResult(intent, FILE_TYPE);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
-            }
-        });
         adapter.setDisposeCallBack(new FileSubmitAdapter.onDisposeCallBack() {
             @Override
             public void onDelete(int position) {
@@ -159,12 +140,7 @@ public class AppSubmitAssignmentActivity extends BaseActivity implements View.On
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-          /*  case R.id.iv_back:
-                finish();
-                break;
-            case R.id.commit:
-                commitAssignment();
-                break;*/
+
             case R.id.iv_add:
                 openFilePicker();
                 break;

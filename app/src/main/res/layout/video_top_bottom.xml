@@ -87,45 +87,18 @@
             android:thumb="@drawable/mn_player_thumb"
             android:thumbOffset="0dp" />
 
-        <ImageView
-            android:id="@+id/video_full"
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:src="@drawable/quanping"
-            android:visibility="invisible" />
-
-        <ImageView
-            android:id="@+id/download_yun"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="5dp"
-            android:layout_toLeftOf="@+id/video_full"
-            android:visibility="gone" />
 
         <TextView
             android:id="@+id/currentTime"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@+id/totalTime"
+            android:layout_margin="@dimen/_margin_size_10"
             android:text="00:00"
             android:textColor="@color/colorPlayerProgressSecond"
             android:textSize="@dimen/font_size_16" />
 
-        <TextView
-            android:id="@+id/totalTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/margin_size_6"
-            android:layout_toLeftOf="@+id/download_yun"
-            android:text="/00:00"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/font_size_16"
-            android:visibility="gone" />
     </RelativeLayout>
 
 </RelativeLayout>
