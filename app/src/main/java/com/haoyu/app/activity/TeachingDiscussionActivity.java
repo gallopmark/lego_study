@@ -158,10 +158,10 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
     }
 
     private void setSupportToolbar() {
-        if (activityTitle == null)
-            toolBar.setTitle_text("教学研讨");
+        if (activityTitle != null && activityTitle.trim().length() > 0)
+            toolBar.setTitle_text(Html.fromHtml(activityTitle).toString());
         else
-            toolBar.setTitle_text(activityTitle);
+            toolBar.setTitle_text("教学研讨");
         toolBar.setOnTitleClickListener(new AppToolBar.TitleOnClickListener() {
             @Override
             public void onLeftClick(View view) {

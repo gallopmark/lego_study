@@ -73,7 +73,10 @@ public class AppSurveyHomeActivity extends BaseActivity {
         relationId = getIntent().getStringExtra("relationId");
         activityId = getIntent().getStringExtra("activityId");
         String activityTitle = getIntent().getStringExtra("activityTitle");
-        toolBar.setTitle_text(activityTitle);
+        if (activityTitle != null && activityTitle.trim().length() > 0)
+            toolBar.setTitle_text(Html.fromHtml(activityTitle).toString());
+        else
+            toolBar.setTitle_text("问卷调查");
     }
 
     public void initData() {
@@ -158,7 +161,7 @@ public class AppSurveyHomeActivity extends BaseActivity {
                     intent.putExtra("surveyTitle", surveyTitle);
                     intent.putExtra("surveyId", surveyId);
                     intent.putExtra("state", state);
-                    startActivityForResult(intent,REQUEST_CODE);
+                    startActivityForResult(intent, REQUEST_CODE);
                 }
             }
         });

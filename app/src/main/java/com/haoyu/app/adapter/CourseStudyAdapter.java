@@ -2,6 +2,11 @@ package com.haoyu.app.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.SubscriptSpan;
+import android.text.style.SuperscriptSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,6 +20,7 @@ import com.haoyu.app.entity.CourseSectionEntity;
 import com.haoyu.app.entity.MultiItemEntity;
 import com.haoyu.app.entity.VideoMobileEntity;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.view.CircleProgressBar;
 
 import org.wlf.filedownloader.DownloadFileInfo;
@@ -43,6 +49,7 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
     private Map<Integer, Boolean> collapses = new HashMap<>();
     private Map<String, View> viewMap = new HashMap<>();
     private OnItemClickListener onItemClickListener;
+    private OnItemLongClickListener onItemLongClickListener;
 
     public CourseStudyAdapter(Context context, List<MultiItemEntity> mDatas) {
         super(mDatas);
@@ -63,6 +70,10 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
         this.onItemClickListener = onActivityClickCallBack;
     }
 
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
+    }
+
     public OnFileDownloadStatusListener getmOnFileDownloadStatusListener() {
         return mOnFileDownloadStatusListener;
     }
@@ -81,29 +92,33 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
     public void onBindHoder(RecyclerHolder holder, MultiItemEntity item, final int position) {
         int viewType = holder.getItemViewType();
         if (viewType == TYPE_LEVEL_0) {
-            CourseSectionEntity sectionEntity = (CourseSectionEntity) item;
-            if (sectionEntity.getTitle() != null && sectionEntity.getTitle().trim().length() > 0)
-                holder.setText(R.id.course_title, sectionEntity.getTitle());
-            else
-                holder.setText(R.id.course_title, "无标题");
+            final CourseSectionEntity sectionEntity = (CourseSectionEntity) item;
+            final TextView tv_title = holder.obtainView(R.id.section_title);
+            setSpannedText(sectionEntity.getTitle(), tv_title);
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (onItemLongClickListener != null)
+                        onItemLongClickListener.onItemLongClick(tv_title, getSpanned(sectionEntity.getTitle()));
+                    return false;
+                }
+            });
         } else if (viewType == TYPE_LEVEL_1) {
             final CourseChildSectionEntity childEntity = (CourseChildSectionEntity) item;
+            LinearLayout ll_layout = holder.obtainView(R.id.ll_layout);
             ImageView ic_selection_state = holder.obtainView(R.id.ic_selection_state);
-            if (childEntity.getCompleteState() != null && childEntity.getCompleteState().equals("已完成")) {
+            final TextView tv_title = holder.obtainView(R.id.tv_selection_title);
+            if (childEntity.getCompleteState() != null && childEntity.getCompleteState().equals("已完成"))
                 ic_selection_state.setImageResource(R.drawable.state_solid_default);
-            } else if (childEntity.getCompleteState() != null && childEntity.getCompleteState().equals("complete")) {
+            else if (childEntity.getCompleteState() != null && childEntity.getCompleteState().equals("complete"))
                 ic_selection_state.setImageResource(R.drawable.state_solid_default);
-            } else if (childEntity.getCompleteState() != null && childEntity.getCompleteState().equals("进行中")) {
+            else if (childEntity.getCompleteState() != null && childEntity.getCompleteState().equals("进行中"))
                 ic_selection_state.setImageResource(R.drawable.state_semicircle_default);
-            } else if (childEntity.getCompleteState() != null && childEntity.getCompleteState().equals("in_progress")) {
+            else if (childEntity.getCompleteState() != null && childEntity.getCompleteState().equals("in_progress"))
                 ic_selection_state.setImageResource(R.drawable.state_semicircle_default);
-            } else {
-                ic_selection_state.setImageResource(R.drawable.state_hollow_default);
-            }
-            if (childEntity.getTitle() != null && childEntity.getTitle().trim().length() > 0)
-                holder.setText(R.id.tv_selection_title, childEntity.getTitle());
             else
-                holder.setText(R.id.tv_selection_title, "无标题");
+                ic_selection_state.setImageResource(R.drawable.state_hollow_default);
+            setSpannedText(childEntity.getTitle(), tv_title, ll_layout);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -121,7 +136,16 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                         onItemClickListener.onChildSectionClick(position + childEntity.getActivities().size());
                 }
             });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (onItemLongClickListener != null)
+                        onItemLongClickListener.onItemLongClick(tv_title, getSpanned(childEntity.getTitle()));
+                    return false;
+                }
+            });
         } else {
+            LinearLayout ll_layout = holder.obtainView(R.id.ll_layout);
             final ImageView icType = holder.obtainView(R.id.ic_selection_activity_type);
             final TextView tvTitle = holder.obtainView(R.id.tv_selection_activity_title);
             final ImageView icDownload = holder.obtainView(R.id.ic_download);
@@ -198,10 +222,7 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                 else
                     icState.setImageResource(R.drawable.state_hollow_default);
             }
-            if (activity.getTitle() != null && activity.getTitle().trim().length() > 0)
-                tvTitle.setText(activity.getTitle());
-            else
-                tvTitle.setText("无标题");
+            setActivityTitle(activity.getTitle(), tvTitle, ll_layout);
             if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
                 tvTitle.setTextColor(ContextCompat.getColor(context, R.color.defaultColor));
             else
@@ -213,6 +234,14 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                     if (onItemClickListener != null) {
                         onItemClickListener.onActivityClick(activity);
                     }
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View view) {
+                    if (onItemLongClickListener != null)
+                        onItemLongClickListener.onItemLongClick(tvTitle, getSpanned(activity.getTitle()));
+                    return false;
                 }
             });
             VideoMobileEntity video = activity.getmVideo();
@@ -283,6 +312,105 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
             });
             viewMap.put(url, holder.itemView);
         }
+    }
+
+    private void setSpannedText(String title, TextView tv) {
+        int left, top, right, bottom;
+        if (title == null || title.trim().length() == 0) {
+            left = right = PixelFormat.dp2px(context, 12);
+            top = bottom = PixelFormat.dp2px(context, 6);
+            tv.setPadding(left, top, right, bottom);
+            tv.setText("无标题");
+        } else {
+            Spanned spanned = Html.fromHtml(title);
+            SpannableString ss = new SpannableString(spanned);
+            if (title.contains("<sup>")) {
+                ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                left = right = PixelFormat.dp2px(context, 12);
+                top = bottom = PixelFormat.dp2px(context, 2);
+                tv.setPadding(left, top, right, bottom);
+                tv.setText(ss);
+            } else if (title.contains("<sub>")) {
+                ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                left = right = PixelFormat.dp2px(context, 12);
+                top = bottom = PixelFormat.dp2px(context, 2);
+                tv.setPadding(left, top, right, bottom);
+                tv.setText(ss);
+            } else {
+                left = right = PixelFormat.dp2px(context, 12);
+                top = bottom = PixelFormat.dp2px(context, 6);
+                tv.setPadding(left, top, right, bottom);
+                tv.setText(spanned);
+            }
+        }
+    }
+
+    private void setSpannedText(String title, TextView tv_title, LinearLayout layout) {
+        int left, top, right, bottom;
+        if (title == null || title.trim().length() == 0) {
+            tv_title.setText("无标题");
+            left = right = top = bottom = PixelFormat.dp2px(context, 12);
+            layout.setPadding(left, top, right, bottom);
+        } else {
+            Spanned spanned = Html.fromHtml(title);
+            SpannableString ss = new SpannableString(spanned);
+            if (title.contains("<sup>")) {
+                ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                left = right = PixelFormat.dp2px(context, 12);
+                top = bottom = PixelFormat.dp2px(context, 8);
+                layout.setPadding(left, top, right, bottom);
+                tv_title.setText(ss);
+            } else if (title.contains("<sub>")) {
+                ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                left = right = PixelFormat.dp2px(context, 12);
+                top = bottom = PixelFormat.dp2px(context, 8);
+                layout.setPadding(left, top, right, bottom);
+                tv_title.setText(ss);
+            } else {
+                left = right = top = bottom = PixelFormat.dp2px(context, 12);
+                layout.setPadding(left, top, right, bottom);
+                tv_title.setText(spanned);
+            }
+        }
+    }
+
+    private void setActivityTitle(String title, TextView tv_title, LinearLayout layout) {
+        int left = 0, top, right = 0, bottom;
+        if (title == null || title.trim().length() == 0) {
+            top = bottom = PixelFormat.dp2px(context, 12);
+            layout.setPadding(left, top, right, bottom);
+            tv_title.setText("无标题");
+        } else {
+            Spanned spanned = Html.fromHtml(title);
+            SpannableString ss = new SpannableString(spanned);
+            if (title.contains("<sup>")) {
+                ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                top = bottom = PixelFormat.dp2px(context, 8);
+                layout.setPadding(left, top, right, bottom);
+                tv_title.setText(ss);
+            } else if (title.contains("<sub>")) {
+                ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                top = bottom = PixelFormat.dp2px(context, 8);
+                layout.setPadding(left, top, right, bottom);
+                tv_title.setText(ss);
+            } else {
+                top = bottom = PixelFormat.dp2px(context, 12);
+                layout.setPadding(left, top, right, bottom);
+                tv_title.setText(spanned);
+            }
+        }
+    }
+
+    private Spanned getSpanned(String title) {
+        Spanned spanned = Html.fromHtml(title);
+        SpannableString ss = new SpannableString(spanned);
+        if (title.contains("<sup>"))
+            ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        else if (title.contains("<sub>"))
+            ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        else
+            return spanned;
+        return ss;
     }
 
     private void beginDownload(final String url) {
@@ -370,5 +498,9 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
         void onChildSectionClick(int position);
 
         void onActivityClick(CourseSectionActivity activity);
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClick(TextView tv, CharSequence charSequence);
     }
 }

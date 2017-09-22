@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Layout;
 import android.view.View;
 import android.widget.TextView;
 
@@ -224,6 +225,31 @@ public class PageCourseFragment extends BaseFragment {
                 enterActivity(activity);
             }
         });
+        sectionAdapter.setOnItemLongClickListener(new CourseStudyAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(TextView tv, CharSequence charSequence) {
+                if (overLine(tv)) {
+                    MaterialDialog dialog = new MaterialDialog(context);
+                    dialog.setTitle(null);
+                    dialog.setMessage(charSequence);
+                    dialog.setCanceledOnTouchOutside(true);
+                    dialog.setCancelable(true);
+                    dialog.setPositiveButton("关闭", null);
+                    dialog.show();
+                }
+            }
+        });
+    }
+
+    private boolean overLine(TextView tv) {
+        Layout layout = tv.getLayout();
+        if (layout != null && layout.getLineCount() > 0) {
+            int lines = layout.getLineCount();//获取textview行数
+            if (layout.getEllipsisCount(lines - 1) > 0) {//获取最后一行省略掉的字符数，大于0就代表超过行数
+                return true;
+            }
+        }
+        return false;
     }
 
     private void updateAT(final List<CourseSectionActivity> mDatas) {

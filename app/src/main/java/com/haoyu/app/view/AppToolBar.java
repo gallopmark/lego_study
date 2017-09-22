@@ -210,7 +210,7 @@ public class AppToolBar extends LinearLayout {
      *
      * @param left_button_text
      */
-    public void setLeft_button_text(String left_button_text) {
+    public void setLeft_button_text(CharSequence left_button_text) {
         tv_leftView.setText(left_button_text);
     }
 
@@ -262,7 +262,7 @@ public class AppToolBar extends LinearLayout {
      *
      * @param right_button_text
      */
-    public void setRight_button_text(String right_button_text) {
+    public void setRight_button_text(CharSequence right_button_text) {
         tv_rightView.setText(right_button_text);
     }
 
@@ -314,7 +314,7 @@ public class AppToolBar extends LinearLayout {
      *
      * @param title_text
      */
-    public void setTitle_text(String title_text) {
+    public void setTitle_text(CharSequence title_text) {
         tv_title.setText(title_text);
     }
 

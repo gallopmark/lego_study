@@ -2,6 +2,11 @@ package com.haoyu.app.adapter;
 
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.SubscriptSpan;
+import android.text.style.SuperscriptSpan;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -46,7 +51,7 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
 
     @Override
     public int bindView(int viewtype) {
-        return R.layout.course_section_activity_item;
+        return R.layout.course_microclass_item;
     }
 
     @Override
@@ -97,10 +102,7 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
             tv_title.setTextColor(ContextCompat.getColor(context, R.color.defaultColor));
         else
             tv_title.setTextColor(ContextCompat.getColor(context, R.color.blow_gray));
-        if (activity.getTitle() != null && activity.getTitle().trim().length() > 0)
-            tv_title.setText(activity.getTitle());
-        else
-            tv_title.setText("无标题");
+        setActivityTitle(activity.getTitle(), tv_title);
         if (activity.getCompleteState() != null && activity.getCompleteState().equals("已完成")) {
             if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
                 icState.setImageResource(R.drawable.state_solid_press);
@@ -184,6 +186,24 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
             }
         });
         viewMap.put(url, holder.itemView);
+    }
+
+    private void setActivityTitle(String title, TextView tv_title) {
+        if (title == null || title.trim().length() == 0)
+            tv_title.setText("无标题");
+        else {
+            Spanned spanned = Html.fromHtml(title);
+            SpannableString ss = new SpannableString(spanned);
+            if (title.contains("<sup>")) {
+                ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                tv_title.setText(ss);
+            } else if (title.contains("<sub>")) {
+                ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                tv_title.setText(ss);
+            } else {
+                tv_title.setText(spanned);
+            }
+        }
     }
 
     private void beginDownload(final String url) {

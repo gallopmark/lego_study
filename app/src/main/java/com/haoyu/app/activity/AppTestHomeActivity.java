@@ -2,6 +2,7 @@ package com.haoyu.app.activity;
 
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -57,7 +58,10 @@ public class AppTestHomeActivity extends BaseActivity {
         }
         activityId = getIntent().getStringExtra("activityId");
         String activityTitle = getIntent().getStringExtra("activityTitle");
-        toolBar.setTitle_text(activityTitle);
+        if (activityTitle != null && activityTitle.trim().length() > 0)
+            toolBar.setTitle_text(Html.fromHtml(activityTitle).toString());
+        else
+            toolBar.setTitle_text("在线测验");
         showData();
     }
 

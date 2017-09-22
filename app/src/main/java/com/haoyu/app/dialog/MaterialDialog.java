@@ -47,11 +47,12 @@ public class MaterialDialog extends AlertDialog {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dialog_width,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         setContentView(view, params);
-        setCanceledOnTouchOutside(false);
     }
 
     @Override
     public void setTitle(CharSequence title) {
+        if (title == null || title.length() == 0)
+            tv_tips.setVisibility(View.GONE);
         tv_tips.setText(title);
     }
 

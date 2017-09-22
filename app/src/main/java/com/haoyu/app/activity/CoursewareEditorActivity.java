@@ -66,7 +66,10 @@ public class CoursewareEditorActivity extends BaseActivity {
         viewNum = getIntent().getIntExtra("viewNum", 0);
         needViewNum = getIntent().getIntExtra("needViewNum", 0);
         interval = getIntent().getIntExtra("interval", 12);
-        toolBar.setTitle_text(title);
+        if (title != null && title.trim().length() > 0)
+            toolBar.setTitle_text(Html.fromHtml(title).toString());
+        else
+            toolBar.setTitle_text("教学课件");
         showTips();
         String editor = getIntent().getStringExtra("editor");
         setEditor(editor);
