@@ -64,7 +64,7 @@ public class AppSubmitAssignmentActivity extends BaseActivity implements View.On
 
     @Override
     public int setLayoutResID() {
-        return R.layout.test_assignment;
+        return R.layout.activity_submit_assignment;
     }
 
     @Override
