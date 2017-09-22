@@ -87,7 +87,7 @@ public class TeachingResearchActivity extends BaseActivity implements View.OnCli
                 break;
             case 2:
                 tab_line.setBackgroundColor(ContextCompat.getColor(context, R.color.tab_teachcc));
-                toolBar.setShow_right_button(true);
+                toolBar.setShow_right_button(false);
                 iv_tabcc.setVisibility(View.VISIBLE);
                 break;
             case 3:

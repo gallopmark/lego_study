@@ -389,6 +389,10 @@ public class AppHomePageActivity extends BaseActivity implements View.OnClickLis
                 String state = courses.get(position).getState();
                 if (state != null && state.equals("pass") && courses.get(position).getmCourse() != null) {
                     CourseMobileEntity entity = courses.get(position).getmCourse();
+                    if (entity.getmTimePeriod() != null && entity.getmTimePeriod().getState() != null && entity.getmTimePeriod().getState().equals("未开始")) {
+                        showDialog("未开始");
+                        return;
+                    }
                     String courseId = entity.getId();
                     String courseTitle = entity.getTitle();
                     Intent intent = new Intent(context, CourseTabActivity.class);
@@ -439,15 +443,16 @@ public class AppHomePageActivity extends BaseActivity implements View.OnClickLis
 
     private void showDialog(String state) {
         MaterialDialog tipDialog = new MaterialDialog(context);
-        tipDialog.setTitle("提示");
         String message;
-        if (state != null && state.equals("submit")) {
+        if (state != null && state.equals("未开始"))
+            message = "课程尚未开放";
+        else if (state != null && state.equals("submit"))
             message = "您的选课正在审核中";
-        } else if (state != null && state.equals("nopass")) {
+        else if (state != null && state.equals("nopass"))
             message = "您的选课审核不通过";
-        } else {
-            message = "无法进行此门课程的学习";
-        }
+        else
+            message = "课程尚未开放";
+        tipDialog.setTitle("温馨提示");
         tipDialog.setMessage(message);
         tipDialog.setPositiveTextColor(ContextCompat.getColor(context, R.color.defaultColor));
         tipDialog.setPositiveButton("我知道了", null);

@@ -134,7 +134,7 @@ public class TeachingResearchCreateCCActivity extends BaseActivity implements Vi
         Common.hideSoftInput(context);
         switch (v.getId()) {
             case R.id.bt_enter:
-                startActivity(new Intent(context, TeachingResearchCCRuleActivity.class));
+                startActivity(new Intent(context, TeachingResearchCCGuideActivity.class));
                 break;
             case R.id.tv_stage:
                 if (!isInitStage) {

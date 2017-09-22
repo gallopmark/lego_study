@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:show_right_button="false"
+        app:title_text="@string/genclass_guide" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbarStyle="outsideOverlay"
+        android:scrollbars="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_size_12"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:text="@string/guide_explain"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:text="@string/guide_one"
+                android:textSize="@dimen/font_size_16"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:text="@string/guide_one_explain"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:text="@string/guide_two"
+                android:textSize="@dimen/font_size_16"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:text="@string/guide_two_explain"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:text="@string/guide_three"
+                android:textSize="@dimen/font_size_16"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:text="@string/guide_three_explain"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:text="@string/guide_four"
+                android:textSize="@dimen/font_size_16"
+                android:textStyle="bold" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_size_12"
+                    android:background="@color/defaultColor"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/margin_size_12"
+                    android:paddingTop="@dimen/margin_size_12">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/oval_white"
+                        android:gravity="center"
+                        android:lineSpacingExtra="@dimen/margin_size_2"
+                        android:padding="@dimen/margin_size_10"
+                        android:text="@string/guide_step_one"
+                        android:textColor="@color/defaultColor"
+                        android:textSize="@dimen/font_size_12" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_size_12"
+                        android:background="@drawable/oval_white"
+                        android:gravity="center"
+                        android:lineSpacingExtra="@dimen/margin_size_2"
+                        android:padding="@dimen/margin_size_10"
+                        android:text="@string/guide_step_two"
+                        android:textColor="@color/defaultColor"
+                        android:textSize="@dimen/font_size_12" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_size_12"
+                        android:background="@drawable/oval_white"
+                        android:gravity="center"
+                        android:lineSpacingExtra="@dimen/margin_size_2"
+                        android:padding="@dimen/margin_size_10"
+                        android:text="@string/guide_step_three"
+                        android:textColor="@color/defaultColor"
+                        android:textSize="@dimen/font_size_12" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_size_12"
+                        android:background="@drawable/oval_white"
+                        android:gravity="center"
+                        android:lineSpacingExtra="@dimen/margin_size_2"
+                        android:padding="@dimen/margin_size_10"
+                        android:text="@string/guide_step_four"
+                        android:textColor="@color/defaultColor"
+                        android:textSize="@dimen/font_size_12" />
+                </LinearLayout>
+            </HorizontalScrollView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:text="@string/guide_four_tips"
+                android:textSize="@dimen/font_size_16"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:text="@string/guide_four_one"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:text="@string/guide_four_one_explain"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:text="@string/guide_four_two"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:text="@string/guide_four_two_explain"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:text="@string/guide_four_three"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:text="@string/guide_four_three_explain"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_marginRight="@dimen/margin_size_12"
+                android:layout_marginTop="@dimen/margin_size_12"
+                android:text="@string/guide_four_four"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_size_12"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:text="@string/guide_four_four_explain"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

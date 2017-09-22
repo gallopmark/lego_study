@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="genclass_guide">创课发表规则与活动指南</string>
+    <string name="guide_explain">创课是创新课堂教学，开设创课栏目是希望教师结合一些新技术新应用或教学器材，围绕你的课堂教学构思一个课堂教学设计，通过创课发表使教师们的教学想法和设计可以得到同伴的点赞获得自我成就感和认同感，从而激发课堂教学创新的热情，另一方面可以获得学习同伴对课堂教学设计的建议，不断优化教学方式实现一个学生喜欢的课堂。</string>
+    <string name="guide_one">1、60天创课期限</string>
+    <string name="guide_one_explain">设置合理的完成时间，将更有利于教师们完成目标，每个创课的从构想到完善课程设计我们预算了60天时间，在60天里已经足够收集同伴的建议并完善课程设计，如果未完成你可以重新发表。</string>
+    <string name="guide_two">2、内容严禁抄袭</string>
+    <string name="guide_two_explain">学员作为内容的发表者，需自行对所发表内容负责，因所发表内容引发的一切纠纷，由该内容的发表者承担全部法律及连带责任。发布侵犯他人知识产权或其他合法权益的内容，本平台有权予以删除，并保留移交司法机关处理的权利。个人或单位如认为豆瓣网上存在侵犯自身合法权益的内容，应准备好具有法律效应的证明材料，及时与本平台取得联系，以便本平台迅速做出处理。</string>
+    <string name="guide_three">3、对教育的热爱让我们走到一起，希望您：</string>
+    <string name="guide_three_explain">1）每周2-4小时参与创课设计活动，积极参与并完成个人设定的创课活动目标。\n
+2）对同伴的创课点赞并给出有一定实质性的建议、充分表达个人观点、不吝惜分享您的宝贵经验；\n
+3）尊重老师与同学，不发表暴力文字，与人为善；\n
+4）为保证顺畅沟通，请尽可能用中文与他人交流；\n
+5）不在平台内发布非法、违禁信息；\n
+6）课程资源版权所有，如需引用，请先征得同意；\n
+7） 严禁将本社区的创课内容及资源在互联网上发布，谢谢配合。
+本平台有权对违反上述承诺的内容予以删除。</string>
+    <string name="guide_four">4、创课活动指南</string>
+    <string name="guide_step_one">01\n规划创课\n设计</string>
+    <string name="guide_step_two">02\n确定创课\n设计框架</string>
+    <string name="guide_step_three">03\n设计创课\n活动</string>
+    <string name="guide_step_four">04\n完成创课\n设计</string>
+    <string name="guide_four_tips">创课60天的活动中，如果您不知道如何开展，可以按照以下四个步骤来完成：</string>
+    <string name="guide_four_one">第一步：规划创课主题（15天）</string>
+    <string name="guide_four_one_explain">1）初步思考自己所任教的学科哪些教学内容可以考虑使用乐高教具来开展教学。\n
+2）根据上述的思考，在网上搜索乐高教育产品的相关信息，重点围绕三种套装（9686动力机械套装、WeDo 2.0套装、45544机器人EV3套装）去了解这些产品的特点和作用。\n
+3）初步拟定自己的教学主题以及计划要使用哪种乐高教具来开展教学。</string>
+    <string name="guide_four_two">第二步：课程框架设计（15天）</string>
+    <string name="guide_four_two_explain">1） 整理与其他学员交流的要点，重新审视自己所选定的教学主题和拟使用的乐高教育产品套装是否合适，是否应该重新规划。\n
+2）初步确定创课的教学主题以及与本主题相关的课程标准、教学目标（学习目标）、教材等内容。\n
+3）思考自己的教学设计怎样体现了5F原则。</string>
+    <string name="guide_four_three">第3步：设计创课活动（15天）</string>
+    <string name="guide_four_three_explain">1）整理与其他学员交流的要点，重新审视自己所确定教学主题以及所依据的课程标准、教学（学习）目标、教材等内容是否合适，自己所设想的学生的探究性学习的总体要求和期望结果是否恰当，是否需要重新确定。\n
+2）思考自己的确定的教学主题以本学科为核心，融入了哪些STEM元素。\n
+3）按照4C教学流程设计课堂教学活动。</string>
+    <string name="guide_four_four">第4步：完成创课教案（15天）</string>
+    <string name="guide_four_four_explain">整理与其他学员交流的要点，结合前面3步的思考和同伴建议要点完成课程教案，并上传到课程资源中继续与同伴分享。</string>
+</resources>
