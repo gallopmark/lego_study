@@ -38,6 +38,7 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
     private Context context;
     private String pressId;
     private Map<String, View> viewMap = new HashMap<>();
+    private OnItemLongClickListener onItemLongClickListener;
 
     public CourseActivityAdapter(Context context, List<CourseSectionActivity> mDatas) {
         super(mDatas);
@@ -49,15 +50,19 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
         notifyDataSetChanged();
     }
 
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
+    }
+
     @Override
     public int bindView(int viewtype) {
         return R.layout.course_microclass_item;
     }
 
     @Override
-    public void onBindHoder(RecyclerHolder holder, CourseSectionActivity activity, int position) {
+    public void onBindHoder(RecyclerHolder holder, final CourseSectionActivity activity, int position) {
         ImageView iv_type = holder.obtainView(R.id.ic_selection_activity_type);
-        TextView tv_title = holder.obtainView(R.id.tv_selection_activity_title);
+        final TextView tv_title = holder.obtainView(R.id.tv_selection_activity_title);
         ImageView icState = holder.obtainView(R.id.ic_selection_activity_state);
         ImageView ic_download = holder.obtainView(R.id.ic_download);
         final RelativeLayout rl_download = holder.obtainView(R.id.rl_download);
@@ -186,6 +191,14 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
             }
         });
         viewMap.put(url, holder.itemView);
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (onItemLongClickListener != null)
+                    onItemLongClickListener.onItemLongClick(tv_title, activity.getTitle());
+                return false;
+            }
+        });
     }
 
     private void setActivityTitle(String title, TextView tv_title) {
@@ -287,4 +300,7 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
         }
     };
 
+    public interface OnItemLongClickListener {
+        void onItemLongClick(TextView tv, CharSequence charSequence);
+    }
 }
