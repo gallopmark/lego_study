@@ -383,7 +383,7 @@ public class PageCourseFragment extends BaseFragment {
             intent.putExtra("activityId", activity.getId());
             intent.putExtra("activityTitle", activity.getTitle());
             intent.putExtra("summary", videoEntity.getmVideo().getSummary());
-            intent.putExtra("videoId", videoEntity.getId());
+            intent.putExtra("videoId", video.getId());
             if (video != null && video.getUrls() != null && video.getUrls().length() > 0) {
                 DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(video.getUrls());
                 if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {

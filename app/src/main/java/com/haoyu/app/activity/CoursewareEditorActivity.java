@@ -93,7 +93,7 @@ public class CoursewareEditorActivity extends BaseActivity {
         webView.setScrollBarStyle(View.SCROLLBARS_OUTSIDE_OVERLAY);
         content.addView(webView);
         webView.getSettings().setTextZoom(300);
-        webView.loadDataWithBaseURL(null, editor, "text/html", "utf-8", null);
+        webView.loadDataWithBaseURL(Constants.REFERER, editor, "text/html", "utf-8", null);
     }
 
     /**
