@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <com.haoyu.app.view.AppToolBar
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
@@ -29,7 +28,6 @@
         android:layout_alignParentRight="true"
         android:padding="16dp"
         android:src="@drawable/assignment_upload"
-
         />
 
 </RelativeLayout>

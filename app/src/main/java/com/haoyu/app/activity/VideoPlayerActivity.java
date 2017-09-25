@@ -66,8 +66,8 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     private final int VIDEO_FORWARD = 2;// 滑动屏幕快进
     private final int VIDEO_SEEKBARFORWARD = 3;// 拖动进度条快进
     private final int VIDEO_HIDECONTROLLBAR = 4;// 隐藏控制栏
-    public final int UPDATE_SEEKBAR = 0;
-    public final int VIDEO_WARN_MESSAGE = 5;//网络消息提
+    private final int UPDATE_SEEKBAR = 0;
+    private final int VIDEO_WARN_MESSAGE = 5;//网络消息提
     @BindView(R.id.video_layout)
     RelativeLayout videoLayout;
     @BindView(R.id.linear_centercontroll)
@@ -241,9 +241,11 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         type = getIntent().getStringExtra("type");
         running = getIntent().getBooleanExtra("running", false);
         VideoMobileEntity entity = (VideoMobileEntity) getIntent().getSerializableExtra("attach");
+
         if (entity != null && entity.getAttchFiles() != null && entity.getAttchFiles().size() > 0) {
             mFileInfoList.addAll(entity.getAttchFiles());
         }
+
         mVideoView.setBufferingIndicator(loadingView);
         linear_centercontroll.getBackground().setAlpha(80);
         screenWidthPixels = MyUtils.screenWidthPixels(context);
@@ -393,11 +395,16 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
     private void initContent() {
         mVideoPath = getIntent().getStringExtra("videoUrl");
+
         summary = getIntent().getStringExtra("summary");
         String fileName = getIntent().getStringExtra("fileName");
         String activityTitle = getIntent().getStringExtra("activityTitle");
         seekTime = (long) getIntent().getDoubleExtra("lastViewTime", 0);
         interval = getIntent().getIntExtra("interval", 30);
+
+        if (summary == null && mFileInfoList.size() == 0) {
+            mRead.setVisibility(View.GONE);
+        }
         if (fileName != null) {
             videoTitle.setText(fileName);
         } else {
