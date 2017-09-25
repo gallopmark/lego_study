@@ -16,7 +16,7 @@ import android.widget.TextView;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haoyu.app.base.BaseActivity;
@@ -82,8 +82,12 @@ public class CoursewareFileActivity extends BaseActivity {
     RoundRectProgressBar progressBar;
     @BindView(R.id.iv_pause)
     ImageView iv_pause;
+    @BindView(R.id.rl_pdf)
+    RelativeLayout rl_pdf;
     @BindView(R.id.pdfView)
     PDFView pdfView;
+    @BindView(R.id.tv_page)
+    TextView tv_page;
     @BindView(R.id.tv_txt)
     TextView tv_txt;
     private boolean running, needUpload, isDownload, isKonw;
@@ -213,13 +217,19 @@ public class CoursewareFileActivity extends BaseActivity {
 
     private void openPdfFile(String filePath) {
         ll_fileInfo.setVisibility(View.GONE);
-        pdfView.setVisibility(View.VISIBLE);
+        rl_pdf.setVisibility(View.VISIBLE);
         pdfView.fromFile(new File(filePath))
                 .swipeHorizontal(true)
                 .defaultPage(0)
                 .enableDoubletap(true)
                 .enableSwipe(false)
-                .scrollHandle(new DefaultScrollHandle(context))
+                .onPageChange(new OnPageChangeListener() {
+                    @Override
+                    public void onPageChanged(int page, int pageCount) {
+                        tv_page.setText((page + 1) + "/" + pageCount);
+                    }
+                })
+                .scrollHandle(null)
                 .onLoad(new OnLoadCompleteListener() {
                     @Override
                     public void loadComplete(int nbPages) {
