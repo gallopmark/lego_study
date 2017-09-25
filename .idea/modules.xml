@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/baserecycleview_adapter/baserecycleview_adapter.iml" filepath="$PROJECT_DIR$/baserecycleview_adapter/baserecycleview_adapter.iml" />
       <module fileurl="file://$PROJECT_DIR$/lego_study.iml" filepath="$PROJECT_DIR$/lego_study.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lego_study-1.iml" filepath="$PROJECT_DIR$/lego_study-1.iml" />
       <module fileurl="file://$PROJECT_DIR$/zxingLib/zxingLib.iml" filepath="$PROJECT_DIR$/zxingLib/zxingLib.iml" />
     </modules>
   </component>
