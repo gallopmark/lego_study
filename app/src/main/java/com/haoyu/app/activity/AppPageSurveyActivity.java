@@ -188,8 +188,13 @@ public class AppPageSurveyActivity extends BaseActivity implements View.OnClickL
                 if (i == 0) {
                     iv_prev.setEnabled(false);
                     if (surveyAnswers.size() > 1) {
+                        iv_next.setEnabled(true);
                         ll_right.setVisibility(View.VISIBLE);
                         bt_commit.setVisibility(View.INVISIBLE);
+                    } else {
+                        iv_next.setEnabled(false);
+                        ll_right.setVisibility(View.INVISIBLE);
+                        bt_commit.setVisibility(View.VISIBLE);
                     }
                 } else if (i == surveyAnswers.size() - 1) {
                     iv_next.setEnabled(false);

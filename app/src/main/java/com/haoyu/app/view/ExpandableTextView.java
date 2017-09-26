@@ -9,6 +9,8 @@ import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.SparseBooleanArray;
@@ -241,12 +243,37 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
         setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
     }
 
-    public void setHtmlText(@Nullable String text) {
+    public void setHtmlText(@Nullable CharSequence text) {
         mRelayout = true;
         if (mTv instanceof HtmlTextView) {
-            ((HtmlTextView) mTv).setHtml(text, new HtmlHttpImageGetter(mTv));
-            setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+            ((HtmlTextView) mTv).setHtml(text.toString(), new HtmlHttpImageGetter(mTv));
+        } else {
+            Spanned spanned = Html.fromHtml(text.toString());
+            mTv.setText(spanned);
         }
+        setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+    }
+
+    public void setHtmlText(@Nullable CharSequence text, String baseUrl) {
+        mRelayout = true;
+        if (mTv instanceof HtmlTextView) {
+            ((HtmlTextView) mTv).setHtml(text.toString(), new HtmlHttpImageGetter(mTv, baseUrl));
+        } else {
+            Spanned spanned = Html.fromHtml(text.toString(), new HtmlHttpImageGetter(mTv, baseUrl), null);
+            mTv.setText(spanned);
+        }
+        setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
+    }
+
+    public void setHtmlText(@Nullable CharSequence text, String baseUrl, boolean matchParentWidth) {
+        mRelayout = true;
+        if (mTv instanceof HtmlTextView) {
+            ((HtmlTextView) mTv).setHtml(text.toString(), new HtmlHttpImageGetter(mTv, baseUrl, matchParentWidth));
+        } else {
+            Spanned spanned = Html.fromHtml(text.toString(), new HtmlHttpImageGetter(mTv, baseUrl, matchParentWidth), null);
+            mTv.setText(spanned);
+        }
+        setVisibility(TextUtils.isEmpty(text) ? View.GONE : View.VISIBLE);
     }
 
     public void setText(@Nullable CharSequence text, @NonNull SparseBooleanArray collapsedStatus, int position) {
@@ -313,9 +340,9 @@ public class ExpandableTextView extends LinearLayout implements View.OnClickList
     }
 
     private void findViews() {
-        mTv = (TextView) findViewById(R.id.expandable_text);
+        mTv = findViewById(R.id.expandable_text);
 //        mTv.setOnClickListener(this);
-        mButton = (Button) findViewById(R.id.expand_collapse);
+        mButton = findViewById(R.id.expand_collapse);
         if (mCollapsed) {
             mButton.setText(mExpandText);
             if (mExpandDrawable != null) {

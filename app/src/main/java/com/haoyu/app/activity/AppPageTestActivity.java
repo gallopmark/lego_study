@@ -90,6 +90,8 @@ public class AppPageTestActivity extends BaseActivity implements View.OnClickLis
             TestPagerAdapter adapter = new TestPagerAdapter(mTestEntity.getmQuestions());
             viewPager.setAdapter(adapter);
             toolBar.setTitle_text((viewPager.getCurrentItem() + 1) + "/" + testList.size());
+            if (testList.size() < 1)
+                bt_submit.setVisibility(View.VISIBLE);
             iv_prev.setEnabled(false);
             showGestureDialog();
         }
@@ -136,6 +138,12 @@ public class AppPageTestActivity extends BaseActivity implements View.OnClickLis
             public void onPageSelected(int i) {
                 if (i == 0) {
                     iv_prev.setEnabled(false);
+                    if (testList.size() > 1)
+                        iv_next.setEnabled(true);
+                    else {
+                        iv_next.setEnabled(false);
+                        bt_submit.setVisibility(View.VISIBLE);
+                    }
                 } else if (i >= testList.size() - 1) {
                     iv_next.setEnabled(false);
                     bt_submit.setVisibility(View.VISIBLE);
