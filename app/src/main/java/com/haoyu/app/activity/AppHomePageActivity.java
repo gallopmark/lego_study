@@ -8,6 +8,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -188,9 +189,16 @@ public class AppHomePageActivity extends BaseActivity implements View.OnClickLis
         GlideImgManager.loadCircleImage(context, getAvatar(), R.drawable.user_default,
                 R.drawable.user_default, iv_userIco);
         tv_userName = getView(menuView, R.id.tv_userName);
-        tv_userName.setText(getRealName());
         tv_deptName = getView(menuView, R.id.tv_deptName);
-        tv_deptName.setText(getDeptName());
+        if (TextUtils.isEmpty(getRealName()))
+            tv_userName.setText("请填写用户名");
+        else
+            tv_userName.setText(getRealName());
+        tv_deptName = menuView.findViewById(R.id.tv_deptName);
+        if (TextUtils.isEmpty(getDeptName()))
+            tv_deptName.setText("请选择单位");
+        else
+            tv_deptName.setText(getDeptName());
         TextView tv_learn = getView(menuView, R.id.tv_learn);  //学习
         tv_learn.setOnClickListener(context);
         TextView tv_teaching = getView(menuView, R.id.tv_teaching); //教研

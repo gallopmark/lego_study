@@ -34,16 +34,17 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/margin_size_16"
-                    android:gravity="center_vertical|left"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/tv_userName"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical|left"
+                        android:ellipsize="end"
+                        android:gravity="center|left"
+                        android:maxLines="1"
                         android:textColor="@color/white"
                         android:textSize="@dimen/font_size_18" />
 
@@ -51,8 +52,10 @@
                         android:id="@+id/tv_deptName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:gravity="center_vertical|left"
-                        android:paddingTop="5dp"
+                        android:ellipsize="end"
+                        android:gravity="center|left"
+                        android:maxLines="1"
+                        android:paddingTop="@dimen/margin_size_6"
                         android:textColor="@color/spaceColor"
                         android:textSize="@dimen/font_size_14" />
                 </LinearLayout>
