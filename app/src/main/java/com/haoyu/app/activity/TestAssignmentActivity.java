@@ -202,7 +202,6 @@ public class TestAssignmentActivity extends BaseActivity implements OnClickListe
     }
 
     private AppActivityViewResult mResult;
-
     // 获取内容
     private void showContent(AppActivityViewResult response) {
         mResult = response;

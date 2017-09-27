@@ -18,7 +18,6 @@ import com.haoyu.app.xrecyclerview.XRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import butterknife.BindView;
 import okhttp3.Request;
 

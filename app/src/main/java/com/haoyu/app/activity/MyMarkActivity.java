@@ -58,11 +58,9 @@ public class MyMarkActivity extends BaseActivity implements View.OnClickListener
     private String mAllMarkNum;//总共需要领取的作业数量;
     private Intent intent;
     private CorrectmarkAdapter mCorrectAdapter;
-
     private LoadingDialog dialog;
     @BindView(R.id.data_warn)
     TextView mDataWarn;//没有数据的时候的提醒
-
     @BindView(R.id.loadingView)
     LoadingView loadingView;
     @BindView(R.id.loadFailView)
@@ -82,13 +80,11 @@ public class MyMarkActivity extends BaseActivity implements View.OnClickListener
         assignmentId = intent.getStringExtra("id");
         relationId = intent.getStringExtra("relationId");
         mAllMarkNum = intent.getStringExtra("allMarkNum");
-
         FullyLinearLayoutManager manager = new FullyLinearLayoutManager(context);
         manager.setOrientation(FullyLinearLayoutManager.VERTICAL);
         mMarkListView.setLayoutManager(manager);
         mCorrectAdapter = new CorrectmarkAdapter(context, receiveAssignmentList, aid, uid, idList);
         mMarkListView.setAdapter(mCorrectAdapter);
-
     }
 
 
