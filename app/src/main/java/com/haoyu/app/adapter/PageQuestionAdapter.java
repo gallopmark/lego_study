@@ -72,22 +72,17 @@ public class PageQuestionAdapter extends BaseArrayRecyclerAdapter<FAQsEntity> {
         } else {
             userIco.setImageResource(R.drawable.user_default);
         }
-        if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
+        if (entity.getCreator() != null && entity.getCreator().getRealName() != null)
             userName.setText(entity.getCreator().getRealName());
-        } else {
-            userName.setText("匿名用户");
-        }
+        else
+            userName.setText("");
         question.setText(entity.getContent());
-        if (entity.getFaqAnswers() != null
-                && (entity.getFaqAnswers().size() > 0)) {
+        if (entity.getFaqAnswers() != null && (entity.getFaqAnswers().size() > 0)) {
             answer.setText(entity.getFaqAnswers().get(0).getContent());
         } else {
             answer.setText("暂无最佳答案");
         }
-        if (entity.getCreateTime() != null) {
-            answerDate.setText(TimeUtil.getSlashDate(entity
-                    .getCreateTime().longValue()));
-        }
+        answerDate.setText(TimeUtil.getSlashDate(entity.getCreateTime()));
         if (type == 1)
             tv_collection.setVisibility(View.VISIBLE);
         else

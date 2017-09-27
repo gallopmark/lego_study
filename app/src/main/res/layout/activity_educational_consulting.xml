@@ -38,7 +38,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
             android:gravity="center_horizontal"
-            android:text="020-34113597"
+            android:text="400-998-9352"
             android:textColor="@color/defaultColor"
             android:textSize="30sp" />
 

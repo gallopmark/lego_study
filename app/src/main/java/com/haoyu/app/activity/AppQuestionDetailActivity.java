@@ -3,7 +3,6 @@ package com.haoyu.app.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.Html;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 import com.haoyu.app.adapter.AppAnswerListAdapter;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
+import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.FAQsAnswerEntity;
 import com.haoyu.app.entity.FAQsAnswerListResult;
 import com.haoyu.app.entity.FAQsEntity;
@@ -31,7 +31,6 @@ import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.OkHttpClientManager.ResultCallback;
 import com.haoyu.app.utils.ScreenUtils;
-import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
 import com.haoyu.app.view.GoodView;
 import com.haoyu.app.view.RippleView;
@@ -51,7 +50,6 @@ import okhttp3.Request;
 public class AppQuestionDetailActivity extends BaseActivity implements
         OnClickListener, XRecyclerView.LoadingListener {
     private AppAnswerListAdapter adapter; // 答案列表适配器
-    private ImageView answer_userIco; // 最佳答案用户头像
     private AppQuestionDetailActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
@@ -69,9 +67,6 @@ public class AppQuestionDetailActivity extends BaseActivity implements
     private String orders = "CREATE_TIME.ASC"; // 按创建时间，创建最早时间排前
     private int page = 1;
     private String questionId, type;
-    private TextView tv_answer_date;
-    private TextView tv_answer_userName;
-    private TextView tv_bestAnswer_content;
     private TextView tv_isCollected;
     private ImageView iv_isCollected;
     private TextView tv_question_content;
@@ -87,7 +82,7 @@ public class AppQuestionDetailActivity extends BaseActivity implements
     @Override
     public void initView() {
         type = getIntent().getStringExtra("type");
-        faQsEntity = ((FAQsEntity) getIntent().getSerializableExtra("entity"));
+        faQsEntity = (FAQsEntity) getIntent().getSerializableExtra("entity");
         questionId = faQsEntity.getId();
         headerView = getLayoutInflater().inflate(R.layout.wenda_listview_head_view, null, false);
         LinearLayout.LayoutParams headParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -98,17 +93,13 @@ public class AppQuestionDetailActivity extends BaseActivity implements
         iv_isCollected = getView(headerView, R.id.iv_guanzhu);
         ic_question = getView(headerView, R.id.ic_question);
         tv_question_content = getView(headerView, R.id.tv_question);
-        answer_userIco = getView(headerView, R.id.answer_userIco);
-        tv_answer_userName = getView(headerView, R.id.tv_answer_userName);
-        tv_bestAnswer_content = getView(headerView, R.id.tv_bestAnswer);
-        tv_answer_date = getView(headerView, R.id.answer_date);
         emptyAnswer = getView(headerView, R.id.emptyAnswer);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         params.setMargins(0, (int) (0.22D * tv_question_content.getLineHeight()), 0, 0);
         ic_question.setLayoutParams(params);
-        adapter = new AppAnswerListAdapter(context, answerList, getUserId());
+        adapter = new AppAnswerListAdapter(context, answerList);
         xRecyclerView.addHeaderView(headerView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -135,7 +126,7 @@ public class AppQuestionDetailActivity extends BaseActivity implements
         if (mobileUser != null && mobileUser.getRealName() != null) {
             tv_userName.setText(mobileUser.getRealName());
         } else {
-            tv_userName.setText("匿名用户");
+            tv_userName.setText("");
         }
         tv_question_content.setText(faQsEntity.getContent());
         if (type.equals("course")) {
@@ -214,26 +205,22 @@ public class AppQuestionDetailActivity extends BaseActivity implements
         } else {
             xRecyclerView.setLoadingMoreEnabled(false);
         }
-        FAQsAnswerEntity bestAnswer = answerList.get(0);
-        MobileUser mobileUser = bestAnswer.getCreator();
-        if (mobileUser.getAvatar() != null) {
-            GlideImgManager.loadCircleImage(context, mobileUser.getAvatar(),
-                    R.drawable.user_default, R.drawable.user_default, answer_userIco);
-        } else {
-            answer_userIco.setImageResource(R.drawable.user_default);
-        }
-        if (mobileUser.getRealName() != null) {
-            tv_answer_userName.setText(mobileUser.getRealName());
-        } else {
-            tv_answer_userName.setText("匿名用户");
-        }
-        tv_bestAnswer_content.setText(Html
-                .fromHtml("<font color='#01AE37'>[已采纳的答案] </font>"
-                        + bestAnswer.getContent()));
-        if (bestAnswer.getCreateTime() != null) {
-            tv_answer_date.setText(TimeUtil.getSlashDate(bestAnswer
-                    .getCreateTime()));
-        }
+//        FAQsAnswerEntity bestAnswer = answerList.get(0);
+//        MobileUser mobileUser = bestAnswer.getCreator();
+//        if (mobileUser.getAvatar() != null) {
+//            GlideImgManager.loadCircleImage(context, mobileUser.getAvatar(),
+//                    R.drawable.user_default, R.drawable.user_default, answer_userIco);
+//        } else {
+//            answer_userIco.setImageResource(R.drawable.user_default);
+//        }
+//        if (mobileUser.getRealName() != null) {
+//            tv_answer_userName.setText(mobileUser.getRealName());
+//        } else {
+//            tv_answer_userName.setText("匿名用户");
+//        }
+//        String bestAsText = "<font color='#01AE37'> [已采纳的答案] </font>" + bestAnswer.getContent();
+//        tv_bestAnswer_content.setText(Html.fromHtml(bestAsText));
+//        tv_answer_date.setText(TimeUtil.getSlashDate(bestAnswer.getCreateTime()));
     }
 
     private int alterPosition;
@@ -254,25 +241,108 @@ public class AppQuestionDetailActivity extends BaseActivity implements
         tv_answer.setOnClickListener(context);
         tv_isCollected.setOnClickListener(context);
         iv_isCollected.setOnClickListener(context);
-        adapter.setDisposeCallBack(new AppAnswerListAdapter.ItemDisposeCallBack() {
+        adapter.setOnItemLongClickListener(new AppAnswerListAdapter.OnItemLongClickListener() {
             @Override
-            public void onAlter(FAQsAnswerEntity entity, int position) {   //修改回答
-                alterPosition = position;
-                Intent intent = new Intent();
-                intent.setClass(context, AppQuestionEditActivity.class);
-                intent.putExtra("isAlterAnswer", true);
-                intent.putExtra("answerId", entity.getId());
-                intent.putExtra("content", entity.getContent());
-                startActivityForResult(intent, alterCode);
-            }
-
-            @Override
-            public void onDelete(FAQsAnswerEntity entity, int position) {  //删除回答
-                deleteAnswer(position);
+            public void onItemLongClick(FAQsAnswerEntity entity, int position) {
+                if (entity.getCreator() != null && entity.getCreator().getId() != null && entity.getCreator().getId().equals(getUserId()))
+                    answerDialog(entity, position);
             }
         });
     }
 
+    private void bottomDialog() {
+        View view = getLayoutInflater().inflate(R.layout.dialog_discussion_delete, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context).create();
+        RippleView rv_delete = view.findViewById(R.id.rv_delete);
+        RippleView rv_cancel = view.findViewById(R.id.rv_cancel);
+        rv_delete.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+            public void onComplete(RippleView rippleView) {
+                dialog.dismiss();
+                deleteQuestion();
+            }
+        });
+        rv_cancel.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
+            public void onComplete(RippleView rippleView) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+        dialog.getWindow().setLayout(ScreenUtils.getScreenWidth(context), LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setWindowAnimations(R.style.dialog_anim);
+        dialog.getWindow().setContentView(view);
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
+    private void deleteQuestion() {
+        String url = Constants.OUTRT_NET + "/m/faq_question/" + faQsEntity.getId();
+        Map<String, String> map = new HashMap<>();
+        map.put("_method", "delete");
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new ResultCallback<BaseResponseResult>() {
+            @Override
+            public void onBefore(Request request) {
+                showTipDialog();
+            }
+
+            @Override
+            public void onError(Request request, Exception e) {
+                hideTipDialog();
+                onNetWorkError(context);
+            }
+
+            @Override
+            public void onResponse(BaseResponseResult response) {
+                hideTipDialog();
+                if (response != null && response.getResponseCode() != null
+                        && response.getResponseCode().equals("00")) {
+                    MessageEvent event = new MessageEvent();
+                    event.action = Action.DELETE_FAQ_QUESTION;
+                    event.obj = faQsEntity;
+                    RxBus.getDefault().post(event);
+                    toastFullScreen("成功删除，返回上一级", true);
+                    finish();
+                }
+            }
+        }, map));
+    }
+
+    private void answerDialog(final FAQsAnswerEntity entity, final int position) {
+        View view = getLayoutInflater().inflate(R.layout.dialog_faqanswer, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context).create();
+        TextView tv_edit = view.findViewById(R.id.tv_edit);
+        TextView tv_delete = view.findViewById(R.id.tv_delete);
+        TextView tv_cancel = view.findViewById(R.id.tv_cancel);
+        OnClickListener listener = new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                switch (view.getId()) {
+                    case R.id.tv_edit:
+                        alterPosition = position;
+                        Intent intent = new Intent(context, AppQuestionEditActivity.class);
+                        intent.putExtra("isAlterAnswer", true);
+                        intent.putExtra("answerId", entity.getId());
+                        intent.putExtra("content", entity.getContent());
+                        startActivityForResult(intent, alterCode);
+                        break;
+                    case R.id.tv_delete:
+                        deleteAnswer(position);
+                        break;
+                    case R.id.tv_cancel:
+                        break;
+                }
+                dialog.dismiss();
+            }
+        };
+        tv_edit.setOnClickListener(listener);
+        tv_delete.setOnClickListener(listener);
+        tv_cancel.setOnClickListener(listener);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.show();
+        dialog.getWindow().setLayout(ScreenUtils.getScreenWidth(context), LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setWindowAnimations(R.style.dialog_anim);
+        dialog.getWindow().setContentView(view);
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
 
     /**
      * 删除回答
@@ -280,31 +350,43 @@ public class AppQuestionDetailActivity extends BaseActivity implements
      * @param position
      */
     private void deleteAnswer(final int position) {
-        String url = Constants.OUTRT_NET + "/m/faq_answer/" + answerList.get(position).getId();
-        Map<String, String> map = new HashMap<>();
-        map.put("_method", "delete");
-        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+        MaterialDialog dialog = new MaterialDialog(context);
+        dialog.setTitle("温馨提示");
+        dialog.setMessage("您确定删除此回答吗？");
+        dialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
             @Override
-            public void onBefore(Request request) {
-                showTipDialog();
-            }
-
-            public void onError(Request request, Exception exception) {
-                hideTipDialog();
-                onNetWorkError(context);
-            }
-
-            public void onResponse(BaseResponseResult response) {
-                hideTipDialog();
-                if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
-                    answerList.remove(position);
-                    adapter.notifyDataSetChanged();
-                    if (answerList.size() <= 0) {
-                        emptyAnswer.setVisibility(View.VISIBLE);
+            public void onClick(View v, AlertDialog dialog) {
+                String url = Constants.OUTRT_NET + "/m/faq_answer/" + answerList.get(position).getId();
+                Map<String, String> map = new HashMap<>();
+                map.put("_method", "delete");
+                addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+                    @Override
+                    public void onBefore(Request request) {
+                        showTipDialog();
                     }
-                }
+
+                    public void onError(Request request, Exception exception) {
+                        hideTipDialog();
+                        onNetWorkError(context);
+                    }
+
+                    public void onResponse(BaseResponseResult response) {
+                        hideTipDialog();
+                        if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
+                            answerList.remove(position);
+                            adapter.notifyDataSetChanged();
+                            if (answerList.size() <= 0) {
+                                emptyAnswer.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    }
+                }, map));
             }
-        }, map));
+        });
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.setNegativeButton("取消", null);
+        dialog.show();
     }
 
     @Override
@@ -333,64 +415,6 @@ public class AppQuestionDetailActivity extends BaseActivity implements
                 break;
         }
 
-    }
-
-    private void bottomDialog() {
-        View view = getLayoutInflater().inflate(
-                R.layout.dialog_discussion_delete, null);
-        final AlertDialog bottomDialog = new AlertDialog.Builder(context).create();
-        RippleView rv_delete = view.findViewById(R.id.rv_delete);
-        RippleView rv_cancel = view.findViewById(R.id.rv_cancel);
-        rv_delete.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-            public void onComplete(RippleView rippleView) {
-                bottomDialog.dismiss();
-                deleteQuestion();
-            }
-        });
-        rv_cancel.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-            public void onComplete(RippleView rippleView) {
-                bottomDialog.dismiss();
-            }
-        });
-        bottomDialog.show();
-        bottomDialog.getWindow().setLayout(
-                ScreenUtils.getScreenWidth(context),
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        bottomDialog.getWindow().setWindowAnimations(R.style.dialog_anim);
-        bottomDialog.getWindow().setContentView(view);
-        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
-    }
-
-    private void deleteQuestion() {
-        String url = Constants.OUTRT_NET + "/m/faq_question/" + faQsEntity.getId();
-        Map<String, String> map = new HashMap<>();
-        map.put("_method", "delete");
-        addSubscription(OkHttpClientManager.postAsyn(context, url, new ResultCallback<BaseResponseResult>() {
-            @Override
-            public void onBefore(Request request) {
-                showTipDialog();
-            }
-
-            @Override
-            public void onError(Request request, Exception e) {
-                hideTipDialog();
-                onNetWorkError(context);
-            }
-
-            @Override
-            public void onResponse(BaseResponseResult response) {
-                hideTipDialog();
-                if (response != null && response.getResponseCode() != null
-                        && response.getResponseCode().equals("00")) {
-                    MessageEvent event = new MessageEvent();
-                    event.action = Action.DELETE_COURSE_QUESTION;
-                    event.obj = faQsEntity;
-                    RxBus.getDefault().post(event);
-                    toastFullScreen("成功删除，返回上一级", true);
-                    finish();
-                }
-            }
-        }, map));
     }
 
     /**
@@ -486,6 +510,9 @@ public class AppQuestionDetailActivity extends BaseActivity implements
                     } else {
                         toastFullScreen("发表回答成功", true);
                     }
+                    MessageEvent event = new MessageEvent();
+                    event.action = Action.CREATE_FAQ_ANSWER;
+                    RxBus.getDefault().post(event);
                 }
                 break;
             case alterCode:

@@ -25,7 +25,6 @@ import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.SharePreferenceHelper;
-import com.haoyu.app.utils.Validator;
 import com.haoyu.app.view.AppCheckBox;
 
 import java.util.HashMap;
@@ -188,10 +187,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     toast(context, "请输入密码");
                     return;
                 }
-                if (!Validator.isPassword(passWord)) {
-                    toast(context, "无效密码");
-                    return;
-                }
+//                if (!Validator.isPassword(passWord)) {
+//                    toast(context, "无效密码");
+//                    return;
+//                }
                 bt_login.setEnabled(false);
                 login(userName, passWord);
                 return;

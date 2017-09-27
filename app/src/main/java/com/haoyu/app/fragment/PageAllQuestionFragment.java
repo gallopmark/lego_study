@@ -1,5 +1,6 @@
 package com.haoyu.app.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -55,6 +56,8 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
     private int page = 1;
     private boolean isRefresh, isLoadMore;
     private OnResponseListener onResponseListener;
+    private int questionIndex = -1;
+    private final int ANSWER_CODE = 10;
 
     public void setOnResponseListener(OnResponseListener onResponseListener) {
         this.onResponseListener = onResponseListener;
@@ -172,21 +175,23 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
         adapter.setAnswerCallBack(new PageQuestionAdapter.AnswerCallBack() {
             @Override
             public void answer(int position, FAQsEntity entity) {
+                questionIndex = position;
                 Intent intent = new Intent();
                 intent.setClass(context, AppQuestionEditActivity.class);
                 intent.putExtra("isAnswer", true);
                 intent.putExtra("questionId", entity.getId());
-                startActivity(intent);
+                startActivityForResult(intent, ANSWER_CODE);
             }
         });
         adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                 if (position - 1 >= 0 && position - 1 < mDatas.size()) {
+                    questionIndex = position - 1;
                     Intent intent = new Intent();
                     intent.setClass(context, AppQuestionDetailActivity.class);
                     intent.putExtra("type", type);
-                    intent.putExtra("entity", mDatas.get(position - 1));
+                    intent.putExtra("entity", mDatas.get(questionIndex));
                     startActivity(intent);
                 }
             }
@@ -277,15 +282,25 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, requestCode, data);
+        if (requestCode == ANSWER_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            int faqAnswerCount = mDatas.get(questionIndex).getFaqAnswerCount() + 1;
+            mDatas.get(questionIndex).setFaqAnswerCount(faqAnswerCount);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     public void obBusEvent(MessageEvent event) {
-        if (event.getAction().equals(Action.ALTER_COURSE_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
+        if (event.getAction().equals(Action.ALTER_FAQ_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
             FAQsEntity entity = (FAQsEntity) event.obj;
             if (mDatas.indexOf(entity) != -1) {
                 int index = mDatas.indexOf(entity);
                 mDatas.set(index, entity);
                 adapter.notifyDataSetChanged();
             }
-        } else if (event.getAction().equals(Action.CREATE_COURSE_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
+        } else if (event.getAction().equals(Action.CREATE_FAQ_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
             FAQsEntity entity = (FAQsEntity) event.obj;
             if (!xRecyclerView.isLoadingMoreEnabled()) {
                 mDatas.add(entity);
@@ -302,7 +317,7 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
                 mDatas.set(index, entity);
                 adapter.notifyDataSetChanged();
             }
-        } else if (event.getAction().equals(Action.DELETE_COURSE_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
+        } else if (event.getAction().equals(Action.DELETE_FAQ_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
             FAQsEntity entity = (FAQsEntity) event.obj;
             mDatas.remove(entity);
             adapter.notifyDataSetChanged();
@@ -310,6 +325,10 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
                 xRecyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             }
+        } else if (event.getAction().equals(Action.CREATE_FAQ_ANSWER)) {
+            int faqAnswerCount = mDatas.get(questionIndex).getFaqAnswerCount() + 1;
+            mDatas.get(questionIndex).setFaqAnswerCount(faqAnswerCount);
+            adapter.notifyDataSetChanged();
         }
     }
 

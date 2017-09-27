@@ -1,105 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.haoyu.app.swipe.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipeLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/smContentView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_size_10">
+
+        <ImageView
+            android:id="@+id/answer_userIco"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/margin_size_10">
-
-            <ImageView
-                android:id="@+id/answer_userIco"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:scaleType="centerCrop" />
+            android:layout_marginLeft="@dimen/margin_size_10"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_size_10"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tv_userName"
-                        android:layout_width="0.0dip"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1.0"
-                        android:gravity="left"
-                        android:paddingRight="@dimen/margin_size_12"
-                        android:textColor="@color/defaultColor"
-                        android:textSize="@dimen/font_size_16" />
-
-                    <TextView
-                        android:id="@+id/tv_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/margin_size_10"
-                        android:layout_toRightOf="@+id/userIco"
-                        android:gravity="left"
-                        android:textColor="@color/gray_text"
-                        android:textSize="@dimen/font_size_14" />
-                </LinearLayout>
+                android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/tv_content"
+                    android:id="@+id/tv_userName"
+                    android:layout_width="0.0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.0"
+                    android:gravity="left"
+                    android:paddingRight="@dimen/margin_size_12"
+                    android:textColor="@color/defaultColor"
+                    android:textSize="@dimen/font_size_16" />
+
+                <TextView
+                    android:id="@+id/tv_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_size_6"
-                    android:ellipsize="end"
+                    android:layout_marginLeft="@dimen/margin_size_10"
+                    android:layout_toRightOf="@+id/userIco"
                     android:gravity="left"
-                    android:maxLines="2"
-                    android:textSize="@dimen/font_size_17" />
+                    android:textColor="@color/gray_text"
+                    android:textSize="@dimen/font_size_14" />
             </LinearLayout>
+
+            <com.haoyu.app.view.ExpandableTextView
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:collapseDrawable="@drawable/course_shouqi"
+                app:collapseText="收起内容"
+                app:expandDrawable="@drawable/course_zhankai"
+                app:expandText="展开内容"
+                app:maxCollapsedLines="3">
+
+                <TextView
+                    android:id="@id/expandable_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/margin_size_4"
+                    android:textSize="@dimen/font_size_16" />
+
+                <Button
+                    android:id="@id/expand_collapse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:drawablePadding="@dimen/margin_size_4"
+                    android:background="@color/transparent"
+                    android:textColor="@color/defaultColor"
+                    android:textSize="@dimen/font_size_16"
+                    android:visibility="gone" />
+            </com.haoyu.app.view.ExpandableTextView>
         </LinearLayout>
-
-        <View
-            android:id="@+id/line"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/margin_size_1"
-            android:background="@color/spaceColor" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/bt_alter"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/gray"
-            android:paddingLeft="@dimen/margin_size_20"
-            android:paddingRight="@dimen/margin_size_20"
-            android:text="编辑"
-            android:visibility="gone"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_size_16" />
-
-        <Button
-            android:id="@+id/bt_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:background="@color/red"
-            android:paddingLeft="@dimen/margin_size_20"
-            android:paddingRight="@dimen/margin_size_20"
-            android:text="删除"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_size_16" />
-    </LinearLayout>
-</com.haoyu.app.swipe.SwipeMenuLayout>
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+</LinearLayout>

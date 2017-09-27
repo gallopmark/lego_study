@@ -1,5 +1,6 @@
 package com.haoyu.app.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -54,6 +55,8 @@ public class PageNoticeQuestionFragment extends BaseFragment implements XRecycle
     private int page = 1;
     private boolean isRefresh, isLoadMore;
     private FAQsEntity selectEntity;
+    private int questionIndex = -1;
+    private final int ANSWER_CODE = 10;
 
     @Override
     public int createView() {
@@ -154,6 +157,7 @@ public class PageNoticeQuestionFragment extends BaseFragment implements XRecycle
             @Override
             public void answer(int position, FAQsEntity entity) {
                 selectEntity = entity;
+                questionIndex = position;
                 Intent intent = new Intent();
                 intent.setClass(context, AppQuestionEditActivity.class);
                 intent.putExtra("isAnswer", true);
@@ -165,10 +169,10 @@ public class PageNoticeQuestionFragment extends BaseFragment implements XRecycle
             @Override
             public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                 if (position - 1 >= 0 && position - 1 < mDatas.size()) {
+                    questionIndex = position - 1;
                     selectEntity = mDatas.get(position - 1);
                     Intent intent = new Intent();
-                    intent.setClass(getActivity(),
-                            AppQuestionDetailActivity.class);
+                    intent.setClass(getActivity(), AppQuestionDetailActivity.class);
                     intent.putExtra("type", "course");
                     intent.putExtra("entity", selectEntity);
                     startActivity(intent);
@@ -225,15 +229,25 @@ public class PageNoticeQuestionFragment extends BaseFragment implements XRecycle
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, requestCode, data);
+        if (requestCode == ANSWER_CODE && resultCode == Activity.RESULT_OK && data != null) {
+            int faqAnswerCount = mDatas.get(questionIndex).getFaqAnswerCount() + 1;
+            mDatas.get(questionIndex).setFaqAnswerCount(faqAnswerCount);
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     public void obBusEvent(MessageEvent event) {
-        if (event.getAction().equals(Action.CREATE_COURSE_ANSWER)) {
+        if (event.getAction().equals(Action.CREATE_FAQ_ANSWER)) {
             if (mDatas.indexOf(selectEntity) != -1) {
                 int index = mDatas.indexOf(selectEntity);
                 int count = mDatas.get(index).getFaqAnswerCount() + 1;
                 mDatas.get(index).setFaqAnswerCount(count);
                 adapter.notifyDataSetChanged();
             }
-        } else if (event.getAction().equals(Action.ALTER_COURSE_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
+        } else if (event.getAction().equals(Action.ALTER_FAQ_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
             FAQsEntity entity = (FAQsEntity) event.obj;
             if (mDatas.indexOf(entity) != -1) {
                 int index = mDatas.indexOf(entity);
@@ -263,13 +277,17 @@ public class PageNoticeQuestionFragment extends BaseFragment implements XRecycle
                     emptyView.setVisibility(View.GONE);
                 }
             }
-        } else if (event.equals(Action.DELETE_COURSE_QUESTION)) {
+        } else if (event.equals(Action.DELETE_FAQ_QUESTION)) {
             mDatas.remove(selectEntity);
             adapter.notifyDataSetChanged();
             if (mDatas.size() == 0) {
                 xRecyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             }
+        } else if (event.getAction().equals(Action.CREATE_FAQ_ANSWER)) {
+            int faqAnswerCount = mDatas.get(questionIndex).getFaqAnswerCount() + 1;
+            mDatas.get(questionIndex).setFaqAnswerCount(faqAnswerCount);
+            adapter.notifyDataSetChanged();
         }
     }
 }

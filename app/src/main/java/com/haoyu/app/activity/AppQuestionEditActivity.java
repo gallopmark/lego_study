@@ -188,7 +188,7 @@ public class AppQuestionEditActivity extends BaseActivity implements OnClickList
             public void onResponse(FAQsResult response) {
                 if (response != null && response.getResponseData() != null) {
                     MessageEvent event = new MessageEvent();
-                    event.action = Action.ALTER_COURSE_QUESTION;
+                    event.action = Action.ALTER_FAQ_QUESTION;
                     event.obj = response.getResponseData();
                     RxBus.getDefault().post(event);
                     finish();
@@ -331,7 +331,7 @@ public class AppQuestionEditActivity extends BaseActivity implements OnClickList
                             entity.getCreator().setRealName(getRealName());
                     }
                     MessageEvent event = new MessageEvent();
-                    event.action = Action.CREATE_COURSE_QUESTION;
+                    event.action = Action.CREATE_FAQ_QUESTION;
                     event.obj = entity;
                     RxBus.getDefault().post(event);
                     toastFullScreen("问题发布成功！", true);

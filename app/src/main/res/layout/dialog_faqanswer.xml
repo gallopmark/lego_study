@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_click_selector"
+        android:gravity="center"
+        android:paddingBottom="@dimen/margin_size_12"
+        android:paddingTop="@dimen/margin_size_12"
+        android:text="编辑"
+        android:textColor="@color/defaultColor"
+        android:textSize="@dimen/font_size_18" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+
+    <TextView
+        android:id="@+id/tv_delete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_click_selector"
+        android:gravity="center"
+        android:paddingBottom="@dimen/margin_size_12"
+        android:paddingTop="@dimen/margin_size_12"
+        android:text="删除"
+        android:textColor="@color/red_text"
+        android:textSize="@dimen/font_size_18" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_12"
+        android:background="@color/spaceColor" />
+
+    <TextView
+        android:id="@+id/tv_cancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/item_click_selector"
+        android:gravity="center"
+        android:paddingBottom="@dimen/margin_size_12"
+        android:paddingTop="@dimen/margin_size_12"
+        android:text="取消"
+        android:textColor="@color/blow_gray"
+        android:textSize="@dimen/font_size_18" />
+</LinearLayout>
