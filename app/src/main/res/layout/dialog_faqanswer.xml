@@ -1,52 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_edit"
+    <com.haoyu.app.view.RippleView
+        android:id="@+id/rv_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_click_selector"
-        android:gravity="center"
-        android:paddingBottom="@dimen/margin_size_12"
-        android:paddingTop="@dimen/margin_size_12"
-        android:text="编辑"
-        android:textColor="@color/defaultColor"
-        android:textSize="@dimen/font_size_18" />
+        app:rv_centered="true"
+        app:rv_color="@color/darkslategray"
+        app:rv_rippleDuration="100"
+        app:rv_type="simpleRipple">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/margin_size_12"
+            android:paddingTop="@dimen/margin_size_12"
+            android:text="编辑"
+            android:textColor="@color/defaultColor"
+            android:textSize="@dimen/font_size_18" />
+    </com.haoyu.app.view.RippleView>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_size_1"
         android:background="@color/spaceColor" />
 
-    <TextView
-        android:id="@+id/tv_delete"
+    <com.haoyu.app.view.RippleView
+        android:id="@+id/rv_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_click_selector"
-        android:gravity="center"
-        android:paddingBottom="@dimen/margin_size_12"
-        android:paddingTop="@dimen/margin_size_12"
-        android:text="删除"
-        android:textColor="@color/red_text"
-        android:textSize="@dimen/font_size_18" />
+        app:rv_centered="true"
+        app:rv_color="@color/darkslategray"
+        app:rv_rippleDuration="100"
+        app:rv_type="simpleRipple">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/margin_size_12"
+            android:paddingTop="@dimen/margin_size_12"
+            android:text="删除"
+            android:textColor="@color/red"
+            android:textSize="@dimen/font_size_18" />
+    </com.haoyu.app.view.RippleView>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_size_12"
         android:background="@color/spaceColor" />
 
-    <TextView
-        android:id="@+id/tv_cancel"
+    <com.haoyu.app.view.RippleView
+        android:id="@+id/rv_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/item_click_selector"
-        android:gravity="center"
-        android:paddingBottom="@dimen/margin_size_12"
-        android:paddingTop="@dimen/margin_size_12"
-        android:text="取消"
-        android:textColor="@color/blow_gray"
-        android:textSize="@dimen/font_size_18" />
+        app:rv_centered="true"
+        app:rv_color="@color/darkslategray"
+        app:rv_rippleDuration="100"
+        app:rv_type="simpleRipple">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingBottom="@dimen/margin_size_12"
+            android:paddingTop="@dimen/margin_size_12"
+            android:text="取消"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_18" />
+    </com.haoyu.app.view.RippleView>
 </LinearLayout>

@@ -308,14 +308,14 @@ public class AppQuestionDetailActivity extends BaseActivity implements
     private void answerDialog(final FAQsAnswerEntity entity, final int position) {
         View view = getLayoutInflater().inflate(R.layout.dialog_faqanswer, null);
         final AlertDialog dialog = new AlertDialog.Builder(context).create();
-        TextView tv_edit = view.findViewById(R.id.tv_edit);
-        TextView tv_delete = view.findViewById(R.id.tv_delete);
-        TextView tv_cancel = view.findViewById(R.id.tv_cancel);
-        OnClickListener listener = new OnClickListener() {
+        RippleView rv_edit = view.findViewById(R.id.rv_edit);
+        RippleView rv_delete = view.findViewById(R.id.rv_delete);
+        RippleView rv_cancel = view.findViewById(R.id.rv_cancel);
+        RippleView.OnRippleCompleteListener listener = new RippleView.OnRippleCompleteListener() {
             @Override
-            public void onClick(View view) {
+            public void onComplete(RippleView view) {
                 switch (view.getId()) {
-                    case R.id.tv_edit:
+                    case R.id.rv_edit:
                         alterPosition = position;
                         Intent intent = new Intent(context, AppQuestionEditActivity.class);
                         intent.putExtra("isAlterAnswer", true);
@@ -323,18 +323,18 @@ public class AppQuestionDetailActivity extends BaseActivity implements
                         intent.putExtra("content", entity.getContent());
                         startActivityForResult(intent, alterCode);
                         break;
-                    case R.id.tv_delete:
+                    case R.id.rv_delete:
                         deleteAnswer(position);
                         break;
-                    case R.id.tv_cancel:
+                    case R.id.rv_cancel:
                         break;
                 }
                 dialog.dismiss();
             }
         };
-        tv_edit.setOnClickListener(listener);
-        tv_delete.setOnClickListener(listener);
-        tv_cancel.setOnClickListener(listener);
+        rv_edit.setOnRippleCompleteListener(listener);
+        rv_delete.setOnRippleCompleteListener(listener);
+        rv_cancel.setOnRippleCompleteListener(listener);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         dialog.show();
@@ -410,7 +410,7 @@ public class AppQuestionDetailActivity extends BaseActivity implements
                 Intent intent = new Intent();
                 intent.setClass(context, AppQuestionEditActivity.class);
                 intent.putExtra("isAnswer", true);
-                intent.putExtra("questionId", questionId);
+                intent.putExtra("entity", faQsEntity);
                 startActivityForResult(intent, answerCode);
                 break;
         }
@@ -510,9 +510,6 @@ public class AppQuestionDetailActivity extends BaseActivity implements
                     } else {
                         toastFullScreen("发表回答成功", true);
                     }
-                    MessageEvent event = new MessageEvent();
-                    event.action = Action.CREATE_FAQ_ANSWER;
-                    RxBus.getDefault().post(event);
                 }
                 break;
             case alterCode:

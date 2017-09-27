@@ -38,7 +38,7 @@ import okhttp3.Request;
  */
 public class AppQuestionEditActivity extends BaseActivity implements OnClickListener {
     private AppQuestionEditActivity context = this;
-    private FAQsEntity entity;
+    private FAQsEntity faQsEntity;
     private boolean isAlter = false;    //修改问题
     private boolean isAlterAnswer = false;   //修改回答
     private boolean isAnswer = false;   //创建回答
@@ -77,14 +77,15 @@ public class AppQuestionEditActivity extends BaseActivity implements OnClickList
         if (isAnswer) {
             tv_title.setText("回答");
             tv_questionType.setText("我来回答");
-            questionId = getIntent().getStringExtra("questionId");
+            faQsEntity = (FAQsEntity) getIntent().getSerializableExtra("entity");
+            questionId = faQsEntity.getId();
             et_content.setHint("回答内容");
         } else if (isAlter) {
             tv_title.setText("修改问题");
-            entity = ((FAQsEntity) getIntent().getSerializableExtra("entity"));
-            questionId = entity.getId();
+            faQsEntity = (FAQsEntity) getIntent().getSerializableExtra("entity");
+            questionId = faQsEntity.getId();
             et_content.setHint("修改内容");
-            et_content.setText(entity.getContent());
+            et_content.setText(faQsEntity.getContent());
             Editable editable = et_content.getText();
             Selection.setSelection(editable, editable.length());
         } else if (isAlterAnswer) {
@@ -240,6 +241,10 @@ public class AppQuestionEditActivity extends BaseActivity implements OnClickList
                         if (entity.getCreator().getRealName() == null || (entity.getCreator().getRealName() != null && entity.getCreator().getRealName().toLowerCase().equals("null")))
                             entity.getCreator().setRealName(getRealName());
                     }
+                    MessageEvent event = new MessageEvent();
+                    event.action = Action.CREATE_FAQ_ANSWER;
+                    event.obj = faQsEntity;
+                    RxBus.getDefault().post(event);
                     Intent intent = new Intent();
                     intent.putExtra("entity", entity);
                     setResult(RESULT_OK, intent);
