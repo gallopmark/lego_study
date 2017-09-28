@@ -297,7 +297,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 netType = obj;
                 if (NONE.equals(obj)) {
                     //没有网络
+                    warnContent.setText("没有网络，请开启网络");
                     mVideoView.pause();
+                    hideVideoCenterPause();
                     showWarnControll();
                 } else if (WIFI.equals(obj)) {
                     hideWarnControll();
@@ -312,6 +314,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
                     }
                 } else {
+                    hideLoading();
                     hideWarnControll();
                     if (!isNet) {
                         mVideoView.pause();

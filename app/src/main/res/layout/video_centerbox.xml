@@ -60,7 +60,7 @@
             android:gravity="center"
             android:paddingLeft="@dimen/margin_size_8"
             android:paddingRight="@dimen/margin_size_8"
-            android:text="您正在使用移动网络播放视频\n可能产生较高流量费用"
+            android:text=""
             android:textColor="@android:color/white"
             android:textSize="@dimen/font_size_14" />
 
