@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@drawable/material_card"
+    android:minWidth="280dp"
     android:orientation="vertical"
-    android:padding="@dimen/margin_size_30">
+    android:paddingBottom="@dimen/margin_size_20"
+    android:paddingLeft="@dimen/margin_size_30"
+    android:paddingRight="@dimen/margin_size_30"
+    android:paddingTop="@dimen/margin_size_20">
 
     <TextView
         android:id="@+id/tv_tips"
@@ -19,9 +23,11 @@
         android:id="@+id/tv_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_size_16"
-        android:layout_marginBottom="@dimen/margin_size_16"
-        android:lineSpacingMultiplier="1.3"
+        android:layout_marginBottom="@dimen/margin_size_20"
+        android:layout_marginTop="@dimen/margin_size_20"
+        android:lineSpacingExtra="@dimen/margin_size_2"
+        android:maxHeight="280dp"
+        android:maxWidth="220dp"
         android:scrollbars="vertical"
         android:textColor="@color/blow_gray"
         android:textSize="@dimen/font_size_16" />

@@ -1,6 +1,7 @@
 package com.haoyu.app.fragment;
 
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -136,7 +137,7 @@ public class PageProgressFragment extends BaseFragment {
         textViews[8].setText("已完成" + entity.getCompleteSurveyNum() + "个/" + entity.getCompleteSurveyNum() + "个");
     }
 
-    private String computeTimeDiff(long minutes) {
+    private CharSequence computeTimeDiff(long minutes) {
         String timeStr = "距离课程结束还有";
         StringBuilder actionText = new StringBuilder();
         if (minutes <= 0) { //1分钟内 服务端的时间 可能和本地的有区别 所以小于0的 对于这个情况全部都显示刚刚
@@ -157,7 +158,8 @@ public class PageProgressFragment extends BaseFragment {
                     + hour + "</font>时");
             actionText.append("<font color='#FEE42D'>"
                     + min + "</font>分");
-            return actionText.toString();
+            timeStr = actionText.toString();
+            return Html.fromHtml(timeStr);
         } else if (minutes < 12 * 30 * 24 * 60) { // 月
             timeStr += (minutes / 30 * 24 * 60 == 0 ? 1 : minutes / (30 * 24 * 60)) + "个月";
         } else {

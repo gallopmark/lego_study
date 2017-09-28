@@ -1,9 +1,13 @@
 package com.haoyu.app.fragment;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.activity.AppQuestionDetailActivity;
@@ -12,6 +16,7 @@ import com.haoyu.app.adapter.PageQuestionAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
+import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.FAQsEntity;
 import com.haoyu.app.entity.FAQsListResult;
 import com.haoyu.app.entity.FollowMobileEntity;
@@ -25,6 +30,7 @@ import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
+import com.haoyu.app.view.RippleView;
 import com.haoyu.app.xrecyclerview.XRecyclerView;
 
 import java.util.ArrayList;
@@ -54,6 +60,7 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
     private String type, relationId, relationType;
     private int page = 1;
     private boolean isRefresh, isLoadMore;
+    private int totalCount;
     private OnResponseListener onResponseListener;
 
     public void setOnResponseListener(OnResponseListener onResponseListener) {
@@ -87,7 +94,7 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
 
     @Override
     public void initData() {
-        String url = Constants.OUTRT_NET + "/m/faq_question" + "?relation.id=" + relationId + "&relation.type=" + relationType + "&page=" + page + "&orders=CREATE_TIME.DESC";
+        String url = Constants.OUTRT_NET + "/m/faq_question" + "?relation.id=" + relationId + "&relation.type=" + relationType + "&page=" + page + "&orders=CREATE_TIME.DESC" + "&isLoadNewstAnswer=true";
         addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<FAQsListResult>() {
             @Override
             public void onBefore(Request request) {
@@ -148,16 +155,27 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
         } else {
             xRecyclerView.setLoadingMoreEnabled(false);
         }
-        if (onResponseListener != null) {
-            if (paginator != null)
-                onResponseListener.getTotalCount(paginator.getTotalCount());
+        if (paginator != null) {
+            totalCount = paginator.getTotalCount();
+            if (paginator.getHasNextPage())
+                xRecyclerView.setLoadingMoreEnabled(true);
             else
-                onResponseListener.getTotalCount(mDatas.size());
+                xRecyclerView.setLoadingMoreEnabled(false);
+        } else {
+            xRecyclerView.setLoadingMoreEnabled(false);
         }
+        if (onResponseListener != null)
+            onResponseListener.getTotalCount(totalCount);
     }
 
     @Override
     public void setListener() {
+        loadFailView.setOnRetryListener(new LoadFailView.OnRetryListener() {
+            @Override
+            public void onRetry(View v) {
+                initData();
+            }
+        });
         adapter.setCollectCallBack(new PageQuestionAdapter.CollectCallBack() {
             @Override
             public void collect(int position, FAQsEntity entity) {
@@ -189,6 +207,13 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
                     intent.putExtra("entity", mDatas.get(position - 1));
                     startActivity(intent);
                 }
+            }
+        });
+        adapter.setOnItemLongClickListener(new PageQuestionAdapter.OnItemLongClickListener() {
+            @Override
+            public void onItemLongClick(FAQsEntity entity, int position) {
+                if (entity.getCreator() != null && entity.getCreator().getId() != null && entity.getCreator().getId().equals(getUserId()))
+                    bottomDialog(entity);
             }
         });
     }
@@ -235,7 +260,7 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
         Map<String, String> map = new HashMap<>();
         map.put("followEntity.id", mDatas.get(position).getId());
         map.put("followEntity.type", "course_study_question");
-        OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<FollowMobileResult>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<FollowMobileResult>() {
             @Override
             public void onError(Request request, Exception exception) {
                 onNetWorkError();
@@ -257,7 +282,77 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
                     }
                 }
             }
-        }, map);
+        }, map));
+    }
+
+    private void bottomDialog(final FAQsEntity entity) {
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_delete, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context).create();
+        RippleView rv_delete = view.findViewById(R.id.rv_delete);
+        RippleView rv_cancel = view.findViewById(R.id.rv_cancel);
+        RippleView.OnRippleCompleteListener listener = new RippleView.OnRippleCompleteListener() {
+            @Override
+            public void onComplete(RippleView view) {
+                switch (view.getId()) {
+                    case R.id.rv_delete:
+                        deleteQuestion(entity);
+                        break;
+                    case R.id.rv_cancel:
+                        break;
+                }
+                dialog.dismiss();
+            }
+        };
+        rv_delete.setOnRippleCompleteListener(listener);
+        rv_cancel.setOnRippleCompleteListener(listener);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.show();
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setWindowAnimations(R.style.dialog_anim);
+        dialog.getWindow().setContentView(view);
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
+    private void deleteQuestion(final FAQsEntity entity) {
+        MaterialDialog dialog = new MaterialDialog(context);
+        dialog.setTitle("温馨提示");
+        dialog.setMessage("您确定删除此问答吗？");
+        dialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
+            @Override
+            public void onClick(View v, AlertDialog dialog) {
+                String url = Constants.OUTRT_NET + "/m/faq_question/" + entity.getId();
+                Map<String, String> map = new HashMap<>();
+                map.put("_method", "delete");
+                addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+                    @Override
+                    public void onBefore(Request request) {
+                        showTipDialog();
+                    }
+
+                    @Override
+                    public void onError(Request request, Exception e) {
+                        hideTipDialog();
+                        onNetWorkError();
+                    }
+
+                    @Override
+                    public void onResponse(BaseResponseResult response) {
+                        hideTipDialog();
+                        if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
+                            MessageEvent event = new MessageEvent();
+                            event.action = Action.DELETE_FAQ_QUESTION;
+                            event.obj = entity;
+                            RxBus.getDefault().post(event);
+                        }
+                    }
+                }, map));
+            }
+        });
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.setNegativeButton("取消", null);
+        dialog.show();
     }
 
     @Override
@@ -278,23 +373,18 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
 
     @Override
     public void obBusEvent(MessageEvent event) {
-        if (event.getAction().equals(Action.ALTER_FAQ_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
-            FAQsEntity entity = (FAQsEntity) event.obj;
-            if (mDatas.indexOf(entity) != -1) {
-                int index = mDatas.indexOf(entity);
-                mDatas.set(index, entity);
-                adapter.notifyDataSetChanged();
-            }
-        } else if (event.getAction().equals(Action.CREATE_FAQ_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
+        if (event.getAction().equals(Action.CREATE_FAQ_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
             FAQsEntity entity = (FAQsEntity) event.obj;
             if (!xRecyclerView.isLoadingMoreEnabled()) {
-                mDatas.add(entity);
+                mDatas.add(0, entity);
                 adapter.notifyDataSetChanged();
             }
             if (xRecyclerView.getVisibility() != View.VISIBLE)
                 xRecyclerView.setVisibility(View.VISIBLE);
             if (emptyView.getVisibility() == View.VISIBLE)
                 emptyView.setVisibility(View.GONE);
+            if (onResponseListener != null)
+                onResponseListener.getTotalCount(totalCount + 1);
         } else if (event.getAction().equals(Action.COLLECTION) && event.obj != null && event.obj instanceof FAQsEntity) {
             FAQsEntity entity = (FAQsEntity) event.obj;
             if (mDatas.indexOf(entity) != -1) {
@@ -310,6 +400,8 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
                 xRecyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
             }
+            if (onResponseListener != null)
+                onResponseListener.getTotalCount(totalCount + 1);
         } else if (event.getAction().equals(Action.CREATE_FAQ_ANSWER) && event.obj != null && event.obj instanceof FAQsEntity) {
             FAQsEntity entity = (FAQsEntity) event.obj;
             int index = mDatas.indexOf(entity);

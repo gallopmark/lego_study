@@ -24,6 +24,7 @@ public class PageQuestionAdapter extends BaseArrayRecyclerAdapter<FAQsEntity> {
     private int type;
     private CollectCallBack collectCallBack;
     private AnswerCallBack answerCallBack;
+    private OnItemLongClickListener onItemLongClickListener;
 
     public PageQuestionAdapter(Context context, List<FAQsEntity> mDatas, int type) {
         super(mDatas);
@@ -39,6 +40,9 @@ public class PageQuestionAdapter extends BaseArrayRecyclerAdapter<FAQsEntity> {
         this.answerCallBack = answerCallBack;
     }
 
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        this.onItemLongClickListener = onItemLongClickListener;
+    }
 
     @Override
     public int bindView(int viewtype) {
@@ -61,27 +65,24 @@ public class PageQuestionAdapter extends BaseArrayRecyclerAdapter<FAQsEntity> {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(0, (int) (0.22D * question.getLineHeight()), 0,
-                0);
+        params.setMargins(0, (int) (0.22D * question.getLineHeight()), 0, 0);
         ic_question.setLayoutParams(params);
         params.setMargins(0, (int) (0.22D * answer.getLineHeight()), 0, 0);
         ic_answer.setLayoutParams(params);
-        if (entity.getCreator() != null && entity.getCreator().getAvatar() != null) {
+        if (entity.getCreator() != null && entity.getCreator().getAvatar() != null)
             GlideImgManager.loadCircleImage(mContext, entity.getCreator().getAvatar()
                     , R.drawable.user_default, R.drawable.user_default, userIco);
-        } else {
+        else
             userIco.setImageResource(R.drawable.user_default);
-        }
         if (entity.getCreator() != null && entity.getCreator().getRealName() != null)
             userName.setText(entity.getCreator().getRealName());
         else
             userName.setText("");
         question.setText(entity.getContent());
-        if (entity.getFaqAnswers() != null && (entity.getFaqAnswers().size() > 0)) {
-            answer.setText(entity.getFaqAnswers().get(0).getContent());
-        } else {
-            answer.setText("暂无最佳答案");
-        }
+        if (entity.getNewstAnswer() != null)
+            answer.setText(entity.getNewstAnswer().getContent());
+        else
+            answer.setText("暂无最新答案");
         answerDate.setText(TimeUtil.getSlashDate(entity.getCreateTime()));
         if (type == 1)
             tv_collection.setVisibility(View.VISIBLE);
@@ -134,6 +135,14 @@ public class PageQuestionAdapter extends BaseArrayRecyclerAdapter<FAQsEntity> {
         tv_collection.setOnClickListener(listener);
         iv_collection.setOnClickListener(listener);
         tv_answer.setOnClickListener(listener);
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if (onItemLongClickListener != null)
+                    onItemLongClickListener.onItemLongClick(entity, position);
+                return false;
+            }
+        });
     }
 
     public interface CollectCallBack {
@@ -144,5 +153,9 @@ public class PageQuestionAdapter extends BaseArrayRecyclerAdapter<FAQsEntity> {
 
     public interface AnswerCallBack {
         void answer(int position, FAQsEntity entity);
+    }
+
+    public interface OnItemLongClickListener {
+        void onItemLongClick(FAQsEntity entity, int position);
     }
 }

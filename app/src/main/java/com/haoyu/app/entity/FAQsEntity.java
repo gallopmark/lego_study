@@ -37,6 +37,9 @@ public class FAQsEntity implements Serializable {
     @Expose
     @SerializedName("relation")
     private Relation relation;  //问答关联关系(关联课程)
+    @Expose
+    @SerializedName("newstAnswer")   //最新答案
+    private NewAnswer newstAnswer;
 
     public int getCollectCount() {
         return collectCount;
@@ -110,6 +113,14 @@ public class FAQsEntity implements Serializable {
         this.relation = relation;
     }
 
+    public NewAnswer getNewstAnswer() {
+        return newstAnswer;
+    }
+
+    public void setNewstAnswer(NewAnswer newstAnswer) {
+        this.newstAnswer = newstAnswer;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -119,5 +130,63 @@ public class FAQsEntity implements Serializable {
             return ((FAQsEntity) obj).id.equals(this.id);
         }
         return false;
+    }
+
+    public class NewAnswer implements Serializable{
+        @Expose
+        @SerializedName("id")
+        private String id;
+        @Expose
+        @SerializedName("content")
+        private String content;
+        @Expose
+        @SerializedName("questionId")
+        private String questionId;
+        @Expose
+        @SerializedName("createTime")
+        private long createTime; // 创建时间
+        @Expose
+        @SerializedName("creator")
+        private MobileUser creator; // 创建人
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
+
+        public String getQuestionId() {
+            return questionId;
+        }
+
+        public void setQuestionId(String questionId) {
+            this.questionId = questionId;
+        }
+
+        public long getCreateTime() {
+            return createTime;
+        }
+
+        public void setCreateTime(long createTime) {
+            this.createTime = createTime;
+        }
+
+        public MobileUser getCreator() {
+            return creator;
+        }
+
+        public void setCreator(MobileUser creator) {
+            this.creator = creator;
+        }
     }
 }

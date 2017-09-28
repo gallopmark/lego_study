@@ -493,7 +493,7 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
 
     private void showBottomDialog() {
         View view = getLayoutInflater().inflate(
-                R.layout.dialog_discussion_delete, null);
+                R.layout.dialog_delete, null);
         final AlertDialog bottomDialog = new AlertDialog.Builder(context).create();
         RippleView rv_delete = view.findViewById(R.id.rv_delete);
         RippleView rv_cancel = view.findViewById(R.id.rv_cancel);

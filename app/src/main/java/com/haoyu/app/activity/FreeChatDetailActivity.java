@@ -198,23 +198,19 @@ public class FreeChatDetailActivity extends BaseActivity implements XRecyclerVie
     }
 
     private void showDeleteDialog(final String id) {
-        View view = getLayoutInflater().inflate(R.layout.dialog_discussion_delete, null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_delete, null);
         final AlertDialog deleteDialog = new AlertDialog.Builder(context).create();
         RippleView rv_delete = getView(view, R.id.rv_delete);
         RippleView rv_cancel = getView(view, R.id.rv_cancel);
         rv_delete.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
             public void onComplete(RippleView rippleView) {
-                if (deleteDialog != null) {
-                    deleteDialog.dismiss();
-                }
+                deleteDialog.dismiss();
                 deleteParent(id);
             }
         });
         rv_cancel.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
             public void onComplete(RippleView rippleView) {
-                if (deleteDialog != null) {
-                    deleteDialog.dismiss();
-                }
+                deleteDialog.dismiss();
             }
         });
         deleteDialog.show();

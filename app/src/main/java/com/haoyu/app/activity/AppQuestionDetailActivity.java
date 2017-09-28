@@ -30,7 +30,6 @@ import com.haoyu.app.utils.Action;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.OkHttpClientManager.ResultCallback;
-import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.view.AppToolBar;
 import com.haoyu.app.view.GoodView;
 import com.haoyu.app.view.RippleView;
@@ -72,7 +71,7 @@ public class AppQuestionDetailActivity extends BaseActivity implements
     private TextView tv_question_content;
     private TextView tv_userName;
     private ImageView userIco;
-    private final int answerCode = 10, alterCode = 11;
+    private final int answerCode = 10;
 
     @Override
     public int setLayoutResID() {
@@ -205,25 +204,7 @@ public class AppQuestionDetailActivity extends BaseActivity implements
         } else {
             xRecyclerView.setLoadingMoreEnabled(false);
         }
-//        FAQsAnswerEntity bestAnswer = answerList.get(0);
-//        MobileUser mobileUser = bestAnswer.getCreator();
-//        if (mobileUser.getAvatar() != null) {
-//            GlideImgManager.loadCircleImage(context, mobileUser.getAvatar(),
-//                    R.drawable.user_default, R.drawable.user_default, answer_userIco);
-//        } else {
-//            answer_userIco.setImageResource(R.drawable.user_default);
-//        }
-//        if (mobileUser.getRealName() != null) {
-//            tv_answer_userName.setText(mobileUser.getRealName());
-//        } else {
-//            tv_answer_userName.setText("匿名用户");
-//        }
-//        String bestAsText = "<font color='#01AE37'> [已采纳的答案] </font>" + bestAnswer.getContent();
-//        tv_bestAnswer_content.setText(Html.fromHtml(bestAsText));
-//        tv_answer_date.setText(TimeUtil.getSlashDate(bestAnswer.getCreateTime()));
     }
-
-    private int alterPosition;
 
     @Override
     public void setListener() {
@@ -245,84 +226,92 @@ public class AppQuestionDetailActivity extends BaseActivity implements
             @Override
             public void onItemLongClick(FAQsAnswerEntity entity, int position) {
                 if (entity.getCreator() != null && entity.getCreator().getId() != null && entity.getCreator().getId().equals(getUserId()))
-                    answerDialog(entity, position);
+                    answerDialog(position);
             }
         });
     }
 
     private void bottomDialog() {
-        View view = getLayoutInflater().inflate(R.layout.dialog_discussion_delete, null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_delete, null);
         final AlertDialog dialog = new AlertDialog.Builder(context).create();
-        RippleView rv_delete = view.findViewById(R.id.rv_delete);
-        RippleView rv_cancel = view.findViewById(R.id.rv_cancel);
-        rv_delete.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-            public void onComplete(RippleView rippleView) {
-                dialog.dismiss();
-                deleteQuestion();
-            }
-        });
-        rv_cancel.setOnRippleCompleteListener(new RippleView.OnRippleCompleteListener() {
-            public void onComplete(RippleView rippleView) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-        dialog.getWindow().setLayout(ScreenUtils.getScreenWidth(context), LinearLayout.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setWindowAnimations(R.style.dialog_anim);
-        dialog.getWindow().setContentView(view);
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
-    }
-
-    private void deleteQuestion() {
-        String url = Constants.OUTRT_NET + "/m/faq_question/" + faQsEntity.getId();
-        Map<String, String> map = new HashMap<>();
-        map.put("_method", "delete");
-        addSubscription(OkHttpClientManager.postAsyn(context, url, new ResultCallback<BaseResponseResult>() {
-            @Override
-            public void onBefore(Request request) {
-                showTipDialog();
-            }
-
-            @Override
-            public void onError(Request request, Exception e) {
-                hideTipDialog();
-                onNetWorkError(context);
-            }
-
-            @Override
-            public void onResponse(BaseResponseResult response) {
-                hideTipDialog();
-                if (response != null && response.getResponseCode() != null
-                        && response.getResponseCode().equals("00")) {
-                    MessageEvent event = new MessageEvent();
-                    event.action = Action.DELETE_FAQ_QUESTION;
-                    event.obj = faQsEntity;
-                    RxBus.getDefault().post(event);
-                    toastFullScreen("成功删除，返回上一级", true);
-                    finish();
-                }
-            }
-        }, map));
-    }
-
-    private void answerDialog(final FAQsAnswerEntity entity, final int position) {
-        View view = getLayoutInflater().inflate(R.layout.dialog_faqanswer, null);
-        final AlertDialog dialog = new AlertDialog.Builder(context).create();
-        RippleView rv_edit = view.findViewById(R.id.rv_edit);
         RippleView rv_delete = view.findViewById(R.id.rv_delete);
         RippleView rv_cancel = view.findViewById(R.id.rv_cancel);
         RippleView.OnRippleCompleteListener listener = new RippleView.OnRippleCompleteListener() {
             @Override
             public void onComplete(RippleView view) {
                 switch (view.getId()) {
-                    case R.id.rv_edit:
-                        alterPosition = position;
-                        Intent intent = new Intent(context, AppQuestionEditActivity.class);
-                        intent.putExtra("isAlterAnswer", true);
-                        intent.putExtra("answerId", entity.getId());
-                        intent.putExtra("content", entity.getContent());
-                        startActivityForResult(intent, alterCode);
+                    case R.id.rv_delete:
+                        deleteQuestion();
                         break;
+                    case R.id.rv_cancel:
+                        break;
+                }
+                dialog.dismiss();
+            }
+        };
+        rv_delete.setOnRippleCompleteListener(listener);
+        rv_cancel.setOnRippleCompleteListener(listener);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.show();
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setWindowAnimations(R.style.dialog_anim);
+        dialog.getWindow().setContentView(view);
+        dialog.getWindow().setGravity(Gravity.BOTTOM);
+    }
+
+    private void deleteQuestion() {
+        MaterialDialog dialog = new MaterialDialog(context);
+        dialog.setTitle("温馨提示");
+        dialog.setMessage("您确定删除此问答吗？");
+        dialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
+            @Override
+            public void onClick(View v, AlertDialog dialog) {
+                String url = Constants.OUTRT_NET + "/m/faq_question/" + faQsEntity.getId();
+                Map<String, String> map = new HashMap<>();
+                map.put("_method", "delete");
+                addSubscription(OkHttpClientManager.postAsyn(context, url, new ResultCallback<BaseResponseResult>() {
+                    @Override
+                    public void onBefore(Request request) {
+                        showTipDialog();
+                    }
+
+                    @Override
+                    public void onError(Request request, Exception e) {
+                        hideTipDialog();
+                        onNetWorkError(context);
+                    }
+
+                    @Override
+                    public void onResponse(BaseResponseResult response) {
+                        hideTipDialog();
+                        if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
+                            MessageEvent event = new MessageEvent();
+                            event.action = Action.DELETE_FAQ_QUESTION;
+                            event.obj = faQsEntity;
+                            RxBus.getDefault().post(event);
+                            toastFullScreen("成功删除，返回上一级", true);
+                            finish();
+                        }
+                    }
+                }, map));
+            }
+        });
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.setNegativeButton("取消", null);
+        dialog.show();
+    }
+
+    private void answerDialog(final int position) {
+        View view = getLayoutInflater().inflate(R.layout.dialog_delete, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context).create();
+        RippleView rv_delete = view.findViewById(R.id.rv_delete);
+        RippleView rv_cancel = view.findViewById(R.id.rv_cancel);
+        RippleView.OnRippleCompleteListener listener = new RippleView.OnRippleCompleteListener() {
+            @Override
+            public void onComplete(RippleView view) {
+                switch (view.getId()) {
                     case R.id.rv_delete:
                         deleteAnswer(position);
                         break;
@@ -332,13 +321,12 @@ public class AppQuestionDetailActivity extends BaseActivity implements
                 dialog.dismiss();
             }
         };
-        rv_edit.setOnRippleCompleteListener(listener);
         rv_delete.setOnRippleCompleteListener(listener);
         rv_cancel.setOnRippleCompleteListener(listener);
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
         dialog.show();
-        dialog.getWindow().setLayout(ScreenUtils.getScreenWidth(context), LinearLayout.LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         dialog.getWindow().setWindowAnimations(R.style.dialog_anim);
         dialog.getWindow().setContentView(view);
         dialog.getWindow().setGravity(Gravity.BOTTOM);
@@ -510,13 +498,6 @@ public class AppQuestionDetailActivity extends BaseActivity implements
                     } else {
                         toastFullScreen("发表回答成功", true);
                     }
-                }
-                break;
-            case alterCode:
-                if (resultCode == RESULT_OK && data != null) {
-                    String content = data.getStringExtra("content");
-                    answerList.get(alterPosition).setContent(content);
-                    adapter.notifyDataSetChanged();
                 }
                 break;
         }
