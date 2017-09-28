@@ -77,7 +77,7 @@ public class AppSurveyResultActivity extends BaseActivity {
     public void initData() {
         String url;
         if (surveyType != null && surveyType.equals("course")) {
-            url = Constants.OUTRT_NET + "/" + activityId + "/teach/m/survey_result/" + relationId + "/" + surveyId;
+            url = Constants.OUTRT_NET + "/" + activityId + "/study/m/survey_result/" + relationId + "/" + surveyId;
         } else {
             url = Constants.OUTRT_NET + "/student_" + relationId + "/m/survey_result/" + relationId + "/" + surveyId;
         }
@@ -118,7 +118,7 @@ public class AppSurveyResultActivity extends BaseActivity {
                         String questionId = appSurveyResult.getResponseData().getmSurveyQuestions().get(i).getId();
                         String mUrl;
                         if (surveyType != null && surveyType.equals("course"))
-                            mUrl = Constants.OUTRT_NET + "/" + activityId + "/teach/m/survey_result/" + questionId + "/submissions" + "?page=1&limit=2";
+                            mUrl = Constants.OUTRT_NET + "/" + activityId + "/study/m/survey_result/" + questionId + "/submissions" + "?page=1&limit=2";
                         else
                             mUrl = Constants.OUTRT_NET + "/student_" + relationId + "/m/survey_result/" + questionId + "/submissions" + "?page=1&limit=2";
                         String mSubmissionStr = OkHttpClientManager.getAsString(context, mUrl);
