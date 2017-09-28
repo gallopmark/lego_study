@@ -12,14 +12,12 @@ import android.widget.TextView;
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
 import com.haoyu.app.entity.SurveyAnswer;
 import com.haoyu.app.entity.SurveyAnswerSubmission;
-import com.haoyu.app.lego.student.R;
 import com.haoyu.app.imageloader.GlideImgManager;
+import com.haoyu.app.lego.student.R;
+import com.haoyu.app.utils.Common;
 import com.haoyu.app.view.FullyLinearLayoutManager;
 import com.haoyu.app.view.RoundRectProgressBar;
 
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -81,19 +79,20 @@ public class SurveyResultAdapter extends BaseArrayRecyclerAdapter<SurveyAnswer> 
         }
         test_type.setText(msg);
         test_title.setText("\u3000\u3000\u3000\u2000" + surveyAnswer.getTitle());
-        if (surveyAnswer.getType() != null && surveyAnswer.getType().equals(SurveyAnswer.textEntry)) {
-            MSubmissionAdapter adapter = new MSubmissionAdapter(surveyAnswer.getAnswerSubmissions());
+        if (surveyAnswer.getType() != null && surveyAnswer.getType().equals(SurveyAnswer.textEntry) && surveyAnswer.getAnswerSubmissionData() != null && surveyAnswer.getAnswerSubmissionData().getmSubmissions() != null
+                && surveyAnswer.getAnswerSubmissionData().getmSubmissions().size() > 0) {
+            List<SurveyAnswerSubmission> mSubmissions = surveyAnswer.getAnswerSubmissionData().getmSubmissions();
+            MSubmissionAdapter adapter = new MSubmissionAdapter(mSubmissions);
             recyclerView.setAdapter(adapter);
         } else {
             SurveyResultListAdapter adapter = new SurveyResultListAdapter(context, surveyAnswer.getmChoices(), surveyAnswer.getId());
             recyclerView.setAdapter(adapter);
         }
         if (surveyAnswer.getType() != null && surveyAnswer.getType().equals(SurveyAnswer.textEntry)
-                && surveyAnswer.getAnswerSubmissions().size() >= 2) {
+                && surveyAnswer.getAnswerSubmissionData() != null && surveyAnswer.getAnswerSubmissionData().getPaginator() != null && surveyAnswer.getAnswerSubmissionData().getPaginator().getHasNextPage())
             bt_expand.setVisibility(View.VISIBLE);
-        } else {
+        else
             bt_expand.setVisibility(View.GONE);
-        }
         /*展开更多答案*/
         bt_expand.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,27 +152,13 @@ public class SurveyResultAdapter extends BaseArrayRecyclerAdapter<SurveyAnswer> 
                 int supportNum = dataMap.get(questionId).get(mChoices.getId());
                 cb_select.setChecked(true);
                 mRrogressBar.setProgress(supportNum);
-                percentage.setText(accuracy(supportNum, getParticipateNum(), 0));
+                percentage.setText(Common.accuracy(supportNum, getParticipateNum(), 0));
             } else {
                 cb_select.setChecked(false);
                 mRrogressBar.setProgress(0);
-                percentage.setText(accuracy(0, getParticipateNum(), 0));
+                percentage.setText(Common.accuracy(0, getParticipateNum(), 0));
             }
         }
-    }
-
-    //方法
-    public String accuracy(double num, double total, int scale) {
-        if (total == 0) {
-            return "0%";
-        }
-        DecimalFormat df = (DecimalFormat) NumberFormat.getInstance();
-        //可以设置精确几位小数
-        df.setMaximumFractionDigits(scale);
-        //模式 例如四舍五入
-        df.setRoundingMode(RoundingMode.HALF_UP);
-        double accuracy_num = num / total * 100;
-        return df.format(accuracy_num) + "%";
     }
 
     class MSubmissionAdapter extends BaseArrayRecyclerAdapter<SurveyAnswerSubmission> {
@@ -187,18 +172,16 @@ public class SurveyResultAdapter extends BaseArrayRecyclerAdapter<SurveyAnswer> 
             ImageView ic_user = holder.obtainView(R.id.ic_user);
             TextView tv_userName = holder.obtainView(R.id.tv_userName);
             TextView tv_content = holder.obtainView(R.id.tv_content);
-            if (entity.getUser() != null && entity.getUser().getAvatar() != null) {
+            if (entity.getUser() != null && entity.getUser().getAvatar() != null)
                 GlideImgManager.loadCircleImage(context,
                         entity.getUser().getAvatar(), R.drawable.user_default,
                         R.drawable.user_default, ic_user);
-            } else {
+            else
                 ic_user.setImageResource(R.drawable.user_default);
-            }
-            if (entity.getUser() != null && entity.getUser().getRealName() != null) {
+            if (entity.getUser() != null && entity.getUser().getRealName() != null)
                 tv_userName.setText(entity.getUser().getRealName());
-            } else {
-                tv_userName.setText("匿名用户");
-            }
+            else
+                tv_userName.setText("");
             tv_content.setText("\u3000\u3000" + entity.getResponse());
         }
 

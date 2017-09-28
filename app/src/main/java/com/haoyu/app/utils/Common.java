@@ -46,6 +46,8 @@ public class Common {
         df.setMaximumFractionDigits(scale);
         //模式 例如四舍五入
         df.setRoundingMode(RoundingMode.HALF_UP);
+        if (total == 0)
+            return "0%";
         double accuracy_num = num / total * 100;
         if (accuracy_num > 100)
             accuracy_num = 100;

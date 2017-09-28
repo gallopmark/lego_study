@@ -56,7 +56,7 @@ public class SurveyAnswer implements Serializable {
     public static String multipleChoice = "multipleChoice";
     public static String trueOrFalse = "trueOrFalse";
     public static String textEntry = "textEntry";
-    private List<SurveyAnswerSubmission> answerSubmissions = new ArrayList<>();  //问答题答案列表
+    private SurveyAnswerSubmissionResult.SurveyAnswerSubmissionData answerSubmissionData;  //问答题答案列表
 
     public String getId() {
         return id;
@@ -154,12 +154,12 @@ public class SurveyAnswer implements Serializable {
         SurveyAnswer.textEntry = textEntry;
     }
 
-    public List<SurveyAnswerSubmission> getAnswerSubmissions() {
-        return answerSubmissions;
+    public SurveyAnswerSubmissionResult.SurveyAnswerSubmissionData getAnswerSubmissionData() {
+        return answerSubmissionData;
     }
 
-    public void setAnswerSubmissions(List<SurveyAnswerSubmission> answerSubmissions) {
-        this.answerSubmissions = answerSubmissions;
+    public void setAnswerSubmissionData(SurveyAnswerSubmissionResult.SurveyAnswerSubmissionData answerSubmissionData) {
+        this.answerSubmissionData = answerSubmissionData;
     }
 
     public static class MChoices implements Serializable {
