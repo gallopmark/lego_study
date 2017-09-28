@@ -186,27 +186,25 @@ public class AppPageTestActivity extends BaseActivity implements View.OnClickLis
                 return;
             case R.id.bt_submit:
                 if (!canSubmit) {
-                    showMaterialDialog("提示", "活动已结束，无法提交答卷");
+                    showMaterialDialog("提示", "活动已结束，无法提交答卷！");
                     return;
                 }
                 int undone = 0;
                 for (Integer page : finishMap.keySet()) {
-                    if (finishMap.get(page) != null && finishMap.get(page).size() > 0) {
-                    } else {
+                    if (finishMap.get(page) == null)
                         undone++;
-                    }
                 }
                 MaterialDialog dialog = new MaterialDialog(context);
                 dialog.setTitle("提示");
-                String message = "";
-                String positiveText = "";
-                String negativeText = "";
+                String message;
+                String positiveText;
+                String negativeText;
                 if (undone == 0) {
-                    message = "您已答完所有题目！";
+                    message = "您已答完所有题目，要交卷吗？";
                     positiveText = "再检查一下";
                     negativeText = "交卷";
                 } else {
-                    message = "您还有" + undone + "道题尚未作答，\n要交卷吗？";
+                    message = "您还有" + undone + "道题尚未作答，要交卷吗？";
                     negativeText = "交卷";
                     positiveText = "继续作答";
                 }
@@ -307,7 +305,7 @@ public class AppPageTestActivity extends BaseActivity implements View.OnClickLis
         GridView gridView = popupView.findViewById(R.id.gridView);
         ArrayMap<Integer, Boolean> arrayMap = new ArrayMap<>();
         for (Integer p : finishMap.keySet()) {
-            if (finishMap.get(p) != null && finishMap.get(p).size() > 0) {
+            if (finishMap.get(p) != null) {
                 arrayMap.put(p, true);
             } else {
                 arrayMap.put(p, false);
@@ -335,19 +333,6 @@ public class AppPageTestActivity extends BaseActivity implements View.OnClickLis
                 view.setBackgroundColor(ContextCompat.getColor(context, R.color.defaultColor));
             }
         });
-    }
-
-    private void commitError(String message) {
-        MaterialDialog dialog = new MaterialDialog(context);
-        dialog.setTitle("提示");
-        dialog.setMessage(message);
-        dialog.setPositiveButton("我知道了", new MaterialDialog.ButtonClickListener() {
-            @Override
-            public void onClick(View v, AlertDialog dialog) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
     }
 
     /*此map用于页面切换时答案选择标记位置，标记题目是否已经完成*/

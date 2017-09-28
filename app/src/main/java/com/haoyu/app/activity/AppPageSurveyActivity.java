@@ -1,7 +1,7 @@
 package com.haoyu.app.activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.content.ContextCompat;
@@ -10,10 +10,11 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -34,6 +35,7 @@ import com.haoyu.app.entity.CourseSectionActivity;
 import com.haoyu.app.entity.SurveyAnswer;
 import com.haoyu.app.entity.SurveyQuestionListResult;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.view.AppToolBar;
@@ -168,6 +170,7 @@ public class AppPageSurveyActivity extends BaseActivity implements View.OnClickL
 
             @Override
             public void onRightClick(View view) {
+                Common.hideSoftInput(context);
                 toolBar.getIv_rightImage().setBackgroundColor(ContextCompat.getColor(context, R.color.pressedColor));
                 showPopupWindow();
             }
@@ -180,7 +183,7 @@ public class AppPageSurveyActivity extends BaseActivity implements View.OnClickL
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i1) {
-
+                Common.hideSoftInput(context);
             }
 
             @Override
@@ -227,40 +230,46 @@ public class AppPageSurveyActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
+        Common.hideSoftInput(context);
         switch (v.getId()) {
             case R.id.iv_prev:
-                hideWindowSoft(et_content);
                 if (viewPager.getCurrentItem() > 0) {
                     viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
                 }
                 return;
             case R.id.iv_next:
-                hideWindowSoft(et_content);
                 if (viewPager.getCurrentItem() < surveyAnswers.size()) {
                     viewPager.setCurrentItem(viewPager.getCurrentItem() + 1);
                 }
                 return;
             case R.id.bt_commit:
                 if (!canSubmit) {
-                    showMaterialDialog("提示", "活动已结束，无法提交问卷");
+                    showMaterialDialog("提示", "活动已结束，无法提交问卷！");
                     return;
                 }
                 int undone = 0;
                 for (Integer page : finishMap.keySet()) {
-                    if (finishMap.get(page) == null) {
+                    if (finishMap.get(page) == null)
                         undone++;
-                    }
                 }
-                if (undone == 0) {
-                    commit();
+                MaterialDialog dialog = new MaterialDialog(context);
+                if (undone == 0 && checkText()) {
+                    dialog.setTitle(null);
+                    dialog.setMessage("您已完成全部答题，提交后无法修改或删除，要提交问卷？");
+                    dialog.setPositiveButton("提交问卷", new MaterialDialog.ButtonClickListener() {
+                        @Override
+                        public void onClick(View v, AlertDialog dialog) {
+                            commit();
+                        }
+                    });
+                    dialog.setNegativeButton("再检查一下", null);
                 } else {
-                    MaterialDialog dialog = new MaterialDialog(context);
                     dialog.setTitle("提示");
-                    String message = "您还有" + undone + "道题尚未作答\n请填写完所有题目方可提交";
+                    String message = "您还有" + undone + "道题尚未作答，请填写完所有题目再次提交！";
                     dialog.setMessage(message);
                     dialog.setPositiveButton("我知道了", null);
-                    dialog.show();
                 }
+                dialog.show();
                 return;
             case R.id.bt_close:
                 finish();
@@ -278,24 +287,48 @@ public class AppPageSurveyActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private void hideWindowSoft(View view) {
-        if (view != null) {
-            view.clearFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0); //强制隐藏键盘
+    private boolean checkText() {
+        for (final Integer page : textMap.keySet()) {
+            if (textMap.get(page) != null && textMap.get(page).trim().length() > 0 && surveyAnswers.get(page).getMinWords() > 0) {
+                String text = textMap.get(page).trim();
+                int minWords = surveyAnswers.get(page).getMinWords();
+                int maxWords = surveyAnswers.get(page).getMaxWords();
+                MaterialDialog dialog = new MaterialDialog(context);
+                dialog.setTitle("提示");
+                if (text.length() < minWords) {
+                    String message = "第<font color='#11B1D5'> " + (page + 1) + " </font>道题的答题不能少于 <font color='#11B1D5'>" + minWords + " </font>个字，请重新答题！";
+                    Spanned spanned = Html.fromHtml(message);
+                    dialog.setMessage(spanned);
+                    dialog.setPositiveButton("我知道了", new MaterialDialog.ButtonClickListener() {
+                        @Override
+                        public void onClick(View v, AlertDialog dialog) {
+                            viewPager.setCurrentItem(page);
+                        }
+                    });
+                    dialog.show();
+                    return false;
+                } else if (text.length() > maxWords) {
+                    String message = "第<font color='#11B1D5'> " + (page + 1) + " </font>道题的答题不能超过 <font color='#11B1D5'>" + maxWords + " </font>个字，请重新答题！";
+                    Spanned spanned = Html.fromHtml(message);
+                    dialog.setMessage(spanned);
+                    dialog.setPositiveButton("我知道了", new MaterialDialog.ButtonClickListener() {
+                        @Override
+                        public void onClick(View v, AlertDialog dialog) {
+                            viewPager.setCurrentItem(page);
+                        }
+                    });
+                    dialog.show();
+                    return false;
+                }
+            }
         }
-        view = getWindow().peekDecorView();
-        if (view != null) {
-            InputMethodManager inputmanger = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
+        return true;
     }
 
     /**
      * 提交问卷答案
      */
     private void commit() {
-        hideWindowSoft(et_content);
         String userId = getUserId();
         String url;
         final Map<String, String> map = new HashMap<>();
@@ -424,7 +457,6 @@ public class AppPageSurveyActivity extends BaseActivity implements View.OnClickL
     /*此map用于页面切换时答案选择标记位置，标记题目是否已经完成*/
     private ArrayMap<Integer, ArrayMap<Integer, Boolean>> finishMap = new ArrayMap<>();
     private ArrayMap<Integer, String> textMap = new ArrayMap<>();
-    private EditText et_content;
 
     /*测验页码适配器*/
     class SurveyPagerAdapter extends PagerAdapter {
@@ -468,7 +500,7 @@ public class AppPageSurveyActivity extends BaseActivity implements View.OnClickL
             FullyLinearLayoutManager layoutManager = new FullyLinearLayoutManager(context);
             layoutManager.setOrientation(FullyLinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(layoutManager);
-            et_content = contentView.findViewById(R.id.et_content);
+            EditText et_content = contentView.findViewById(R.id.et_content);
             String msg;
             if (data.getType().equals(SurveyAnswer.singleChoice)) {
                 msg = "单选题";
@@ -514,6 +546,7 @@ public class AppPageSurveyActivity extends BaseActivity implements View.OnClickL
                         textMap.put(position, s.toString());
                     } else {
                         finishMap.put(position, null);
+                        textMap.put(position, null);
                     }
                 }
 

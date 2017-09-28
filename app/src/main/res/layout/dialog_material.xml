@@ -49,7 +49,7 @@
             android:paddingRight="@dimen/margin_size_16"
             android:paddingTop="@dimen/margin_size_6"
             android:text="取消"
-            android:textColor="@color/blow_gray"
+            android:textColor="@color/defaultColor"
             android:textSize="@dimen/font_size_16"
             android:visibility="gone" />
 
