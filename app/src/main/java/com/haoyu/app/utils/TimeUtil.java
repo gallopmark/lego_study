@@ -358,7 +358,7 @@ public class TimeUtil {
     public static String computeTimeDifference(String time) {
         try {
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            java.util.Date date = df.parse(time);
+            Date date = df.parse(time);
             return computeTimeDifference(date.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
@@ -535,6 +535,35 @@ public class TimeUtil {
                 + String.format(Locale.getDefault(), format1, year2, month2 + 1, date2, h2, m2);
     }
 
+    public static String convertTimeOfDay(long startTime, long endTime) {
+        final String format1 = "%d/%d/%d";
+        final String format2 = "%d/%d %s:%s";
+        Calendar c1 = Calendar.getInstance(); // 日历实例
+        c1.setTime(new Date(startTime));
+        Calendar c2 = Calendar.getInstance(); // 日历实例
+        c2.setTime(new Date(endTime));
+        int year1 = c1.get(Calendar.YEAR);
+        int month1 = c1.get(Calendar.MONTH);
+        int date1 = c1.get(Calendar.DATE);
+        int hour1 = c1.get(Calendar.HOUR_OF_DAY);
+        String h1 = hour1 > 9 ? String.valueOf(hour1) : "0" + hour1;
+        int minute1 = c1.get(Calendar.MINUTE);
+        String m1 = minute1 > 9 ? String.valueOf(minute1) : "0" + minute1;
+        int year2 = c2.get(Calendar.YEAR);
+        int month2 = c2.get(Calendar.MONTH);
+        int date2 = c2.get(Calendar.DATE);
+        int hour2 = c1.get(Calendar.HOUR_OF_DAY);
+        String h2 = hour1 > 9 ? String.valueOf(hour2) : "0" + hour2;
+        int minute2 = c1.get(Calendar.MINUTE);
+        String m2 = minute1 > 9 ? String.valueOf(minute2) : "0" + minute2;
+        if (year1 == year2) {
+            return String.format(Locale.getDefault(), format1, year1, month1 + 1, date1, h1, m1) + "-"
+                    + String.format(Locale.getDefault(), format2, month2 + 1, date2, h2, m2);
+        }
+        return String.format(Locale.getDefault(), format1, year1, month1 + 1, date1, h1, m1) + "至"
+                + String.format(Locale.getDefault(), format1, year2, month2 + 1, date2, h2, m2);
+    }
+
     public static String convertDayOfMinute(long time) {
         final String format = "%d年%d月%d日 %s:%s";
         Calendar c = Calendar.getInstance(); // 日历实例
@@ -555,7 +584,6 @@ public class TimeUtil {
         return c.get(Calendar.YEAR);
     }
 
-
     /*
     * 将时间转换为时间戳
     */
@@ -571,7 +599,6 @@ public class TimeUtil {
         }
     }
 
-
     public static String dateDiff(long startTime, long endTime) {
         StringBuilder actionText = new StringBuilder();
         long nd = 1000 * 24 * 60 * 60;// 一天的毫秒数
@@ -586,8 +613,9 @@ public class TimeUtil {
         day = diff / nd;// 计算差多少天
         hour = diff % nd / nh + day * 24;// 计算差多少小时
         min = diff % nd % nh / nm + day * 24 * 60;// 计算差多少分钟
-
         // 输出结果
+
+        System.out.println("hour=" + hour + ",min=" + min);
         actionText.append("<font color='#181818'>"
                 + "离活动结束还剩：" + " " + "</font>");
         actionText.append("<font color='#ff9900'>"
@@ -628,15 +656,15 @@ public class TimeUtil {
     }
 
     public static String dateDiff(long minutes) {
-        String timeStr = "";
+        String timeStr;
         StringBuilder actionText = new StringBuilder();
         if (minutes <= 0) { //1分钟内 服务端的时间 可能和本地的有区别 所以小于0的 对于这个情况全部都显示刚刚
-            timeStr = "1分钟";
-        } else if (minutes < 60) { // 1小时内
+            timeStr = minutes * 60 + "秒";
+        } else if (minutes > 0 && minutes < 60) { // 1小时内
             timeStr = minutes + "分钟";
-        } else if (minutes < 24 * 60) { // 一天内
+        } else if (minutes > 60 && minutes < 24 * 60) { // 天前
             timeStr = (minutes / 60 == 0 ? 1 : minutes / 60) + "小时";
-        } else if (minutes < 30 * 24 * 60) { // 天前
+        } else if (minutes > 24 * 60 && minutes < 30 * 24 * 60) { // 月前
             long day = minutes / 60 / 24;
             long hour = (minutes - day * 24 * 60) / 60;
             long min = minutes - (day * 24 * 60) - (hour * 60);
@@ -654,9 +682,9 @@ public class TimeUtil {
             actionText.append("<font color='#181818'>"
                     + "分" + " " + "</font>");
             return actionText.toString();
-        } else if (minutes < 12 * 30 * 24 * 60) { // 月前
+        } else if (minutes > 30 * 24 * 60 && minutes < 12 * 30 * 24 * 60) { // 年前
             timeStr = (minutes / 30 * 24 * 60 == 0 ? 1 : minutes / (30 * 24 * 60)) + "个月";
-        } else if (minutes < 12 * 30 * 24 * 60) { // 年前
+        } else { // 年前
             timeStr = (minutes / 12 * 30 * 24 * 60 == 0 ? 1 : minutes / (12 * 30 * 24 * 60)) + "年";
         }
         return timeStr;

@@ -1,6 +1,8 @@
 package com.haoyu.app.activity;
 
 import android.content.Intent;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -9,8 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.dialog.FileUploadDialog;
@@ -33,9 +33,8 @@ import java.util.Map;
 import butterknife.BindView;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
 
 /**
@@ -65,6 +64,7 @@ public class WSTeachingEmulateActivity extends BaseActivity implements View.OnCl
     TextView tv_submit;
     private String workshopId, workSectionId;
     private File videoFile;
+    private FileUploadResult fileResult;
     private MWorkshopActivity activity;
 
     @Override
@@ -92,6 +92,28 @@ public class WSTeachingEmulateActivity extends BaseActivity implements View.OnCl
         iv_addVideo.setOnClickListener(context);
         iv_cancel.setOnClickListener(context);
         tv_submit.setOnClickListener(context);
+        TextWatcher watcher = new TextWatcher() {
+            private CharSequence temp;
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                temp = charSequence.toString().trim();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (temp != null && temp.equals(editable.toString().trim())) {
+                    if (activity != null)
+                        activity = null;
+                }
+            }
+        };
+        et_name.addTextChangedListener(watcher);
     }
 
     @Override
@@ -106,6 +128,7 @@ public class WSTeachingEmulateActivity extends BaseActivity implements View.OnCl
                 iv_grid.setVisibility(View.GONE);
                 iv_addVideo.setVisibility(View.VISIBLE);
                 iv_cancel.setVisibility(View.GONE);
+                fileResult = null;
                 activity = null;
                 break;
             case R.id.tv_submit:
@@ -122,10 +145,17 @@ public class WSTeachingEmulateActivity extends BaseActivity implements View.OnCl
                         if (!videoFile.exists()) {
                             showMaterialDialog("提示", "您选择的视频文件不存在");
                         } else {
-                            if (activity == null) {
-                                commit(videoName, videoTime);
-                            } else {
-                                setEmulateTime(videoTime, activity.getId());
+                            if (fileResult == null)
+                                uploadFile(videoName, videoTime);
+                            else {
+                                if (activity == null) {
+                                    String fileId = fileResult.getResponseData().getId();
+                                    String fileName = fileResult.getResponseData().getFileName();
+                                    String fileUrl = fileResult.getResponseData().getUrl();
+                                    submitEmulate(videoName, fileId, fileName, fileUrl, videoTime);
+                                } else {
+                                    setEmulateTime(videoTime, activity.getId());
+                                }
                             }
                         }
                     }
@@ -150,6 +180,8 @@ public class WSTeachingEmulateActivity extends BaseActivity implements View.OnCl
                     iv_grid.setVisibility(View.VISIBLE);
                     iv_addVideo.setVisibility(View.GONE);
                     iv_cancel.setVisibility(View.VISIBLE);
+                    fileResult = null;
+                    activity = null;
                 } else {
                     videoFile = null;
                     showMaterialDialog("提示", "视频文件不存在");
@@ -158,56 +190,55 @@ public class WSTeachingEmulateActivity extends BaseActivity implements View.OnCl
         });
     }
 
-    private void commit(final String videoName, final String videoTime) {
+    private void uploadFile(final String videoName, final String videoTime) {
         String url = Constants.OUTRT_NET + "/m/file/uploadTemp";
-        final FileUploadDialog fileUploadDialog = new FileUploadDialog(context, videoFile.getName(), "提交中");
-        fileUploadDialog.show();
-        Flowable.just(url).map(new Function<String, FileUploadResult>() {
+        final FileUploadDialog fileUploadDialog = new FileUploadDialog(context, videoFile.getName(), "正在上传视频");
+        final Disposable disposable = OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<FileUploadResult>() {
             @Override
-            public FileUploadResult apply(String url) throws Exception {
-                String resultStr = OkHttpClientManager.post(context, url, videoFile, videoFile.getName(), new OkHttpClientManager.ProgressListener() {
-                    @Override
-                    public void onProgress(long totalBytes, long remainingBytes, boolean done, File file) {
-                        Flowable.just(new Long[]{totalBytes, remainingBytes}).observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Consumer<Long[]>() {
-                                    @Override
-                                    public void accept(Long[] params) throws Exception {
-                                        fileUploadDialog.setUploadProgressBar(params[0], params[1]);
-                                        fileUploadDialog.setUploadText(params[0], params[1]);
-                                    }
-                                });
-                    }
-                });
-                FileUploadResult mResult = new GsonBuilder().create().fromJson(resultStr, FileUploadResult.class);
-                return mResult;
+            public void onBefore(Request request) {
+                fileUploadDialog.show();
             }
-        }).map(new Function<FileUploadResult, WorkshopActivityResult>() {
+
             @Override
-            public WorkshopActivityResult apply(FileUploadResult mResult) throws Exception {
-                if (mResult != null && mResult.getResponseData() != null) {
-                    String fileId = mResult.getResponseData().getId();
-                    String fileName = mResult.getResponseData().getFileName();
-                    String fileUrl = mResult.getResponseData().getUrl();
-                    WorkshopActivityResult result = commitEmulate(videoName, fileId, fileName, fileUrl);
-                    return result;
+            public void onError(Request request, Exception e) {
+                fileUploadDialog.dismiss();
+                onNetWorkError(context);
+            }
+
+            @Override
+            public void onResponse(FileUploadResult response) {
+                fileUploadDialog.dismiss();
+                if (response != null && response.getResponseData() != null) {
+                    fileResult = response;
+                    String fileId = fileResult.getResponseData().getId();
+                    String fileName = fileResult.getResponseData().getFileName();
+                    String fileUrl = fileResult.getResponseData().getUrl();
+                    submitEmulate(videoName, fileId, fileName, fileUrl, videoTime);
                 }
-                return null;
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<WorkshopActivityResult>() {
-                    @Override
-                    public void accept(WorkshopActivityResult response) throws Exception {
-                        fileUploadDialog.dismiss();
-                        if (response != null && response.getResponseData() != null) {
-                            activity = response.getResponseData();
-                            setEmulateTime(videoTime, activity.getId());
-                        }
-                    }
-                });
+        }, videoFile, videoFile.getName(), new OkHttpClientManager.ProgressListener() {
+            @Override
+            public void onProgress(long totalBytes, long remainingBytes, boolean done, File file) {
+                Flowable.just(new Long[]{totalBytes, remainingBytes}).observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<Long[]>() {
+                            @Override
+                            public void accept(Long[] params) throws Exception {
+                                fileUploadDialog.setUploadProgressBar(params[0], params[1]);
+                                fileUploadDialog.setUploadText(params[0], params[1]);
+                            }
+                        });
+            }
+        });
+        fileUploadDialog.setCancelListener(new FileUploadDialog.CancelListener() {
+            @Override
+            public void cancel() {
+                disposable.dispose();
+            }
+        });
+        addSubscription(disposable);
     }
 
-    //上传文件成功后上传内容
-    private WorkshopActivityResult commitEmulate(String videoName, String fileId, String fileName, String fileUrl) throws Exception {
+    private void submitEmulate(String videoName, String fileId, String fileName, String fileUrl, final String videoTime) {
         String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + getUserId() + "/m/activity/wsts";
         Map<String, String> map = new HashMap<>();
         map.put("activity.relation.id", workSectionId);
@@ -217,26 +248,50 @@ public class WSTeachingEmulateActivity extends BaseActivity implements View.OnCl
         map.put("video.fileInfos[0].id", fileId);
         map.put("video.fileInfos[0].fileName", fileName);
         map.put("video.fileInfos[0].url", fileUrl);
-        String strResult = OkHttpClientManager.postAsString(context, url, map);
-        Gson gson = new Gson();
-        WorkshopActivityResult result = gson.fromJson(strResult, WorkshopActivityResult.class);
-        return result;
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<WorkshopActivityResult>() {
+            @Override
+            public void onBefore(Request request) {
+                showTipDialog();
+            }
+
+            @Override
+            public void onError(Request request, Exception e) {
+                hideTipDialog();
+                onNetWorkError(context);
+            }
+
+            @Override
+            public void onResponse(WorkshopActivityResult response) {
+                hideTipDialog();
+                if (response != null && response.getResponseData() != null) {
+                    activity = response.getResponseData();
+                    setEmulateTime(videoTime, activity.getId());
+                }
+            }
+        }, map));
     }
 
     //设置教学观摩指标
-    private void setEmulateTime(String time, String id) {
-        String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + context.getUserId() + "/m/activity/wsts/" + id;
+    private void setEmulateTime(String time, String activityId) {
+        String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + getUserId() + "/m/activity/wsts/" + activityId;
         Map<String, String> map = new HashMap<>();
         map.put("_method", "put");
         map.put("activity.attributeMap[view_time].attrValue", time);
-        OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+            @Override
+            public void onBefore(Request request) {
+                showTipDialog();
+            }
+
             @Override
             public void onError(Request request, Exception e) {
-
+                hideTipDialog();
+                onNetWorkError(context);
             }
 
             @Override
             public void onResponse(BaseResponseResult response) {
+                hideTipDialog();
                 if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
                     Intent intent = new Intent();
                     intent.putExtra("activity", activity);
@@ -244,6 +299,6 @@ public class WSTeachingEmulateActivity extends BaseActivity implements View.OnCl
                     finish();
                 }
             }
-        });
+        }, map));
     }
 }

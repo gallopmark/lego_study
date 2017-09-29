@@ -7,7 +7,6 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.Selection;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,7 +21,6 @@ import android.widget.TextView;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.entity.TimePeriod;
-import com.haoyu.app.entity.WorkshopPhaseResult;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
@@ -71,7 +69,6 @@ public class WorkShopEditTaskActivity extends BaseActivity implements View.OnCli
     private String workShopId, taskId, oldTitle, oldDate;
     private long oldStartTime, oldEndTime;
     private boolean hasOldDate;
-    private boolean isCreate;
 
     @Override
     public int setLayoutResID() {
@@ -80,15 +77,11 @@ public class WorkShopEditTaskActivity extends BaseActivity implements View.OnCli
 
     @Override
     public void initView() {
-        isCreate = getIntent().getBooleanExtra("create", false);
         workShopId = getIntent().getStringExtra("workShopId");
         taskId = getIntent().getStringExtra("relationId");
         oldTitle = getIntent().getStringExtra("title");
         oldStartTime = getIntent().getLongExtra("startTime", -1);
         oldEndTime = getIntent().getLongExtra("endTime", -1);
-        if (isCreate) {
-            toolBar.setTitle_text("添加新阶段");
-        }
         if (oldTitle != null && oldTitle.length() > 0) {
             et_title.setText(oldTitle);
             Editable editable = et_title.getText();
@@ -170,10 +163,7 @@ public class WorkShopEditTaskActivity extends BaseActivity implements View.OnCli
                 } else if (title.equals(oldTitle) && time.equals(oldDate)) {
                     finish();
                 } else {
-                    if (isCreate)
-                        createTask();
-                    else
-                        alterTask();
+                    alterTask();
                 }
             }
         });
@@ -213,6 +203,9 @@ public class WorkShopEditTaskActivity extends BaseActivity implements View.OnCli
         zhankai.setBounds(0, 0, zhankai.getMinimumWidth(),
                 zhankai.getMinimumHeight());
         switch (view.getId()) {
+            case R.id.iv_back:
+                finish();
+                break;
             case R.id.tv_picker:
                 Common.hideSoftInput(context);
                 if (!showPicker) {
@@ -241,48 +234,9 @@ public class WorkShopEditTaskActivity extends BaseActivity implements View.OnCli
         }
     }
 
-    /*添加新阶段*/
-    private void createTask() {
-        String url = Constants.OUTRT_NET + "/master_" + workShopId + "/unique_uid_" + getUserId() + "/m/workshop_section";
-        String title = et_title.getText().toString().trim();
-        Map<String, String> map = new HashMap<>();
-        map.put("workshopId", workShopId);
-        map.put("title", title);
-        map.put("startTime", startTime);
-        map.put("endTime", endTime);
-        map.put("sortNum", String.valueOf(0));
-        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<WorkshopPhaseResult>() {
-            @Override
-            public void onBefore(Request request) {
-                showTipDialog();
-            }
-
-            @Override
-            public void onError(Request request, Exception e) {
-                hideTipDialog();
-                onNetWorkError(context);
-            }
-
-            @Override
-            public void onResponse(WorkshopPhaseResult response) {
-                hideTipDialog();
-                if (response != null && response.getResponseData() != null) {
-                    Intent intent = new Intent();
-                    intent.putExtra("section", response.getResponseData());
-                    setResult(RESULT_OK, intent);
-                    finish();
-                } else {
-                    toastFullScreen("创建阶段失败", false);
-                }
-            }
-        }, map));
-    }
-
-    /*修改阶段*/
     private void alterTask() {
         String url = Constants.OUTRT_NET + "/master_" + workShopId + "/unique_uid_" + getUserId() +
                 "/m/workshop_section/" + taskId;
-        Log.e("url", url);
         final String title = et_title.getText().toString().trim();
         Map<String, String> map = new HashMap<>();
         map.put("_method", "put");

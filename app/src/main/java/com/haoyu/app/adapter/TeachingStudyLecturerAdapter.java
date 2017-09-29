@@ -17,7 +17,6 @@ public class TeachingStudyLecturerAdapter extends BaseArrayRecyclerAdapter<Mobil
         super(mDatas);
     }
 
-
     @Override
     public int bindView(int viewtype) {
         return R.layout.teaching_study_lecture_item;
@@ -27,11 +26,6 @@ public class TeachingStudyLecturerAdapter extends BaseArrayRecyclerAdapter<Mobil
     @Override
     public void onBindHoder(RecyclerHolder holder, final MobileUser mobileUser, int position) {
         TextView tv_name = holder.obtainView(R.id.tv_name);
-        if (mobileUser.getRealName() != null) {
-            tv_name.setText(mobileUser.getRealName());
-        } else {
-            tv_name.setText("匿名用户");
-        }
-
+        tv_name.setText(mobileUser.getRealName());
     }
 }

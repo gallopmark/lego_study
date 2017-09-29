@@ -3,8 +3,10 @@ package com.haoyu.app.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.support.v4.widget.NestedScrollView;
+import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -27,13 +29,14 @@ import com.haoyu.app.view.AppToolBar;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Request;
 
 /**
  * 创建日期：2017/5/27 on 15:30
@@ -114,10 +117,36 @@ public class WSTeachingDiscussActivity extends BaseActivity implements View.OnCl
                 } else if (endTime.length() == 0) {
                     showMaterialDialog("提示", "请设置结束时间");
                 } else {
-                    commit(title, content, childCount, mainCount, startTime, endTime);
+                    if (activity != null)
+                        lastSubmit(activity.getId(), mainCount, childCount, startTime, endTime);
+                    else
+                        submitAt(title, content, childCount, mainCount, startTime, endTime);
                 }
             }
         });
+        TextWatcher watcher = new TextWatcher() {
+            private CharSequence temp;
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                temp = charSequence.toString().trim();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (temp != null && temp.equals(editable.toString().trim())) {
+                    if (activity != null)
+                        activity = null;
+                }
+            }
+        };
+        et_title.addTextChangedListener(watcher);
+        et_content.addTextChangedListener(watcher);
         ll_startTime.setOnClickListener(context);
         ll_endTime.setOnClickListener(context);
         View.OnFocusChangeListener listener = new View.OnFocusChangeListener() {
@@ -240,7 +269,7 @@ public class WSTeachingDiscussActivity extends BaseActivity implements View.OnCl
         tv_end.setText(endTime);
     }
 
-    private void commit(String title, final String content, final String childCount, final String mainCount, final String startTime, final String endTime) {
+    private void submitAt(String title, final String content, final String childCount, final String mainCount, final String startTime, final String endTime) {
         String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + context.getUserId() + "/m/activity/wsts";
         final Map<String, String> map = new HashMap<>();
         map.put("activity.relation.id", workSectionId);
@@ -248,50 +277,61 @@ public class WSTeachingDiscussActivity extends BaseActivity implements View.OnCl
         map.put("discussion.discussionRelations[0].relation.id", workshopId);
         map.put("discussion.title", title);
         map.put("discussion.content", content);
-        showLoadingDialog("正在提交");
-        addSubscription(Flowable.just(url).map(new Function<String, WorkshopActivityResult>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<WorkshopActivityResult>() {
             @Override
-            public WorkshopActivityResult apply(String url) throws Exception {
-                return postResult(url, map);
+            public void onBefore(Request request) {
+                showTipDialog();
             }
-        }).map(new Function<WorkshopActivityResult, Boolean>() {
+
             @Override
-            public Boolean apply(WorkshopActivityResult response) throws Exception {
+            public void onError(Request request, Exception e) {
+                hideTipDialog();
+                onNetWorkError(context);
+            }
+
+            @Override
+            public void onResponse(WorkshopActivityResult response) {
+                hideTipDialog();
                 if (response != null && response.getResponseData() != null) {
                     activity = response.getResponseData();
-                    return commitPost(mainCount, childCount, activity.getId()) && commitTime(startTime, endTime, activity.getId());
+                    lastSubmit(activity.getId(), mainCount, childCount, startTime, endTime);
                 }
-                return false;
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean success) throws Exception {
-                        hideLoadingDialog();
-                        Intent intent = new Intent();
-                        intent.putExtra("activity", activity);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        hideLoadingDialog();
-                        toastFullScreen("提交失败", false);
-                    }
-                }));
+        }, map));
     }
 
-    private WorkshopActivityResult postResult(String url, Map<String, String> map) throws Exception {
-        String json = OkHttpClientManager.postAsString(context, url, map);
-        Gson gson = new GsonBuilder().create();
-        WorkshopActivityResult result = gson.fromJson(json, WorkshopActivityResult.class);
-        return result;
+    private void lastSubmit(final String activityId, final String mainCount, final String childCount, final String startTime, final String endTime) {
+        showTipDialog();
+        addSubscription(Flowable.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return submitPost(mainCount, childCount, activityId) && submitTime(startTime, endTime, activityId);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean success) throws Exception {
+                hideTipDialog();
+                if (success) {
+                    Intent intent = new Intent();
+                    intent.putExtra("activity", activity);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else
+                    toastFullScreen("提交失败", false);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                hideTipDialog();
+                toastFullScreen("提交失败", false);
+            }
+        }));
     }
 
-    private boolean commitPost(String mainCount, String childCount, String activityId) throws Exception {
+    private boolean submitPost(String mainCount, String childCount, String activityId) throws Exception {
         String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + getUserId() + "/m/activity/wsts/" + activityId;
         Map<String, String> map = new HashMap<>();
+        map.put("_method", "put");
         map.put("activity.attributeMap[main_post_num].attrValue", mainCount);
         map.put("activity.attributeMap[sub_post_num].attrValue", childCount);
         String json = OkHttpClientManager.postAsString(context, url, map);
@@ -303,12 +343,12 @@ public class WSTeachingDiscussActivity extends BaseActivity implements View.OnCl
         return false;
     }
 
-    private boolean commitTime(String startTime, String endTime, String activityId) throws Exception {
+    private boolean submitTime(String startTime, String endTime, String activityId) throws Exception {
         String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + getUserId() + "/m/activity/wsts/" + activityId;
         Map<String, String> map = new HashMap<>();
+        map.put("_method", "put");
         map.put("activity.startTime", startTime);
         map.put("activity.endTime", endTime);
-        map.put("_method", "put");
         String json = OkHttpClientManager.postAsString(context, url, map);
         Gson gson = new GsonBuilder().create();
         BaseResponseResult result = gson.fromJson(json, BaseResponseResult.class);

@@ -7,8 +7,8 @@
         android:top="@dimen/margin_size_3"
         android:bottom="@dimen/margin_size_3"
         />
-    <solid android:color="#F0F8ED"/>
+    <solid android:color="@color/lightdefault"/>
     <stroke
         android:width="@dimen/margin_size_1"
-        android:color="#97DB70" />
+        android:color="@color/defaultColor" />
 </shape>

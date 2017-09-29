@@ -38,13 +38,12 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
 
@@ -90,6 +89,7 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
     private List<String> contentList = new ArrayList<>();
     private String scoreContent;
     private File videoFile;
+    private FileUploadResult fileResult;
     private MWorkshopActivity activity;
     private int nowYear, nowMonth, nowDay;
     private int startYear, endYear, startDay;
@@ -146,17 +146,27 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
                     showMaterialDialog("提示", "请设置结束");
                 } else {
                     if (needFile) {
-                        if (videoFile == null) {
+                        if (videoFile == null || !videoFile.exists()) {
                             showMaterialDialog("提示", "请选择视频文件");
                         } else {
-                            if (!videoFile.exists()) {
-                                showMaterialDialog("提示", "选择视频文件不存在");
-                            } else {
-                                upLoadFile();
+                            if (fileResult == null)
+                                uploadFile();
+                            else {
+                                if (activity == null) {
+                                    String fileId = fileResult.getResponseData().getId();
+                                    String fileName = fileResult.getResponseData().getFileName();
+                                    String fileUrl = fileResult.getResponseData().getUrl();
+                                    submitLcec(fileId, fileName, fileUrl);
+                                } else {
+                                    lastSubmit(activity.getId());
+                                }
                             }
                         }
                     } else {
-                        upLoadContent();
+                        if (activity == null)
+                            submitLcec();
+                        else
+                            lastSubmit(activity.getId());
                     }
                 }
             }
@@ -188,6 +198,7 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
                 iv_grid.setVisibility(View.GONE);
                 iv_addVideo.setVisibility(View.VISIBLE);
                 iv_cancel.setVisibility(View.GONE);
+                fileResult = null;
                 activity = null;
                 break;
         }
@@ -197,7 +208,7 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
         final View view = getLayoutInflater().inflate(R.layout.ws_teaching_study_score_item, null);
         EditText et_score = getView(view, R.id.et_score);
         ImageView iv_delete = getView(view, R.id.iv_delete);
-        TextWatcher watcher = new TextWatcher() {
+        et_score.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -213,8 +224,7 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
                 scoreContent = editable.toString();
                 contentList.add(scoreContent);
             }
-        };
-        et_score.addTextChangedListener(watcher);
+        });
         ll_parent.addView(view);
         iv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -326,6 +336,8 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
                     iv_grid.setVisibility(View.VISIBLE);
                     iv_addVideo.setVisibility(View.GONE);
                     iv_cancel.setVisibility(View.VISIBLE);
+                    fileResult = null;
+                    activity = null;
                 } else {
                     videoFile = null;
                     showMaterialDialog("提示", "视频文件不存在");
@@ -334,102 +346,48 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
         });
     }
 
-    private void upLoadFile() {
+    private void uploadFile() {
         String url = Constants.OUTRT_NET + "/m/file/uploadTemp";
         final FileUploadDialog fileUploadDialog = new FileUploadDialog(context, videoFile.getName(), "提交中");
-        fileUploadDialog.show();
-        Flowable.just(url).map(new Function<String, FileUploadResult>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<FileUploadResult>() {
             @Override
-            public FileUploadResult apply(String url) throws Exception {
-                String resultStr = OkHttpClientManager.post(context, url, videoFile, videoFile.getName(), new OkHttpClientManager.ProgressListener() {
-                    @Override
-                    public void onProgress(long totalBytes, long remainingBytes, boolean done, File file) {
-                        Flowable.just(new Long[]{totalBytes, remainingBytes}).observeOn(AndroidSchedulers.mainThread())
-                                .subscribe(new Consumer<Long[]>() {
-                                    @Override
-                                    public void accept(Long[] params) throws Exception {
-                                        fileUploadDialog.setUploadProgressBar(params[0], params[1]);
-                                        fileUploadDialog.setUploadText(params[0], params[1]);
-                                    }
-                                });
-                    }
-                });
-                FileUploadResult mResult = new GsonBuilder().create().fromJson(resultStr, FileUploadResult.class);
-                return mResult;
+            public void onBefore(Request request) {
+                fileUploadDialog.show();
             }
-        }).map(new Function<FileUploadResult, WorkshopActivityResult>() {
-            @Override
-            public WorkshopActivityResult apply(FileUploadResult mResult) throws Exception {
-                if (mResult != null && mResult.getResponseData() != null) {
-                    WorkshopActivityResult result = commit(mResult.getResponseData().getId(), mResult.getResponseData().getFileName(), mResult.getResponseData().getUrl());
-                    return result;
-                }
-                return null;
-            }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<WorkshopActivityResult>() {
-                    @Override
-                    public void accept(WorkshopActivityResult response) throws Exception {
-                        fileUploadDialog.dismiss();
-                        if (response != null && response.getResponseData() != null) {
-                            activity = response.getResponseData();
-                            commitTime(startTime, endTime, activity.getId());
-                        }
-                    }
-                });
-    }
 
-    private void upLoadContent() {
-        showLoadingDialog("正在提交");
-        String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + context.getUserId() + "/m/activity/wsts";
-        Observable.just(url).map(new Function<String, WorkshopActivityResult>() {
             @Override
-            public WorkshopActivityResult apply(String url) {
-                try {
-                    return commit(url);
-                } catch (Exception e) {
-                    return null;
+            public void onError(Request request, Exception e) {
+                fileUploadDialog.dismiss();
+                onNetWorkError(context);
+            }
+
+            @Override
+            public void onResponse(FileUploadResult response) {
+                fileUploadDialog.dismiss();
+                if (response != null && response.getResponseData() != null) {
+                    fileResult = response;
+                    String fileId = fileResult.getResponseData().getId();
+                    String fileName = fileResult.getResponseData().getFileName();
+                    String fileUrl = fileResult.getResponseData().getUrl();
+                    submitLcec(fileId, fileName, fileUrl);
                 }
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<WorkshopActivityResult>() {
-                    @Override
-                    public void accept(WorkshopActivityResult response) throws Exception {
-                        hideLoadingDialog();
-                        if (response != null && response.getResponseData() != null) {
-                            activity = response.getResponseData();
-                            commitTime(startTime, endTime, response.getResponseData().getId());
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        hideLoadingDialog();
-                        onNetWorkError(context);
-                    }
-                });
+        }, videoFile, videoFile.getName(), new OkHttpClientManager.ProgressListener() {
+            @Override
+            public void onProgress(long totalBytes, long remainingBytes, boolean done, File file) {
+                Flowable.just(new Long[]{totalBytes, remainingBytes}).observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<Long[]>() {
+                            @Override
+                            public void accept(Long[] params) throws Exception {
+                                fileUploadDialog.setUploadProgressBar(params[0], params[1]);
+                                fileUploadDialog.setUploadText(params[0], params[1]);
+                            }
+                        });
+            }
+        }));
     }
 
-    //无视频时上传
-    private WorkshopActivityResult commit(String url) throws Exception {
-        Map<String, String> map = new HashMap<>();
-        map.put("activity.relation.id", workSectionId);
-        map.put("activity.type", "lcec");
-        map.put("lcec.coursewareRelations[0].relation.id", workshopId);
-        map.put("lcec.title", title);
-        map.put("lcec.content", content);
-        map.put("lcec.stage", stageId);
-        map.put("lcec.subject", subjectId);
-        map.put("lcec.textbook", bookVersion);
-        map.put("lcec.teacher.id", lecturerId);
-        map.put("lcec.type", "offLine");
-        String strResult = OkHttpClientManager.postAsString(context, url, map);
-        Gson gson = new Gson();
-        WorkshopActivityResult result = gson.fromJson(strResult, WorkshopActivityResult.class);
-        return result;
-    }
-
-    private WorkshopActivityResult commit(String fileId, String fileName, String fileUrl) throws Exception {
+    private void submitLcec(String fileId, String fileName, String fileUrl) {
         String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + context.getUserId() + "/m/activity/wsts";
         Map<String, String> map = new HashMap<>();
         map.put("activity.relation.id", workSectionId);
@@ -440,27 +398,12 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
         map.put("lcec.stage", stageId);
         map.put("lcec.subject", subjectId);
         map.put("lcec.textbook", bookVersion);
-        map.put("lcec.teacher.id", lecturerId);
+        map.put("lcec.teach.id", lecturerId);
         map.put("lcec.type", "onLine");
         map.put("lcec.video.id", fileId);
         map.put("lcec.video.fileName", fileName);
         map.put("lcec.video.url", fileUrl);
-        Gson gson = new Gson();
-        String strResult = OkHttpClientManager.postAsString(context, url, map);
-        WorkshopActivityResult result = gson.fromJson(strResult, WorkshopActivityResult.class);
-        return result;
-    }
-
-    //提交时间
-    private void commitTime(String startTime, final String endTime, final String activityId) {
-        String uid = getUserId();
-        //活动时间
-        String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + uid + "/m/activity/wsts/" + activityId;
-        Map<String, String> map = new HashMap<>();
-        map.put("activity.startTime", startTime);
-        map.put("activity.endTime", endTime);
-        map.put("_method", "put");
-        OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<WorkshopActivityResult>() {
             @Override
             public void onBefore(Request request) {
                 showTipDialog();
@@ -469,64 +412,130 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
             @Override
             public void onError(Request request, Exception e) {
                 hideTipDialog();
+                onNetWorkError(context);
             }
 
             @Override
-            public void onResponse(BaseResponseResult response) {
-                hideTipDialog();
-                if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
-                    commitScoreContent(activityId);
+            public void onResponse(WorkshopActivityResult response) {
+                if (response != null && response.getResponseData() != null) {
+                    activity = response.getResponseData();
+                    lastSubmit(activity.getId());
                 }
             }
-        }, map);
+        }, map));
     }
 
-    private void commitScoreContent(final String activityId) {
+    private void lastSubmit(final String activityId) {
         showTipDialog();
-        Observable.just(contentList).map(new Function<List<String>, Boolean>() {
+        addSubscription(Flowable.fromCallable(new Callable<Boolean>() {
             @Override
-            public Boolean apply(List<String> params) {
-                try {
-                    for (String content : params) {
-                        evaluateContent(activityId, content);
-                    }
-                    return true;
-                } catch (Exception e) {
-                    return false;
-                }
+            public Boolean call() throws Exception {
+                return submitTime(startTime, endTime, activityId) && submitEvaluate(activityId);
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean success) throws Exception {
-                        hideTipDialog();
-                        if (success) {
-                            Intent intent = new Intent();
-                            intent.putExtra("activity", activity);
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        hideTipDialog();
-                    }
-                });
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean success) throws Exception {
+                hideTipDialog();
+                if (success) {
+                    Intent intent = new Intent();
+                    intent.putExtra("activity", activity);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else
+                    toastFullScreen("提交失败", false);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                hideTipDialog();
+                toastFullScreen("提交失败", false);
+            }
+        }));
+    }
+
+    //提交时间
+    private boolean submitTime(String startTime, final String endTime, final String activityId) {
+        String uid = getUserId();
+        //活动时间
+        String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + uid + "/m/activity/wsts/" + activityId;
+        Map<String, String> map = new HashMap<>();
+        map.put("activity.startTime", startTime);
+        map.put("activity.endTime", endTime);
+        map.put("_method", "put");
+        try {
+            String json = OkHttpClientManager.postAsString(context, url, map);
+            BaseResponseResult result = new Gson().fromJson(json, BaseResponseResult.class);
+            if (result != null && result.getResponseCode() != null && result.getResponseCode().equals("00"))
+                return true;
+            return false;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private boolean submitEvaluate(final String activityId) {
+        int count = 0;
+        for (String content : contentList) {
+            if (evaluateContent(activityId, content))
+                count++;
+        }
+        if (count == contentList.size())
+            return true;
+        else
+            return false;
     }
 
     //评分选项
-    private Boolean evaluateContent(String activityId, String content) throws Exception {
-        String url = Constants.OUTRT_NET + "/master_/" + workshopId + "/unique_uid_" + context.getUserId() + "/m/evaluate_item";
-        Map<String, String> map = new HashMap<>();
-        map.put("aid", activityId);
-        map.put("content", content);
-        String json = OkHttpClientManager.postAsString(context, url, map);
-        BaseResponseResult result = new GsonBuilder().create().fromJson(json, BaseResponseResult.class);
-        if (result != null && result.getResponseCode() != null && result.getResponseCode().equals("00")) {
-            return true;
+    private boolean evaluateContent(String activityId, String content) {
+        try {
+            String url = Constants.OUTRT_NET + "/master_/" + workshopId + "/unique_uid_" + context.getUserId() + "/m/evaluate_item";
+            Map<String, String> map = new HashMap<>();
+            map.put("aid", activityId);
+            map.put("content", content);
+            String json = OkHttpClientManager.postAsString(context, url, map);
+            BaseResponseResult result = new GsonBuilder().create().fromJson(json, BaseResponseResult.class);
+            if (result != null && result.getResponseCode() != null && result.getResponseCode().equals("00"))
+                return true;
+            return false;
+        } catch (Exception e) {
+            return false;
         }
-        return false;
+    }
+
+    //无视频时上传
+    private void submitLcec() {
+        String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + context.getUserId() + "/m/activity/wsts";
+        Map<String, String> map = new HashMap<>();
+        map.put("activity.relation.id", workSectionId);
+        map.put("activity.type", "lcec");
+        map.put("lcec.coursewareRelations[0].relation.id", workshopId);
+        map.put("lcec.title", title);
+        map.put("lcec.content", content);
+        map.put("lcec.stage", stageId);
+        map.put("lcec.subject", subjectId);
+        map.put("lcec.textbook", bookVersion);
+        map.put("lcec.teach.id", lecturerId);
+        map.put("lcec.type", "offLine");
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<WorkshopActivityResult>() {
+            @Override
+            public void onBefore(Request request) {
+                showTipDialog();
+            }
+
+            @Override
+            public void onError(Request request, Exception e) {
+                hideTipDialog();
+                onNetWorkError(context);
+            }
+
+            @Override
+            public void onResponse(WorkshopActivityResult response) {
+                if (response != null && response.getResponseData() != null) {
+                    activity = response.getResponseData();
+                    lastSubmit(activity.getId());
+                }
+            }
+        }, map));
     }
 
     private void toastMsg(String msg) {

@@ -31,7 +31,6 @@
                 android:id="@+id/tv_position"
                 android:layout_width="@dimen/margin_size_28"
                 android:layout_height="@dimen/margin_size_28"
-                android:layout_gravity="center"
                 android:background="@drawable/test_select_check"
                 android:ellipsize="end"
                 android:gravity="center"
@@ -54,64 +53,133 @@
             android:layout_marginLeft="-14dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_title"
+            <LinearLayout
+                android:id="@+id/convertView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="22dp"
-                android:layout_marginTop="10dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="导入新课的创新构思和运用"
-                android:textSize="@dimen/font_size_18"
-                android:textStyle="bold" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_researchTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:layout_marginLeft="22dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/shape_workshop_research_time"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="研修时间：2016年12月-2017年2月"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_size_14" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tv_title"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="22dp"
+                        android:layout_marginRight="@dimen/margin_size_12"
+                        android:layout_weight="1"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="导入新课的创新构思和运用"
+                        android:textSize="@dimen/font_size_18"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/iv_isExpand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:scaleType="center"
+                        android:layout_marginRight="@dimen/margin_size_10"
+                        android:src="@drawable/progress_goto" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_researchTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:layout_marginLeft="22dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/shape_workshop_research_time"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="研修时间：2016年12月-2017年2月"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_size_14" />
+            </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/atRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:overScrollMode="never" />
 
-            <LinearLayout
-                android:id="@+id/ll_visiable"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/show_add_task"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="22dp"
+                android:layout_marginTop="@dimen/margin_size_10">
 
-                <ImageView
-                    android:layout_width="@dimen/margin_size_10"
-                    android:layout_height="@dimen/margin_size_10"
-                    android:layout_marginRight="@dimen/margin_size_6"
-                    android:src="@drawable/announcements_yuandian" />
+                <TextView
+                    android:id="@+id/tv_addTask"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:background="@drawable/round_label"
+                    android:drawableLeft="@drawable/task_add_big"
+                    android:drawablePadding="@dimen/margin_size_6"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/margin_size_6"
+                    android:paddingLeft="@dimen/margin_size_12"
+                    android:paddingRight="@dimen/margin_size_12"
+                    android:paddingTop="@dimen/margin_size_6"
+                    android:text="添加新任务"
+                    android:textColor="@color/defaultColor"
+                    android:textSize="@dimen/font_size_16" />
 
-                <ImageView
-                    android:layout_width="@dimen/margin_size_10"
-                    android:layout_height="@dimen/margin_size_10"
-                    android:layout_marginRight="@dimen/margin_size_6"
-                    android:src="@drawable/announcements_yuandian" />
+                <LinearLayout
+                    android:id="@+id/ll_add_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv_addTask"
+                    android:layout_marginTop="@dimen/margin_size_10"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
 
-                <ImageView
-                    android:layout_width="@dimen/margin_size_10"
-                    android:layout_height="@dimen/margin_size_10"
-                    android:src="@drawable/announcements_yuandian" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/tv_discuss"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:drawablePadding="@dimen/margin_size_6"
+                        android:drawableTop="@drawable/workshop_discussion"
+                        android:gravity="center"
+                        android:text="教学研讨"
+                        android:textSize="@dimen/font_size_14" />
+
+                    <TextView
+                        android:id="@+id/tv_query"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:drawablePadding="@dimen/margin_size_6"
+                        android:drawableTop="@drawable/workshop_teachvideo"
+                        android:gravity="center"
+                        android:text="教学观摩"
+                        android:textSize="@dimen/font_size_14" />
+
+                    <TextView
+                        android:id="@+id/tv_course"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:drawablePadding="@dimen/margin_size_6"
+                        android:drawableTop="@drawable/workshop_teachstudy"
+                        android:gravity="center"
+                        android:text="听课评课"
+                        android:textSize="@dimen/font_size_14" />
+                </LinearLayout>
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
-
 </LinearLayout>

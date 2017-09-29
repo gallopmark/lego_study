@@ -6,12 +6,16 @@
     android:background="@color/spaceColor"
     android:orientation="vertical">
 
+
+
     <com.haoyu.app.view.AppToolBar
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:left_button_image="@drawable/app_back"
         app:title_text="选择授课人" />
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

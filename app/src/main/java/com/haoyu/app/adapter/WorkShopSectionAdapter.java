@@ -36,7 +36,6 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
     private int viewType;
     private boolean addTask;
     private OnAddTaskListener addTaskListener;
-    private String startTime, endTime;
     private OnTaskEditListener onTaskEditListener;
     private AddActivityCallBack addActivityCallBack;
     private int mainPosition = -1, childPosition = -1;
@@ -64,11 +63,6 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
         this.onTaskEditListener = onTaskEditListener;
     }
 
-    public void add(MWorkshopSection mSection) {
-        sectionList.add(mSection);
-        notifyDataSetChanged();
-    }
-
     public void addAll(List<MWorkshopSection> mDatas) {
         sectionList.addAll(mDatas);
         for (int i = 0; i < sectionList.size(); i++) {
@@ -89,11 +83,11 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
     public void onBindHoder(RecyclerHolder holder, final MWorkshopSection entity, final int position) {
         if (viewType == 0) {
             View ll_content = holder.obtainView(R.id.ll_content);
-            LinearLayout ll_visiable = holder.obtainView(R.id.ll_visiable);
             final LinearLayout ll_add_type = holder.obtainView(R.id.ll_add_type);
             ll_add_type.setVisibility(View.GONE);
             TextView tv_position = holder.obtainView(R.id.tv_position);
             TextView tv_title = holder.obtainView(R.id.tv_title);
+            final ImageView iv_isExpand = holder.obtainView(R.id.iv_isExpand);
             TextView tv_researchTime = holder.obtainView(R.id.tv_researchTime);
             final RecyclerView atRecyclerView = holder.obtainView(R.id.atRecyclerView);
             atRecyclerView.setNestedScrollingEnabled(false);
@@ -103,16 +97,16 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
             atRecyclerView.setFocusable(false);
             WorkShopAtAdapter adapter = new WorkShopAtAdapter(entity.getActivities(), position);
             atRecyclerView.setAdapter(adapter);
+            if (entity.getActivities().size() > 0)
+                iv_isExpand.setVisibility(View.VISIBLE);
+            else
+                iv_isExpand.setVisibility(View.GONE);
             if (arrayMap.get(position) != null && arrayMap.get(position)) {
                 atRecyclerView.setVisibility(View.VISIBLE);
-                ll_visiable.setVisibility(View.GONE);
+                iv_isExpand.setImageResource(R.drawable.course_dictionary_xiala);
             } else {
-                if (entity.getActivities() != null && entity.getActivities().size() > 0) {
-                    ll_visiable.setVisibility(View.VISIBLE);
-                } else {
-                    ll_visiable.setVisibility(View.GONE);
-                }
                 atRecyclerView.setVisibility(View.GONE);
+                iv_isExpand.setImageResource(R.drawable.progress_goto);
             }
             //添加任务
             TextView task_add = holder.obtainView(R.id.tv_addTask);
@@ -129,7 +123,8 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
             tv_position.setText(position + 1 < 10 ? "0" + (position + 1) : String.valueOf(position + 1));
             tv_title.setText(entity.getTitle());
             if (entity.getTimePeriod() != null) {
-                tv_researchTime.setText("研修时间：" + TimeUtil.getDateYM(entity.getTimePeriod().getStartTime()) + "-"
+                tv_researchTime.setText("研修时间：" +
+                        TimeUtil.getDateYM(entity.getTimePeriod().getStartTime()) + "-"
                         + TimeUtil.getDateYM(entity.getTimePeriod().getEndTime()));
             } else {
                 tv_researchTime.setText("研修时间：未知");
@@ -139,18 +134,18 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
                 public void onClick(View v) {
                     switch (v.getId()) {
                         case R.id.ll_content:
-                            if (entity.getActivities() != null && entity.getActivities().size() > 0
-                                    && atRecyclerView.getVisibility() == View.GONE) {
-                                arrayMap.put(position, true);
-                            } else if (entity.getActivities() != null && entity.getActivities().size() > 0
-                                    && atRecyclerView.getVisibility() == View.VISIBLE) {
+                            if (atRecyclerView.getVisibility() == View.VISIBLE) {
                                 arrayMap.put(position, false);
+                                atRecyclerView.setVisibility(View.GONE);
+                                iv_isExpand.setImageResource(R.drawable.progress_goto);
                             } else {
-                                arrayMap.put(position, false);
+                                arrayMap.put(position, true);
+                                atRecyclerView.setVisibility(View.VISIBLE);
+                                iv_isExpand.setImageResource(R.drawable.course_dictionary_xiala);
                             }
-                            notifyDataSetChanged();
                             break;
                         case R.id.tv_addTask:
+                            ll_add_type.setFocusable(true);
                             if (ll_add_type.getVisibility() == View.GONE) {
                                 ll_add_type.setVisibility(View.VISIBLE);
                             } else {
@@ -286,7 +281,7 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
         if (viewtype == 1)
             return R.layout.workshop_add_task;
         else
-            return R.layout.workshop_section_edit_item;
+            return R.layout.workshop_section_item;
     }
 
     @Override

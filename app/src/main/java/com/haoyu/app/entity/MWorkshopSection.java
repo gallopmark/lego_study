@@ -15,11 +15,10 @@ import java.util.List;
 
 /**
  * id	阶段id	String	Y
- title	标题	String	Y
- timePeriod	开放时间	Object	Y
-
+ * title	标题	String	Y
+ * timePeriod	开放时间	Object	Y
  */
-public class MWorkshopSection implements Serializable{
+public class MWorkshopSection implements Serializable {
     @Expose
     @SerializedName("id")
     private String id;
@@ -57,6 +56,8 @@ public class MWorkshopSection implements Serializable{
     }
 
     public List<MWorkshopActivity> getActivities() {
+        if (activities == null)
+            return new ArrayList<>();
         return activities;
     }
 
