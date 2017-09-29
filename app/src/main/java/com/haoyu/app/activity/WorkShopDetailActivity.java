@@ -327,7 +327,7 @@ public class WorkShopDetailActivity extends BaseActivity {
             @Override
             public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                 Intent intent = new Intent(context, BriefingDetailActivity.class);
-                intent.putExtra("id", briefList.get(position).getId());
+                intent.putExtra("relationId", briefList.get(position).getId());
                 startActivity(intent);
             }
         });
