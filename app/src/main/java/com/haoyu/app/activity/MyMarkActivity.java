@@ -51,8 +51,6 @@ public class MyMarkActivity extends BaseActivity implements View.OnClickListener
     TextView mAlreadyGet;//已经领取的作业
     @BindView(R.id.mark_list)
     RecyclerView mMarkListView;//作业内容列表
-    @BindView(R.id.iv_back)
-    ImageView mBack;//返回按钮
     private String aid;//活动id
     private String uid;//用户id
     private String assignmentId;//	作业ID
@@ -60,11 +58,9 @@ public class MyMarkActivity extends BaseActivity implements View.OnClickListener
     private String mAllMarkNum;//总共需要领取的作业数量;
     private Intent intent;
     private CorrectmarkAdapter mCorrectAdapter;
-
     private LoadingDialog dialog;
     @BindView(R.id.data_warn)
     TextView mDataWarn;//没有数据的时候的提醒
-
     @BindView(R.id.loadingView)
     LoadingView loadingView;
     @BindView(R.id.loadFailView)
@@ -84,19 +80,17 @@ public class MyMarkActivity extends BaseActivity implements View.OnClickListener
         assignmentId = intent.getStringExtra("id");
         relationId = intent.getStringExtra("relationId");
         mAllMarkNum = intent.getStringExtra("allMarkNum");
-
         FullyLinearLayoutManager manager = new FullyLinearLayoutManager(context);
         manager.setOrientation(FullyLinearLayoutManager.VERTICAL);
         mMarkListView.setLayoutManager(manager);
         mCorrectAdapter = new CorrectmarkAdapter(context, receiveAssignmentList, aid, uid, idList);
         mMarkListView.setAdapter(mCorrectAdapter);
-
     }
 
 
     @Override
     public void setListener() {
-        mBack.setOnClickListener(context);
+
         mR1Sharke.setOnClickListener(context);
         toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
             @Override
@@ -128,9 +122,6 @@ public class MyMarkActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-         /*   case R.id.iv_back:
-                this.finish();
-                break;*/
             case R.id.rl_shake:
                 //点击获取作业列表
                 getAssignment();

@@ -21,6 +21,7 @@ import com.haoyu.app.entity.CorrectResult;
 import com.haoyu.app.entity.MEvaluateItemSubmissions;
 import com.haoyu.app.entity.MEvaluateSubmission;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.view.FullyLinearLayoutManager;
@@ -251,23 +252,13 @@ public class CorrectmarkAdapter extends BaseArrayRecyclerAdapter<CorrectResult> 
         @Override
         public void onBindHoder(RecyclerHolder holder, MFileInfo mFileInfo, int position) {
             TextView mFileName = holder.obtainView(R.id.file_name);
-            ImageView mFileType = holder.obtainView(R.id.file_img);
+            ImageView iv_img = holder.obtainView(R.id.file_img);
             if (mFileInfosList.size() > 0) {
                 final MFileInfo fileInfos = mFileInfosList.get(position);
                 mFileName.setText(fileInfos.getFileName());
-                String type = fileInfos.getUrl();
-                if (type.endsWith(".doc") || type.endsWith(".docx")) {
-                    mFileType.setImageResource(R.drawable.resources_doc);
-                } else if (type.endsWith(".xls") || type.endsWith(".xlsx")) {
-                    mFileType.setImageResource(R.drawable.resources_xls);
-                } else if (type.endsWith(".ppt") || holder.equals(".pptx")) {
-                    mFileType.setImageResource(R.drawable.resources_ppt);
-                } else if (type.endsWith("pdf")) {
-                    mFileType.setImageResource(R.drawable.resources_ppt);
-                } else {
-                    mFileType.setImageResource(R.drawable.resources_unknown);
-                }
-                mFileType.setOnClickListener(new View.OnClickListener() {
+                String url = fileInfos.getUrl();
+                Common.setFileType(url, iv_img);
+                iv_img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
 

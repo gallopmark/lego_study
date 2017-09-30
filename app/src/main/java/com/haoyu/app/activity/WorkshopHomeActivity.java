@@ -618,35 +618,25 @@ public class WorkshopHomeActivity extends BaseActivity implements View.OnClickLi
                 intent.putExtra("running", true);
             else
                 intent.putExtra("running", false);
+            intent.putExtra("summary", videoEntity.getmVideo().getSummary());
+            intent.putExtra("attach", video);
+            intent.putExtra("activityId", activity.getId());
+            intent.putExtra("activityTtle", activity.getTitle());
+            intent.putExtra("type", "workshop");
+            intent.putExtra("videoId", videoEntity.getId());
             if (video != null && video.getUrls() != null && video.getUrls().length() > 0) {
-                intent.putExtra("activityId", activity.getId());
-                intent.putExtra("activityTitle", activity.getTitle());
-                intent.putExtra("summary", videoEntity.getmVideo().getSummary());
                 intent.putExtra("videoUrl", video.getUrls());
-                intent.putExtra("attach", video);
                 intent.putExtra("videoId", videoEntity.getId());
-                intent.putExtra("type", "workshop");
                 startActivity(intent);
             } else if (video != null && video.getVideoFiles() != null && video.getVideoFiles().size() > 0) {
-                intent.putExtra("summary", videoEntity.getmVideo().getSummary());
                 intent.putExtra("videoUrl", video.getVideoFiles().get(0).getUrl());
                 intent.putExtra("fileName", video.getVideoFiles().get(0).getFileName());
-                intent.putExtra("videoId", video.getVideoFiles().get(0).getId());
-                intent.putExtra("activityId", activity.getId());
-                intent.putExtra("attach", video);
-                intent.putExtra("videoId", videoEntity.getId());
-                intent.putExtra("type", "workshop");
+
                 startActivity(intent);
             } else if (video != null && video.getAttchFiles() != null && video.getAttchFiles().size() > 0) {
                 //教学观摩
-                intent.putExtra("activityId", activity.getId());
-                intent.putExtra("activityTitle", activity.getTitle());
-                intent.putExtra("summary", videoEntity.getmVideo().getSummary());
                 intent.putExtra("videoUrl", video.getAttchFiles().get(0).getUrl());
-                intent.putExtra("attach", video);
-                intent.putExtra("videoId", videoEntity.getId());
                 intent.putExtra("fileName", video.getAttchFiles().get(0).getFileName());
-                intent.putExtra("type", "workshop");
                 startActivity(intent);
             } else {
                 toast(context, "系统暂不支持浏览，请到网站完成。");

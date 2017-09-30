@@ -334,6 +334,7 @@ public class WSTeachingDiscussActivity extends BaseActivity implements View.OnCl
         map.put("_method", "put");
         map.put("activity.attributeMap[main_post_num].attrValue", mainCount);
         map.put("activity.attributeMap[sub_post_num].attrValue", childCount);
+        map.put("_method", "PUT");
         String json = OkHttpClientManager.postAsString(context, url, map);
         Gson gson = new GsonBuilder().create();
         BaseResponseResult result = gson.fromJson(json, BaseResponseResult.class);
