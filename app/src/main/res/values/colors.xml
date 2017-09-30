@@ -5,7 +5,7 @@
     <color name="lightdefault">#ACEFFA</color>
     <color name="common_pressed">#20000000</color>  <!--白色背景按下去的颜色-->
     <color name="windowbackground">#66000000</color>
-    <color name="transdefaultColor">#e662B542</color>
+    <color name="transdefaultColor">#e611B1D5</color>
     <color name="course_progress">#FEE42D</color>
     <color name="message_user">#FC8F26</color>
     <color name="faq_type">#B0B0B0</color>
