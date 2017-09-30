@@ -35,7 +35,7 @@ public class FreeChatAdapter extends BaseArrayRecyclerAdapter<CommentEntity> {
         if (mComments.getCreator() != null) {
             userName.setText(mComments.getCreator().getRealName());
         } else {
-            userName.setText("匿名用户");
+            userName.setText("");
         }
         createTime.setText("发表于" + TimeUtil.converTime(mComments.getCreateTime()));
         if (mComments.getCreator() != null && mComments.getCreator().getAvatar() != null) {

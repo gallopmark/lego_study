@@ -54,7 +54,7 @@ public class MessageAdapter extends BaseArrayRecyclerAdapter<Message> {
             if (entity.getSender() != null) {
                 message_type.setText(entity.getSender().getRealName());
             } else {
-                message_type.setText("匿名用户");
+                message_type.setText("");
             }
         } else if (entity.getType() != null && entity.getType().equals(Message.TYPE_DAILY_WARN)) {
             message_type.setBackgroundResource(R.drawable.message_system);

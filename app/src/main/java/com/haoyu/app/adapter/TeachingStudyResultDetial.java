@@ -47,7 +47,7 @@ public class TeachingStudyResultDetial extends BaseArrayRecyclerAdapter<MEvaluat
         if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
             tv_name.setText(entity.getCreator().getRealName());
         } else {
-            tv_name.setText("匿名用户");
+            tv_name.setText("");
         }
         if (entity.getComment() != null) {
             Spanned spanned = Html.fromHtml(entity.getComment());

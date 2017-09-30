@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
 import com.haoyu.app.entity.ReplyEntity;
-import com.haoyu.app.lego.student.R;
 import com.haoyu.app.imageloader.GlideImgManager;
+import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.FullyLinearLayoutManager;
 
@@ -82,7 +82,7 @@ public class AppDiscussionAdapter extends BaseArrayRecyclerAdapter<ReplyEntity> 
         if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
             userName.setText(entity.getCreator().getRealName());
         } else {
-            userName.setText("匿名用户");
+            userName.setText("");
         }
         if (entity.getCreator() != null && entity.getCreator().getAvatar() != null) {
             GlideImgManager.loadCircleImage(mContext, entity.getCreator().getAvatar(),
@@ -156,7 +156,7 @@ public class AppDiscussionAdapter extends BaseArrayRecyclerAdapter<ReplyEntity> 
         this.onPostClickListener = onPostClickListener;
     }
 
-    class MoreReplyAdapter extends BaseArrayRecyclerAdapter<ReplyEntity> {
+    static class MoreReplyAdapter extends BaseArrayRecyclerAdapter<ReplyEntity> {
         private Context context;
 
         public MoreReplyAdapter(Context context, List<ReplyEntity> mDatas) {

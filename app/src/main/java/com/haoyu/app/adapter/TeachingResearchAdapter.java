@@ -59,7 +59,7 @@ public class TeachingResearchAdapter extends BaseArrayRecyclerAdapter<DiscussEnt
         if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
             tv_userName.setText(entity.getCreator().getRealName());
         } else {
-            tv_userName.setText("匿名用户");
+            tv_userName.setText("");
         }
         tv_createTime.setText(TimeUtil.converTime(entity.getCreateTime()));
         tv_title.setText(entity.getTitle());

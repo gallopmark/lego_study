@@ -70,7 +70,7 @@ public class PageDiscussionAdapter extends BaseArrayRecyclerAdapter<DiscussEntit
         if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
             userName.setText(entity.getCreator().getRealName());
         } else {
-            userName.setText("匿名用户");
+            userName.setText("");
         }
         createDate.setText("发表于" + TimeUtil.converTime(entity.getCreateTime()));
         if (entity.getmDiscussionRelations() != null

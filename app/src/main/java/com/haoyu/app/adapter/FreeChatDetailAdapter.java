@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
 import com.haoyu.app.entity.CommentEntity;
-import com.haoyu.app.lego.student.R;
 import com.haoyu.app.imageloader.GlideImgManager;
+import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.TimeUtil;
 
 import java.util.List;
@@ -40,7 +40,7 @@ public class FreeChatDetailAdapter extends BaseArrayRecyclerAdapter<CommentEntit
         if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
             tv_userName.setText(entity.getCreator().getRealName());
         } else {
-            tv_userName.setText("匿名用户");
+            tv_userName.setText("");
         }
         if (entity.getCreator() != null && entity.getCreator().getId() != null
                 && entity.getCreator().getId().equals(userId))

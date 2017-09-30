@@ -107,7 +107,7 @@ public class TeachingMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMo
         if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
             tv_creator.setText(entity.getCreator().getRealName());
         } else {
-            tv_creator.setText("匿名用户");
+            tv_creator.setText("");
         }
         tv_host.setText(entity.getSponsor());
         bt_type.setOnClickListener(new View.OnClickListener() {

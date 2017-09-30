@@ -4,10 +4,10 @@ import android.content.Context;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
 import com.haoyu.app.entity.MobileUser;
 import com.haoyu.app.lego.student.R;
-import com.haoyu.app.imageloader.GlideImgManager;
 
 import java.util.List;
 
@@ -29,14 +29,15 @@ public class RecyclerGridViewAdapter extends BaseArrayRecyclerAdapter<MobileUser
         if (mUsers.getRealName() != null) {
             personName.setText(mUsers.getRealName());
         } else {
-            personName.setText("匿名用户");
+            personName.setText("");
         }
-        if (mUsers.getAvatar() != null) {
-            GlideImgManager.loadCircleImage(mContext, mUsers.getAvatar(),
-                    R.drawable.user_default, R.drawable.user_default, personImg);
-        } else {
-            personImg.setImageResource(R.drawable.user_default);
-        }
+        Glide.with(mContext)
+                .load(mUsers.getAvatar())
+                .placeholder(R.drawable.user_default) //设置占位图
+                .error(R.drawable.user_default) //设置错误图片
+                .crossFade() //设置淡入淡出效果，默认300ms，可以传参
+                //.dontAnimate() //不显示动画效果
+                .into(personImg);
     }
 
     @Override
