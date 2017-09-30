@@ -18,8 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_size_10"
             android:ellipsize="end"
-            android:textStyle="bold"
-            android:textSize="@dimen/font_size_18" />
+            android:textSize="@dimen/font_size_18"
+            android:textStyle="bold" />
 
         <com.haoyu.app.view.ExpandableTextView
             android:id="@+id/tv_discussion_text"
@@ -95,4 +95,13 @@
         android:padding="@dimen/margin_size_12"
         android:textSize="@dimen/font_size_16" />
 
+    <TextView
+        android:id="@+id/tv_emptyComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_size_16"
+        android:text="暂时没有人发起评论，你可以点击下面的按钮发起您的评论！"
+        android:textColor="@color/blow_gray"
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
 </LinearLayout>

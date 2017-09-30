@@ -83,7 +83,7 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
     TextView tv_like;
     @BindView(R.id.tv_comment)
     TextView tv_comment;
-    private TextView tv_commentCount;
+    private TextView tv_commentCount, tv_emptyComment;
     private String discussRelationId = "", text_comment = "评论";
     private int replyNum, supportNum;
     private int replyPosition = -1;
@@ -118,6 +118,7 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
         TextView tv_userName = headerView.findViewById(R.id.tv_userName);
         TextView tv_createDate = headerView.findViewById(R.id.tv_createTime);
         tv_commentCount = headerView.findViewById(R.id.tv_commentCount);
+        tv_emptyComment = headerView.findViewById(R.id.tv_emptyComment);
         tv_discussion_title.setText(discussEntity.getTitle());
         tv_discussion_text.setHtmlText(discussEntity.getContent());
         if (discussEntity.getCreator() != null) {
@@ -236,6 +237,8 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
                 xRecyclerView.refreshComplete(true);
             } else if (isLoadMore) {
                 xRecyclerView.loadMoreComplete(true);
+            } else {
+                tv_emptyComment.setVisibility(View.VISIBLE);
             }
         }
         if (response != null && response.getResponseData() != null && response.getResponseData().getPaginator() != null) {
@@ -353,12 +356,11 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
                     ReplyEntity entity = response.getResponseData();
                     entity.setCreator(getCreator(entity.getCreator()));
                     if (!xRecyclerView.isLoadingMoreEnabled()) {
-                        if (entity.getCreator() != null && entity.getCreator().getAvatar() == null) {
-                            entity.getCreator().setAvatar(getAvatar());
-                        }
                         list.add(entity);
                         adapter.notifyDataSetChanged();
                     }
+                    if (tv_emptyComment.getVisibility() != View.GONE)
+                        tv_emptyComment.setVisibility(View.GONE);
                     replyNum++;
                     tv_commentCount.setText(text_comment + "(" + (replyNum) + ")");
                     tv_comment.setText(String.valueOf(replyNum));
@@ -474,6 +476,8 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
                         replyNum = 0;
                     tv_commentCount.setText(text_comment + "(" + (replyNum) + ")");
                     tv_comment.setText(String.valueOf(replyNum));
+                    if (list.size() == 0 && tv_emptyComment.getVisibility() != View.VISIBLE)
+                        tv_emptyComment.setVisibility(View.VISIBLE);
                 }
             }
         }, map));
@@ -631,6 +635,8 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
             replyNum--;
             tv_commentCount.setText(text_comment + "(" + (replyNum) + ")");
             tv_comment.setText(String.valueOf(replyNum));
+            if (list.size() == 0 && tv_emptyComment.getVisibility() != View.VISIBLE)
+                tv_emptyComment.setVisibility(View.VISIBLE);
         }
     }
 
