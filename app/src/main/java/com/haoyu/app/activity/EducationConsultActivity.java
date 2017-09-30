@@ -34,9 +34,9 @@ public class EducationConsultActivity extends BaseActivity {
 
     @Override
     public void setListener() {
-        toolBar.setOnClickListener(new View.OnClickListener() {
+        toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onLeftClick(View view) {
                 finish();
             }
         });
