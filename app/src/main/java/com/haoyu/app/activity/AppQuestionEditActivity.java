@@ -43,8 +43,6 @@ public class AppQuestionEditActivity extends BaseActivity implements OnClickList
     AppToolBar toolBar;
     @BindView(R.id.tv_submit)
     TextView tv_submit;
-    @BindView(R.id.tv_title)
-    TextView tv_title;
     @BindView(R.id.tv_questionType)
     TextView tv_questionType;
     @BindView(R.id.et_content)
@@ -69,13 +67,13 @@ public class AppQuestionEditActivity extends BaseActivity implements OnClickList
         relationType = getIntent().getStringExtra("relationType");
         isAnswer = getIntent().getBooleanExtra("isAnswer", false);
         if (isAnswer) {
-            tv_title.setText("回答");
+            toolBar.setTitle_text("回答");
             tv_questionType.setText("我来回答");
             faQsEntity = (FAQsEntity) getIntent().getSerializableExtra("entity");
             questionId = faQsEntity.getId();
             et_content.setHint("回答内容");
         } else {
-            tv_title.setText("提问");
+            toolBar.setTitle_text("提问");
             if (relationType != null && relationType.equals("workshop_question")) {
                 ll_tips1.setVisibility(View.VISIBLE);
                 ll_tips2.setVisibility(View.VISIBLE);
