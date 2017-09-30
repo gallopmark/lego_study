@@ -20,7 +20,6 @@ import com.haoyu.app.entity.CourseSectionEntity;
 import com.haoyu.app.entity.MultiItemEntity;
 import com.haoyu.app.entity.VideoMobileEntity;
 import com.haoyu.app.lego.student.R;
-import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.view.CircleProgressBar;
 
 import org.wlf.filedownloader.DownloadFileInfo;
@@ -105,7 +104,6 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
             });
         } else if (viewType == TYPE_LEVEL_1) {
             final CourseChildSectionEntity childEntity = (CourseChildSectionEntity) item;
-            LinearLayout ll_layout = holder.obtainView(R.id.ll_layout);
             ImageView ic_selection_state = holder.obtainView(R.id.ic_selection_state);
             final TextView tv_title = holder.obtainView(R.id.tv_selection_title);
             if (childEntity.getCompleteState() != null && childEntity.getCompleteState().equals("已完成"))
@@ -118,7 +116,7 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                 ic_selection_state.setImageResource(R.drawable.state_semicircle_default);
             else
                 ic_selection_state.setImageResource(R.drawable.state_hollow_default);
-            setSpannedText(childEntity.getTitle(), tv_title, ll_layout);
+            setSpannedText(childEntity.getTitle(), tv_title);
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -145,7 +143,6 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                 }
             });
         } else {
-            LinearLayout ll_layout = holder.obtainView(R.id.ll_layout);
             final ImageView icType = holder.obtainView(R.id.ic_selection_activity_type);
             final TextView tvTitle = holder.obtainView(R.id.tv_selection_activity_title);
             final ImageView icDownload = holder.obtainView(R.id.ic_download);
@@ -222,7 +219,7 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                 else
                     icState.setImageResource(R.drawable.state_hollow_default);
             }
-            setActivityTitle(activity.getTitle(), tvTitle, ll_layout);
+            setSpannedText(activity.getTitle(), tvTitle);
             if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
                 tvTitle.setTextColor(ContextCompat.getColor(context, R.color.defaultColor));
             else
@@ -315,89 +312,11 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
     }
 
     private void setSpannedText(String title, TextView tv) {
-        int left, top, right, bottom;
         if (title == null || title.trim().length() == 0) {
-            left = right = PixelFormat.dp2px(context, 12);
-            top = bottom = PixelFormat.dp2px(context, 6);
-            tv.setPadding(left, top, right, bottom);
             tv.setText("无标题");
         } else {
             Spanned spanned = Html.fromHtml(title);
-            SpannableString ss = new SpannableString(spanned);
-            if (title.contains("<sup>")) {
-                ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                left = right = PixelFormat.dp2px(context, 12);
-                top = bottom = PixelFormat.dp2px(context, 2);
-                tv.setPadding(left, top, right, bottom);
-                tv.setText(ss);
-            } else if (title.contains("<sub>")) {
-                ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                left = right = PixelFormat.dp2px(context, 12);
-                top = bottom = PixelFormat.dp2px(context, 2);
-                tv.setPadding(left, top, right, bottom);
-                tv.setText(ss);
-            } else {
-                left = right = PixelFormat.dp2px(context, 12);
-                top = bottom = PixelFormat.dp2px(context, 6);
-                tv.setPadding(left, top, right, bottom);
-                tv.setText(spanned);
-            }
-        }
-    }
-
-    private void setSpannedText(String title, TextView tv_title, LinearLayout layout) {
-        int left, top, right, bottom;
-        if (title == null || title.trim().length() == 0) {
-            tv_title.setText("无标题");
-            left = right = top = bottom = PixelFormat.dp2px(context, 12);
-            layout.setPadding(left, top, right, bottom);
-        } else {
-            Spanned spanned = Html.fromHtml(title);
-            SpannableString ss = new SpannableString(spanned);
-            if (title.contains("<sup>")) {
-                ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                left = right = PixelFormat.dp2px(context, 12);
-                top = bottom = PixelFormat.dp2px(context, 8);
-                layout.setPadding(left, top, right, bottom);
-                tv_title.setText(ss);
-            } else if (title.contains("<sub>")) {
-                ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                left = right = PixelFormat.dp2px(context, 12);
-                top = bottom = PixelFormat.dp2px(context, 8);
-                layout.setPadding(left, top, right, bottom);
-                tv_title.setText(ss);
-            } else {
-                left = right = top = bottom = PixelFormat.dp2px(context, 12);
-                layout.setPadding(left, top, right, bottom);
-                tv_title.setText(spanned);
-            }
-        }
-    }
-
-    private void setActivityTitle(String title, TextView tv_title, LinearLayout layout) {
-        int left = 0, top, right = 0, bottom;
-        if (title == null || title.trim().length() == 0) {
-            top = bottom = PixelFormat.dp2px(context, 12);
-            layout.setPadding(left, top, right, bottom);
-            tv_title.setText("无标题");
-        } else {
-            Spanned spanned = Html.fromHtml(title);
-            SpannableString ss = new SpannableString(spanned);
-            if (title.contains("<sup>")) {
-                ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                top = bottom = PixelFormat.dp2px(context, 8);
-                layout.setPadding(left, top, right, bottom);
-                tv_title.setText(ss);
-            } else if (title.contains("<sub>")) {
-                ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                top = bottom = PixelFormat.dp2px(context, 8);
-                layout.setPadding(left, top, right, bottom);
-                tv_title.setText(ss);
-            } else {
-                top = bottom = PixelFormat.dp2px(context, 12);
-                layout.setPadding(left, top, right, bottom);
-                tv_title.setText(spanned);
-            }
+            tv.setText(spanned.toString());
         }
     }
 

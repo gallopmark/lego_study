@@ -6,9 +6,10 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/ll_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/margin_size_12"
+        android:paddingRight="@dimen/margin_size_12"
         android:layout_marginLeft="@dimen/margin_size_12"
         android:layout_marginRight="@dimen/margin_size_12"
         android:background="@drawable/item_click_selector"
@@ -28,6 +29,8 @@
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/margin_size_6"
             android:layout_marginRight="@dimen/margin_size_6"
+            android:paddingTop="@dimen/margin_size_14"
+            android:paddingBottom="@dimen/margin_size_14"
             android:ellipsize="end"
             android:gravity="left|center"
             android:maxLines="1"
