@@ -94,6 +94,6 @@ public class AnnouncementDetailActivity extends BaseActivity {
         tv_createDate.setCompoundDrawables(createTime, null, null, null);
         tv_createDate.setCompoundDrawablePadding(paddingSize);
         tv_createDate.setText(TimeUtil.getDateHR(entity.getCreateTime()));
-        tv_content.setHtml(entity.getContent(), new HtmlHttpImageGetter(tv_content));
+        tv_content.setHtml(entity.getContent(), new HtmlHttpImageGetter(tv_content, Constants.REFERER));
     }
 }

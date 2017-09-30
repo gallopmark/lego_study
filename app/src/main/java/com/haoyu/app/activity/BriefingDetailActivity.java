@@ -83,7 +83,7 @@ public class BriefingDetailActivity extends BaseActivity {
         } else {
             tv_title.setText("无标题");
         }
-        tv_content.setHtml(entity.getContent(), new HtmlHttpImageGetter(tv_content));
+        tv_content.setHtml(entity.getContent(), new HtmlHttpImageGetter(tv_content, Constants.REFERER));
         tv_createDate.setText("发布时间：" + TimeUtil.getSlashDate(entity.getCreateTime()));
     }
 }
