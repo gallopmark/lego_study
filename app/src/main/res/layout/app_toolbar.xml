@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ll_layout"
+    android:id="@id/toolbar_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/defaultColor"
     android:orientation="horizontal">
 
     <ImageView
-        android:id="@+id/iv_leftImage"
+        android:id="@id/toolbar_left_iv"
         android:layout_width="55dp"
         android:layout_height="match_parent"
         android:background="@drawable/app_toolbar_selector"
@@ -15,7 +15,7 @@
         android:src="@drawable/app_back" />
 
     <TextView
-        android:id="@+id/tv_leftView"
+        android:id="@id/toolbar_left_tv"
         android:layout_width="55dp"
         android:layout_height="match_parent"
         android:background="@drawable/app_toolbar_selector"
@@ -24,7 +24,7 @@
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/tv_title"
+        android:id="@id/toolbar_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -37,7 +37,7 @@
         android:textSize="@dimen/title_textsize" />
 
     <ImageView
-        android:id="@+id/iv_rightImage"
+        android:id="@id/toolbar_right_iv"
         android:layout_width="55dp"
         android:layout_height="match_parent"
         android:background="@drawable/app_toolbar_selector"
@@ -45,7 +45,7 @@
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/tv_rightView"
+        android:id="@id/toolbar_right_tv"
         android:layout_width="55dp"
         android:layout_height="match_parent"
         android:background="@drawable/app_toolbar_selector"

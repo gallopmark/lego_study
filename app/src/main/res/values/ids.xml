@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="node_header" type="id" />
-    <item name="node_items" type="id" />
-    <item name="tree_items" type="id" />
-    <item name="selected_view" type="id"/>
+    <item name="selected_view" type="id" />
 
-    <item type="id" name="expandable_text"/>
-    <item type="id" name="expand_collapse"/>
+    <item name="expandable_text" type="id" />
+    <item name="expand_collapse" type="id" />
 
-    <item name="drawable_callback_tag" type="id" />
+    <item name="toolbar_layout" type="id" />
+    <item name="toolbar_left_tv" type="id" />
+    <item name="toolbar_left_iv" type="id" />
+    <item name="toolbar_title" type="id" />
+    <item name="toolbar_right_tv" type="id" />
+    <item name="toolbar_right_iv" type="id" />
 </resources>

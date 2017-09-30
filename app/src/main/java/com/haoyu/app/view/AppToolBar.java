@@ -101,13 +101,6 @@ public class AppToolBar extends LinearLayout {
         super(context, attrs);
         /**加载布局文件*/
         LayoutInflater.from(context).inflate(R.layout.app_toolbar, this, true);
-        ll_layout = findViewById(R.id.ll_layout);
-        iv_leftImage = findViewById(R.id.iv_leftImage);
-        tv_leftView = findViewById(R.id.tv_leftView);
-        iv_rightImage = findViewById(R.id.iv_rightImage);
-        tv_rightView = findViewById(R.id.tv_rightView);
-        tv_title = findViewById(R.id.tv_title);
-
         /**获取属性值*/
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.AppToolBar);
         /**标题相关*/
@@ -126,6 +119,22 @@ public class AppToolBar extends LinearLayout {
         right_button_textColor = typedArray.getColor(R.styleable.AppToolBar_right_button_textColor, Color.WHITE);
         right_background = typedArray.getResourceId(R.styleable.AppToolBar_right_background, R.drawable.app_toolbar_selector);
         show_right_button = typedArray.getBoolean(R.styleable.AppToolBar_show_right_button, true);
+        typedArray.recycle();
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        findViews();
+    }
+
+    private void findViews() {
+        ll_layout = findViewById(R.id.toolbar_layout);
+        iv_leftImage = findViewById(R.id.toolbar_left_iv);
+        tv_leftView = findViewById(R.id.toolbar_left_tv);
+        iv_rightImage = findViewById(R.id.toolbar_right_iv);
+        tv_rightView = findViewById(R.id.toolbar_right_tv);
+        tv_title = findViewById(R.id.toolbar_title);
         /**设置值*/
         setTitle_background_color(title_background_color);
         setTitle_text(title_text);
@@ -162,25 +171,25 @@ public class AppToolBar extends LinearLayout {
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
-                    case R.id.iv_leftImage:
+                    case R.id.toolbar_left_iv:
                         if (onLeftClickListener != null)
                             onLeftClickListener.onLeftClick(view);
                         if (titleOnClickListener != null)
                             titleOnClickListener.onLeftClick(view);
                         break;
-                    case R.id.tv_leftView:
+                    case R.id.toolbar_left_tv:
                         if (onLeftClickListener != null)
                             onLeftClickListener.onLeftClick(view);
                         if (titleOnClickListener != null)
                             titleOnClickListener.onLeftClick(view);
                         break;
-                    case R.id.iv_rightImage:
+                    case R.id.toolbar_right_iv:
                         if (onRightClickListener != null)
                             onRightClickListener.onRightClick(view);
                         if (titleOnClickListener != null)
                             titleOnClickListener.onRightClick(view);
                         break;
-                    case R.id.tv_rightView:
+                    case R.id.toolbar_right_tv:
                         if (onRightClickListener != null)
                             onRightClickListener.onRightClick(view);
                         if (titleOnClickListener != null)
@@ -193,7 +202,6 @@ public class AppToolBar extends LinearLayout {
         tv_leftView.setOnClickListener(listener);
         iv_rightImage.setOnClickListener(listener);
         tv_rightView.setOnClickListener(listener);
-        typedArray.recycle();
     }
 
     /**
