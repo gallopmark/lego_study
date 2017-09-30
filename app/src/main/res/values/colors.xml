@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="defaultColor">#11B1D5</color>
-    <color name="pressedColor">#11A1D5</color>
+    <color name="pressedColor">#CC11A1D5</color>
     <color name="lightdefault">#ACEFFA</color>
     <color name="common_pressed">#20000000</color>  <!--白色背景按下去的颜色-->
     <color name="windowbackground">#66000000</color>
