@@ -28,31 +28,32 @@ public class AppMoreReplyAdapter extends BaseArrayRecyclerAdapter<CommentEntity>
     @Override
     public void onBindHoder(RecyclerHolder holder, CommentEntity entity, int position) {
         TextView tv = holder.obtainView(R.id.tv_content);
+        tv.setText(null);
         if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
             SpannableString ss = new SpannableString(entity.getCreator().getRealName() + ": ");
             ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext,
                     R.color.defaultColor)), 0, ss.length(),
                     SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv.setText(ss);
+            tv.append(ss);
         } else {
             SpannableString ss = new SpannableString("" + ": ");
             ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext,
                     R.color.defaultColor)), 0, ss.length(),
                     SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv.setText(ss);
+            tv.append(ss);
         }
         if (entity.getContent() != null) {
             SpannableString ss = new SpannableString(entity.getContent());
             ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext,
                     R.color.black)), 0, ss.length(),
                     SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv.setText(ss);
+            tv.append(ss);
         } else {
             SpannableString ss = new SpannableString("");
             ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext,
                     R.color.black)), 0, ss.length(),
                     SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv.setText(ss);
+            tv.append(ss);
         }
     }
 
