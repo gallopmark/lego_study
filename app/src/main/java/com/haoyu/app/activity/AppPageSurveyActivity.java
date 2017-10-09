@@ -411,10 +411,10 @@ public class AppPageSurveyActivity extends BaseActivity implements View.OnClickL
     }
 
     private void showPopupWindow() {
-        final View popupView = getLayoutInflater().inflate(R.layout.test_pulldown_layout, null);
-        final PopupWindow mPopupWindow = new PopupWindow(popupView, LinearLayout.LayoutParams.MATCH_PARENT,
+        final View view = getLayoutInflater().inflate(R.layout.test_pulldown_layout, null);
+        final PopupWindow mPopupWindow = new PopupWindow(view, LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT, true);
-        GridView gridView = popupView.findViewById(R.id.gridView);
+        GridView gridView = view.findViewById(R.id.gridView);
         ArrayMap<Integer, Boolean> arrayMap = new ArrayMap<>();
         for (Integer p : finishMap.keySet()) {
             if (finishMap.get(p) != null) {
@@ -432,17 +432,23 @@ public class AppPageSurveyActivity extends BaseActivity implements View.OnClickL
                 mPopupWindow.dismiss();
             }
         });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPopupWindow.dismiss();
+            }
+        });
         mPopupWindow.setTouchable(true);
         mPopupWindow.setOutsideTouchable(true);
         //实例化一个ColorDrawable颜色为半透明
         ColorDrawable colorDrawable = new ColorDrawable(ContextCompat.getColor(context, R.color.windowbackground));
         mPopupWindow.setBackgroundDrawable(colorDrawable);
-        final View view = toolBar.getIv_rightImage();
-        mPopupWindow.showAsDropDown(view);
+        final View rightView = toolBar.getIv_rightImage();
+        mPopupWindow.showAsDropDown(rightView);
         mPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
             @Override
             public void onDismiss() {
-                view.setBackgroundColor(ContextCompat.getColor(context, R.color.defaultColor));
+                rightView.setBackgroundColor(ContextCompat.getColor(context, R.color.defaultColor));
             }
         });
     }
