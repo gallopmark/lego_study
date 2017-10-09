@@ -1,9 +1,10 @@
 package com.haoyu.app.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
-import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.SubscriptSpan;
 import android.text.style.SuperscriptSpan;
@@ -195,7 +196,7 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
             @Override
             public boolean onLongClick(View view) {
                 if (onItemLongClickListener != null)
-                    onItemLongClickListener.onItemLongClick(tv_title, activity.getTitle());
+                    onItemLongClickListener.onItemLongClick(tv_title, getSpanned(activity.getTitle()));
                 return false;
             }
         });
@@ -205,8 +206,12 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
         if (title == null || title.trim().length() == 0)
             tv_title.setText("无标题");
         else {
-            Spanned spanned = Html.fromHtml(title);
-            SpannableString ss = new SpannableString(spanned);
+            Spanned spanned;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                spanned = Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY);
+            else
+                spanned = Html.fromHtml(title);
+            SpannableStringBuilder ss = new SpannableStringBuilder(spanned);
             if (title.contains("<sup>")) {
                 ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 tv_title.setText(ss);
@@ -217,6 +222,22 @@ public class CourseActivityAdapter extends BaseArrayRecyclerAdapter<CourseSectio
                 tv_title.setText(spanned);
             }
         }
+    }
+
+    private Spanned getSpanned(String title) {
+        Spanned spanned;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            spanned = Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY);
+        else
+            spanned = Html.fromHtml(title);
+        SpannableStringBuilder ss = new SpannableStringBuilder(spanned);
+        if (title.contains("<sup>"))
+            ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        else if (title.contains("<sub>"))
+            ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        else
+            return spanned;
+        return ss;
     }
 
     private void beginDownload(final String url) {

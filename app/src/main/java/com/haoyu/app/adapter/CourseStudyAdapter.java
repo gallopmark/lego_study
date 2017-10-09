@@ -1,9 +1,10 @@
 package com.haoyu.app.adapter;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
-import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.SubscriptSpan;
 import android.text.style.SuperscriptSpan;
@@ -20,6 +21,7 @@ import com.haoyu.app.entity.CourseSectionEntity;
 import com.haoyu.app.entity.MultiItemEntity;
 import com.haoyu.app.entity.VideoMobileEntity;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.view.CircleProgressBar;
 
 import org.wlf.filedownloader.DownloadFileInfo;
@@ -88,12 +90,12 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
     }
 
     @Override
-    public void onBindHoder(RecyclerHolder holder, MultiItemEntity item, final int position) {
+    public void onBindHoder(RecyclerHolder holder, final MultiItemEntity item, final int position) {
         int viewType = holder.getItemViewType();
         if (viewType == TYPE_LEVEL_0) {
             final CourseSectionEntity sectionEntity = (CourseSectionEntity) item;
             final TextView tv_title = holder.obtainView(R.id.section_title);
-            setSpannedText(sectionEntity.getTitle(), tv_title);
+            setSectionText(sectionEntity.getTitle(), tv_title);
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View view) {
@@ -129,9 +131,15 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                             childEntity.getActivities().get(i).setVisiable(true);
                         collapses.put(position, true);
                     }
-                    notifyDataSetChanged();
-                    if (onItemClickListener != null)
-                        onItemClickListener.onChildSectionClick(position + childEntity.getActivities().size());
+                    int index = mDatas.indexOf(childEntity) + 1;
+                    final int itemCount = childEntity.getActivities().size();
+                    notifyItemRangeChanged(index, itemCount);
+                    if (onItemClickListener != null) {
+                        if (collapses.get(position))
+                            onItemClickListener.onChildSectionClick(position + itemCount);
+                        else
+                            onItemClickListener.onChildSectionClick(position);
+                    }
                 }
             });
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -311,18 +319,75 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
         }
     }
 
-    private void setSpannedText(String title, TextView tv) {
+    private void setSectionText(String title, TextView tv) {
+        int paddingLeft = tv.getPaddingLeft();
+        int paddingRight = tv.getPaddingRight();
+        int paddingTop = PixelFormat.formatDipToPx(context, 8);
+        int paddingBottom = paddingTop;
         if (title == null || title.trim().length() == 0) {
             tv.setText("无标题");
         } else {
-            Spanned spanned = Html.fromHtml(title);
-            tv.setText(spanned.toString());
+            Spanned spanned;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                spanned = Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY);
+            else
+                spanned = Html.fromHtml(title);
+            SpannableStringBuilder ss = new SpannableStringBuilder(spanned);
+            if (title.contains("<sup>")) {
+                ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                paddingTop = paddingBottom = PixelFormat.formatDipToPx(context, 2);
+                tv.setText(null);
+                tv.append(ss);
+            } else if (title.contains("<sub>")) {
+                ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                paddingTop = paddingBottom = PixelFormat.formatDipToPx(context, 2);
+                tv.setText(null);
+                tv.append(ss);
+            } else {
+                tv.setText(spanned);
+            }
         }
+        tv.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+    }
+
+    private void setSpannedText(String title, TextView tv) {
+        int paddingLeft = tv.getPaddingLeft();
+        int paddingRight = tv.getPaddingRight();
+        int paddingTop = PixelFormat.formatDipToPx(context, 14);
+        int paddingBottom = paddingTop;
+        if (title == null || title.trim().length() == 0) {
+            tv.setText("无标题");
+        } else {
+            Spanned spanned;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                spanned = Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY);
+            else
+                spanned = Html.fromHtml(title);
+            SpannableStringBuilder ss = new SpannableStringBuilder(spanned);
+            if (title.contains("<sup>")) {
+                ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                paddingTop = paddingBottom = PixelFormat.formatDipToPx(context, 8);
+                tv.setText(null);
+                tv.append(ss);
+            } else if (title.contains("<sub>")) {
+                ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                paddingTop = paddingBottom = PixelFormat.formatDipToPx(context, 8);
+                tv.setText(null);
+                tv.append(ss);
+            } else {
+                tv.setText(spanned);
+            }
+        }
+        tv.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
     }
 
     private Spanned getSpanned(String title) {
-        Spanned spanned = Html.fromHtml(title);
-        SpannableString ss = new SpannableString(spanned);
+        Spanned spanned;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            spanned = Html.fromHtml(title, Html.FROM_HTML_MODE_LEGACY);
+        else
+            spanned = Html.fromHtml(title);
+        SpannableStringBuilder ss = new SpannableStringBuilder(spanned);
         if (title.contains("<sup>"))
             ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         else if (title.contains("<sub>"))

@@ -13,17 +13,14 @@
         android:id="@+id/section_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:background="@drawable/shape_course_section_bg"
         android:drawableLeft="@drawable/course_single_title_ico"
         android:drawablePadding="@dimen/margin_size_6"
         android:ellipsize="end"
         android:gravity="left|center"
         android:maxLines="1"
-        android:paddingBottom="@dimen/margin_size_8"
         android:paddingLeft="@dimen/margin_size_16"
         android:paddingRight="@dimen/margin_size_16"
-        android:paddingTop="@dimen/margin_size_8"
         android:text="课前准备"
         android:textSize="@dimen/font_size_16" />
 
