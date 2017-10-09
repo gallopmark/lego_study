@@ -709,7 +709,10 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
         }
     };
-    //视频的方向
+    /**
+     * 视频的方向
+     */
+
     private PLMediaPlayer.OnInfoListener mOnInfoListener = new PLMediaPlayer.OnInfoListener() {
         @Override
         public boolean onInfo(PLMediaPlayer plMediaPlayer, int what, int extra) {
@@ -811,9 +814,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-    /**
-     * 手势结束
-     */
+    //手势结束
     private void endGesture() {
         volume = -1;
         brightness = -1f;
