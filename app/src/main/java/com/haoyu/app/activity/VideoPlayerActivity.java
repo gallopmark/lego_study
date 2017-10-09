@@ -814,8 +814,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-
-      //手势结束
+    /**
+     * 手势结束
+     */
     private void endGesture() {
         volume = -1;
         brightness = -1f;
