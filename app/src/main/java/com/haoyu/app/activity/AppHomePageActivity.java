@@ -32,6 +32,7 @@ import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.CaptureResult;
 import com.haoyu.app.entity.CourseMobileEntity;
+import com.haoyu.app.entity.MobileUser;
 import com.haoyu.app.entity.MobileUserTrainInfoResult;
 import com.haoyu.app.entity.MyTrainCommunityResult;
 import com.haoyu.app.entity.MyTrainCourseResult;
@@ -39,6 +40,7 @@ import com.haoyu.app.entity.MyTrainMobileEntity;
 import com.haoyu.app.entity.MyTrainResultEntity;
 import com.haoyu.app.entity.MyTrainWorkShopResult;
 import com.haoyu.app.entity.TimePeriod;
+import com.haoyu.app.entity.UserInfoResult;
 import com.haoyu.app.entity.WorkShopMobileEntity;
 import com.haoyu.app.imageloader.GlideImgManager;
 import com.haoyu.app.lego.student.R;
@@ -194,7 +196,6 @@ public class AppHomePageActivity extends BaseActivity implements View.OnClickLis
             tv_userName.setText("请填写用户名");
         else
             tv_userName.setText(getRealName());
-        tv_deptName = menuView.findViewById(R.id.tv_deptName);
         if (TextUtils.isEmpty(getDeptName()))
             tv_deptName.setText("请选择单位");
         else
@@ -215,6 +216,37 @@ public class AppHomePageActivity extends BaseActivity implements View.OnClickLis
         tv_consulting.setOnClickListener(context);
         TextView tv_settings = getView(menuView, R.id.tv_settings);  //设置
         tv_settings.setOnClickListener(context);
+        getUserInfo();
+    }
+
+    private void getUserInfo() {
+        String url = Constants.OUTRT_NET + "/m/user/" + getUserId();
+        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<UserInfoResult>() {
+
+            @Override
+            public void onError(Request request, Exception e) {
+            }
+
+            @Override
+            public void onResponse(UserInfoResult response) {
+                if (response != null && response.getResponseData() != null) {
+                    updateUI(response.getResponseData());
+                }
+            }
+        }));
+    }
+
+    private void updateUI(MobileUser user) {
+        GlideImgManager.loadCircleImage(context.getApplicationContext(), user.getAvatar(), R.drawable.user_default,
+                R.drawable.user_default, iv_userIco);
+        if (TextUtils.isEmpty(user.getRealName()))
+            tv_userName.setText("请填写用户名");
+        else
+            tv_userName.setText(user.getRealName());
+        if (user.getmDepartment() != null && user.getmDepartment().getDeptName() != null)
+            tv_deptName.setText(user.getmDepartment().getDeptName());
+        else
+            tv_deptName.setText("请选择单位");
     }
 
     @Override
