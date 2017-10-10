@@ -394,6 +394,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         myOrientationListener.disable();
     }
 
+    //快进的时间
     private long seekTime;
     // 更新时间间隔
     private int interval;
