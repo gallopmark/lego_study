@@ -1,5 +1,6 @@
 package com.haoyu.app.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -15,12 +16,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
+import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.CourseChildSectionEntity;
 import com.haoyu.app.entity.CourseSectionActivity;
 import com.haoyu.app.entity.CourseSectionEntity;
 import com.haoyu.app.entity.MultiItemEntity;
 import com.haoyu.app.entity.VideoMobileEntity;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.utils.NetStatusUtil;
 import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.view.CircleProgressBar;
 
@@ -304,8 +307,16 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                 @Override
                 public void onClick(View view) {
                     if (url != null) {
-                        beginDownload(url);
-                    }
+                        if (NetStatusUtil.isConnected(context)) {
+                            if (NetStatusUtil.isWifi(context))
+                                beginDownload(url);
+                            else
+                                netWorkTips(url);
+                        } else
+                            tips("无法连接到服务器，请检查网络设置！");
+                    } else
+                        tips("下载失败，视频文件不存在！");
+
                 }
             });
             rl_download.setOnClickListener(new View.OnClickListener() {
@@ -399,6 +410,30 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
         else
             return spanned;
         return ss;
+    }
+
+    private void netWorkTips(final String url) {
+        MaterialDialog dialog = new MaterialDialog(context);
+        dialog.setTitle("网络提醒");
+        dialog.setMessage("你现在不在无线局域网环境，下载视频会消耗较多流量。确定要开启吗？");
+        dialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
+            @Override
+            public void onClick(View v, AlertDialog dialog) {
+                beginDownload(url);
+                dialog.dismiss();
+            }
+        });
+        dialog.setNegativeTextColor(ContextCompat.getColor(context, R.color.blow_gray));
+        dialog.setNegativeButton("取消", null);
+        dialog.show();
+    }
+
+    private void tips(String message) {
+        MaterialDialog dialog = new MaterialDialog(context);
+        dialog.setTitle("提示");
+        dialog.setMessage(message);
+        dialog.setPositiveButton("确定", null);
+        dialog.show();
     }
 
     private void beginDownload(final String url) {
