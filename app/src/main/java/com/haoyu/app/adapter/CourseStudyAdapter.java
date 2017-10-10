@@ -44,12 +44,11 @@ import java.util.Map;
  * 作者:马飞奔 Administrator
  */
 public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity> {
-
     private Context context;
     public static final int TYPE_LEVEL_0 = 0;
     public static final int TYPE_LEVEL_1 = 1;
     public static final int TYPE_LEVEL_2 = 2;
-    private String pressId;
+    private int clickIndex = -1;
     private Map<Integer, Boolean> collapses = new HashMap<>();
     private Map<String, View> viewMap = new HashMap<>();
     private OnItemClickListener onItemClickListener;
@@ -69,9 +68,11 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
         return mDatas.get(position).getItemType();
     }
 
-    public void setSelected(String pressId) {
-        this.pressId = pressId;
-        notifyDataSetChanged();
+    private void setSelected(int position) {
+        if (clickIndex != -1)
+            notifyItemChanged(clickIndex);
+        clickIndex = position;
+        notifyItemChanged(clickIndex);
     }
 
     public void setOnItemClickListener(OnItemClickListener onActivityClickCallBack) {
@@ -173,76 +174,76 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
             holder.itemView.setLayoutParams(params);
             final String activity_type = activity.getType();
             if (activity_type != null && activity_type.equals("video")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_video_press);
                 else
                     icType.setImageResource(R.drawable.progress_video_default);
             } else if (activity_type != null && activity_type.equals("html")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_courseware_press);
                 else
                     icType.setImageResource(R.drawable.progress_courseware_default);
             } else if (activity_type != null && activity_type.equals("discussion")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_discuss_press);
                 else
                     icType.setImageResource(R.drawable.progress_discuss_default);
             } else if (activity_type != null && activity_type.equals("survey")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_questionnaire_press);
                 else
                     icType.setImageResource(R.drawable.progress_questionnaire_default);
             } else if (activity_type != null && activity.getId() != null && activity_type.equals("test")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_test_press);
                 else
                     icType.setImageResource(R.drawable.progress_test_default);
             } else if (activity_type != null && activity_type.equals("assignment")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_homework_press);
                 else
                     icType.setImageResource(R.drawable.progress_homework_default);
             } else {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.course_word_selected);
                 else
                     icType.setImageResource(R.drawable.course_word_default);
             }
             if (activity.getCompleteState() != null && activity.getCompleteState().equals("已完成")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icState.setImageResource(R.drawable.state_solid_press);
                 else
                     icState.setImageResource(R.drawable.state_solid_default);
             } else if (activity.getCompleteState() != null && activity.getCompleteState().equals("complete")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icState.setImageResource(R.drawable.state_solid_press);
                 else
                     icState.setImageResource(R.drawable.state_solid_default);
             } else if (activity.getCompleteState() != null && activity.getCompleteState().equals("进行中")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icState.setImageResource(R.drawable.state_semicircle_press);
                 else
                     icState.setImageResource(R.drawable.state_semicircle_default);
             } else if (activity.getCompleteState() != null && activity.getCompleteState().equals("in_progress")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icState.setImageResource(R.drawable.state_semicircle_press);
                 else
                     icState.setImageResource(R.drawable.state_semicircle_default);
             } else {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icState.setImageResource(R.drawable.state_hollow_press);
                 else
                     icState.setImageResource(R.drawable.state_hollow_default);
             }
             setSpannedText(activity.getTitle(), tvTitle);
-            if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+            if (position == clickIndex)
                 tvTitle.setTextColor(ContextCompat.getColor(context, R.color.defaultColor));
             else
                 tvTitle.setTextColor(ContextCompat.getColor(context, R.color.blow_gray));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setSelected(activity.getId());
+                    setSelected(position);
                     if (onItemClickListener != null) {
                         onItemClickListener.onActivityClick(activity);
                     }
