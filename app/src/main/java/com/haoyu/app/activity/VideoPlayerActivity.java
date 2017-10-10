@@ -395,7 +395,8 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     }
 
     private long seekTime;
-    private int interval;//更新时间间隔
+    private int interval;
+    // 更新时间间隔
 
     private void initContent() {
         mVideoPath = getIntent().getStringExtra("videoUrl");
