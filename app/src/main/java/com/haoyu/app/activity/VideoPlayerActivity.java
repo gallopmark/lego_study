@@ -18,6 +18,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
+import android.text.Html;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -409,9 +410,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             mRead.setVisibility(View.GONE);
         }
         if (fileName != null) {
-            videoTitle.setText(fileName);
+            videoTitle.setText(Html.fromHtml(fileName));
         } else {
-            videoTitle.setText(activityTitle);
+            videoTitle.setText(Html.fromHtml(activityTitle));
         }
         AVOptions options = new AVOptions();
         // 设置链接超时时间
@@ -463,7 +464,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         TextView read_guide_content = getView(view, R.id.read_guide_content);
         RecyclerView recyclerView = getView(view, R.id.recyclerView);
         if (summary != null)
-            read_guide_content.setText(summary);
+            read_guide_content.setText(Html.fromHtml(summary));
         else
             read_guide_content.setText("暂无内容");
 
