@@ -51,10 +51,14 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
     private Map<String, View> viewMap = new HashMap<>();
     private OnItemClickListener onItemClickListener;
     private OnItemLongClickListener onItemLongClickListener;
+    private int padding_2, padding_8, padding_14;
 
     public CourseStudyAdapter(Context context, List<MultiItemEntity> mDatas) {
         super(mDatas);
         this.context = context;
+        padding_2 = PixelFormat.formatDipToPx(context, 2);
+        padding_8 = PixelFormat.formatDipToPx(context, 8);
+        padding_14 = PixelFormat.formatDipToPx(context, 14);
     }
 
     @Override
@@ -322,7 +326,7 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
     private void setSectionText(String title, TextView tv) {
         int paddingLeft = tv.getPaddingLeft();
         int paddingRight = tv.getPaddingRight();
-        int paddingTop = PixelFormat.formatDipToPx(context, 8);
+        int paddingTop = padding_8;
         int paddingBottom = paddingTop;
         if (title == null || title.trim().length() == 0) {
             tv.setText("无标题");
@@ -335,12 +339,12 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
             SpannableStringBuilder ss = new SpannableStringBuilder(spanned);
             if (title.contains("<sup>")) {
                 ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                paddingTop = paddingBottom = PixelFormat.formatDipToPx(context, 2);
+                paddingTop = paddingBottom = padding_2;
                 tv.setText(null);
                 tv.append(ss);
             } else if (title.contains("<sub>")) {
                 ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                paddingTop = paddingBottom = PixelFormat.formatDipToPx(context, 2);
+                paddingTop = paddingBottom = padding_2;
                 tv.setText(null);
                 tv.append(ss);
             } else {
@@ -353,7 +357,7 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
     private void setSpannedText(String title, TextView tv) {
         int paddingLeft = tv.getPaddingLeft();
         int paddingRight = tv.getPaddingRight();
-        int paddingTop = PixelFormat.formatDipToPx(context, 14);
+        int paddingTop = padding_14;
         int paddingBottom = paddingTop;
         if (title == null || title.trim().length() == 0) {
             tv.setText("无标题");
@@ -366,12 +370,12 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
             SpannableStringBuilder ss = new SpannableStringBuilder(spanned);
             if (title.contains("<sup>")) {
                 ss.setSpan(new SuperscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                paddingTop = paddingBottom = PixelFormat.formatDipToPx(context, 8);
+                paddingTop = paddingBottom = padding_8;
                 tv.setText(null);
                 tv.append(ss);
             } else if (title.contains("<sub>")) {
                 ss.setSpan(new SubscriptSpan(), 0, ss.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-                paddingTop = paddingBottom = PixelFormat.formatDipToPx(context, 8);
+                paddingTop = paddingBottom = padding_8;
                 tv.setText(null);
                 tv.append(ss);
             } else {
