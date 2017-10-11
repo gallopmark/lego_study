@@ -49,7 +49,10 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
 
     public void setAddTask(boolean addTask) {
         this.addTask = addTask;
-        notifyDataSetChanged();
+        if (addTask)
+            notifyItemRangeChanged(getItemCount(), 1);
+        else
+            notifyItemRangeRemoved(getItemCount(), 1);
     }
 
     public void setAddTaskListener(OnAddTaskListener addTaskListener) {
@@ -178,7 +181,7 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
             ll_content.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if(onSectionLongClickListener!=null)
+                    if (onSectionLongClickListener != null)
                         onSectionLongClickListener.onLongClickListener(entity.getId(), position, entity);
                     return true;
                 }
