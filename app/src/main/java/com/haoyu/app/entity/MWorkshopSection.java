@@ -64,4 +64,20 @@ public class MWorkshopSection implements Serializable {
     public void setActivities(List<MWorkshopActivity> activities) {
         this.activities = activities;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof MWorkshopSection)) {
+            return false;
+        }
+        MWorkshopSection section = (MWorkshopSection) obj;
+        if (this.id.equals(section.id)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -1,11 +1,9 @@
 package com.haoyu.app.adapter;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -17,7 +15,6 @@ import com.haoyu.app.entity.MWorkshopActivity;
 import com.haoyu.app.entity.MWorkshopSection;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.swipe.SwipeMenuLayout;
-import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.FullyLinearLayoutManager;
 
@@ -35,8 +32,8 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
     private ArrayMap<Integer, Boolean> arrayMap = new ArrayMap<>();
     private int viewType;
     private boolean addTask;
+    private OnSectionLongClickListener onSectionLongClickListener;
     private OnAddTaskListener addTaskListener;
-    private OnTaskEditListener onTaskEditListener;
     private AddActivityCallBack addActivityCallBack;
     private int mainPosition = -1, childPosition = -1;
 
@@ -59,8 +56,8 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
         this.addTaskListener = addTaskListener;
     }
 
-    public void setOnTaskEditListener(OnTaskEditListener onTaskEditListener) {
-        this.onTaskEditListener = onTaskEditListener;
+    public void setOnSectionLongClickListener(OnSectionLongClickListener onSectionLongClickListener) {
+        this.onSectionLongClickListener = onSectionLongClickListener;
     }
 
     public void addAll(List<MWorkshopSection> mDatas) {
@@ -181,7 +178,8 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
             ll_content.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    showTaskEditDialog(entity.getId(), position, entity);
+                    if(onSectionLongClickListener!=null)
+                        onSectionLongClickListener.onLongClickListener(entity.getId(), position, entity);
                     return true;
                 }
             });
@@ -231,49 +229,6 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
             task_confirm.setOnClickListener(listener);
             task_cancel.setOnClickListener(listener);
         }
-    }
-
-    private void showTaskEditDialog(final String taskId, final int position, final MWorkshopSection entity) {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.dialog_edit_workshop_task, null);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                (ScreenUtils.getScreenWidth(mContext) / 4 * 3),
-                LinearLayout.LayoutParams.WRAP_CONTENT);
-        TextView tv_addTask = view.findViewById(R.id.tv_addTask);
-        TextView tv_alterTask = view.findViewById(R.id.tv_alterTask);
-        TextView tv_deleteTask = view.findViewById(R.id.tv_deleteTask);
-        final AlertDialog dialog = new AlertDialog.Builder(mContext).create();
-        View.OnClickListener listener = new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.tv_addTask:
-                        if (onTaskEditListener != null) {
-                            onTaskEditListener.onAdd();
-                        }
-                        dialog.dismiss();
-                        break;
-                    case R.id.tv_alterTask:
-                        if (onTaskEditListener != null) {
-                            onTaskEditListener.onAlter(taskId, position, entity);
-                        }
-                        dialog.dismiss();
-                        break;
-                    case R.id.tv_deleteTask:
-                        if (onTaskEditListener != null) {
-                            onTaskEditListener.onDelete(taskId, position);
-                        }
-                        dialog.dismiss();
-                        break;
-                }
-            }
-        };
-        tv_addTask.setOnClickListener(listener);
-        tv_alterTask.setOnClickListener(listener);
-        tv_deleteTask.setOnClickListener(listener);
-        dialog.show();
-        dialog.setContentView(view, params);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.setCancelable(true);
     }
 
     @Override
@@ -386,7 +341,7 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
                 public void onClick(View v) {
                     switch (v.getId()) {
                         case R.id.contentView:
-                            setPress(mainIndex, position);
+                            setSelected(mainIndex, position);
                             if (itemCallBack != null) {
                                 itemCallBack.itemCallBack(entity, mainIndex);
                             }
@@ -410,10 +365,12 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
 
     }
 
-    private void setPress(int mainIndex, int position) {
+    private void setSelected(int mainIndex, int position) {
+        if (mainPosition != -1)
+            notifyItemChanged(mainPosition);
         mainPosition = mainIndex;
         childPosition = position;
-        notifyDataSetChanged();
+        notifyItemChanged(mainPosition);
     }
 
     public void setPressIndex(int mainIndex, int position) {
@@ -423,7 +380,11 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
         } else if (position < childPosition) {
             childPosition -= 1;
         }
-        notifyDataSetChanged();
+        notifyItemChanged(mainPosition);
+    }
+
+    public interface OnSectionLongClickListener {
+        void onLongClickListener(String taskId, int position, MWorkshopSection entity);
     }
 
     public interface ActivityItemCallBack {
@@ -440,14 +401,6 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
         void addTask(TextView task_title, TextView tv_researchTime, int sortNum);
 
         void cancel();
-    }
-
-    public interface OnTaskEditListener {
-        void onAdd();
-
-        void onAlter(String taskId, int position, MWorkshopSection entity);
-
-        void onDelete(String taskId, int position);
     }
 
     public interface AddActivityCallBack {

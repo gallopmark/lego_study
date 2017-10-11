@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class WorkShopTaskAdapter extends BaseArrayRecyclerAdapter<MWorkshopSection> {
     private Context context;
-    private String pressId;
+    private int mainPosition = -1, childPosition = -1;
     private Map<Integer, Boolean> hashMap = new HashMap<>();
     private OnActivityClickCallBack onActivityClickCallBack;
 
@@ -45,9 +45,12 @@ public class WorkShopTaskAdapter extends BaseArrayRecyclerAdapter<MWorkshopSecti
         notifyDataSetChanged();
     }
 
-    private void setSelected(String pressId) {
-        this.pressId = pressId;
-        notifyDataSetChanged();
+    private void setSelected(int mainIndex, int position) {
+        if (mainPosition != -1)
+            notifyItemChanged(mainPosition);
+        mainPosition = mainIndex;
+        childPosition = position;
+        notifyItemChanged(mainPosition);
     }
 
     public void setOnActivityClickCallBack(OnActivityClickCallBack onActivityClickCallBack) {
@@ -80,7 +83,7 @@ public class WorkShopTaskAdapter extends BaseArrayRecyclerAdapter<MWorkshopSecti
         layoutManager.setOrientation(FullyLinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         final ImageView iv_isExpand = holder.obtainView(R.id.iv_isExpand);
-        WorkShopActivityAdapter adapter = new WorkShopActivityAdapter(entity.getActivities());
+        WorkShopActivityAdapter adapter = new WorkShopActivityAdapter(entity.getActivities(), position);
         recyclerView.setAdapter(adapter);
         if (entity.getActivities().size() > 0)
             iv_isExpand.setVisibility(View.VISIBLE);
@@ -110,9 +113,11 @@ public class WorkShopTaskAdapter extends BaseArrayRecyclerAdapter<MWorkshopSecti
     }
 
     private class WorkShopActivityAdapter extends BaseArrayRecyclerAdapter<MWorkshopActivity> {
+        private int mainIndex;
 
-        public WorkShopActivityAdapter(List<MWorkshopActivity> mDatas) {
+        public WorkShopActivityAdapter(List<MWorkshopActivity> mDatas, int mainIndex) {
             super(mDatas);
+            this.mainIndex = mainIndex;
         }
 
         @Override
@@ -121,77 +126,76 @@ public class WorkShopTaskAdapter extends BaseArrayRecyclerAdapter<MWorkshopSecti
         }
 
         @Override
-        public void onBindHoder(RecyclerHolder holder, final MWorkshopActivity entity, int position) {
+        public void onBindHoder(RecyclerHolder holder, final MWorkshopActivity entity, final int position) {
             ImageView ic_type = holder.obtainView(R.id.ic_type);
             TextView tv_typeName = holder.obtainView(R.id.tv_typeName);
             TextView tv_title = holder.obtainView(R.id.tv_title);
             if (entity.getType() != null && entity.getType().equals("discussion")) {
-                if (pressId != null && pressId.equals(entity.getId()))
+                if (mainPosition == mainIndex && childPosition == position)
                     ic_type.setImageResource(R.drawable.ws_discuss_press);
                 else
                     ic_type.setImageResource(R.drawable.ws_discuss_default);
                 tv_typeName.setText("教学研讨");
             } else if (entity.getType() != null && entity.getType().equals("survey")) {
-                if (pressId != null && pressId.equals(entity.getId()))
+                if (mainPosition == mainIndex && childPosition == position)
                     ic_type.setImageResource(R.drawable.ws_questionnaire_press);
                 else
                     ic_type.setImageResource(R.drawable.ws_questionnaire_default);
                 tv_typeName.setText("调查问卷");
             } else if (entity.getType() != null && entity.getType().equals("debate")) {
-                if (pressId != null && pressId.equals(entity.getId()))
+                if (mainPosition == mainIndex && childPosition == position)
                     ic_type.setImageResource(R.drawable.ws_bianlun_press);
                 else
                     ic_type.setImageResource(R.drawable.ws_bianlun_default);
                 tv_typeName.setText("在线辩论");
             } else if (entity.getType() != null && entity.getType().equals("lcec")) {
-                if (pressId != null && pressId.equals(entity.getId()))
+                if (mainPosition == mainIndex && childPosition == position)
                     ic_type.setImageResource(R.drawable.ws_tingke_press);
                 else
                     ic_type.setImageResource(R.drawable.ws_tingke_default);
                 tv_typeName.setText("听课评课");
             } else if (entity.getType() != null && entity.getType().equals("lesson_plan")) {
-                if (pressId != null && pressId.equals(entity.getId()))
+                if (mainPosition == mainIndex && childPosition == position)
                     ic_type.setImageResource(R.drawable.ws_beike_press);
                 else
                     ic_type.setImageResource(R.drawable.ws_beike_default);
                 tv_typeName.setText("集体备课");
             } else if (entity.getType() != null && entity.getType().equals("test")) {
-                if (pressId != null && pressId.equals(entity.getId()))
+                if (mainPosition == mainIndex && childPosition == position)
                     ic_type.setImageResource(R.drawable.progress_test_press);
                 else
                     ic_type.setImageResource(R.drawable.progress_test_default);
                 tv_typeName.setText("在线测验");
             } else if (entity.getType() != null && entity.getType().equals("video")) {
-                if (pressId != null && pressId.equals(entity.getId()))
+                if (mainPosition == mainIndex && childPosition == position)
                     ic_type.setImageResource(R.drawable.progress_video_press);
                 else
                     ic_type.setImageResource(R.drawable.progress_video_default);
                 tv_typeName.setText("教学观摩");
             } else {
-                if (pressId != null && pressId.equals(entity.getId()))
+                if (mainPosition == mainIndex && childPosition == position)
                     ic_type.setImageResource(R.drawable.course_word_selected);
                 else
                     ic_type.setImageResource(R.drawable.course_word_default);
                 tv_typeName.setText("类型未知");
             }
-            if (pressId != null && pressId.equals(entity.getId())) {
+            if (mainPosition == mainIndex && childPosition == position) {
                 tv_typeName.setTextColor(ContextCompat.getColor(context, R.color.defaultColor));
                 tv_title.setTextColor(ContextCompat.getColor(context, R.color.defaultColor));
             } else {
                 tv_typeName.setTextColor(ContextCompat.getColor(context, R.color.blow_gray));
                 tv_title.setTextColor(ContextCompat.getColor(context, R.color.line_bottom));
             }
-            if (entity.getTitle() != null && entity.getTitle().trim().length() > 0) {
+            if (entity.getTitle() != null && entity.getTitle().trim().length() > 0)
                 tv_title.setText(entity.getTitle());
-            } else
+            else
                 tv_title.setText("无标题");
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setSelected(entity.getId());
-                    if (onActivityClickCallBack != null) {
+                    setSelected(mainIndex, position);
+                    if (onActivityClickCallBack != null)
                         onActivityClickCallBack.onActivityClick(entity);
-                    }
                 }
             });
         }
