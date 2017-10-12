@@ -108,6 +108,8 @@ public class TeachingStudyLeacturerActivity extends BaseActivity implements View
                     showMaterialDialog("提示", "请输入人名");
                 } else {
                     mDatas.clear();
+                    isRefresh = false;
+                    isLoadMore = false;
                     getUser();
                 }
                 break;
@@ -119,7 +121,7 @@ public class TeachingStudyLeacturerActivity extends BaseActivity implements View
         addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<MobileUserResult>() {
             @Override
             public void onBefore(Request request) {
-                if (!isRefresh || !isLoadMore)
+                if (!isRefresh && !isLoadMore)
                     showTipDialog();
                 tv_warn.setVisibility(View.GONE);
             }
