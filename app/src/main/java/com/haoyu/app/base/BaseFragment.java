@@ -17,6 +17,7 @@ import com.haoyu.app.dialog.PublicTipDialog;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.rxBus.RxBus;
+import com.haoyu.app.utils.AppToast;
 import com.haoyu.app.utils.Constants;
 
 import butterknife.ButterKnife;
@@ -97,11 +98,30 @@ public abstract class BaseFragment extends Fragment {
         TextView textView = v.findViewById(R.id.tv_text);
         textView.setText(text);
         if (mToast == null) {
-            mToast = new Toast(context);
+            mToast = new AppToast(context, R.style.AppToast);
             mToast.setDuration(Toast.LENGTH_LONG);
             mToast.setView(v);
         } else
             mToast.setView(v);
+        mToast.show();
+    }
+
+    public void toastFullScreen(String content, boolean success) {
+        View view = LayoutInflater.from(context).inflate(
+                R.layout.toast_publish_question, null);
+        ImageView iv_result = view.findViewById(R.id.iv_result);
+        TextView tv_result = view.findViewById(R.id.tv_result);
+        if (success)
+            iv_result.setImageResource(R.drawable.publish_success);
+        else
+            iv_result.setImageResource(R.drawable.publish_failure);
+        tv_result.setText(content);
+        if (mToast == null) {//只有mToast==null时才重新创建，否则只需更改提示文字
+            mToast = new Toast(context);
+            mToast.setDuration(Toast.LENGTH_LONG);
+            mToast.setGravity(Gravity.FILL, 0, 0);
+            mToast.setView(view);
+        }
         mToast.show();
     }
 
@@ -163,24 +183,5 @@ public abstract class BaseFragment extends Fragment {
 
     public <T extends View> T getView(View rootView, int id) {
         return (T) rootView.findViewById(id);
-    }
-
-    public void toastFullScreen(String content, boolean success) {
-        View view = LayoutInflater.from(context).inflate(
-                R.layout.toast_publish_question, null);
-        ImageView iv_result = view.findViewById(R.id.iv_result);
-        TextView tv_result = view.findViewById(R.id.tv_result);
-        if (success)
-            iv_result.setImageResource(R.drawable.publish_success);
-        else
-            iv_result.setImageResource(R.drawable.publish_failure);
-        tv_result.setText(content);
-        if (mToast == null) {//只有mToast==null时才重新创建，否则只需更改提示文字
-            mToast = new Toast(context);
-            mToast.setDuration(Toast.LENGTH_LONG);
-            mToast.setGravity(Gravity.FILL, 0, 0);
-            mToast.setView(view);
-        }
-        mToast.show();
     }
 }
