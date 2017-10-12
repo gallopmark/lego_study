@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/app_toast_bg"
+    android:gravity="center"
+    android:paddingBottom="@dimen/margin_size_12"
+    android:paddingLeft="@dimen/margin_size_16"
+    android:paddingRight="@dimen/margin_size_16"
+    android:paddingTop="@dimen/margin_size_12">
+
+    <TextView
+        android:id="@+id/tv_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_15" />
+
+</FrameLayout>
