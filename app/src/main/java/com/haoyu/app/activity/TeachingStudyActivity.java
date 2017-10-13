@@ -148,8 +148,10 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
         registRxBus();
     }
 
+    private String activityTitle;
+
     private void setSupportToolbar() {
-        String activityTitle = getIntent().getStringExtra("activityTitle");
+        activityTitle = getIntent().getStringExtra("activityTitle");
         toolBar.setTitle_text(activityTitle);
         toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
             @Override
@@ -495,9 +497,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
                 if (NetStatusUtil.isConnected(context)) {
                     if (NetStatusUtil.isWifi(context)) {
                         intent.setClass(context, VideoPlayerActivity.class);
-                        if (lcecEntity.getmVideo().getFileName() != null) {
-                            intent.putExtra("fileName", lcecEntity.getmVideo().getFileName());
-                        }
+                        intent.putExtra("activityTitle", activityTitle);
                         intent.putExtra("videoUrl", lcecEntity.getmVideo().getUrl());
                         startActivity(intent);
                     } else {
