@@ -33,12 +33,14 @@ import com.haoyu.app.utils.OkHttpClientManager.ResultCallback;
 import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
-import com.haoyu.app.view.ExpandableTextView;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
 import com.haoyu.app.view.RippleView;
 import com.haoyu.app.view.RippleView.OnRippleCompleteListener;
 import com.haoyu.app.xrecyclerview.XRecyclerView;
+
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,6 +54,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
+
+import static com.haoyu.app.lego.student.R.id.tv_discussion_text;
+
 
 /**
  * 课程学习讨论详情页面
@@ -113,14 +118,14 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         headerView.setLayoutParams(params);
         TextView tv_discussion_title = headerView.findViewById(R.id.tv_discussion_title);
-        ExpandableTextView tv_discussion_text = headerView.findViewById(R.id.tv_discussion_text);
+        HtmlTextView tv_content = headerView.findViewById(R.id.tv_discussion_text);
         ImageView iv_userIco = headerView.findViewById(R.id.ic_user);
         TextView tv_userName = headerView.findViewById(R.id.tv_userName);
         TextView tv_createDate = headerView.findViewById(R.id.tv_createTime);
         tv_commentCount = headerView.findViewById(R.id.tv_commentCount);
         tv_emptyComment = headerView.findViewById(R.id.tv_emptyComment);
         tv_discussion_title.setText(discussEntity.getTitle());
-        tv_discussion_text.setHtmlText(discussEntity.getContent());
+        tv_content.setHtml(discussEntity.getContent(), new HtmlHttpImageGetter(tv_content, Constants.REFERER));
         if (discussEntity.getCreator() != null) {
             GlideImgManager.loadCircleImage(context, discussEntity.getCreator().getAvatar(), R.drawable.user_default, R.drawable.user_default, iv_userIco);
             tv_userName.setText(discussEntity.getCreator().getRealName());

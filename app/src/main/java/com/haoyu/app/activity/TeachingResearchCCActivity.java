@@ -48,13 +48,15 @@ import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
-import com.haoyu.app.view.ExpandableTextView;
 import com.haoyu.app.view.FullyLinearLayoutManager;
 import com.haoyu.app.view.GoodView;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
 import com.haoyu.app.view.RoundRectProgressBar;
 import com.haoyu.app.view.StickyScrollView;
+
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -111,10 +113,14 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
     @BindView(R.id.bt_adviseNum)
     Button bt_adviseNum;
     private int supportNum, adviseNum;
-    @BindView(R.id.empty_content)
-    View empty_content;
+    @BindView(R.id.ll_ccContent)
+    LinearLayout ll_ccContent;
+    @BindView(R.id.ll_sticky)
+    LinearLayout ll_sticky;
+    @BindView(R.id.iv_expand)
+    ImageView iv_expand;
     @BindView(R.id.tv_ccContent)
-    ExpandableTextView tv_ccContent;
+    HtmlTextView tv_ccContent;
     @BindView(R.id.filePager)
     ViewPager filePager;  //显示文件列表
     @BindView(R.id.fileIndicator)
@@ -266,12 +272,33 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
             filePager.setVisibility(View.GONE);
             empty_resources.setVisibility(View.VISIBLE);
         }
-        if (entity.getContent() != null && entity.getContent().length() > 0) {
-            tv_ccContent.setHtmlText(entity.getContent());
-            tv_ccContent.setVisibility(View.VISIBLE);
+        if (entity.getContent() != null && entity.getContent().trim().length() > 0) {
+            ll_ccContent.setVisibility(View.VISIBLE);
+            tv_ccContent.setHtml(entity.getContent(), new HtmlHttpImageGetter(tv_ccContent, Constants.REFERER));
+            ll_sticky.setOnClickListener(new View.OnClickListener() {
+                private boolean isExpand = true;
+
+                @Override
+                public void onClick(View view) {
+                    if (isExpand) {
+                        tv_ccContent.setVisibility(View.VISIBLE);
+                        iv_expand.setImageResource(R.drawable.course_dictionary_shouqi);
+                        isExpand = false;
+                    } else {
+                        contentView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                contentView.smoothScrollTo(0, ll_sticky.getTop());
+                            }
+                        }, 10);
+                        tv_ccContent.setVisibility(View.GONE);
+                        iv_expand.setImageResource(R.drawable.course_dictionary_xiala);
+                        isExpand = true;
+                    }
+                }
+            });
         } else {
-            tv_ccContent.setVisibility(View.GONE);
-            empty_content.setVisibility(View.VISIBLE);
+            ll_ccContent.setVisibility(View.GONE);
         }
         detailLayout.setVisibility(View.VISIBLE);
     }
@@ -381,14 +408,6 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
         tv_more_reply.setOnClickListener(context);
         tv_giveAdvise.setOnClickListener(context);
         bottomView.setOnClickListener(context);
-        tv_ccContent.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
-            @Override
-            public void onExpandStateChanged(TextView textView, boolean isExpanded) {
-                if (!isExpanded) {
-                    contentView.smoothScrollTo(0, textView.getBottom());
-                }
-            }
-        });
         adviseAdapter.setOnPostClickListener(new AppDiscussionAdapter.OnPostClickListener() {
             @Override
             public void onTargetClick(View view, int position, ReplyEntity entity) {

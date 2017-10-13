@@ -238,87 +238,65 @@
                     android:background="@color/spaceColor" />
 
                 <LinearLayout
+                    android:id="@+id/ll_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:orientation="vertical"
-                    android:tag="sticky-nonconstant-hastransparancy">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/teaching_research_atxq"
-                        android:drawablePadding="@dimen/margin_size_6"
-                        android:padding="@dimen/margin_size_12"
-                        android:text="活动详情"
-                        android:textSize="@dimen/font_size_16" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/spaceColor" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/empty_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/margin_size_16"
                     android:orientation="vertical"
                     android:visibility="gone">
 
-                    <ImageView
-                        android:layout_width="80dp"
-                        android:layout_height="80dp"
-                        android:layout_gravity="center"
-                        android:src="@drawable/empty_content" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/ll_sticky"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/margin_size_10"
-                        android:gravity="center"
-                        android:text="没有活动详情"
-                        android:textColor="@color/gray"
-                        android:textSize="@dimen/font_size_16" />
-                </LinearLayout>
+                        android:background="@color/white"
+                        android:orientation="vertical"
+                        android:tag="sticky-nonconstant-hastransparancy">
 
-                <com.haoyu.app.view.ExpandableTextView
-                    android:id="@+id/at_content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="12dp"
-                    android:textColor="@color/gray"
-                    android:visibility="gone"
-                    app:collapseText="收起内容"
-                    app:expandText="展开内容"
-                    app:maxCollapsedLines="5">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:orientation="horizontal"
+                            android:padding="@dimen/margin_size_12">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1"
+                                android:drawableLeft="@drawable/teaching_research_atxq"
+                                android:drawablePadding="@dimen/margin_size_6"
+                                android:text="活动详情"
+                                android:textSize="@dimen/font_size_16" />
+
+                            <ImageView
+                                android:id="@+id/iv_expand"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:src="@drawable/course_dictionary_xiala" />
+                        </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/spaceColor" />
+                    </LinearLayout>
 
                     <org.sufficientlysecure.htmltextview.HtmlTextView
-                        android:id="@id/expandable_text"
+                        android:id="@+id/at_content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:lineSpacingExtra="@dimen/margin_size_4"
-                        android:textSize="@dimen/font_size_16" />
-
-                    <Button
-                        android:id="@id/expand_collapse"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@color/transparent"
-                        android:textColor="@color/defaultColor"
+                        android:padding="12dp"
                         android:textSize="@dimen/font_size_16"
-                        android:visibility="invisible" />
-                </com.haoyu.app.view.ExpandableTextView>
+                        android:visibility="gone" />
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="12dp"
-                    android:background="@color/spaceColor" />
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="12dp"
+                        android:background="@color/spaceColor" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"

@@ -39,11 +39,13 @@ import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
-import com.haoyu.app.view.ExpandableTextView;
 import com.haoyu.app.view.FullyLinearLayoutManager;
 import com.haoyu.app.view.GoodView;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
+
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -88,7 +90,7 @@ public class TeachingResearchSSActivity extends BaseActivity implements View.OnC
     @BindView(R.id.tv_viewNum)
     TextView tv_viewNum; //浏览人数
     @BindView(R.id.tv_content)
-    ExpandableTextView tv_content;  //研说内容
+    HtmlTextView tv_content;  //研说内容
     @BindView(R.id.mFileImg)
     ImageView mFileImg;
     @BindView(R.id.bt_support)
@@ -174,7 +176,7 @@ public class TeachingResearchSSActivity extends BaseActivity implements View.OnC
             tv_commentNum.setText("共有" + replyNum + "条评论");
         }
         tv_trTitle.setText(entity.getTitle());
-        tv_content.setHtmlText(entity.getContent());
+        tv_content.setHtml(entity.getContent(), new HtmlHttpImageGetter(tv_content, Constants.REFERER));
         if (entity.getmFileInfos() != null && entity.getmFileInfos().size() > 0) {
             GlideImgManager.loadImage(context, entity.getmFileInfos().get(0).getUrl(),
                     R.drawable.app_default, R.drawable.app_default, mFileImg);

@@ -48,11 +48,13 @@ import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
-import com.haoyu.app.view.ExpandableTextView;
 import com.haoyu.app.view.GoodView;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
 import com.haoyu.app.view.StickyScrollView;
+
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -110,10 +112,14 @@ public class TeachingResearchATActivity extends BaseActivity implements View.OnC
     TextView tv_participation;  // 报名信息
     @BindView(R.id.tv_limit)
     TextView tv_limit;  //活动人数名额
+    @BindView(R.id.ll_content)
+    LinearLayout ll_content;
+    @BindView(R.id.ll_sticky)
+    LinearLayout ll_sticky;
+    @BindView(R.id.iv_expand)
+    ImageView iv_expand;
     @BindView(R.id.at_content)
-    ExpandableTextView at_content;  //活动内容
-    @BindView(R.id.empty_content)
-    View empty_content;
+    HtmlTextView at_content;  //活动内容
     @BindView(R.id.videoRV)
     RecyclerView videoRV;  //活动视频列表
     private List<MFileInfo> mFileInfos = new ArrayList<>();
@@ -237,11 +243,32 @@ public class TeachingResearchATActivity extends BaseActivity implements View.OnC
             tv_participation.setText("讲座视频录像+在线问答交流");
         }
         if (entity.getContent() != null && entity.getContent().length() > 0) {
-            at_content.setVisibility(View.VISIBLE);
-            at_content.setHtmlText(entity.getContent());
+            ll_content.setVisibility(View.VISIBLE);
+            at_content.setHtml(entity.getContent(), new HtmlHttpImageGetter(at_content, Constants.REFERER));
+            ll_sticky.setOnClickListener(new View.OnClickListener() {
+                private boolean isExpand = true;
+
+                @Override
+                public void onClick(View view) {
+                    if (isExpand) {
+                        at_content.setVisibility(View.VISIBLE);
+                        iv_expand.setImageResource(R.drawable.course_dictionary_shouqi);
+                        isExpand = false;
+                    } else {
+                        scrollView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollView.smoothScrollTo(0, ll_sticky.getTop());
+                            }
+                        }, 10);
+                        at_content.setVisibility(View.GONE);
+                        iv_expand.setImageResource(R.drawable.course_dictionary_xiala);
+                        isExpand = true;
+                    }
+                }
+            });
         } else {
-            at_content.setVisibility(View.GONE);
-            empty_content.setVisibility(View.VISIBLE);
+            ll_content.setVisibility(View.GONE);
         }
         if (entity.getmFileInfos() != null && entity.getmFileInfos().size() > 0) {
             videoRV.setVisibility(View.VISIBLE);
@@ -417,14 +444,6 @@ public class TeachingResearchATActivity extends BaseActivity implements View.OnC
         });
         at_comment.setOnClickListener(context);
         tv_comment.setOnClickListener(context);
-        at_content.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
-            @Override
-            public void onExpandStateChanged(TextView textView, boolean isExpanded) {
-                if (!isExpanded) {
-                    scrollView.smoothScrollTo(0, textView.getBottom());
-                }
-            }
-        });
         tv_more_reply.setOnClickListener(context);
         bt_type.setOnClickListener(context);
         commentAdapter.setCommentCallBack(new AppCommentAdapter.CommentCallBack() {

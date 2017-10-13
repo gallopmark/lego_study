@@ -12,34 +12,12 @@
         android:orientation="vertical"
         android:padding="@dimen/margin_size_12">
 
-        <com.haoyu.app.view.ExpandableTextView
+        <org.sufficientlysecure.htmltextview.HtmlTextView
             android:id="@+id/tv_discussion_content"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:textColor="@color/gray"
-            android:visibility="gone"
-            expandableTextView:collapseText="收起内容"
-            expandableTextView:expandText="展开内容"
-            expandableTextView:maxCollapsedLines="5">
-
-            <org.sufficientlysecure.htmltextview.HtmlTextView
-                android:id="@id/expandable_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:lineSpacingExtra="@dimen/margin_size_4"
-                android:textSize="@dimen/font_size_16" />
-
-            <Button
-                android:id="@id/expand_collapse"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@color/transparent"
-                android:textColor="@color/defaultColor"
-                android:textSize="@dimen/font_size_16"
-                android:visibility="invisible" />
-        </com.haoyu.app.view.ExpandableTextView>
+            android:lineSpacingExtra="@dimen/margin_size_4"
+            android:textSize="@dimen/font_size_16" />
 
         <LinearLayout
             android:layout_width="match_parent"

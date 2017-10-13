@@ -210,14 +210,30 @@
                     android:layout_height="@dimen/margin_size_1"
                     android:background="@color/spaceColor" />
 
-                <TextView
+                <LinearLayout
+                    android:id="@+id/ll_evaluation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/announcements_yuandian"
-                    android:drawablePadding="@dimen/margin_size_6"
-                    android:padding="@dimen/margin_size_12"
-                    android:text="评课方向"
-                    android:textSize="@dimen/font_size_16" />
+                    android:orientation="horizontal"
+                    android:padding="@dimen/margin_size_12">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center"
+                        android:drawableLeft="@drawable/announcements_yuandian"
+                        android:drawablePadding="@dimen/margin_size_6"
+                        android:text="评课方向"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <ImageView
+                        android:id="@+id/iv_expand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/course_dictionary_xiala" />
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
@@ -225,13 +241,13 @@
                     android:background="@color/spaceColor" />
 
                 <org.sufficientlysecure.htmltextview.HtmlTextView
-                    android:id="@+id/htv"
-                    android:layout_width="match_parent"
+                    android:id="@+id/tv_content"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:lineSpacingExtra="@dimen/margin_size_4"
                     android:padding="@dimen/margin_size_12"
-                    android:textColor="@color/gray" />
-
+                    android:textSize="@dimen/font_size_16"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout

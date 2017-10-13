@@ -39,10 +39,12 @@ import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
-import com.haoyu.app.view.ExpandableTextView;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
 import com.haoyu.app.view.StickyScrollView;
+
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -83,7 +85,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
     @BindView(R.id.tv_browseNum)
     TextView tv_browseNum;   //浏览人数
     @BindView(R.id.tv_discussContent)
-    ExpandableTextView tv_discussContent;   //教学研讨内容
+    HtmlTextView tv_discussContent;   //教学研讨内容
     @BindView(R.id.ll_fileLayout)
     LinearLayout ll_fileLayout;   //文档
     @BindView(R.id.fileIndicator)
@@ -227,7 +229,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
             tv_partNum.setText("参与人数：" + followNum);
         }
         tv_discussTitle.setText(discussEntity.getTitle());
-        tv_discussContent.setHtmlText(discussEntity.getContent());
+        tv_discussContent.setHtml(discussEntity.getContent(), new HtmlHttpImageGetter(tv_discussContent, Constants.REFERER));
         if (discussEntity.getmFileInfos() != null && discussEntity.getmFileInfos().size() > 0) {
             ll_fileLayout.setVisibility(View.VISIBLE);
             FilePageAdapter filePageAdapter = new FilePageAdapter(discussEntity.getmFileInfos());
