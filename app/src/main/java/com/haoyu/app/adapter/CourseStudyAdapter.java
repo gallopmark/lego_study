@@ -1,5 +1,6 @@
 package com.haoyu.app.adapter;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Build;
 import android.support.v4.content.ContextCompat;
@@ -15,12 +16,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
+import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.CourseChildSectionEntity;
 import com.haoyu.app.entity.CourseSectionActivity;
 import com.haoyu.app.entity.CourseSectionEntity;
 import com.haoyu.app.entity.MultiItemEntity;
 import com.haoyu.app.entity.VideoMobileEntity;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.utils.NetStatusUtil;
 import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.view.CircleProgressBar;
 
@@ -41,12 +44,11 @@ import java.util.Map;
  * 作者:马飞奔 Administrator
  */
 public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity> {
-
     private Context context;
     public static final int TYPE_LEVEL_0 = 0;
     public static final int TYPE_LEVEL_1 = 1;
     public static final int TYPE_LEVEL_2 = 2;
-    private String pressId;
+    private int clickIndex = -1;
     private Map<Integer, Boolean> collapses = new HashMap<>();
     private Map<String, View> viewMap = new HashMap<>();
     private OnItemClickListener onItemClickListener;
@@ -66,9 +68,11 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
         return mDatas.get(position).getItemType();
     }
 
-    public void setSelected(String pressId) {
-        this.pressId = pressId;
-        notifyDataSetChanged();
+    private void setSelected(int position) {
+        if (clickIndex != -1)
+            notifyItemChanged(clickIndex);
+        clickIndex = position;
+        notifyItemChanged(clickIndex);
     }
 
     public void setOnItemClickListener(OnItemClickListener onActivityClickCallBack) {
@@ -170,76 +174,76 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
             holder.itemView.setLayoutParams(params);
             final String activity_type = activity.getType();
             if (activity_type != null && activity_type.equals("video")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_video_press);
                 else
                     icType.setImageResource(R.drawable.progress_video_default);
             } else if (activity_type != null && activity_type.equals("html")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_courseware_press);
                 else
                     icType.setImageResource(R.drawable.progress_courseware_default);
             } else if (activity_type != null && activity_type.equals("discussion")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_discuss_press);
                 else
                     icType.setImageResource(R.drawable.progress_discuss_default);
             } else if (activity_type != null && activity_type.equals("survey")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_questionnaire_press);
                 else
                     icType.setImageResource(R.drawable.progress_questionnaire_default);
             } else if (activity_type != null && activity.getId() != null && activity_type.equals("test")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_test_press);
                 else
                     icType.setImageResource(R.drawable.progress_test_default);
             } else if (activity_type != null && activity_type.equals("assignment")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.progress_homework_press);
                 else
                     icType.setImageResource(R.drawable.progress_homework_default);
             } else {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icType.setImageResource(R.drawable.course_word_selected);
                 else
                     icType.setImageResource(R.drawable.course_word_default);
             }
             if (activity.getCompleteState() != null && activity.getCompleteState().equals("已完成")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icState.setImageResource(R.drawable.state_solid_press);
                 else
                     icState.setImageResource(R.drawable.state_solid_default);
             } else if (activity.getCompleteState() != null && activity.getCompleteState().equals("complete")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icState.setImageResource(R.drawable.state_solid_press);
                 else
                     icState.setImageResource(R.drawable.state_solid_default);
             } else if (activity.getCompleteState() != null && activity.getCompleteState().equals("进行中")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icState.setImageResource(R.drawable.state_semicircle_press);
                 else
                     icState.setImageResource(R.drawable.state_semicircle_default);
             } else if (activity.getCompleteState() != null && activity.getCompleteState().equals("in_progress")) {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icState.setImageResource(R.drawable.state_semicircle_press);
                 else
                     icState.setImageResource(R.drawable.state_semicircle_default);
             } else {
-                if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+                if (position == clickIndex)
                     icState.setImageResource(R.drawable.state_hollow_press);
                 else
                     icState.setImageResource(R.drawable.state_hollow_default);
             }
             setSpannedText(activity.getTitle(), tvTitle);
-            if (pressId != null && activity.getId() != null && pressId.equals(activity.getId()))
+            if (position == clickIndex)
                 tvTitle.setTextColor(ContextCompat.getColor(context, R.color.defaultColor));
             else
                 tvTitle.setTextColor(ContextCompat.getColor(context, R.color.blow_gray));
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setSelected(activity.getId());
+                    setSelected(position);
                     if (onItemClickListener != null) {
                         onItemClickListener.onActivityClick(activity);
                     }
@@ -304,8 +308,16 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                 @Override
                 public void onClick(View view) {
                     if (url != null) {
-                        beginDownload(url);
-                    }
+                        if (NetStatusUtil.isConnected(context)) {
+                            if (NetStatusUtil.isWifi(context))
+                                beginDownload(url);
+                            else
+                                netWorkTips(url);
+                        } else
+                            tips("无法连接到服务器，请检查网络设置！");
+                    } else
+                        tips("下载失败，视频文件不存在！");
+
                 }
             });
             rl_download.setOnClickListener(new View.OnClickListener() {
@@ -399,6 +411,30 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
         else
             return spanned;
         return ss;
+    }
+
+    private void netWorkTips(final String url) {
+        MaterialDialog dialog = new MaterialDialog(context);
+        dialog.setTitle("网络提醒");
+        dialog.setMessage("你现在不在无线局域网环境，下载视频会消耗较多流量。确定要开启吗？");
+        dialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
+            @Override
+            public void onClick(View v, AlertDialog dialog) {
+                beginDownload(url);
+                dialog.dismiss();
+            }
+        });
+        dialog.setNegativeTextColor(ContextCompat.getColor(context, R.color.blow_gray));
+        dialog.setNegativeButton("取消", null);
+        dialog.show();
+    }
+
+    private void tips(String message) {
+        MaterialDialog dialog = new MaterialDialog(context);
+        dialog.setTitle("提示");
+        dialog.setMessage(message);
+        dialog.setPositiveButton("确定", null);
+        dialog.show();
     }
 
     private void beginDownload(final String url) {
