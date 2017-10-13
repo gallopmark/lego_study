@@ -390,7 +390,6 @@ public class PageCourseFragment extends BaseFragment {
                 DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(video.getUrls());
                 if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
                     intent.putExtra("videoUrl", fileInfo.getFilePath());
-                    intent.putExtra("fileName", fileInfo.getFileName());
                 } else
                     intent.putExtra("videoUrl", video.getUrls());
                 startActivity(intent);
@@ -399,10 +398,8 @@ public class PageCourseFragment extends BaseFragment {
                 DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
                 if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
                     intent.putExtra("videoUrl", fileInfo.getFilePath());
-                    intent.putExtra("fileName", fileInfo.getFileName());
                 } else {
                     intent.putExtra("videoUrl", url);
-                    intent.putExtra("fileName", video.getVideoFiles().get(0).getFileName());
                 }
                 startActivity(intent);
             } else if (video != null && video.getAttchFiles() != null && video.getAttchFiles().size() > 0) {
@@ -411,10 +408,8 @@ public class PageCourseFragment extends BaseFragment {
                 DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
                 if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
                     intent.putExtra("videoUrl", fileInfo.getFilePath());
-                    intent.putExtra("fileName", fileInfo.getFileName());
                 } else {
                     intent.putExtra("videoUrl", video.getAttchFiles().get(0).getUrl());
-                    intent.putExtra("fileName", video.getAttchFiles().get(0).getFileName());
                 }
                 startActivity(intent);
             } else {
