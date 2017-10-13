@@ -37,10 +37,12 @@ import com.haoyu.app.utils.NetStatusUtil;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
-import com.haoyu.app.view.ExpandableTextView;
 import com.haoyu.app.view.GoodView;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
+
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -86,8 +88,8 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     LinearLayout ll_video;  //视频文件
     @BindView(R.id.tv_videoName)
     TextView tv_videoName;  //视频名称
-    @BindView(R.id.tv_content)
-    ExpandableTextView tv_content;
+    @BindView(R.id.htv)
+    HtmlTextView htv;
     @BindView(R.id.ll_discussion)
     LinearLayout ll_discussion;
     @BindView(R.id.tv_discussCount)
@@ -176,7 +178,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
             ll_detail.setVisibility(View.GONE);
         }
         tv_study_title.setText(lcecEntity.getTitle());
-        tv_content.setHtmlText(lcecEntity.getContent());
+        htv.setHtml(lcecEntity.getContent(), new HtmlHttpImageGetter(htv, Constants.REFERER));
         String activityType = "活动类型：";
         if (lcecEntity.getType() != null && lcecEntity.getType().equals("offLine"))
             tv_activity_type.setText(activityType + "现场评课");

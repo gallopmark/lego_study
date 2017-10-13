@@ -29,10 +29,12 @@ import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
-import com.haoyu.app.view.ExpandableTextView;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
 import com.haoyu.app.view.RoundRectProgressBar;
+
+import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
+import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -105,8 +107,8 @@ public class TestAssignmentActivity extends BaseActivity implements OnClickListe
     private boolean running;
     private TimePeriod timePeriod;
 
-    @BindView(R.id.at_content)
-    ExpandableTextView at_content;
+    @BindView(R.id.htv)
+    HtmlTextView htv;
 
     @Override
     public void obBusEvent(MessageEvent event) {
@@ -202,6 +204,7 @@ public class TestAssignmentActivity extends BaseActivity implements OnClickListe
     }
 
     private AppActivityViewResult mResult;
+
     // 获取内容
     private void showContent(AppActivityViewResult response) {
         mResult = response;
@@ -318,9 +321,9 @@ public class TestAssignmentActivity extends BaseActivity implements OnClickListe
                 }
 
                 if (mAssignmentEntity != null && mAssignmentEntity.getContent() != null) {
-                    at_content.setHtmlText(mAssignmentEntity.getContent());
+                    htv.setHtml(mAssignmentEntity.getContent(), new HtmlHttpImageGetter(htv, Constants.REFERER));
                 } else {
-                    at_content.setHtmlText("暂无内容");
+                    htv.setHtml("暂无内容");
                 }
 
             }

@@ -6,12 +6,14 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical">
+
     <com.haoyu.app.view.AppToolBar
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:left_button_image="@drawable/app_back"
         app:title_text="" />
+
     <ScrollView
         android:id="@+id/scrollview"
         android:layout_width="match_parent"
@@ -109,35 +111,13 @@
                         android:layout_below="@+id/border_line"
                         android:orientation="vertical">
 
-                        <com.haoyu.app.view.ExpandableTextView
-                            android:id="@+id/at_content"
+                        <org.sufficientlysecure.htmltextview.HtmlTextView
+                            android:id="@+id/htv"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="12dp"
-                            android:textColor="@color/gray"
-                            android:visibility="gone"
-                            expandableTextView:collapseText="收起内容"
-                            expandableTextView:expandText="展开内容"
-                            expandableTextView:maxCollapsedLines="3">
-
-                            <org.sufficientlysecure.htmltextview.HtmlTextView
-                                android:id="@id/expandable_text"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:lineSpacingExtra="@dimen/margin_size_4"
-                                android:textSize="@dimen/font_size_16" />
-
-                            <Button
-                                android:id="@id/expand_collapse"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="10dp"
-                                android:background="@color/transparent"
-                                android:textColor="@color/defaultColor"
-                                android:textSize="@dimen/font_size_16"
-                                android:visibility="invisible" />
-                        </com.haoyu.app.view.ExpandableTextView>
+                            android:textColor="@color/gray" />
 
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/xRecyclerView"
