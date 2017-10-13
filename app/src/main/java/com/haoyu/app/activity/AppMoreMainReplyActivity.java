@@ -55,8 +55,6 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
     private AppDiscussionAdapter replyAdapter;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
-    @BindView(R.id.tv_title)
-    TextView tv_title;
     @BindView(R.id.loadingView)
     LoadingView loadingView;
     @BindView(R.id.loadFailView)
@@ -90,10 +88,10 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
         xRecyclerView.setAdapter(replyAdapter);
         xRecyclerView.setLoadingListener(context);
         if (type.equals("comment")) {
-            tv_title.setText("评论详情");
+            toolBar.setTitle_text("评论详情");
             commentView.setHint("输入评论内容");
         } else if (type.equals("advise")) {
-            tv_title.setText("所有建议");
+            toolBar.setTitle_text("所有建议");
             commentView.setHint("提一些建议，帮助完善创课");
         }
         if (discussType != null && discussType.equals("course")) {
