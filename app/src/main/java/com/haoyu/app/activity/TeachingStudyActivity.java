@@ -149,8 +149,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     }
 
     private void setSupportToolbar() {
-        String activityTitle = getIntent().getStringExtra("activityTitle");
-        toolBar.setTitle_text(activityTitle);
+        toolBar.setTitle_text("听课评课");
         toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
             @Override
             public void onLeftClick(View view) {
@@ -181,7 +180,8 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
             ll_insert.setVisibility(View.VISIBLE);
             ll_detail.setVisibility(View.GONE);
         }
-        tv_study_title.setText(lcecEntity.getTitle());
+        if (lcecEntity.getTitle() != null)
+            tv_study_title.setText(Html.fromHtml(lcecEntity.getTitle()));
         tv_content.setHtml(lcecEntity.getContent(), new HtmlHttpImageGetter(tv_content, Constants.REFERER));
         ll_evaluation.setOnClickListener(new View.OnClickListener() {
             private boolean isExpand = true;

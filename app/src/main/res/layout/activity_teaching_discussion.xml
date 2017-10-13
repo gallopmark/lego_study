@@ -184,7 +184,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="已有："
+                    android:drawableLeft="@drawable/discussion_pinglun"
+                    android:drawablePadding="@dimen/margin_size_6"
+                    android:text="已有 "
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_16" />
 
@@ -202,7 +204,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="条回复"
+                    android:text=" 条回复"
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_16" />
             </LinearLayout>
