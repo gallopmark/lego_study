@@ -10,8 +10,7 @@
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:left_button_image="@drawable/app_back"
-        app:title_text="听课评课" />
+        app:left_button_image="@drawable/app_back" />
 
     <com.haoyu.app.view.StickyScrollView
         android:layout_width="match_parent"
@@ -58,6 +57,7 @@
                     android:id="@+id/tv_activity_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_16" />
 
@@ -72,6 +72,7 @@
                     android:id="@+id/tv_subject"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_16" />
             </LinearLayout>
@@ -86,6 +87,7 @@
                     android:id="@+id/tv_lecture"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_16" />
 
@@ -100,8 +102,60 @@
                     android:id="@+id/tv_bookversion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_16" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:tag="sticky-nonconstant-hastransparancy">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_size_1"
+                    android:background="@color/spaceColor" />
+
+                <LinearLayout
+                    android:id="@+id/ll_evaluation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/margin_size_12">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:drawableLeft="@drawable/announcements_yuandian"
+                        android:drawablePadding="@dimen/margin_size_6"
+                        android:text="评课方向"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <ImageView
+                        android:id="@+id/iv_expand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/course_dictionary_xiala" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_size_1"
+                    android:background="@color/spaceColor" />
+
+                <org.sufficientlysecure.htmltextview.HtmlTextView
+                    android:id="@+id/tv_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lineSpacingExtra="@dimen/margin_size_4"
+                    android:padding="@dimen/margin_size_12"
+                    android:textSize="@dimen/font_size_16"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
@@ -200,57 +254,6 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:tag="sticky-nonconstant-hastransparancy">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_size_1"
-                    android:background="@color/spaceColor" />
-
-                <LinearLayout
-                    android:id="@+id/ll_evaluation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/margin_size_12">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_gravity="center"
-                        android:drawableLeft="@drawable/announcements_yuandian"
-                        android:drawablePadding="@dimen/margin_size_6"
-                        android:text="评课方向"
-                        android:textSize="@dimen/font_size_16" />
-
-                    <ImageView
-                        android:id="@+id/iv_expand"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/course_dictionary_xiala" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_size_1"
-                    android:background="@color/spaceColor" />
-
-                <org.sufficientlysecure.htmltextview.HtmlTextView
-                    android:id="@+id/tv_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:lineSpacingExtra="@dimen/margin_size_4"
-                    android:padding="@dimen/margin_size_12"
-                    android:textSize="@dimen/font_size_16"
-                    android:visibility="gone" />
-            </LinearLayout>
-
-            <LinearLayout
                 android:id="@+id/ll_discussion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -264,7 +267,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="已有："
+                    android:drawableLeft="@drawable/discussion_pinglun"
+                    android:drawablePadding="@dimen/margin_size_6"
+                    android:text="已有 "
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_16" />
 
@@ -282,7 +287,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="条评论"
+                    android:text=" 条回复"
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_16" />
             </LinearLayout>
