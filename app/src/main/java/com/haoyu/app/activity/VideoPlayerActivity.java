@@ -401,9 +401,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
     private void initContent() {
         mVideoPath = getIntent().getStringExtra("videoUrl");
-
         summary = getIntent().getStringExtra("summary");
-        String fileName = getIntent().getStringExtra("fileName");
         String activityTitle = getIntent().getStringExtra("activityTitle");
         seekTime = (long) getIntent().getDoubleExtra("lastViewTime", 0);
         interval = getIntent().getIntExtra("interval", 30);
@@ -411,11 +409,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         if (summary == null && mFileInfoList.size() == 0) {
             mRead.setVisibility(View.GONE);
         }
-        if (fileName != null) {
-            videoTitle.setText(Html.fromHtml(fileName));
-        } else {
-            videoTitle.setText(Html.fromHtml(activityTitle));
-        }
+
+        videoTitle.setText(Html.fromHtml(activityTitle));
+
         AVOptions options = new AVOptions();
         // 设置链接超时时间
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 20 * 1000);
