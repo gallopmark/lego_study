@@ -37,6 +37,8 @@ public class MediaFile {
     }
 
     private static boolean contains(String url, String[] fileTypes) {
+        if (url == null)
+            return false;
         int lastDot = url.lastIndexOf(".");
         if (lastDot < 0)
             return false;

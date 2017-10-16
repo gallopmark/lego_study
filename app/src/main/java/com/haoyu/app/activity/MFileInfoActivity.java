@@ -208,13 +208,17 @@ public class MFileInfoActivity extends BaseActivity {
             ll_downloadInfo.setVisibility(View.GONE);
         } else {
             bt_download.setVisibility(View.GONE);
-            ll_downloadInfo.setVisibility(View.VISIBLE);
         }
     }
 
     private void beginDownload() {
+        if (url == null) {
+            toast(context, "文件链接不存在");
+            return;
+        }
         if (fileName == null)
             fileName = Common.getFileName(url);
+        ll_downloadInfo.setVisibility(View.VISIBLE);
         Map<String, String> headers = new HashMap<>();
         headers.put("Referer", Constants.REFERER);
         DownloadManager.getInstance().create(url).setFilePath(fileRoot).setFileName(fileName).addHeaders(headers).addListener(new DownloadListener() {

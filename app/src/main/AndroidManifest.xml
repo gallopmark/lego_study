@@ -272,7 +272,7 @@
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <!--创课规则-->
         <activity android:name="com.haoyu.app.activity.TeachingResearchCCRuleActivity" />
-        <activity android:name="com.haoyu.app.activity.TeachingResearchCCGuideActivity"/>
+        <activity android:name="com.haoyu.app.activity.TeachingResearchCCGuideActivity" />
 
         <!--查看更多建议-->
         <!--社区活动详情页-->
@@ -320,6 +320,7 @@
         <!--多媒体选择器-->
 
         <!--文件预览-->
+        <activity android:name="com.haoyu.app.activity.MFileInfosActivity" />
         <activity android:name="com.haoyu.app.activity.MFileInfoActivity" />
         <activity
             android:name="com.haoyu.app.activity.MFileInfoPreViewActivity"

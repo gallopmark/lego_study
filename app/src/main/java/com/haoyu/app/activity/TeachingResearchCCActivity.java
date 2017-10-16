@@ -4,13 +4,10 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,8 +17,10 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haoyu.app.adapter.AppDiscussionAdapter;
+import com.haoyu.app.adapter.MFileInfoAdapter;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
+import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.dialog.CommentDialog;
 import com.haoyu.app.dialog.FileUploadDialog;
 import com.haoyu.app.dialog.MaterialDialog;
@@ -29,6 +28,7 @@ import com.haoyu.app.entity.AttitudeMobileResult;
 import com.haoyu.app.entity.FileUploadDataResult;
 import com.haoyu.app.entity.FileUploadResult;
 import com.haoyu.app.entity.MFileInfo;
+import com.haoyu.app.entity.MFileInfoData;
 import com.haoyu.app.entity.MobileUser;
 import com.haoyu.app.entity.Paginator;
 import com.haoyu.app.entity.ReplyEntity;
@@ -42,7 +42,6 @@ import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.rxBus.RxBus;
 import com.haoyu.app.utils.Action;
-import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.ScreenUtils;
@@ -121,11 +120,14 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
     ImageView iv_expand;
     @BindView(R.id.tv_ccContent)
     HtmlTextView tv_ccContent;
-    @BindView(R.id.filePager)
-    ViewPager filePager;  //显示文件列表
-    @BindView(R.id.fileIndicator)
-    LinearLayout fileIndicator; //文件指示
-    private ImageView[] fileIndicatorViews;
+    @BindView(R.id.tv_checkAll)
+    TextView tv_checkAll;
+    @BindView(R.id.tv_error)
+    TextView tv_error;
+    @BindView(R.id.loadingFile)
+    LoadingView loadingFile;
+    @BindView(R.id.rv_file)
+    RecyclerView rv_file;
     @BindView(R.id.empty_resources)
     View empty_resources;
     @BindView(R.id.ll_advise)
@@ -186,7 +188,9 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
             public void onResponse(TeachingLessonSingleResult singleResult) {
                 loadingView.setVisibility(View.VISIBLE);
                 if (singleResult != null && singleResult.getResponseData() != null && singleResult.getResponseData().getmLesson() != null) {
+                    contentView.setVisibility(View.VISIBLE);
                     updateUI(singleResult.getResponseData().getmLesson());
+                    getFiles();
                     getAdvise();
                 } else {
                     empty_detail.setVisibility(View.VISIBLE);
@@ -226,52 +230,6 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
             bt_adviseNum.setText("提建议（" + 0 + "）");
             tv_advise.setText("收到" + 0 + "条建议");
         }
-        if (entity.getmFileInfos() != null && entity.getmFileInfos().size() > 0) {
-            filePager.setVisibility(View.VISIBLE);
-            empty_resources.setVisibility(View.GONE);
-            fileIndicator.removeAllViews();
-            FilePageAdapter filePageAdapter = new FilePageAdapter(entity.getmFileInfos());
-            filePager.setAdapter(filePageAdapter);
-            if (entity.getmFileInfos().size() > 1) {
-                fileIndicatorViews = new ImageView[entity.getmFileInfos().size()];
-                for (int i = 0; i < entity.getmFileInfos().size(); i++) {   //位置从0开始 页数从1开始
-                    fileIndicatorViews[i] = new ImageView(context);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.leftMargin = (int) getResources().getDimension(R.dimen.margin_size_5);
-                    fileIndicatorViews[i].setLayoutParams(params);
-                    fileIndicatorViews[i].setImageResource(R.drawable.course_yuandian_default);
-                    fileIndicator.addView(fileIndicatorViews[i]);
-                }
-                fileIndicatorViews[0].setImageResource(R.drawable.course_yuandian_press);
-            }
-
-            filePager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    if (fileIndicatorViews != null && fileIndicatorViews.length > 0) {
-                        for (int i = 0; i < fileIndicatorViews.length; i++) {
-                            if (i == position)
-                                fileIndicatorViews[i].setImageResource(R.drawable.course_yuandian_press);
-                            else
-                                fileIndicatorViews[i].setImageResource(R.drawable.course_yuandian_default);
-                        }
-                    }
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
-        } else {
-            filePager.setVisibility(View.GONE);
-            empty_resources.setVisibility(View.VISIBLE);
-        }
         if (entity.getContent() != null && entity.getContent().trim().length() > 0) {
             ll_ccContent.setVisibility(View.VISIBLE);
             tv_ccContent.setHtml(entity.getContent(), new HtmlHttpImageGetter(tv_ccContent, Constants.REFERER));
@@ -301,6 +259,65 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
             ll_ccContent.setVisibility(View.GONE);
         }
         detailLayout.setVisibility(View.VISIBLE);
+    }
+
+    private void getFiles() {
+        String url = Constants.OUTRT_NET + "/m/file?fileRelations[0].relation.id=" + relationId + "&fileRelations[0].relation.type=discussion&limit=2&orders=CREATE_TIME.DESC";
+        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<MFileInfoData>>() {
+            @Override
+            public void onBefore(Request request) {
+                loadingFile.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onError(Request request, Exception e) {
+                loadingFile.setVisibility(View.GONE);
+                tv_error.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onResponse(BaseResponseResult<MFileInfoData> response) {
+                loadingFile.setVisibility(View.GONE);
+                if (response != null && response.getResponseData() != null) {
+                    updateFiles(response.getResponseData());
+                }
+            }
+        }));
+    }
+
+    private void updateFiles(MFileInfoData responseData) {
+        if (responseData.getmFileInfos().size() > 0) {
+            final List<MFileInfo> mDatas = responseData.getmFileInfos();
+            rv_file.setVisibility(View.VISIBLE);
+            FullyLinearLayoutManager layoutManager = new FullyLinearLayoutManager(context);
+            layoutManager.setOrientation(FullyLinearLayoutManager.VERTICAL);
+            rv_file.setLayoutManager(layoutManager);
+            MFileInfoAdapter adapter = new MFileInfoAdapter(mDatas);
+            rv_file.setAdapter(adapter);
+            adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
+                    MFileInfo fileInfo = mDatas.get(position);
+                    Intent intent = new Intent(context, MFileInfoActivity.class);
+                    intent.putExtra("fileInfo", fileInfo);
+                    startActivity(intent);
+                }
+            });
+            if (responseData.getPaginator() != null && responseData.getPaginator().getHasNextPage())
+                tv_checkAll.setVisibility(View.VISIBLE);
+            tv_checkAll.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, MFileInfosActivity.class);
+                    intent.putExtra("title", "课程资源");
+                    intent.putExtra("relationId", relationId);
+                    intent.putExtra("relationType", "discussion");
+                    startActivity(intent);
+                }
+            });
+        } else {
+            empty_resources.setVisibility(View.VISIBLE);
+        }
     }
 
     private void getAdvise() {
@@ -405,6 +422,7 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
                 getAdvise();
             }
         });
+        tv_error.setOnClickListener(context);
         tv_more_reply.setOnClickListener(context);
         tv_giveAdvise.setOnClickListener(context);
         bottomView.setOnClickListener(context);
@@ -570,6 +588,9 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.tv_error:
+                getFiles();
+                break;
             case R.id.bt_supportNum:
                 createLike();
                 break;
@@ -945,59 +966,6 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
                 }
             }
         }, map));
-    }
-
-    class FilePageAdapter extends PagerAdapter {
-        private List<MFileInfo> mDatas;
-
-        public FilePageAdapter(List<MFileInfo> mDatas) {
-            this.mDatas = mDatas;
-        }
-
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }
-
-        @Override
-        public int getCount() {
-            return mDatas.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object obj) {
-            return view == obj;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            View view = getLayoutInflater().inflate(R.layout.page_file_item, null);
-            ImageView iv_fileType = view.findViewById(R.id.iv_fileType);
-            TextView tv_mFileName = view.findViewById(R.id.tv_mFileName);
-            TextView tv_mFileSize = view.findViewById(R.id.tv_mFileSize);
-            final MFileInfo fileInfo = mDatas.get(position);
-            Common.setFileType(fileInfo.getUrl(), iv_fileType);
-            tv_mFileName.setText(fileInfo.getFileName());
-            tv_mFileSize.setText(Common.FormetFileSize(fileInfo.getFileSize()));
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (fileInfo.getUrl() == null)
-                        toast(context, "文件的链接不存在");
-                    else {
-                        Intent intent = new Intent(context, MFileInfoActivity.class);
-                        intent.putExtra("fileInfo", fileInfo);
-                        startActivity(intent);
-                    }
-                }
-            });
-            container.addView(view, 0);//添加页卡
-            return view;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);//删除页卡
-        }
     }
 
     @Override
