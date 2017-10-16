@@ -2,23 +2,22 @@ package com.haoyu.app.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haoyu.app.adapter.AppCommentAdapter;
+import com.haoyu.app.adapter.MFileInfoAdapter;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
+import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.dialog.CommentDialog;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.AppActivityViewEntity;
@@ -31,15 +30,16 @@ import com.haoyu.app.entity.TimePeriod;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.utils.Action;
-import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.NetStatusUtil;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
+import com.haoyu.app.view.FullyLinearLayoutManager;
 import com.haoyu.app.view.GoodView;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
+import com.haoyu.app.view.StickyScrollView;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -66,6 +66,8 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     private TeachingStudyActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
+    @BindView(R.id.scrollView)
+    StickyScrollView scrollView;
     @BindView(R.id.tv_time)
     TextView tv_time;
     @BindView(R.id.tv_study_title)
@@ -80,18 +82,16 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     TextView tv_bookversion; //选用教材
     @BindView(R.id.ll_fileLayout)
     LinearLayout ll_fileLayout;   //文档
-    @BindView(R.id.fileIndicator)
-    LinearLayout fileIndicator;  //指示器
-    @BindView(R.id.viewPager)
-    ViewPager viewPager;
+    @BindView(R.id.tv_fileLayout)
+    TextView tv_fileLayout;
+    @BindView(R.id.rv_file)
+    RecyclerView rv_file;
     @BindView(R.id.ll_video)
     LinearLayout ll_video;  //视频文件
     @BindView(R.id.tv_videoName)
     TextView tv_videoName;  //视频名称
-    @BindView(R.id.ll_evaluation)
-    LinearLayout ll_evaluation;
-    @BindView(R.id.iv_expand)
-    ImageView iv_expand;
+    @BindView(R.id.tv_evaluation)
+    TextView tv_evaluation;
     @BindView(R.id.tv_content)
     HtmlTextView tv_content;
     @BindView(R.id.ll_discussion)
@@ -118,14 +118,12 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     LinearLayout ll_detail;
     private boolean running;   //是否在培训时间内、活动是否进行中
     private TimePeriod timePeriod;
-    private String workshopId, activityId;
+    private String workshopId, activityId, activityTitle;
     private AppActivityViewEntity.MLcecMobileEntity lcecEntity;
-    private ImageView[] fileIndicatorViews;
     private int discussNum;//总回复数
     private AppCommentAdapter adapter;
     private List<CommentEntity> mComments = new ArrayList<>();
     private int replyPosition, childPosition;
-    private String activityTitle;
 
     @Override
     public int setLayoutResID() {
@@ -151,7 +149,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     }
 
     private void setSupportToolbar() {
-        toolBar.setTitle_text(activityTitle);
+        toolBar.setTitle_text("听课评课");
         toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
             @Override
             public void onLeftClick(View view) {
@@ -184,23 +182,37 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
         }
         if (lcecEntity.getTitle() != null)
             tv_study_title.setText(Html.fromHtml(lcecEntity.getTitle()));
-        tv_content.setHtml(lcecEntity.getContent(), new HtmlHttpImageGetter(tv_content, Constants.REFERER));
-        ll_evaluation.setOnClickListener(new View.OnClickListener() {
-            private boolean isExpand = true;
+        if (lcecEntity.getContent() != null && lcecEntity.getContent().trim().length() > 0) {
+            final Drawable zhankai = ContextCompat.getDrawable(context, R.drawable.course_dictionary_xiala);
+            final Drawable shouqi = ContextCompat.getDrawable(context, R.drawable.course_dictionary_shouqi);
+            zhankai.setBounds(0, 0, zhankai.getMinimumWidth(), zhankai.getMinimumHeight());
+            shouqi.setBounds(0, 0, zhankai.getMinimumWidth(), zhankai.getMinimumHeight());
+            tv_content.setHtml(lcecEntity.getContent(), new HtmlHttpImageGetter(tv_content, Constants.REFERER));
+            tv_content.setVisibility(View.VISIBLE);
+            tv_evaluation.setCompoundDrawables(null, null, shouqi, null);
+            tv_evaluation.setOnClickListener(new View.OnClickListener() {
+                private boolean isExpand = false;
 
-            @Override
-            public void onClick(View view) {
-                if (isExpand) {
-                    tv_content.setVisibility(View.VISIBLE);
-                    iv_expand.setImageResource(R.drawable.course_dictionary_shouqi);
-                    isExpand = false;
-                } else {
-                    tv_content.setVisibility(View.GONE);
-                    iv_expand.setImageResource(R.drawable.course_dictionary_xiala);
-                    isExpand = true;
+                @Override
+                public void onClick(View view) {
+                    if (isExpand) {
+                        tv_content.setVisibility(View.VISIBLE);
+                        tv_evaluation.setCompoundDrawables(null, null, shouqi, null);
+                        isExpand = false;
+                    } else {
+                        scrollView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollView.smoothScrollTo(0, tv_evaluation.getTop());
+                            }
+                        }, 10);
+                        tv_content.setVisibility(View.GONE);
+                        tv_evaluation.setCompoundDrawables(null, null, zhankai, null);
+                        isExpand = true;
+                    }
                 }
-            }
-        });
+            });
+        }
         String activityType = "活动类型：";
         if (lcecEntity.getType() != null && lcecEntity.getType().equals("offLine"))
             tv_activity_type.setText(activityType + "现场评课");
@@ -227,42 +239,46 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
             tv_subject.setText(ssubject + "未知");
         if (lcecEntity.getmFileInfos() != null && lcecEntity.getmFileInfos().size() > 0) {
             ll_fileLayout.setVisibility(View.VISIBLE);
-            FilePageAdapter filePageAdapter = new FilePageAdapter(lcecEntity.getmFileInfos());
-            viewPager.setAdapter(filePageAdapter);
-            if (lcecEntity.getmFileInfos().size() > 1) {
-                fileIndicatorViews = new ImageView[lcecEntity.getmFileInfos().size()];
-                for (int i = 0; i < lcecEntity.getmFileInfos().size(); i++) {   //位置从0开始 页数从1开始
-                    fileIndicatorViews[i] = new ImageView(context);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.leftMargin = (int) getResources().getDimension(R.dimen.margin_size_5);
-                    fileIndicatorViews[i].setLayoutParams(params);
-                    fileIndicatorViews[i].setImageResource(R.drawable.course_yuandian_default);
-                    fileIndicator.addView(fileIndicatorViews[i]);
-                }
-                fileIndicatorViews[0].setImageResource(R.drawable.course_yuandian_press);
-            }
-
-            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            final List<MFileInfo> mDatas = lcecEntity.getmFileInfos();
+            FullyLinearLayoutManager layoutManager = new FullyLinearLayoutManager(context);
+            layoutManager.setOrientation(FullyLinearLayoutManager.VERTICAL);
+            rv_file.setLayoutManager(layoutManager);
+            MFileInfoAdapter adapter = new MFileInfoAdapter(mDatas);
+            rv_file.setAdapter(adapter);
+            adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
                 @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+                public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
+                    MFileInfo fileInfo = mDatas.get(position);
+                    Intent intent = new Intent(context, MFileInfoActivity.class);
+                    intent.putExtra("fileInfo", fileInfo);
+                    startActivity(intent);
                 }
+            });
+            final Drawable zhankai = ContextCompat.getDrawable(context, R.drawable.course_dictionary_xiala);
+            final Drawable shouqi = ContextCompat.getDrawable(context, R.drawable.course_dictionary_shouqi);
+            zhankai.setBounds(0, 0, zhankai.getMinimumWidth(), zhankai.getMinimumHeight());
+            shouqi.setBounds(0, 0, zhankai.getMinimumWidth(), zhankai.getMinimumHeight());
+            tv_fileLayout.setCompoundDrawables(null, null, shouqi, null);
+            tv_fileLayout.setOnClickListener(new View.OnClickListener() {
+                private boolean isExpand = false;
 
                 @Override
-                public void onPageSelected(int position) {
-                    if (fileIndicatorViews != null && fileIndicatorViews.length > 0) {
-                        for (int i = 0; i < fileIndicatorViews.length; i++) {
-                            if (i == position)
-                                fileIndicatorViews[i].setImageResource(R.drawable.course_yuandian_press);
-                            else
-                                fileIndicatorViews[i].setImageResource(R.drawable.course_yuandian_default);
-                        }
+                public void onClick(View view) {
+                    if (isExpand) {
+                        rv_file.setVisibility(View.VISIBLE);
+                        tv_fileLayout.setCompoundDrawables(null, null, shouqi, null);
+                        isExpand = false;
+                    } else {
+                        scrollView.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollView.smoothScrollTo(0, tv_fileLayout.getTop());
+                            }
+                        }, 10);
+                        rv_file.setVisibility(View.GONE);
+                        tv_fileLayout.setCompoundDrawables(null, null, zhankai, null);
+                        isExpand = true;
                     }
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
                 }
             });
         }
@@ -270,60 +286,6 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
             ll_video.setVisibility(View.VISIBLE);
             ll_video.setOnClickListener(context);
             tv_videoName.setText(lcecEntity.getmVideo().getFileName());
-        }
-    }
-
-    class FilePageAdapter extends PagerAdapter {
-        private List<MFileInfo> fileInfos;
-
-        public FilePageAdapter(List<MFileInfo> fileInfos) {
-            this.fileInfos = fileInfos;
-        }
-
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }
-
-        @Override
-        public int getCount() {
-            return fileInfos.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object obj) {
-            return view == obj;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            View view = getLayoutInflater().inflate(R.layout.page_file_item, null);
-            ImageView iv_fileType = view.findViewById(R.id.iv_fileType);
-            TextView tv_mFileName = view.findViewById(R.id.tv_mFileName);
-            TextView tv_mFileSize = view.findViewById(R.id.tv_mFileSize);
-            final MFileInfo fileInfo = fileInfos.get(position);
-            Common.setFileType(fileInfo.getUrl(), iv_fileType);
-            tv_mFileName.setText(fileInfo.getFileName());
-            tv_mFileSize.setText(Common.FormetFileSize(fileInfo.getFileSize()));
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (fileInfo.getUrl() == null)
-                        toast(context, "下载的链接不存在");
-                    else {
-                        Intent intent = new Intent(context, MFileInfoActivity.class);
-                        intent.putExtra("fileInfo", fileInfo);
-                        startActivity(intent);
-                    }
-                }
-            });
-            container.addView(view, 0);//添加页卡
-            return view;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);//删除页卡
-
         }
     }
 
@@ -497,23 +459,21 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
                 if (NetStatusUtil.isConnected(context)) {
                     if (NetStatusUtil.isWifi(context)) {
                         intent.setClass(context, VideoPlayerActivity.class);
-
                         intent.putExtra("activityTitle", activityTitle);
-
                         intent.putExtra("videoUrl", lcecEntity.getmVideo().getUrl());
                         startActivity(intent);
                     } else {
-                        MaterialDialog mainDialog = new MaterialDialog(context);
-                        mainDialog.setTitle("网络提醒");
-                        mainDialog.setMessage("使用2G/3G/4G网络观看视频会消耗较多流量。确定要开启吗？");
-                        mainDialog.setNegativeButton("开启", new MaterialDialog.ButtonClickListener() {
+                        MaterialDialog dialog = new MaterialDialog(context);
+                        dialog.setTitle("网络提醒");
+                        dialog.setMessage("使用2G/3G/4G网络观看视频会消耗较多流量。确定要开启吗？");
+                        dialog.setNegativeButton("开启", new MaterialDialog.ButtonClickListener() {
                             @Override
                             public void onClick(View v, AlertDialog dialog) {
                                 dialog.dismiss();
                             }
                         });
-                        mainDialog.setPositiveButton("取消", null);
-                        mainDialog.show();
+                        dialog.setPositiveButton("取消", null);
+                        dialog.show();
                     }
                 } else {
                     toast(context, "当前网络不稳定，请检查网络设置！");
