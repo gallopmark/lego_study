@@ -657,7 +657,6 @@ public class WorkshopHomeActivity extends BaseActivity implements View.OnClickLi
             intent.putExtra("videoId", videoEntity.getId());
             if (video != null && video.getUrls() != null && video.getUrls().length() > 0) {
                 intent.putExtra("videoUrl", video.getUrls());
-                intent.putExtra("videoId", videoEntity.getId());
                 startActivity(intent);
             } else if (video != null && video.getVideoFiles() != null && video.getVideoFiles().size() > 0) {
                 intent.putExtra("videoUrl", video.getVideoFiles().get(0).getUrl());

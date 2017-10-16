@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/pop_close"
             android:background="@color/translucence"
-            android:drawableLeft="@drawable/zhangjie"
             android:drawablePadding="@dimen/margin_size_20"
             android:padding="@dimen/margin_size_10"
             android:text="课前导读"
