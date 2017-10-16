@@ -88,8 +88,6 @@ public class TeachingResearchATActivity extends BaseActivity implements View.OnC
     TextView empty_detail;
     @BindView(R.id.scrollView)
     StickyScrollView scrollView;
-    @BindView(R.id.detailLayout)
-    LinearLayout detailLayout;
     @BindView(R.id.loadFailView1)
     LoadFailView loadFailView1;
     @BindView(R.id.layoutBottom)
@@ -148,7 +146,7 @@ public class TeachingResearchATActivity extends BaseActivity implements View.OnC
     private int page = 1;
     private boolean register;
     private String registerId;
-    private int participateNum;  //活动参与数
+    private int participateNum, limit;  //活动参与数,限额数
     private List<String> imgList = new ArrayList<>();
     private int replyPosition, childPosition;
     private File uploadFile;
@@ -213,40 +211,51 @@ public class TeachingResearchATActivity extends BaseActivity implements View.OnC
         if (entity.getmMovementRelations() != null && entity.getmMovementRelations().size() > 0) {
             TeachingMovementEntity.MovementRelation relation = entity.getmMovementRelations().get(0);
             if (relation.getTimePeriod() != null) {
-                tv_time.setText(TimeUtil.convertDayOfMinute(relation.getTimePeriod().getStartTime(),
+                tv_time.setText("时间：" + TimeUtil.convertDayOfMinute(relation.getTimePeriod().getStartTime(),
                         relation.getTimePeriod().getEndTime()));
             }
             if (relation.getTimePeriod() != null) {
                 long endTime = relation.getTimePeriod().getEndTime();
-                tv_apply.setText("截止" + TimeUtil.convertDayOfMinute(endTime));
+                tv_apply.setText("报名：截止" + TimeUtil.convertDayOfMinute(endTime));
             }
             participateNum = relation.getParticipateNum();
-            int limit = relation.getTicketNum();
-            tv_limit.setText(participateNum + "/" + limit + "人");
+            limit = relation.getTicketNum();
             tv_viewNum.setText(String.valueOf(relation.getBrowseNum()));
             tv_joinNum.setText(String.valueOf(relation.getParticipateNum()));
+        } else {
+            tv_time.setVisibility(View.GONE);
+            tv_apply.setVisibility(View.GONE);
         }
-        tv_address.setText(entity.getLocation());
-        tv_host.setText(entity.getSponsor());
+        tv_address.setText("地点：" + entity.getLocation());
+        tv_host.setText("主办：" + entity.getSponsor());
         if (entity.getType() != null && entity.getType().equals("communicationMeeting")) {
-            tv_atType.setText("跨校交流会");
+            tv_atType.setText("类型：跨校交流会");
         } else if (entity.getType() != null && entity.getType().equals("expertInteraction")) {
-            tv_atType.setText("专家互动");
+            tv_atType.setText("类型：专家互动");
         } else if (entity.getType() != null && entity.getType().equals("lessonViewing")) {
-            tv_atType.setText("创课观摩");
+            tv_atType.setText("类型：创课观摩");
+        } else {
+            tv_atType.setVisibility(View.GONE);
         }
         if (entity.getParticipationType() != null && entity.getParticipationType().equals("ticket")) {
-            tv_participation.setText("须报名预约，凭电子票入场");
+            tv_participation.setText("参与：须报名预约，凭电子票入场");
+            tv_limit.setVisibility(View.VISIBLE);
+            tv_limit.setText("限额：" + participateNum + "/" + limit + "人");
         } else if (entity.getParticipationType() != null && entity.getParticipationType().equals("free")) {
-            tv_participation.setText("在线报名，免费入场");
+            tv_participation.setText("参与：在线报名，免费入场");
         } else if (entity.getParticipationType() != null && entity.getParticipationType().equals("chair")) {
-            tv_participation.setText("讲座视频录像+在线问答交流");
+            tv_participation.setText("参与：讲座视频录像+在线问答交流");
+        } else {
+            tv_limit.setVisibility(View.GONE);
+            tv_participation.setVisibility(View.GONE);
         }
         if (entity.getContent() != null && entity.getContent().length() > 0) {
             ll_content.setVisibility(View.VISIBLE);
             at_content.setHtml(entity.getContent(), new HtmlHttpImageGetter(at_content, Constants.REFERER));
+            at_content.setVisibility(View.VISIBLE);
+            iv_expand.setImageResource(R.drawable.course_dictionary_shouqi);
             ll_sticky.setOnClickListener(new View.OnClickListener() {
-                private boolean isExpand = true;
+                private boolean isExpand = false;
 
                 @Override
                 public void onClick(View view) {
@@ -304,7 +313,7 @@ public class TeachingResearchATActivity extends BaseActivity implements View.OnC
         } else {
             toolBar.setShow_right_button(false);
         }
-        detailLayout.setVisibility(View.VISIBLE);
+        scrollView.setVisibility(View.VISIBLE);
         layoutBottom.setVisibility(View.VISIBLE);
     }
 

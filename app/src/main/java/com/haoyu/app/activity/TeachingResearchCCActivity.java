@@ -233,8 +233,10 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
         if (entity.getContent() != null && entity.getContent().trim().length() > 0) {
             ll_ccContent.setVisibility(View.VISIBLE);
             tv_ccContent.setHtml(entity.getContent(), new HtmlHttpImageGetter(tv_ccContent, Constants.REFERER));
+            tv_ccContent.setVisibility(View.VISIBLE);
+            iv_expand.setImageResource(R.drawable.course_dictionary_shouqi);
             ll_sticky.setOnClickListener(new View.OnClickListener() {
-                private boolean isExpand = true;
+                private boolean isExpand = false;
 
                 @Override
                 public void onClick(View view) {
