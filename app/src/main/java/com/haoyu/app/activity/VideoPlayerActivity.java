@@ -20,7 +20,6 @@ import android.support.v7.widget.RecyclerView;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.view.GestureDetector;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.OrientationEventListener;
@@ -405,19 +404,16 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         String activityTitle = getIntent().getStringExtra("activityTitle");
         seekTime = (long) getIntent().getDoubleExtra("lastViewTime", 0);
         interval = getIntent().getIntExtra("interval", 30);
-
         if (summary == null && mFileInfoList.size() == 0) {
             mRead.setVisibility(View.GONE);
         }
 
         videoTitle.setText(Html.fromHtml(activityTitle));
-
         AVOptions options = new AVOptions();
         // 设置链接超时时间
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 20 * 1000);
         options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 20 * 1000);
-        int codec = getIntent().getIntExtra("mediaCodec", 0);
-        options.setInteger(AVOptions.KEY_MEDIACODEC, codec);
+        options.setInteger(AVOptions.KEY_MEDIACODEC, 0);
         options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
         mVideoView.setAVOptions(options);
         mVideoView.setOnInfoListener(mOnInfoListener);
@@ -457,15 +453,14 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
     private void showPopWindow() {
         View view = LayoutInflater.from(context).inflate(R.layout.video_courseread_guide, null);
-        View parentView = LayoutInflater.from(context).inflate(R.layout.activity_videoplayer, null);
         popClose = getView(view, R.id.pop_close);
+
         TextView read_guide_content = getView(view, R.id.read_guide_content);
         RecyclerView recyclerView = getView(view, R.id.recyclerView);
+        mRead = findViewById(R.id.my_video_zhangjie);
+
         if (summary != null)
             read_guide_content.setText(Html.fromHtml(summary));
-        else
-            read_guide_content.setText("暂无内容");
-
 
         if (mFileInfoList.size() > 0) {
             LinearLayoutManager manager = new LinearLayoutManager(context);
@@ -484,7 +479,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                         Intent intent = new Intent(context, MFileInfoActivity.class);
                         intent.putExtra("fileInfo", mFileInfo);
                         startActivity(intent);
-
                     }
                 }
             });
@@ -505,7 +499,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 }
             }
         });
-        window.showAtLocation(parentView, Gravity.RIGHT, 0, 0);
+        window.showAsDropDown(topControll, MyUtils.getWidth(context) * 2 / 5, 0);
     }
 
     //显示弹出内容
@@ -523,7 +517,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 case PLMediaPlayer.ERROR_CODE_INVALID_URI:
                     message = "该视频暂时无法播放";
                     showToastTips(message);
-
                     videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
                 case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
@@ -561,12 +554,12 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
                 case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
-                    message = "该视频暂时无法播放5";
+                    message = "该视频暂时无法播放";
                     showToastTips(message);
                     videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
-                    message = "该视频暂时无法播放6";
+                    message = "该视频暂时无法播放";
                     showToastTips(message);
                     videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
@@ -637,10 +630,10 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
             if (mVideoView != null && mVideoView.getDuration() != -1) {
                 setVideoProgress();
+                updateVideoTime(1);
                 hideLoading();
                 isReCheck = false;
                 length = mVideoView.getDuration();
-                mVideoView.setDisplayAspectRatio(mVideoView.ASPECT_RATIO_16_9);
                 mVideoView.start();
                 videoSeekBar.setMax((int) mVideoView.getDuration());
                 if (seekTime > 0) {
@@ -758,7 +751,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         params.height = height;
         videoLayout.setLayoutParams(params);
     }
-
 
     class PlayerGestureListener extends
             GestureDetector.SimpleOnGestureListener {
@@ -1112,7 +1104,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 //横屏
                 Orieantation = 2;
             }
-
         }
 
     }
@@ -1141,7 +1132,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             }
         }
 
-
     }
 
     //更新视频的观看时间
@@ -1159,6 +1149,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     map.put("isLimit", "false");
                 }
                 map.put("_method", "PUT");
+
 
                 addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<String>() {
                     @Override
