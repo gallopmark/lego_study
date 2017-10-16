@@ -245,7 +245,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         if (entity != null && entity.getAttchFiles() != null && entity.getAttchFiles().size() > 0) {
             mFileInfoList.addAll(entity.getAttchFiles());
         }
-
+        initContent();
         mVideoView.setBufferingIndicator(loadingView);
         linear_centercontroll.getBackground().setAlpha(80);
         screenWidthPixels = MyUtils.screenWidthPixels(context);
@@ -258,7 +258,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         mMaxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         updateVideoCatch();
         //开启播放
-        initContent();
+
         MyUtils.Land(context);//取消手机的状态栏
         MyUtils.hideBottomUIMenu(context);//如果手机又虚拟按键则隐藏改虚拟按键
         myOrientationListener = new MyOrientationListener(context);//设置手机屏幕旋转监听
@@ -454,7 +454,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     private void showPopWindow() {
         View view = LayoutInflater.from(context).inflate(R.layout.video_courseread_guide, null);
         popClose = getView(view, R.id.pop_close);
-
         TextView read_guide_content = getView(view, R.id.read_guide_content);
         RecyclerView recyclerView = getView(view, R.id.recyclerView);
         mRead = findViewById(R.id.my_video_zhangjie);
