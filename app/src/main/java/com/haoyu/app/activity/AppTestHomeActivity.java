@@ -3,6 +3,7 @@ package com.haoyu.app.activity;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -85,7 +86,9 @@ public class AppTestHomeActivity extends BaseActivity {
             tuid = mTestUser.getId();
             if (mTestEntity != null && mTestEntity.getmQuestions() != null && mTestEntity.getmQuestions().size() > 0) {
                 int size = mTestUser.getmTest().getmQuestions().size();
-                testTips.setText("本次测验共" + size + "道题，满分为100分");
+                String text = "本次测验共 <font color='#E3E30C'>" + size + "</font> 道题，满分为 <font color='#E3E30C'>100</font> 分";
+                Spanned spanned = Html.fromHtml(text);
+                testTips.setText(spanned);
             } else {
                 testTips.setText("测验题目未发布");
                 bt_konw.setVisibility(View.GONE);

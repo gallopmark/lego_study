@@ -32,6 +32,8 @@
         android:gravity="center"
         android:maxLines="1"
         android:paddingBottom="@dimen/title_padding"
+        android:paddingLeft="@dimen/margin_size_6"
+        android:paddingRight="@dimen/margin_size_6"
         android:paddingTop="@dimen/title_padding"
         android:textColor="@color/white"
         android:textSize="@dimen/title_textsize" />
