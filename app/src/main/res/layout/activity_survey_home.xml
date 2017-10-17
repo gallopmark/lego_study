@@ -14,18 +14,19 @@
     <com.haoyu.app.view.StickyScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom"
+        android:layout_above="@+id/tv_bottomtips"
         android:layout_below="@+id/toolBar"
         android:fillViewport="true"
         android:overScrollMode="never"
         android:scrollbarStyle="outsideOverlay">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:descendantFocusability="blocksDescendants">
 
             <RelativeLayout
+                android:id="@+id/layoutTop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/course_survey_home_bg">
@@ -61,6 +62,7 @@
                     android:layout_below="@+id/time_layout"
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="@dimen/margin_size_16"
+                    android:gravity="center"
                     android:text="欢迎参与我们的问卷调研！"
                     android:textColor="@color/white"
                     android:textSize="@dimen/font_size_20"
@@ -72,14 +74,16 @@
                 android:id="@+id/surveyIco"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_below="@+id/layoutTop"
+                android:layout_centerHorizontal="true"
                 android:layout_marginTop="-55dp"
                 android:src="@drawable/course_survey_home_ig" />
 
             <LinearLayout
                 android:id="@+id/survey_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/surveyIco"
                 android:orientation="vertical"
                 android:visibility="gone">
 
@@ -92,6 +96,7 @@
                     android:layout_marginRight="@dimen/margin_size_12"
                     android:layout_marginTop="@dimen/margin_size_16"
                     android:ellipsize="end"
+                    android:gravity="center"
                     android:maxLines="2"
                     android:tag="sticky-nonconstant-hastransparancy"
                     android:textSize="@dimen/font_size_16"
@@ -101,10 +106,11 @@
                     android:id="@+id/tv_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/margin_size_12"
                     android:layout_marginRight="@dimen/margin_size_12"
                     android:layout_marginTop="@dimen/margin_size_16"
-                    android:ellipsize="end"
+                    android:gravity="center"
                     android:lineSpacingExtra="@dimen/margin_size_4"
                     android:textSize="@dimen/font_size_16" />
             </LinearLayout>
@@ -113,6 +119,7 @@
                 android:id="@+id/stopTips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/surveyIco"
                 android:layout_marginLeft="@dimen/margin_size_16"
                 android:layout_marginRight="@dimen/margin_size_16"
                 android:layout_marginTop="@dimen/margin_size_16"
@@ -121,48 +128,25 @@
                 android:textSize="@dimen/margin_size_20"
                 android:textStyle="bold"
                 android:visibility="gone" />
-        </LinearLayout>
+        </RelativeLayout>
     </com.haoyu.app.view.StickyScrollView>
 
-    <LinearLayout
-        android:id="@+id/bottom"
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/tv_bottomtips"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/margin_size_16"
-        android:layout_marginTop="@dimen/margin_size_16"
-        android:orientation="horizontal">
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-
-        <RelativeLayout
-            android:id="@+id/rl_take_part_in"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:background="@drawable/title_selected"
-            android:paddingBottom="@dimen/margin_size_10"
-            android:paddingTop="@dimen/margin_size_10">
-
-            <TextView
-                android:id="@+id/tv_bottomtips"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:drawablePadding="@dimen/margin_size_8"
-                android:drawableRight="@drawable/in_arrow"
-                android:text="查看问卷"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_size_16" />
-        </RelativeLayout>
-
-        <View
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
-    </LinearLayout>
-
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin_size_20"
+        android:layout_marginTop="@dimen/margin_size_20"
+        android:background="@drawable/title_selected"
+        android:drawablePadding="@dimen/margin_size_8"
+        android:drawableRight="@drawable/in_arrow"
+        android:paddingBottom="@dimen/margin_size_10"
+        android:paddingLeft="@dimen/margin_size_40"
+        android:paddingRight="@dimen/margin_size_40"
+        android:paddingTop="@dimen/margin_size_10"
+        android:text="查看问卷"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_16" />
 </RelativeLayout>

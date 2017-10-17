@@ -6,7 +6,6 @@ import android.text.Spanned;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.base.BaseActivity;
@@ -41,8 +40,6 @@ public class AppSurveyHomeActivity extends BaseActivity {
     TextView tv_survey_title;
     @BindView(R.id.tv_description)
     TextView tv_description;
-    @BindView(R.id.rl_take_part_in)
-    RelativeLayout rl_take_part_in;
     private String relationId;
     private String type;
     private String activityId;
@@ -142,7 +139,7 @@ public class AppSurveyHomeActivity extends BaseActivity {
                 finish();
             }
         });
-        rl_take_part_in.setOnClickListener(new View.OnClickListener() {
+        tv_bottomtips.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (isStop) {
