@@ -25,6 +25,7 @@ public class MaterialDialog extends AlertDialog {
     private Button bt_neutral;
     private Button bt_makesure; // 确定按钮
     private Button bt_cancel; // 取消按钮
+    private int maxWidth, maxHeight;
 
     public MaterialDialog(Context context) {
         super(context);
@@ -34,7 +35,10 @@ public class MaterialDialog extends AlertDialog {
         bt_neutral = view.findViewById(R.id.bt_neutral);
         bt_makesure = view.findViewById(R.id.bt_makesure);
         bt_cancel = view.findViewById(R.id.bt_cancel);
-        tv_message.setMaxHeight(ScreenUtils.getScreenHeight(context) / 3 * 2);
+        maxWidth = ScreenUtils.getScreenWidth(context) / 4 * 3;
+        maxHeight = ScreenUtils.getScreenHeight(context) / 3 * 2;
+        tv_message.setMaxWidth(maxWidth);
+        tv_message.setMaxHeight(maxHeight);
         tv_message.setMovementMethod(ScrollingMovementMethod.getInstance());
     }
 
