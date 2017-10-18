@@ -43,6 +43,7 @@ import com.haoyu.app.view.FullyLinearLayoutManager;
 import com.haoyu.app.view.GoodView;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
+import com.haoyu.app.view.RippleView;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
 import org.sufficientlysecure.htmltextview.HtmlTextView;
@@ -112,7 +113,6 @@ public class TeachingResearchSSActivity extends BaseActivity implements View.OnC
     private String relationId, uuid;  //研说id,研说关系Id
     private int supportNum, replyNum;  //点赞数,评论数
     private int page = 1;
-    private String creatorId;
 
     @Override
     public int setLayoutResID() {
@@ -162,7 +162,8 @@ public class TeachingResearchSSActivity extends BaseActivity implements View.OnC
     /*显示详情*/
     private void showData(DiscussEntity entity) {
         if (entity.getCreator() != null) {
-            creatorId = entity.getCreator().getId();
+            if (entity.getCreator().getId() != null && entity.getCreator().getId().equals(getUserId()))
+                toolBar.setShow_right_button(true);
             GlideImgManager.loadCircleImage(context, entity.getCreator().getAvatar(),
                     R.drawable.user_default, R.drawable.user_default, iv_userIco);
             tv_userName.setText(entity.getCreator().getRealName());
@@ -491,7 +492,7 @@ public class TeachingResearchSSActivity extends BaseActivity implements View.OnC
         map.put("_method", "delete");
         map.put("discussionUser.discussionRelation.id", relationId);
         map.put("mainPostId", id);
-        OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
             @Override
             public void onBefore(Request request) {
                 showTipDialog();
@@ -519,7 +520,7 @@ public class TeachingResearchSSActivity extends BaseActivity implements View.OnC
                     getReply();
                 }
             }
-        }, map);
+        }, map));
     }
 
     @Override
@@ -544,40 +545,30 @@ public class TeachingResearchSSActivity extends BaseActivity implements View.OnC
     }
 
     private void showBottomDialog() {
-        View view = getLayoutInflater().inflate(
-                R.layout.dialog_teaching_say, null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_delete, null);
         final AlertDialog bottomDialog = new AlertDialog.Builder(context).create();
-        Button bt_share = view.findViewById(R.id.bt_share);
-        Button bt_delete = view.findViewById(R.id.bt_delete);
-        if (creatorId != null && creatorId.equals(getUserId())) {
-            bt_delete.setVisibility(View.VISIBLE);
-        } else {
-            bt_delete.setVisibility(View.GONE);
-        }
-        bt_share.setOnClickListener(new View.OnClickListener() {
+        RippleView rv_delete = view.findViewById(R.id.rv_delete);
+        RippleView rv_cancel = view.findViewById(R.id.rv_cancel);
+        RippleView.OnRippleCompleteListener listener = new RippleView.OnRippleCompleteListener() {
             @Override
-            public void onClick(View view) {
-                if (bottomDialog != null) {
-                    bottomDialog.dismiss();
+            public void onComplete(RippleView view) {
+                switch (view.getId()) {
+                    case R.id.rv_delete:
+                        showTipsDialog();
+                        break;
+                    case R.id.rv_cancel:
+                        break;
                 }
-                toast(context, "暂不支持");
+                bottomDialog.dismiss();
             }
-        });
-        bt_delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (bottomDialog != null) {
-                    bottomDialog.dismiss();
-                }
-                showTipsDialog();
-            }
-        });
+        };
+        rv_delete.setOnRippleCompleteListener(listener);
+        rv_cancel.setOnRippleCompleteListener(listener);
         bottomDialog.setCanceledOnTouchOutside(true);
         bottomDialog.setCancelable(true);
         bottomDialog.show();
         Window window = bottomDialog.getWindow();
-        window.setLayout(ScreenUtils.getScreenWidth(context),
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        window.setLayout(ScreenUtils.getScreenWidth(context), LinearLayout.LayoutParams.WRAP_CONTENT);
         window.setWindowAnimations(R.style.dialog_anim);
         window.setContentView(view);
         window.setGravity(Gravity.BOTTOM);
