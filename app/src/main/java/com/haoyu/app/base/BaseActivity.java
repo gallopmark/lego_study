@@ -179,7 +179,8 @@ public abstract class BaseActivity extends FragmentActivity {
             mToast.setDuration(Toast.LENGTH_LONG);
             mToast.setGravity(Gravity.FILL, 0, 0);
             mToast.setView(view);
-        }
+        } else
+            mToast.setView(view);
         mToast.show();
     }
 
