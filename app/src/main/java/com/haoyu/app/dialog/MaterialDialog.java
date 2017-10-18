@@ -7,10 +7,10 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.utils.ScreenUtils;
 
 
 /**
@@ -22,16 +22,19 @@ public class MaterialDialog extends AlertDialog {
     private View view;
     private TextView tv_tips; // 提示框标题
     private TextView tv_message; // 提示内容
+    private Button bt_neutral;
     private Button bt_makesure; // 确定按钮
     private Button bt_cancel; // 取消按钮
 
     public MaterialDialog(Context context) {
         super(context);
-        view = LayoutInflater.from(context).inflate(R.layout.dialog_material, new LinearLayout(context), false);
+        view = LayoutInflater.from(context).inflate(R.layout.dialog_material, null);
         tv_tips = view.findViewById(R.id.tv_tips);
         tv_message = view.findViewById(R.id.tv_message);
+        bt_neutral = view.findViewById(R.id.bt_neutral);
         bt_makesure = view.findViewById(R.id.bt_makesure);
         bt_cancel = view.findViewById(R.id.bt_cancel);
+        tv_message.setMaxHeight(ScreenUtils.getScreenHeight(context) / 3 * 2);
         tv_message.setMovementMethod(ScrollingMovementMethod.getInstance());
     }
 
@@ -51,6 +54,19 @@ public class MaterialDialog extends AlertDialog {
     @Override
     public void setMessage(CharSequence message) {
         tv_message.setText(message);
+    }
+
+    public void setNeutralButton(String text, final ButtonClickListener listener) {
+        bt_neutral.setText(text);
+        bt_neutral.setVisibility(View.VISIBLE);
+        bt_neutral.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (listener != null) {
+                    listener.onClick(bt_makesure, MaterialDialog.this);
+                }
+            }
+        });
     }
 
     /* 确定按钮 */
@@ -81,6 +97,10 @@ public class MaterialDialog extends AlertDialog {
                 }
             }
         });
+    }
+
+    public void setNeutralTextColor(int color) {
+        bt_neutral.setTextColor(color);
     }
 
     public void setNegativeTextColor(int color) {
