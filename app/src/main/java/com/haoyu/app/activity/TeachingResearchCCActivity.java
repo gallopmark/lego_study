@@ -201,21 +201,16 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
 
     private void updateUI(TeachingLessonEntity entity) {
         tv_ccTitle.setText(entity.getTitle());
-        if (entity.getCreator() != null && entity.getCreator().getAvatar() != null) {
+        if (entity.getCreator() != null && entity.getCreator().getAvatar() != null)
             GlideImgManager.loadCircleImage(context, entity.getCreator().getAvatar(),
                     R.drawable.user_default, R.drawable.user_default, iv_userIco);
-        } else {
+         else
             iv_userIco.setImageResource(R.drawable.user_default);
-        }
-        if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
+        if (entity.getCreator() != null)
             tv_userName.setText(entity.getCreator().getRealName());
-        } else {
-            tv_userName.setText("匿名用户");
-        }
         if (entity.getCreator() != null && entity.getCreator().getId() != null
-                && entity.getCreator().getId().equals(getUserId())) {
+                && entity.getCreator().getId().equals(getUserId()))
             toolBar.setShow_right_button(true);
-        }
         tv_createTime.setText("发布于" + TimeUtil.getSlashDate(entity.getCreateTime()));
         if (entity.getmDiscussionRelations() != null && entity.getmDiscussionRelations().size() > 0) {
             supportNum = entity.getmDiscussionRelations().get(0).getSupportNum();
@@ -663,50 +658,35 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
     }
 
     private void showBottomDialog() {
-        View view = getLayoutInflater().inflate(
-                R.layout.dialog_teaching_cc, null);
-        final AlertDialog bottomDialog = new AlertDialog.Builder(context).create();
-        View tv_upload = view.findViewById(R.id.tv_upload);
-        View tv_share = view.findViewById(R.id.tv_share);
-        View tv_edit = view.findViewById(R.id.tv_edit);
-        View tv_delete = view.findViewById(R.id.tv_delete);
+        View view = getLayoutInflater().inflate(R.layout.dialog_teaching_cc, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context).create();
+        TextView tv_upload = view.findViewById(R.id.tv_upload);
+        TextView tv_delete = view.findViewById(R.id.tv_delete);
+        TextView tv_cancel = view.findViewById(R.id.tv_cancel);
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bottomDialog != null) {
-                    bottomDialog.dismiss();
-                }
                 switch (view.getId()) {
                     case R.id.tv_upload:
                         openFilePicker();
                         break;
-                    case R.id.tv_share:
-                        toast(context, "暂不支持");
-                        break;
-                    case R.id.tv_edit:
-                        Intent intent = new Intent(context, TeachingResearchCreateCCActivity.class);
-                        intent.putExtra("title", tv_ccTitle.getText().toString());
-                        intent.putExtra("content", tv_ccContent.getText().toString());
-                        intent.putExtra("id", id);
-                        intent.putExtra("alter", true);
-                        startActivity(intent);
-                        break;
                     case R.id.tv_delete:
                         showTipsDialog();
                         break;
+                    case R.id.tv_cancel:
+                        break;
                 }
+                dialog.dismiss();
             }
         };
-        tv_share.setOnClickListener(listener);
-        tv_delete.setOnClickListener(listener);
         tv_upload.setOnClickListener(listener);
-        tv_edit.setOnClickListener(listener);
-        bottomDialog.setCanceledOnTouchOutside(true);
-        bottomDialog.setCancelable(true);
-        bottomDialog.show();
-        Window window = bottomDialog.getWindow();
-        window.setLayout(ScreenUtils.getScreenWidth(context),
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        tv_delete.setOnClickListener(listener);
+        tv_cancel.setOnClickListener(listener);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.show();
+        Window window = dialog.getWindow();
+        window.setLayout(ScreenUtils.getScreenWidth(context), LinearLayout.LayoutParams.WRAP_CONTENT);
         window.setWindowAnimations(R.style.dialog_anim);
         window.setContentView(view);
         window.setGravity(Gravity.BOTTOM);

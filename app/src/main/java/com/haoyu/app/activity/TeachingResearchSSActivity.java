@@ -546,7 +546,7 @@ public class TeachingResearchSSActivity extends BaseActivity implements View.OnC
 
     private void showBottomDialog() {
         View view = getLayoutInflater().inflate(R.layout.dialog_delete, null);
-        final AlertDialog bottomDialog = new AlertDialog.Builder(context).create();
+        final AlertDialog dialog = new AlertDialog.Builder(context).create();
         RippleView rv_delete = view.findViewById(R.id.rv_delete);
         RippleView rv_cancel = view.findViewById(R.id.rv_cancel);
         RippleView.OnRippleCompleteListener listener = new RippleView.OnRippleCompleteListener() {
@@ -559,15 +559,15 @@ public class TeachingResearchSSActivity extends BaseActivity implements View.OnC
                     case R.id.rv_cancel:
                         break;
                 }
-                bottomDialog.dismiss();
+                dialog.dismiss();
             }
         };
         rv_delete.setOnRippleCompleteListener(listener);
         rv_cancel.setOnRippleCompleteListener(listener);
-        bottomDialog.setCanceledOnTouchOutside(true);
-        bottomDialog.setCancelable(true);
-        bottomDialog.show();
-        Window window = bottomDialog.getWindow();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.show();
+        Window window = dialog.getWindow();
         window.setLayout(ScreenUtils.getScreenWidth(context), LinearLayout.LayoutParams.WRAP_CONTENT);
         window.setWindowAnimations(R.style.dialog_anim);
         window.setContentView(view);

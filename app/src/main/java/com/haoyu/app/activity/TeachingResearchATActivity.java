@@ -600,22 +600,16 @@ public class TeachingResearchATActivity extends BaseActivity implements View.OnC
 
     }
 
-
     private void showBottomDialog() {
-        View view = getLayoutInflater().inflate(
-                R.layout.dialog_teaching_at, null);
-        final AlertDialog bottomDialog = new AlertDialog.Builder(context).create();
-        View tv_video = view.findViewById(R.id.tv_video);
-        View tv_photo = view.findViewById(R.id.tv_photo);
-        View tv_share = view.findViewById(R.id.tv_share);
-        View tv_edit = view.findViewById(R.id.tv_edit);
-        View tv_delete = view.findViewById(R.id.tv_delete);
+        View view = getLayoutInflater().inflate(R.layout.dialog_teaching_at, null);
+        final AlertDialog dialog = new AlertDialog.Builder(context).create();
+        TextView tv_video = view.findViewById(R.id.tv_video);
+        TextView tv_photo = view.findViewById(R.id.tv_photo);
+        TextView tv_delete = view.findViewById(R.id.tv_delete);
+        TextView tv_cancel = view.findViewById(R.id.tv_cancel);
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (bottomDialog != null) {
-                    bottomDialog.dismiss();
-                }
                 switch (view.getId()) {
                     case R.id.tv_video:
                         picketVideo();
@@ -623,29 +617,22 @@ public class TeachingResearchATActivity extends BaseActivity implements View.OnC
                     case R.id.tv_photo:
                         pickerPicture();
                         break;
-                    case R.id.tv_share:
-                        toast(context, "暂不支持");
-                        break;
-                    case R.id.tv_edit:
-
-                        break;
                     case R.id.tv_delete:
                         showTipsDialog();
                         break;
                 }
+                dialog.dismiss();
             }
         };
         tv_video.setOnClickListener(listener);
         tv_photo.setOnClickListener(listener);
-        tv_share.setOnClickListener(listener);
         tv_delete.setOnClickListener(listener);
-        tv_edit.setOnClickListener(listener);
-        bottomDialog.setCanceledOnTouchOutside(true);
-        bottomDialog.setCancelable(true);
-        bottomDialog.show();
-        Window window = bottomDialog.getWindow();
-        window.setLayout(ScreenUtils.getScreenWidth(context),
-                LinearLayout.LayoutParams.WRAP_CONTENT);
+        tv_cancel.setOnClickListener(listener);
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
+        dialog.show();
+        Window window = dialog.getWindow();
+        window.setLayout(ScreenUtils.getScreenWidth(context), LinearLayout.LayoutParams.WRAP_CONTENT);
         window.setWindowAnimations(R.style.dialog_anim);
         window.setContentView(view);
         window.setGravity(Gravity.BOTTOM);
