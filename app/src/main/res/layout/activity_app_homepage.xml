@@ -56,7 +56,7 @@
             android:paddingLeft="@dimen/margin_size_16"
             android:paddingRight="@dimen/margin_size_16"
             android:src="@drawable/shaoshao"
-            android:visibility="gone" />
+            android:visibility="visible" />
     </RelativeLayout>
 
     <com.haoyu.app.view.LoadingView
