@@ -408,7 +408,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             mRead.setVisibility(View.GONE);
         }
 
-        videoTitle.setText(Html.fromHtml(activityTitle));
+        if(activityTitle!=null){
+            videoTitle.setText(Html.fromHtml(activityTitle));
+        }
         AVOptions options = new AVOptions();
         // 设置链接超时时间
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 20 * 1000);
@@ -472,9 +474,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                     MFileInfo mFileInfo = mFileInfoList.get(position);
                     String url = mFileInfo.getUrl();
-                    if (url == null)
+                    if (url == null) {
                         toast(context, "文件链接不存在");
-                    else {
+                    } else {
                         Intent intent = new Intent(context, MFileInfoActivity.class);
                         intent.putExtra("fileInfo", mFileInfo);
                         startActivity(intent);
