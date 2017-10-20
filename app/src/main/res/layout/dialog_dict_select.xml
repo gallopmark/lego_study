@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:background="@drawable/dialog_main_corner"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -21,24 +20,25 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/spaceColor"
+                android:background="@color/defaultColor"
                 android:gravity="center"
                 android:padding="@dimen/margin_size_12"
                 android:text="选择学段"
-                android:textColor="@color/gray"
+                android:textColor="@color/white"
                 android:textSize="@dimen/font_size_16" />
 
             <ListView
                 android:id="@+id/stageList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/dictionary_background" />
+                android:divider="@color/spaceColor"
+                android:dividerHeight="@dimen/margin_size_1" />
         </LinearLayout>
 
         <View
             android:layout_width="@dimen/margin_size_1"
             android:layout_height="match_parent"
-            android:background="@color/gainsboro" />
+            android:background="@color/spaceColor" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -49,29 +49,31 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/spaceColor"
+                android:background="@color/defaultColor"
                 android:gravity="center"
                 android:padding="@dimen/margin_size_12"
                 android:text="选择学科"
-                android:textColor="@color/gray"
+                android:textColor="@color/white"
                 android:textSize="@dimen/font_size_16" />
 
             <ListView
                 android:id="@+id/subjectList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/dictionary_background" />
+                android:divider="@color/spaceColor"
+                android:dividerHeight="@dimen/margin_size_1" />
         </LinearLayout>
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="@color/spaceColor" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/defaultColor"
         android:orientation="horizontal">
 
         <Button
@@ -86,7 +88,7 @@
             android:textSize="16sp" />
 
         <View
-            android:layout_width="1dp"
+            android:layout_width="0.5dp"
             android:layout_height="match_parent"
             android:background="@color/spaceColor" />
 

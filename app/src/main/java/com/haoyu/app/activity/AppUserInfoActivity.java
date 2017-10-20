@@ -45,6 +45,7 @@ import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.utils.SharePreferenceHelper;
+import com.haoyu.app.utils.Validator;
 import com.haoyu.app.view.AppToolBar;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
@@ -488,7 +489,7 @@ public class AppUserInfoActivity extends BaseActivity implements View.OnClickLis
     /*获取省份列表*/
     private void initRegion() {
         /*获取省份列表url*/
-        showLoadingDialog("加载中");
+        showTipDialog();
         String url = Constants.OUTRT_NET + "/m/regions?level=1";
         Flowable.just(url).map(new Function<String, Boolean>() {
             @Override
@@ -498,7 +499,7 @@ public class AppUserInfoActivity extends BaseActivity implements View.OnClickLis
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
             @Override
             public void accept(Boolean success) throws Exception {
-                hideLoadingDialog();
+                hideTipDialog();
                 initRegion = success;
                 if (initRegion) {
                     showRegionDialog();
@@ -509,7 +510,7 @@ public class AppUserInfoActivity extends BaseActivity implements View.OnClickLis
         }, new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                hideLoadingDialog();
+                hideTipDialog();
                 onNetWorkError(context);
             }
         });
@@ -637,7 +638,6 @@ public class AppUserInfoActivity extends BaseActivity implements View.OnClickLis
                 }
             }
         });
-
         lvCounties.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
@@ -648,7 +648,6 @@ public class AppUserInfoActivity extends BaseActivity implements View.OnClickLis
                 country = countryList.get(position).getRegionsName();
             }
         });
-
         makesure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -665,8 +664,7 @@ public class AppUserInfoActivity extends BaseActivity implements View.OnClickLis
             }
         });
         dialog.show();
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ScreenUtils.getScreenWidth(context) / 7 * 6,
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth(context) / 7 * 6,
                 ScreenUtils.getScreenHeight(context) / 3 * 2);
         dialog.setContentView(view, params);
     }
@@ -791,9 +789,7 @@ public class AppUserInfoActivity extends BaseActivity implements View.OnClickLis
                 dialog.dismiss();
             }
         });
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ScreenUtils.getScreenWidth(context) / 7 * 6,
-                ScreenUtils.getScreenHeight(context) / 3 * 2);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth(context) / 7 * 6, ScreenUtils.getScreenHeight(context) / 3 * 2);
         dialog.show();
         dialog.setContentView(view, params);
     }
@@ -840,7 +836,10 @@ public class AppUserInfoActivity extends BaseActivity implements View.OnClickLis
                 if (alterName) {
                     alterInfo(content, null, null, null, null);
                 } else if (alterEmail) {
-                    alterInfo(null, null, null, null, content);
+                    if (Validator.isEmail(content))
+                        alterInfo(null, null, null, null, content);
+                    else
+                        showMaterialDialog("提示", "邮箱格式不正确，请重新输入！");
                 }
                 dialog.dismiss();
             }
@@ -869,7 +868,7 @@ public class AppUserInfoActivity extends BaseActivity implements View.OnClickLis
         if (email != null) {
             map.put("email", email);
         }
-        OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<UserInfoResult>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<UserInfoResult>() {
             @Override
             public void onError(Request request, Exception e) {
                 onNetWorkError(context);
@@ -910,7 +909,7 @@ public class AppUserInfoActivity extends BaseActivity implements View.OnClickLis
                     }
                 }
             }
-        }, map);
+        }, map));
     }
 
     private void saveUserInfo(String avatar, String realName, String deptName, String stage, String subject, String email) {
