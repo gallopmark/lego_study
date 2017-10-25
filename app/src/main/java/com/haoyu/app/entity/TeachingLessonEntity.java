@@ -145,7 +145,7 @@ public class TeachingLessonEntity implements Serializable {
         isSupport = support;
     }
 
-    public class LessonRelation {
+    public class LessonRelation implements Serializable{
         @Expose
         @SerializedName("id")
         private String id;
@@ -212,5 +212,18 @@ public class TeachingLessonEntity implements Serializable {
         public void setFollowNum(int followNum) {
             this.followNum = followNum;
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (this == obj)
+            return true;
+        if (obj instanceof TeachingLessonEntity) {
+            TeachingLessonEntity entity = (TeachingLessonEntity) obj;
+            return entity.id.equals(this.id);
+        }
+        return false;
     }
 }

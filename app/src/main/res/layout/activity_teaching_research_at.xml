@@ -195,12 +195,11 @@
                                 android:background="@color/spaceColor" />
                         </LinearLayout>
 
-                        <org.sufficientlysecure.htmltextview.HtmlTextView
+                        <TextView
                             android:id="@+id/at_content"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:lineSpacingExtra="@dimen/margin_size_4"
-                            android:padding="12dp"
+                            android:padding="@dimen/margin_size_12"
                             android:textSize="@dimen/font_size_16"
                             android:visibility="gone" />
 

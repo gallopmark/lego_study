@@ -178,6 +178,11 @@ public class MediaGridActivity extends BaseActivity {
             }
 
             @Override
+            public void onOverChoice(int limit) {
+                toast(context, "您最多可选择" + limit + "张图");
+            }
+
+            @Override
             public void onMultipleChoice(final List<MediaItem> mSelects) {
                 preViewPhoto(mSelects);
             }
@@ -344,7 +349,15 @@ public class MediaGridActivity extends BaseActivity {
                 startActivityForResult(intent, MediaOption.REQUEST_CODE_CROP);
             } else {
                 if (MediaPicker.getInstance().getSelectMediaCallBack() != null) {
-                    MediaPicker.getInstance().getSelectMediaCallBack().onSelected(cameraPath);
+                    if (!multiMode)
+                        MediaPicker.getInstance().getSelectMediaCallBack().onSelected(cameraPath);
+                    else {
+                        List<MediaItem> mSelects = new ArrayList<>();
+                        MediaItem item = new MediaItem();
+                        item.setPath(cameraPath);
+                        mSelects.add(item);
+                        MediaPicker.getInstance().getSelectMediaCallBack().onSelected(mSelects);
+                    }
                 }
                 finish();
             }

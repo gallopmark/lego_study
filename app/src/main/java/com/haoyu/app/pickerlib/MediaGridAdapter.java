@@ -27,6 +27,7 @@ public class MediaGridAdapter extends BaseArrayRecyclerAdapter<MediaItem> {
     private boolean showCamera;
     private Context context;
     private int mImageSize;               //每个条目的大小
+    private int limit;
     private List<MediaItem> mSelects = new ArrayList<>();
     private boolean isMultiMode;
     private int selected = -1;
@@ -39,6 +40,7 @@ public class MediaGridAdapter extends BaseArrayRecyclerAdapter<MediaItem> {
         mImageSize = getImageItemWidth(context);
         isMultiMode = MediaPicker.getInstance().getMediaOption().isMultiMode();
         selectType = MediaPicker.getInstance().getMediaOption().getSelectType();
+        limit = MediaPicker.getInstance().getMediaOption().getSelectLimit();
     }
 
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
@@ -136,8 +138,14 @@ public class MediaGridAdapter extends BaseArrayRecyclerAdapter<MediaItem> {
                         } else {
                             if (mSelects.contains(item))
                                 mSelects.remove(item);
-                            mSelects.add(item);
-                            checkBox.setChecked(true);
+                            if (mSelects.size() < limit) {
+                                mSelects.add(item);
+                                checkBox.setChecked(true);
+                            } else {
+                                if (onItemClickListener != null) {
+                                    onItemClickListener.onOverChoice(limit);
+                                }
+                            }
                         }
                         if (onItemClickListener != null) {
                             onItemClickListener.onMultipleChoice(mSelects);
@@ -157,8 +165,15 @@ public class MediaGridAdapter extends BaseArrayRecyclerAdapter<MediaItem> {
                         checkBox.setChecked(false);
                         mSelects.remove(item);
                     } else {
-                        checkBox.setChecked(true);
-                        mSelects.add(item);
+                        if (mSelects.size() < limit) {
+                            mSelects.add(item);
+                            checkBox.setChecked(true);
+                        } else {
+                            checkBox.setChecked(false);
+                            if (onItemClickListener != null) {
+                                onItemClickListener.onOverChoice(limit);
+                            }
+                        }
                     }
                     if (onItemClickListener != null) {
                         onItemClickListener.onMultipleChoice(mSelects);
@@ -178,6 +193,8 @@ public class MediaGridAdapter extends BaseArrayRecyclerAdapter<MediaItem> {
         void onCamera();
 
         void onSingleChoice(MediaItem item);
+
+        void onOverChoice(int limit);
 
         void onMultipleChoice(List<MediaItem> mSelects);
     }

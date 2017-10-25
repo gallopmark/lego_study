@@ -1,316 +1,136 @@
 package com.haoyu.app.fragment;
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.view.View;
-import android.widget.TextView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
-import com.haoyu.app.activity.TeachingResearchCCActivity;
-import com.haoyu.app.adapter.TeachingCCAdapter;
 import com.haoyu.app.base.BaseFragment;
-import com.haoyu.app.basehelper.BaseRecyclerAdapter;
-import com.haoyu.app.dialog.CommentDialog;
-import com.haoyu.app.entity.AttitudeMobileResult;
-import com.haoyu.app.entity.Paginator;
-import com.haoyu.app.entity.ReplyResult;
-import com.haoyu.app.entity.TeachingLessonEntity;
-import com.haoyu.app.entity.TeachingLessonListResult;
 import com.haoyu.app.lego.student.R;
-import com.haoyu.app.rxBus.MessageEvent;
-import com.haoyu.app.utils.Action;
-import com.haoyu.app.utils.Constants;
-import com.haoyu.app.utils.OkHttpClientManager;
-import com.haoyu.app.view.LoadFailView;
-import com.haoyu.app.view.LoadingView;
-import com.haoyu.app.xrecyclerview.XRecyclerView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
 
+import butterknife.BindString;
 import butterknife.BindView;
-import okhttp3.Request;
 
 /**
  * 创建日期：2017/8/15 on 10:35
  * 描述:教研创课
  * 作者:马飞奔 Administrator
  */
-public class TeachResearchCCFragment extends BaseFragment implements XRecyclerView.LoadingListener {
-    @BindView(R.id.loadingView)
-    LoadingView loadingView;
-    @BindView(R.id.loadFailView)
-    LoadFailView loadFailView;
-    @BindView(R.id.xRecyclerView)
-    XRecyclerView xRecyclerView;
-    @BindView(R.id.emptyView)
-    TextView emptyView;
-    private List<TeachingLessonEntity> mDatas = new ArrayList<>();
-    private TeachingCCAdapter adapter;
-    private boolean isRefresh, isLoadMore;
-    private int page = 1;
-    private int selected = -1;
+public class TeachResearchCCFragment extends BaseFragment {
+    @BindView(R.id.radioGroup)
+    RadioGroup radioGroup;
+    @BindView(R.id.rb_all)
+    RadioButton rb_all;
+    @BindView(R.id.rb_my)
+    RadioButton rb_my;
+    @BindString(R.string.gen_class_all)
+    String text_all;
+    @BindString(R.string.gen_class_my)
+    String text_my;
+    private TeachStudyAllCCFragment allCCFragment;
+    private TeachStudyMyCCFragment myCCFragment;
+    private FragmentManager fragmentManager;
+    private int checkIndex = 1;
 
     @Override
     public int createView() {
-        return R.layout.fragment_teach_research;
-    }
-
-    @Override
-    public void initView(View view) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
-        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        xRecyclerView.setLayoutManager(layoutManager);
-        adapter = new TeachingCCAdapter(context, mDatas);
-        xRecyclerView.setAdapter(adapter);
-        xRecyclerView.setLoadingListener(this);
-        emptyView.setText(getResources().getString(R.string.gen_class_emptylist));
+        return R.layout.fragment_teachstudy_main;
     }
 
     @Override
     public void initData() {
-        String url = Constants.OUTRT_NET + "/m/lesson/cmts?discussionRelations[0].relation.id=cmts"
-                + "&discussionRelations[0].relation.type=lesson&page=" + page + "&orders=CREATE_TIME.DESC";
-        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<TeachingLessonListResult>() {
-            @Override
-            public void onBefore(Request request) {
-                if (isRefresh || isLoadMore) {
-                    loadingView.setVisibility(View.GONE);
-                } else {
-                    loadingView.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onError(Request request, Exception e) {
-                loadingView.setVisibility(View.GONE);
-                if (isRefresh) {
-                    xRecyclerView.refreshComplete(false);
-                } else if (isLoadMore) {
-                    page -= 1;
-                    xRecyclerView.loadMoreComplete(false);
-                } else {
-                    xRecyclerView.setVisibility(View.GONE);
-                    loadFailView.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onResponse(TeachingLessonListResult response) {
-                loadingView.setVisibility(View.GONE);
-                if (response != null && response.getResponseData() != null
-                        && response.getResponseData().getmLessons() != null
-                        && response.getResponseData().getmLessons().size() > 0) {
-                    updateUI(response.getResponseData().getmLessons(), response.getResponseData().getPaginator());
-                } else {
-                    if (isRefresh) {
-                        xRecyclerView.refreshComplete(true);
-                    } else if (isLoadMore) {
-                        xRecyclerView.loadMoreComplete(true);
-                    } else {
-                        xRecyclerView.setVisibility(View.GONE);
-                        emptyView.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-        }));
+        rb_all.setText(text_all);
+        rb_my.setText(text_my);
+        fragmentManager = getChildFragmentManager();
+        setCheckIndex(checkIndex);
     }
 
-    private void updateUI(List<TeachingLessonEntity> list, Paginator paginator) {
-        if (xRecyclerView.getVisibility() != View.VISIBLE)
-            xRecyclerView.setVisibility(View.VISIBLE);
-        if (isRefresh) {
-            mDatas.clear();
-            xRecyclerView.refreshComplete(true);
-        } else if (isLoadMore) {
-            xRecyclerView.loadMoreComplete(true);
+    public void setCheckIndex(int checkIndex) {
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        hideFragments(transaction);
+        switch (checkIndex) {
+            case 1:
+                if (allCCFragment == null) {
+                    allCCFragment = new TeachStudyAllCCFragment();
+                    allCCFragment.setOnResponseListener(new TeachStudyAllCCFragment.OnResponseListener() {
+                        @Override
+                        public void getTotalCount(int totalCount) {
+                            rb_all.setText(text_all + "（" + getCount(totalCount) + "）");
+                        }
+                    });
+                    transaction.add(R.id.content, allCCFragment);
+                } else {
+                    transaction.show(allCCFragment);
+                }
+                break;
+            case 2:
+                if (myCCFragment == null) {
+                    myCCFragment = new TeachStudyMyCCFragment();
+                    myCCFragment.setOnResponseListener(new TeachStudyMyCCFragment.OnResponseListener() {
+                        @Override
+                        public void getTotalCount(int totalCount) {
+                            rb_my.setText(text_my + "（" + getCount(totalCount) + "）");
+                        }
+                    });
+                    transaction.add(R.id.content, myCCFragment);
+                } else {
+                    transaction.show(myCCFragment);
+                }
+                break;
         }
-        mDatas.addAll(list);
-        adapter.notifyDataSetChanged();
-        if (paginator != null && paginator.getHasNextPage()) {
-            xRecyclerView.setLoadingMoreEnabled(true);
-        } else {
-            xRecyclerView.setLoadingMoreEnabled(false);
+        transaction.commitAllowingStateLoss();
+    }
+
+    private void hideFragments(FragmentTransaction transaction) {
+        if (allCCFragment != null)
+            transaction.hide(allCCFragment);
+        if (myCCFragment != null)
+            transaction.hide(myCCFragment);
+    }
+
+    private String getCount(int count) {
+        if (count < 10000) {
+            return String.valueOf(count);
         }
+        double num = (double) count / 10000;
+        BigDecimal bd = new BigDecimal(num);
+        num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+        if (num < 10000) {
+            if (num / 1000 > 1) {
+                bd = new BigDecimal(num / 1000);
+                num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+                return num + "千万";
+            } else if (num / 100 > 1) {
+                bd = new BigDecimal(num / 100);
+                num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+                return num + "百万";
+            } else if (num / 10 > 1) {
+                bd = new BigDecimal(num / 10);
+                num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
+                return num + "十万";
+            }
+            return num + "万";
+        }
+        return "大于1亿";
     }
 
     @Override
     public void setListener() {
-        loadFailView.setOnRetryListener(new LoadFailView.OnRetryListener() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onRetry(View v) {
-                initData();
+            public void onCheckedChanged(RadioGroup radioGroup, int checkId) {
+                switch (checkId) {
+                    case R.id.rb_all:
+                        checkIndex = 1;
+                        break;
+                    case R.id.rb_my:
+                        checkIndex = 2;
+                        break;
+                }
+                setCheckIndex(checkIndex);
             }
         });
-        adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
-                selected = position - 1;
-                if (selected >= 0 && selected < mDatas.size()) {
-                    String id = mDatas.get(selected).getId();
-                    Intent intent = new Intent(context, TeachingResearchCCActivity.class);
-                    intent.putExtra("id", id);
-                    intent.putExtra("remainDay", mDatas.get(selected).getRemainDay());
-                    if (mDatas.get(position - 1).getmDiscussionRelations() != null && mDatas.get(position - 1).getmDiscussionRelations().size() > 0) {
-                        intent.putExtra("relationId", mDatas.get(position - 1).getmDiscussionRelations().get(0).getId());
-                    }
-                    startActivity(intent);
-                }
-            }
-        });
-        adapter.setRequestClickCallBack(new TeachingCCAdapter.RequestClickCallBack() {
-            @Override
-            public void support(TeachingLessonEntity entity, int position) {
-                if (entity.isSupport())
-                    toast("您已点赞过");
-                else
-                    createLike(position);
-            }
-
-            @Override
-            public void giveAdvice(TeachingLessonEntity entity, int position) {
-                showInputDialog(position);
-            }
-        });
-    }
-
-    private void createLike(final int position) {
-        String url = Constants.OUTRT_NET + "/m/attitude";
-        final String entityId = mDatas.get(position).getId();
-        Map<String, String> map = new HashMap<>();
-        map.put("attitude", "support");
-        map.put("relation.id", entityId);
-        map.put("relation.type", "discussion");
-        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<AttitudeMobileResult>() {
-            @Override
-            public void onError(Request request, Exception exception) {
-                onNetWorkError();
-            }
-
-            @Override
-            public void onResponse(AttitudeMobileResult response) {
-                if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
-                    if (mDatas.get(position).getmDiscussionRelations() != null && mDatas.get(position).getmDiscussionRelations().size() > 0) {
-                        int supportNum = mDatas.get(position).getmDiscussionRelations().get(0).getSupportNum() + 1;
-                        mDatas.get(position).getmDiscussionRelations().get(0).setSupportNum(supportNum);
-                        adapter.notifyDataSetChanged();
-                    }
-                    mDatas.get(position).setSupport(true);
-                } else if (response != null && response.getResponseMsg() != null) {
-                    mDatas.get(position).setSupport(true);
-                    toast("您已点赞过");
-                } else {
-                    toast("点赞失败");
-                }
-            }
-        }, map));
-    }
-
-    private void showInputDialog(final int position) {
-        CommentDialog dialog = new CommentDialog(context);
-        dialog.show();
-        dialog.setSendCommentListener(new CommentDialog.OnSendCommentListener() {
-            @Override
-            public void sendComment(String content) {
-                giveAdvice(content, position);
-            }
-        });
-    }
-
-    private void giveAdvice(String content, final int position) {
-        if (mDatas.get(position).getmDiscussionRelations() != null
-                && mDatas.get(position).getmDiscussionRelations().size() > 0) {
-            String relationId = mDatas.get(position).getmDiscussionRelations().get(0).getId();
-            String url = Constants.OUTRT_NET + "/m/discussion/post";
-            Map<String, String> map = new HashMap<>();
-            map.put("discussionUser.discussionRelation.id", relationId);
-            map.put("content", content);
-            addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<ReplyResult>() {
-                @Override
-                public void onBefore(Request request) {
-                    showTipDialog();
-                }
-
-
-                @Override
-                public void onError(Request request, Exception e) {
-                    hideTipDialog();
-                    onNetWorkError();
-                }
-
-                @Override
-                public void onResponse(ReplyResult response) {
-                    hideTipDialog();
-                    if (response != null && response.getResponseData() != null) {
-                        if (mDatas.get(position).getmDiscussionRelations() != null
-                                && mDatas.get(position).getmDiscussionRelations().size() > 0) {
-                            int replyNum = mDatas.get(position).getmDiscussionRelations().get(0).getReplyNum() + 1;
-                            mDatas.get(position).getmDiscussionRelations().get(0).setReplyNum(replyNum);
-                            adapter.notifyDataSetChanged();
-                            toastFullScreen("发表成功", true);
-                        }
-                    }
-                }
-            }, map));
-        }
-    }
-
-    @Override
-    public void onRefresh() {
-        isRefresh = true;
-        isLoadMore = false;
-        page = 1;
-        initData();
-    }
-
-    @Override
-    public void onLoadMore() {
-        isRefresh = false;
-        isLoadMore = true;
-        page += 1;
-        initData();
-    }
-
-    @Override
-    public void obBusEvent(MessageEvent event) {
-        if (event.getAction().equals(Action.CREATE_GEN_CLASS) && event.obj != null && event.obj instanceof TeachingLessonEntity) {  //创建创课
-            if (xRecyclerView.getVisibility() == View.GONE) {
-                xRecyclerView.setVisibility(View.VISIBLE);
-                emptyView.setVisibility(View.GONE);
-            }
-            TeachingLessonEntity entity = (TeachingLessonEntity) event.obj;
-            mDatas.add(0, entity);
-            adapter.notifyDataSetChanged();
-        } else if (event.getAction().equals(Action.DELETE_GEN_CLASS)) {   //删除创课
-            mDatas.remove(selected);
-            adapter.notifyDataSetChanged();
-            if (mDatas.size() == 0) {
-                xRecyclerView.setVisibility(View.GONE);
-                emptyView.setVisibility(View.VISIBLE);
-            }
-        } else if (event.getAction().equals(Action.ALTER_GEN_CLASS)) {   //修改创课
-            Bundle bundle = event.getBundle();
-            if (bundle != null) {
-                String title = bundle.getString("title");
-                String content = bundle.getString("content");
-                mDatas.get(selected).setTitle(title);
-                mDatas.get(selected).setContent(content);
-                adapter.notifyDataSetChanged();
-            }
-        } else if (event.getAction().equals(Action.SUPPORT_STUDY_CLASS)) {    //创课点赞
-            if (mDatas.get(selected).getmDiscussionRelations() != null && mDatas.get(selected).getmDiscussionRelations().size() > 0) {
-                int supportNum = mDatas.get(selected).getmDiscussionRelations().get(0).getSupportNum() + 1;
-                mDatas.get(selected).getmDiscussionRelations().get(0).setSupportNum(supportNum);
-                adapter.notifyDataSetChanged();
-            }
-        } else if (event.getAction().equals(Action.GIVE_STUDY_ADVICE)) {   //创课提建议
-            if (mDatas.get(selected).getmDiscussionRelations() != null && mDatas.get(selected).getmDiscussionRelations().size() > 0) {
-                int replyNum = mDatas.get(selected).getmDiscussionRelations().get(0).getReplyNum() + 1;
-                mDatas.get(selected).getmDiscussionRelations().get(0).setReplyNum(replyNum);
-                adapter.notifyDataSetChanged();
-            }
-        }
     }
 }

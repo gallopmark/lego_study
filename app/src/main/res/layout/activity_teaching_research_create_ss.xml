@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/spaceColor"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <com.haoyu.app.view.AppToolBar
@@ -14,11 +14,15 @@
         app:right_button_text="发起"
         app:title_text="@string/study_says" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_16"
+        android:background="@color/spaceColor" />
+
     <EditText
         android:id="@+id/et_title"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:background="@color/white"
         android:drawablePadding="5dp"
         android:drawableRight="@drawable/download_more"
@@ -30,52 +34,41 @@
         android:textColorHint="@color/gray"
         android:textSize="@dimen/font_size_18" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_16"
+        android:background="@color/spaceColor" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_size_16"
-        android:background="@color/white"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <EditText
             android:id="@+id/et_content"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:gravity="left"
             android:hint="内容描述"
             android:maxLength="1000"
-            android:maxLines="8"
-            android:minLines="7"
+            android:maxLines="4"
+            android:minLines="4"
             android:padding="@dimen/margin_size_16"
             android:textColorHint="@color/gray"
             android:textSize="@dimen/font_size_18" />
 
-        <LinearLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:layout_marginLeft="@dimen/margin_size_2"
+            android:layout_marginRight="@dimen/margin_size_2"
+            android:overScrollMode="never" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/spaceColor" />
-
-            <Button
-                android:id="@+id/bt_insertIco"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:background="@color/white"
-                android:drawableLeft="@drawable/add_pic"
-                android:drawablePadding="5dp"
-                android:padding="@dimen/margin_size_12"
-                android:text="插入图片"
-                android:textColor="@color/defaultColor"
-                android:textSize="@dimen/font_size_16"
-                android:visibility="visible" />
-        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_1"
+            android:background="@color/spaceColor" />
     </LinearLayout>
 </LinearLayout>

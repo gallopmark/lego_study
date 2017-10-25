@@ -52,7 +52,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     TextView tv_about_us; // 关于我们
     @BindView(R.id.bt_logout)
     Button bt_logout; // 退出登录
-    private File fileCache, courseWare, videoCache;
+    private File fileCache, courseWare, videoCache, compressorCache;
     private long cacheSize, offLineSize;
 
     @Override
@@ -65,23 +65,20 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         cacheSize = FileCacheUtils.getFolderSize(getExternalCacheDir());
         fileCache = new File(Constants.fileDownDir);
         courseWare = new File(Constants.coursewareDir);
-        if (!fileCache.exists())
-            fileCache.mkdir();
-        if (!courseWare.exists())
-            courseWare.mkdir();
-        cacheSize += FileCacheUtils.getFolderSize(fileCache);
-        cacheSize += FileCacheUtils.getFolderSize(courseWare);
-        if (cacheSize > 0) {
+        compressorCache = new File(Constants.compressor);
+        if (fileCache.exists())
+            cacheSize += FileCacheUtils.getFolderSize(fileCache);
+        if (courseWare.exists())
+            cacheSize += FileCacheUtils.getFolderSize(courseWare);
+        if (compressorCache.exists())
+            cacheSize += FileCacheUtils.getFolderSize(compressorCache);
+        if (cacheSize > 0)
             tv_cacheSize.setText(FileCacheUtils.getFormatSize(cacheSize));
-        }
         videoCache = new File(Constants.videoCache);
-        if (!videoCache.exists()) {
-            videoCache.mkdir();
-        }
-        offLineSize = FileCacheUtils.getFolderSize(new File(Constants.videoCache));
-        if (offLineSize > 0) {
+        if (videoCache.exists())
+            offLineSize = FileCacheUtils.getFolderSize(new File(Constants.videoCache));
+        if (offLineSize > 0)
             tv_cacheDownloadSize.setText(FileCacheUtils.getFormatSize(offLineSize));
-        }
     }
 
     @Override

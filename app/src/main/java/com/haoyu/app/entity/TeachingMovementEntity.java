@@ -99,6 +99,8 @@ public class TeachingMovementEntity implements Serializable {
     }
 
     public List<MovementRelation> getmMovementRelations() {
+        if (mMovementRelations == null)
+            return new ArrayList<>();
         return mMovementRelations;
     }
 
@@ -147,6 +149,8 @@ public class TeachingMovementEntity implements Serializable {
     }
 
     public List<MovementRegisters> getmMovementRegisters() {
+        if (mMovementRegisters == null)
+            return new ArrayList<>();
         return mMovementRegisters;
     }
 
@@ -170,7 +174,7 @@ public class TeachingMovementEntity implements Serializable {
         this.state = state;
     }
 
-    public static class MovementRelation {
+    public class MovementRelation implements Serializable {
         /**
          * id
          * timePeriod
@@ -246,7 +250,7 @@ public class TeachingMovementEntity implements Serializable {
         }
     }
 
-    public static class MovementRegisters {
+    public static class MovementRegisters implements Serializable {
         @Expose
         @SerializedName("id")
         private String id;
@@ -258,5 +262,18 @@ public class TeachingMovementEntity implements Serializable {
         public void setId(String id) {
             this.id = id;
         }
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
+        if (this == obj)
+            return true;
+        if (obj instanceof TeachingLessonEntity) {
+            TeachingMovementEntity entity = (TeachingMovementEntity) obj;
+            return entity.id.equals(this.id);
+        }
+        return false;
     }
 }

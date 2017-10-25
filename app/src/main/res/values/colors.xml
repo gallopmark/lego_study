@@ -3,6 +3,7 @@
     <color name="defaultColor">#11B1D5</color>
     <color name="pressedColor">#CC11A1D5</color>
     <color name="lightdefault">#ACEFFA</color>
+    <color name="tintdefault">#E8F7FC</color>
     <color name="common_pressed">#20000000</color>  <!--白色背景按下去的颜色-->
     <color name="windowbackground">#66000000</color>
     <color name="transdefaultColor">#e611B1D5</color>
@@ -13,6 +14,7 @@
     <color name="spaceColor">#ffedeeef</color>
     <color name="faq_title">#A1A3AA</color>
     <color name="black">#ff000000</color>
+    <color name="default_text">#343434</color>
     <color name="node_noselect">#ff9da0a7</color>
     <color name="node_select">#ff6ea5ff</color>
     <color name="item_onclick">#ffe0ffff</color>

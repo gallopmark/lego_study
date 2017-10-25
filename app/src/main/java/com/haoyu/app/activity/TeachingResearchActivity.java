@@ -3,10 +3,8 @@ package com.haoyu.app.activity;
 import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.RadioGroup;
 
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.fragment.TeachResearchATFragment;
@@ -17,29 +15,24 @@ import com.haoyu.app.view.AppToolBar;
 
 import butterknife.BindView;
 
+
 /**
  * 创建日期：2017/8/15 on 11:03
  * 描述:教研
  * 作者:马飞奔 Administrator
  */
-public class TeachingResearchActivity extends BaseActivity implements View.OnClickListener {
+public class TeachingResearchActivity extends BaseActivity {
     private TeachingResearchActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
-    @BindView(R.id.bt_ss)
-    Button bt_ss;
-    @BindView(R.id.bt_cc)
-    Button bt_cc;
-    @BindView(R.id.bt_at)
-    Button bt_at;
-    @BindView(R.id.iv_tabss)
-    ImageView iv_tabss;
-    @BindView(R.id.iv_tabcc)
-    ImageView iv_tabcc;
-    @BindView(R.id.iv_tabat)
-    ImageView iv_tabat;
-    @BindView(R.id.tab_line)
-    View tab_line;
+    @BindView(R.id.radioGroup)
+    RadioGroup radioGroup;
+    @BindView(R.id.line_says)
+    View line_says;
+    @BindView(R.id.line_class)
+    View line_class;
+    @BindView(R.id.line_activity)
+    View line_activity;
     private TeachResearchSSFragment ssFragment;
     private TeachResearchCCFragment ccFragment;
     private TeachResearchATFragment atFragment;
@@ -76,24 +69,21 @@ public class TeachingResearchActivity extends BaseActivity implements View.OnCli
     }
 
     private void setSelected(int selected) {
-        iv_tabss.setVisibility(View.INVISIBLE);
-        iv_tabcc.setVisibility(View.INVISIBLE);
-        iv_tabat.setVisibility(View.INVISIBLE);
+        line_says.setVisibility(View.INVISIBLE);
+        line_class.setVisibility(View.INVISIBLE);
+        line_activity.setVisibility(View.INVISIBLE);
         switch (selected) {
             case 1:
-                tab_line.setBackgroundColor(ContextCompat.getColor(context, R.color.tab_teachss));
                 toolBar.setShow_right_button(true);
-                iv_tabss.setVisibility(View.VISIBLE);
+                line_says.setVisibility(View.VISIBLE);
                 break;
             case 2:
-                tab_line.setBackgroundColor(ContextCompat.getColor(context, R.color.tab_teachcc));
                 toolBar.setShow_right_button(false);
-                iv_tabcc.setVisibility(View.VISIBLE);
+                line_class.setVisibility(View.VISIBLE);
                 break;
             case 3:
-                tab_line.setBackgroundColor(ContextCompat.getColor(context, R.color.tab_teachat));
                 toolBar.setShow_right_button(false);
-                iv_tabat.setVisibility(View.VISIBLE);
+                line_activity.setVisibility(View.VISIBLE);
                 break;
         }
         FragmentTransaction transaction = fragmentManager.beginTransaction();
@@ -135,26 +125,23 @@ public class TeachingResearchActivity extends BaseActivity implements View.OnCli
 
     @Override
     public void setListener() {
-        bt_ss.setOnClickListener(context);
-        bt_cc.setOnClickListener(context);
-        bt_at.setOnClickListener(context);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkId) {
+                switch (checkId) {
+                    case R.id.rb_says:
+                        selected = 1;
+                        break;
+                    case R.id.rb_class:
+                        selected = 2;
+                        break;
+                    case R.id.rb_activity:
+                        selected = 3;
+                        break;
+                }
+                setSelected(selected);
+            }
+        });
     }
 
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.bt_ss:
-                selected = 1;
-                setSelected(selected);
-                return;
-            case R.id.bt_cc:
-                selected = 2;
-                setSelected(selected);
-                return;
-            case R.id.bt_at:
-                selected = 3;
-                setSelected(selected);
-                return;
-        }
-    }
 }

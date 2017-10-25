@@ -17,108 +17,94 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/spaceColor"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RadioGroup
+            android:id="@+id/radioGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_size_12"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/rb_says"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:background="@drawable/teach_study_tab"
+                android:button="@null"
+                android:checked="true"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_12"
+                android:paddingTop="@dimen/margin_size_12"
+                android:text="@string/study_says"
+                android:textSize="@dimen/font_size_16" />
 
-                <Button
-                    android:id="@+id/bt_ss"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/teaching_research_orange"
-                    android:paddingBottom="@dimen/margin_size_12"
-                    android:text="@string/study_says"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/font_size_18" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/rb_class"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:background="@drawable/teach_study_tab"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_12"
+                android:paddingTop="@dimen/margin_size_12"
+                android:text="@string/gen_class"
+                android:textSize="@dimen/font_size_16" />
 
-                <Button
-                    android:id="@+id/bt_cc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/teaching_research_green"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/margin_size_12"
-                    android:text="@string/gen_class"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/font_size_18" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <RadioButton
+                android:id="@+id/rb_activity"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
+                android:background="@drawable/teach_study_tab"
+                android:button="@null"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_12"
+                android:paddingTop="@dimen/margin_size_12"
+                android:text="@string/teach_active"
+                android:textSize="@dimen/font_size_16" />
+        </RadioGroup>
 
-                <Button
-                    android:id="@+id/bt_at"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/teaching_research_blue"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/margin_size_12"
-                    android:text="@string/teach_active"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/font_size_18" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_size_12"
-            android:orientation="horizontal">
+            android:background="@color/white">
 
-            <ImageView
-                android:id="@+id/iv_tabss"
-                android:layout_width="wrap_content"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/spaceColor" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/teaching_research_tabss"
-                android:visibility="visible" />
+                android:orientation="horizontal">
 
-            <ImageView
-                android:id="@+id/iv_tabcc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/teaching_research_tabcc"
-                android:visibility="invisible" />
+                <View
+                    android:id="@+id/line_says"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_size_2"
+                    android:layout_weight="1"
+                    android:background="@color/defaultColor" />
 
-            <ImageView
-                android:id="@+id/iv_tabat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:src="@drawable/teaching_research_tabat"
-                android:visibility="invisible" />
-        </LinearLayout>
+                <View
+                    android:id="@+id/line_class"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_size_2"
+                    android:layout_weight="1"
+                    android:background="@color/defaultColor"
+                    android:visibility="invisible" />
 
-        <View
-            android:id="@+id/tab_line"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_size_1"
-            android:background="@color/tab_teachss" />
+                <View
+                    android:id="@+id/line_activity"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/margin_size_2"
+                    android:layout_weight="1"
+                    android:background="@color/defaultColor"
+                    android:visibility="invisible" />
+            </LinearLayout>
+        </FrameLayout>
     </LinearLayout>
 
     <FrameLayout

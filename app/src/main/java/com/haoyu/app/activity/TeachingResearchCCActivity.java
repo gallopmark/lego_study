@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -55,7 +57,6 @@ import com.haoyu.app.view.RoundRectProgressBar;
 import com.haoyu.app.view.StickyScrollView;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
-import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -119,7 +120,7 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
     @BindView(R.id.iv_expand)
     ImageView iv_expand;
     @BindView(R.id.tv_ccContent)
-    HtmlTextView tv_ccContent;
+    TextView tv_ccContent;
     @BindView(R.id.tv_checkAll)
     TextView tv_checkAll;
     @BindView(R.id.tv_error)
@@ -146,6 +147,7 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
     TextView tv_giveAdvise;
     @BindView(R.id.bottomView)
     View bottomView;
+    private TeachingLessonEntity lessonEntity;
     private String id, relationId;
     private File uploadFile;
 
@@ -156,9 +158,11 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
 
     @Override
     public void initView() {
-        id = getIntent().getStringExtra("id");
-        int remainDay = getIntent().getIntExtra("remainDay", 0);
-        relationId = getIntent().getStringExtra("relationId");
+        lessonEntity = (TeachingLessonEntity) getIntent().getSerializableExtra("entity");
+        id = lessonEntity.getId();
+        int remainDay = lessonEntity.getRemainDay();
+        if (lessonEntity.getmDiscussionRelations() != null && lessonEntity.getmDiscussionRelations().size() > 0)
+            relationId = lessonEntity.getmDiscussionRelations().get(0).getId();
         FullyLinearLayoutManager manager = new FullyLinearLayoutManager(context);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
@@ -204,7 +208,7 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
         if (entity.getCreator() != null && entity.getCreator().getAvatar() != null)
             GlideImgManager.loadCircleImage(context, entity.getCreator().getAvatar(),
                     R.drawable.user_default, R.drawable.user_default, iv_userIco);
-         else
+        else
             iv_userIco.setImageResource(R.drawable.user_default);
         if (entity.getCreator() != null)
             tv_userName.setText(entity.getCreator().getRealName());
@@ -227,7 +231,9 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
         }
         if (entity.getContent() != null && entity.getContent().trim().length() > 0) {
             ll_ccContent.setVisibility(View.VISIBLE);
-            tv_ccContent.setHtml(entity.getContent(), new HtmlHttpImageGetter(tv_ccContent, Constants.REFERER));
+            Html.ImageGetter imageGetter = new HtmlHttpImageGetter(tv_ccContent, Constants.REFERER, true);
+            Spanned spanned = Html.fromHtml(entity.getContent(), imageGetter, null);
+            tv_ccContent.setText(spanned);
             tv_ccContent.setVisibility(View.VISIBLE);
             iv_expand.setImageResource(R.drawable.course_dictionary_shouqi);
             ll_sticky.setOnClickListener(new View.OnClickListener() {
@@ -632,6 +638,10 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
                     bt_supportNum.setText("赞（" + supportNum + "）");
                     MessageEvent event = new MessageEvent();
                     event.action = Action.SUPPORT_STUDY_CLASS;
+                    if (lessonEntity.getmDiscussionRelations() != null && lessonEntity.getmDiscussionRelations().size() > 0) {
+                        lessonEntity.getmDiscussionRelations().get(0).setSupportNum(supportNum);
+                    }
+                    event.obj = lessonEntity;
                     RxBus.getDefault().post(event);
                 } else if (response != null && response.getResponseMsg() != null) {
                     toast(context, "您已点赞过");
@@ -875,6 +885,7 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
                 if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
                     MessageEvent event = new MessageEvent();
                     event.action = Action.DELETE_GEN_CLASS;
+                    event.obj = lessonEntity;
                     RxBus.getDefault().post(event);
                     toastFullScreen("已成功删除，返回首页", true);
                     new Handler().postDelayed(new Runnable() {
@@ -942,6 +953,10 @@ public class TeachingResearchCCActivity extends BaseActivity implements View.OnC
                     tv_advise.setText("收到" + adviseNum + "条建议");
                     MessageEvent event = new MessageEvent();
                     event.action = Action.GIVE_STUDY_ADVICE;
+                    if (lessonEntity.getmDiscussionRelations() != null && lessonEntity.getmDiscussionRelations().size() > 0) {
+                        lessonEntity.getmDiscussionRelations().get(0).setReplyNum(adviseNum);
+                    }
+                    event.obj = lessonEntity;
                     RxBus.getDefault().post(event);
                 } else {
                     toastFullScreen("发送失败", true);

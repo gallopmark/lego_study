@@ -20,12 +20,18 @@ public class Constants {
     public static String OUTRT_NET = "http://legoncts.gdei.edu.cn/app";
     public static String REFERER = "http://legoncts.gdei.edu.cn";
 
+//    public static String LOGIN_URL = "http://192.168.0.52:9090/cas/v1/tickets";
+//    public static String LOGIN_SERVER = "http://192.168.0.52:9090/cas";
+//    public static String OUTRT_NET = "http://192.168.0.52:7090";
+//    public static String REFERER = "http://192.168.0.52:7090";
+
     public static String speedAction = "speedAction";
 
 
     /*******************************************************************************************/
     /* 图片存放路径 */
     public static String mediaCache;
+    public static String compressor;
     /* 异常文件存放路径 */
     public static String exceptionCrash;
     /* 下载文件存放的路径 */
@@ -47,11 +53,12 @@ public class Constants {
     static {
         if (existsSdcard()) {
             rootDir = GdeiApplication.getInstance().getExternalFilesDir(null).getAbsolutePath();
-            mediaCache = SDCardUtil.getSDCardPath() + "/gdei_study/media_cache";
+            mediaCache = SDCardUtil.getSDCardPath() + "/lego_study/media_cache";
         } else {
             rootDir = GdeiApplication.getInstance().getFilesDir().getAbsolutePath();
-            mediaCache = SDCardUtil.getRootDirectoryPath() + "/gdei_study/media_cache";
+            mediaCache = SDCardUtil.getRootDirectoryPath() + "/lego_study/media_cache";
         }
+        compressor = rootDir + "/compressor";
         /* imageloader加载图片存放sdCard的路径 */
         /* 文件下载存放的路径 */
         fileDownDir = rootDir + "/file_downloader";
