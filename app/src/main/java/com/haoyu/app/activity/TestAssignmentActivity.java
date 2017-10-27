@@ -160,6 +160,7 @@ public class TestAssignmentActivity extends BaseActivity implements OnClickListe
         });
     }
 
+    @Override
     public void initView() {
         mAcid = getIntent().getStringExtra("activityId");
         running = getIntent().getBooleanExtra("running", false);
@@ -256,7 +257,7 @@ public class TestAssignmentActivity extends BaseActivity implements OnClickListe
                     }
 
                 }
-                if (type.equals("teacher")) {
+                if (type.equals("teacher") || mAssignmentEntity.getMarkNum() == 0) {
                     mHuPing.setVisibility(View.GONE);
                 } else {
                     mHuPing.setVisibility(View.VISIBLE);
@@ -319,7 +320,6 @@ public class TestAssignmentActivity extends BaseActivity implements OnClickListe
                         mReBack.setVisibility(View.GONE);
                     }
                 }
-
                 if (mAssignmentEntity != null && mAssignmentEntity.getContent() != null) {
                     htv.setHtml(mAssignmentEntity.getContent(), new HtmlHttpImageGetter(htv, Constants.REFERER));
                 } else {
@@ -343,11 +343,15 @@ public class TestAssignmentActivity extends BaseActivity implements OnClickListe
                     ll_content.setVisibility(View.VISIBLE);
 
                 }
+
                 break;
 
             case R.id.assignment_commit:
-                /*完成状态:not_attempt:未参 commit:已提交 complete:已完成 return:已退回*/
-                //提交作业
+                /**
+                 * 提交作业
+                 * 完成状态:not_attempt:未参 commit:已提交 complete:已完成 return:已退回
+                 * */
+
                 if (running) {
                     submitAssignment();
                 } else {
@@ -378,6 +382,8 @@ public class TestAssignmentActivity extends BaseActivity implements OnClickListe
             case R.id.reBack:
                 //申请退回作业
                 reBack();
+                break;
+            default:
                 break;
 
         }
@@ -468,11 +474,4 @@ public class TestAssignmentActivity extends BaseActivity implements OnClickListe
 
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unRegistRxBus();
-
-    }
 }
