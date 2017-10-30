@@ -196,7 +196,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                         seekbarStartTrackPosition = -1;
                     }
 
-
                     break;
                 case VIDEO_HIDECONTROLLBAR:
                     hideControllBar();
@@ -213,8 +212,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                             hideWarnControll();
                             videoViewStart();
                             mVideoView.seekTo(videoPosition);
-
-
                         }
                     }
 
@@ -408,7 +405,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             mRead.setVisibility(View.GONE);
         }
 
-        if(activityTitle!=null){
+        if (activityTitle != null) {
             videoTitle.setText(Html.fromHtml(activityTitle));
         }
         AVOptions options = new AVOptions();
@@ -725,6 +722,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     isLoading = false;
                     break;
                 case PLMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
+                    hideLoading();
                     if (mVideoView != null)
                         mVideoView.start();
                     break;
@@ -969,6 +967,8 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     if (mVideoView != null) {
                         if (mVideoView.getDuration() == -1) {
                             videoViewStart();
+                        } else if (complete) {
+                            mVideoView.seekTo(0);
                         } else {
                             mVideoView.start();
                         }
