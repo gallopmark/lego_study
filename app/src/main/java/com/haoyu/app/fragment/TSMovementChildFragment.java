@@ -28,11 +28,11 @@ import butterknife.BindView;
 import okhttp3.Request;
 
 /**
- * 创建日期：2017/10/24 on 15:45
+ * 创建日期：2017/10/24 on 15:42
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class TeachStudyMyATFragment extends BaseFragment implements XRecyclerView.LoadingListener {
+public class TSMovementChildFragment extends BaseFragment implements XRecyclerView.LoadingListener {
     @BindView(R.id.loadingView)
     LoadingView loadingView;
     @BindView(R.id.loadFailView)
@@ -45,6 +45,8 @@ public class TeachStudyMyATFragment extends BaseFragment implements XRecyclerVie
     private TeachingMovementAdapter adapter;
     private boolean isRefresh, isLoadMore;
     private int page = 1;
+    private String baseUrl;
+    private int type = 1;
     private OnResponseListener onResponseListener;
 
     @Override
@@ -61,12 +63,19 @@ public class TeachStudyMyATFragment extends BaseFragment implements XRecyclerVie
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setLoadingListener(this);
         emptyView.setText(getResources().getString(R.string.teach_active_emptylist));
+        type = getArguments().getInt("type", 1);
+        if (type == 1) {
+            baseUrl = Constants.OUTRT_NET + "/m/movement?movementRelations[0].relation.id=cmts"
+                    + "&movementRelations[0].relation.type=movement&orders=CREATE_TIME.DESC";
+        } else {
+            baseUrl = Constants.OUTRT_NET + "/m/movement?movementRelations[0].relation.id=cmts"
+                    + "&movementRelations[0].relation.type=movement&orders=CREATE_TIME.DESC" + "&creator.id=" + getUserId();
+        }
     }
 
     @Override
     public void initData() {
-        String url = Constants.OUTRT_NET + "/m/movement?movementRelations[0].relation.id=cmts"
-                + "&movementRelations[0].relation.type=movement" + "&page=" + page;
+        String url = baseUrl + "&page=" + page;
         addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<TeachingMovementListResult>() {
             @Override
             public void onBefore(Request request) {

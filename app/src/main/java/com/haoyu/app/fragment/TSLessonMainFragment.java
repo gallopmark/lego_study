@@ -1,5 +1,6 @@
 package com.haoyu.app.fragment;
 
+import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.RadioButton;
@@ -18,7 +19,7 @@ import butterknife.BindView;
  * 描述:教研创课
  * 作者:马飞奔 Administrator
  */
-public class TeachResearchCCFragment extends BaseFragment {
+public class TSLessonMainFragment extends BaseFragment {
     @BindView(R.id.radioGroup)
     RadioGroup radioGroup;
     @BindView(R.id.rb_all)
@@ -29,8 +30,7 @@ public class TeachResearchCCFragment extends BaseFragment {
     String text_all;
     @BindString(R.string.gen_class_my)
     String text_my;
-    private TeachStudyAllCCFragment allCCFragment;
-    private TeachStudyMyCCFragment myCCFragment;
+    private TSLessonChildFragment f1, f2;
     private FragmentManager fragmentManager;
     private int checkIndex = 1;
 
@@ -52,31 +52,37 @@ public class TeachResearchCCFragment extends BaseFragment {
         hideFragments(transaction);
         switch (checkIndex) {
             case 1:
-                if (allCCFragment == null) {
-                    allCCFragment = new TeachStudyAllCCFragment();
-                    allCCFragment.setOnResponseListener(new TeachStudyAllCCFragment.OnResponseListener() {
+                if (f1 == null) {
+                    f1 = new TSLessonChildFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 1);
+                    f1.setArguments(bundle);
+                    f1.setOnResponseListener(new TSLessonChildFragment.OnResponseListener() {
                         @Override
                         public void getTotalCount(int totalCount) {
                             rb_all.setText(text_all + "（" + getCount(totalCount) + "）");
                         }
                     });
-                    transaction.add(R.id.content, allCCFragment);
+                    transaction.add(R.id.content, f1);
                 } else {
-                    transaction.show(allCCFragment);
+                    transaction.show(f1);
                 }
                 break;
             case 2:
-                if (myCCFragment == null) {
-                    myCCFragment = new TeachStudyMyCCFragment();
-                    myCCFragment.setOnResponseListener(new TeachStudyMyCCFragment.OnResponseListener() {
+                if (f2 == null) {
+                    f2 = new TSLessonChildFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("type", 2);
+                    f2.setArguments(bundle);
+                    f2.setOnResponseListener(new TSLessonChildFragment.OnResponseListener() {
                         @Override
                         public void getTotalCount(int totalCount) {
                             rb_my.setText(text_my + "（" + getCount(totalCount) + "）");
                         }
                     });
-                    transaction.add(R.id.content, myCCFragment);
+                    transaction.add(R.id.content, f2);
                 } else {
-                    transaction.show(myCCFragment);
+                    transaction.show(f2);
                 }
                 break;
         }
@@ -84,10 +90,10 @@ public class TeachResearchCCFragment extends BaseFragment {
     }
 
     private void hideFragments(FragmentTransaction transaction) {
-        if (allCCFragment != null)
-            transaction.hide(allCCFragment);
-        if (myCCFragment != null)
-            transaction.hide(myCCFragment);
+        if (f1 != null)
+            transaction.hide(f1);
+        if (f2 != null)
+            transaction.hide(f2);
     }
 
     private String getCount(int count) {

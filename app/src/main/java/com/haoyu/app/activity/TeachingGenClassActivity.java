@@ -23,7 +23,7 @@ import com.haoyu.app.entity.TeachingLessonAttribute;
 import com.haoyu.app.entity.TeachingLessonData;
 import com.haoyu.app.entity.TeachingLessonEntity;
 import com.haoyu.app.filePicker.LFilePicker;
-import com.haoyu.app.fragment.TeachStudyGCFragment;
+import com.haoyu.app.fragment.TSLessonDetailFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.rxBus.RxBus;
@@ -68,7 +68,7 @@ public class TeachingGenClassActivity extends BaseActivity {
     TextView empty_detail;
     private TeachingLessonEntity lessonEntity;
     private String lessonId;
-    private TeachStudyGCFragment fragment;
+    private TSLessonDetailFragment fragment;
 
     @Override
     public int setLayoutResID() {
@@ -357,7 +357,7 @@ public class TeachingGenClassActivity extends BaseActivity {
             return;
         }
         TeachingLessonAttribute attribute = responseData.getmLessonAttribute();
-        fragment = new TeachStudyGCFragment();
+        fragment = new TSLessonDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("entity", lessonEntity);
         bundle.putSerializable("mLesson", mLesson);

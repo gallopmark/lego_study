@@ -7,9 +7,9 @@ import android.view.View;
 import android.widget.RadioGroup;
 
 import com.haoyu.app.base.BaseActivity;
-import com.haoyu.app.fragment.TeachResearchATFragment;
-import com.haoyu.app.fragment.TeachResearchCCFragment;
-import com.haoyu.app.fragment.TeachResearchSSFragment;
+import com.haoyu.app.fragment.TSLessonMainFragment;
+import com.haoyu.app.fragment.TSMovementMainFragment;
+import com.haoyu.app.fragment.TSSaysMainFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.view.AppToolBar;
 
@@ -33,9 +33,9 @@ public class TeachingResearchActivity extends BaseActivity {
     View line_class;
     @BindView(R.id.line_activity)
     View line_activity;
-    private TeachResearchSSFragment ssFragment;
-    private TeachResearchCCFragment ccFragment;
-    private TeachResearchATFragment atFragment;
+    private TSSaysMainFragment ssFragment;
+    private TSLessonMainFragment ccFragment;
+    private TSMovementMainFragment atFragment;
     private FragmentManager fragmentManager;
     private int selected = 1;
 
@@ -91,21 +91,21 @@ public class TeachingResearchActivity extends BaseActivity {
         switch (selected) {
             case 1:
                 if (ssFragment == null) {
-                    ssFragment = new TeachResearchSSFragment();
+                    ssFragment = new TSSaysMainFragment();
                     transaction.add(R.id.content, ssFragment);
                 } else
                     transaction.show(ssFragment);
                 break;
             case 2:
                 if (ccFragment == null) {
-                    ccFragment = new TeachResearchCCFragment();
+                    ccFragment = new TSLessonMainFragment();
                     transaction.add(R.id.content, ccFragment);
                 } else
                     transaction.show(ccFragment);
                 break;
             case 3:
                 if (atFragment == null) {
-                    atFragment = new TeachResearchATFragment();
+                    atFragment = new TSMovementMainFragment();
                     transaction.add(R.id.content, atFragment);
                 } else
                     transaction.show(atFragment);
