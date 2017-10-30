@@ -21,8 +21,8 @@ import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.entity.DictEntryMobileEntity;
 import com.haoyu.app.entity.DictEntryResult;
 import com.haoyu.app.entity.MobileUser;
+import com.haoyu.app.entity.TeachingLessonData;
 import com.haoyu.app.entity.TeachingLessonEntity;
-import com.haoyu.app.entity.TeachingResearchCreateCCResult;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.rxBus.RxBus;
@@ -350,7 +350,7 @@ subject	学科	String	Y
         map.put("discussionRelations[0].relation.type", "lesson");
         map.put("stage", stageId);
         map.put("subject", subjectId);
-        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<TeachingResearchCreateCCResult>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<TeachingLessonData>>() {
             @Override
             public void onBefore(Request request) {
                 showTipDialog();
@@ -363,7 +363,7 @@ subject	学科	String	Y
             }
 
             @Override
-            public void onResponse(TeachingResearchCreateCCResult response) {
+            public void onResponse(BaseResponseResult<TeachingLessonData> response) {
                 hideTipDialog();
                 if (response != null && response.getResponseData() != null
                         && response.getResponseData().getmLesson() != null) {

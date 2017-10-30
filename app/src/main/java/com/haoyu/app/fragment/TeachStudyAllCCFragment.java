@@ -5,8 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.TeachingResearchCCActivity;
-import com.haoyu.app.adapter.TeachingCCAdapter;
+import com.haoyu.app.activity.TeachingGenClassActivity;
+import com.haoyu.app.adapter.TeachingLessonAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.dialog.CommentDialog;
@@ -47,7 +47,7 @@ public class TeachStudyAllCCFragment extends BaseFragment implements XRecyclerVi
     @BindView(R.id.emptyView)
     TextView emptyView;
     private List<TeachingLessonEntity> mDatas = new ArrayList<>();
-    private TeachingCCAdapter adapter;
+    private TeachingLessonAdapter adapter;
     private boolean isRefresh, isLoadMore;
     private int page = 1;
     private OnResponseListener onResponseListener;
@@ -62,7 +62,7 @@ public class TeachStudyAllCCFragment extends BaseFragment implements XRecyclerVi
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);
-        adapter = new TeachingCCAdapter(context, mDatas);
+        adapter = new TeachingLessonAdapter(context, mDatas);
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setLoadingListener(this);
         emptyView.setText(getResources().getString(R.string.gen_class_emptylist));
@@ -70,7 +70,7 @@ public class TeachStudyAllCCFragment extends BaseFragment implements XRecyclerVi
 
     @Override
     public void initData() {
-        String url = Constants.OUTRT_NET + "/m/lesson/cmts?discussionRelations[0].relation.id=cmts"
+        String url = Constants.OUTRT_NET + "/m/lesson/cmts/new?discussionRelations[0].relation.id=cmts"
                 + "&discussionRelations[0].relation.type=lesson&page=" + page + "&orders=CREATE_TIME.DESC";
         addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<TeachingLessonListResult>() {
             @Override
@@ -156,13 +156,13 @@ public class TeachStudyAllCCFragment extends BaseFragment implements XRecyclerVi
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
                     TeachingLessonEntity entity = mDatas.get(selected);
-                    Intent intent = new Intent(context, TeachingResearchCCActivity.class);
+                    Intent intent = new Intent(context, TeachingGenClassActivity.class);
                     intent.putExtra("entity", entity);
                     startActivity(intent);
                 }
             }
         });
-        adapter.setRequestClickCallBack(new TeachingCCAdapter.RequestClickCallBack() {
+        adapter.setRequestClickCallBack(new TeachingLessonAdapter.RequestClickCallBack() {
             @Override
             public void support(TeachingLessonEntity entity, int position) {
                 if (entity.isSupport())

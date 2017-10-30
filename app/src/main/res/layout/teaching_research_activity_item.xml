@@ -20,9 +20,9 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="@dimen/margin_size_10"
             android:layout_toLeftOf="@+id/tv_type"
-            android:textSize="16sp" />
+            android:textSize="@dimen/font_size_16" />
 
         <TextView
             android:id="@+id/tv_type"
@@ -32,14 +32,14 @@
             android:background="@drawable/teaching_research_apply"
             android:gravity="center"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size_14" />
     </RelativeLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:layout_marginRight="@dimen/margin_size_10"
         android:orientation="horizontal">
 
         <TextView
@@ -47,22 +47,22 @@
             android:layout_height="wrap_content"
             android:text="时间："
             android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size_14" />
 
         <TextView
             android:id="@+id/tv_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size_14" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:layout_marginRight="@dimen/margin_size_10"
+        android:layout_marginTop="@dimen/margin_size_2"
         android:orientation="horizontal">
 
         <TextView
@@ -70,22 +70,22 @@
             android:layout_height="wrap_content"
             android:text="地点："
             android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size_14" />
 
         <TextView
             android:id="@+id/tv_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size_14" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:layout_marginRight="@dimen/margin_size_10"
+        android:layout_marginTop="@dimen/margin_size_2"
         android:orientation="horizontal">
 
         <TextView
@@ -93,22 +93,22 @@
             android:layout_height="wrap_content"
             android:text="发起："
             android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size_14" />
 
         <TextView
             android:id="@+id/tv_creator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size_14" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:layout_marginRight="@dimen/margin_size_10"
+        android:layout_marginTop="@dimen/margin_size_2"
         android:orientation="horizontal">
 
         <TextView
@@ -116,75 +116,76 @@
             android:layout_height="wrap_content"
             android:text="主办："
             android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size_14" />
 
         <TextView
             android:id="@+id/tv_host"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/gray"
-            android:textSize="14sp" />
+            android:textSize="@dimen/font_size_14" />
     </LinearLayout>
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="12dp"
+        android:layout_height="@dimen/margin_size_1"
+        android:layout_marginTop="@dimen/margin_size_12"
         android:background="@color/spaceColor" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:orientation="horizontal"
-        >
+        android:padding="@dimen/margin_size_10">
+
         <TextView
             android:id="@+id/tv_viewNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#F9B171"
             android:layout_gravity="center"
-            android:textSize="13sp"
-            />
+            android:textColor="#F9B171"
+            android:textSize="@dimen/font_size_14" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="次浏览，"
             android:layout_gravity="center"
-            android:textSize="13sp"
-            />
+            android:text="次浏览，"
+            android:textSize="@dimen/font_size_14" />
+
         <TextView
             android:id="@+id/tv_joinNum"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:textColor="#F9B171"
-            android:layout_gravity="center"
-            android:textSize="13sp"
-            />
+            android:textSize="@dimen/font_size_14" />
+
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="人参加"
-            android:textSize="13sp"
-            android:layout_gravity="center"
-            />
-        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="人参加"
+            android:textSize="@dimen/font_size_14" />
+
         <Button
             android:id="@+id/bt_type"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/round_blue_label"
             android:layout_gravity="right"
+            android:background="@drawable/round_blue_label"
+            android:paddingBottom="@dimen/margin_size_6"
+            android:paddingLeft="@dimen/margin_size_12"
+            android:paddingRight="@dimen/margin_size_12"
+            android:paddingTop="@dimen/margin_size_6"
             android:text="报名参与"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"
-            android:textSize="13sp"
-            android:paddingTop="5dp"
-            android:paddingBottom="5dp"
             android:textColor="@color/qianlan"
-            />
+            android:textSize="@dimen/font_size_14" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_8"
+        android:background="@color/spaceColor" />
 </LinearLayout>

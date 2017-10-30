@@ -94,7 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_margin="@dimen/_margin_size_10"
+            android:layout_margin="@dimen/margin_minus_10"
             android:text="00:00/00:00"
             android:textColor="@color/colorPlayerProgressSecond"
             android:textSize="@dimen/font_size_16" />

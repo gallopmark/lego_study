@@ -183,20 +183,22 @@ public class TeachingResearchSSActivity extends BaseActivity implements View.OnC
             tv_commentNum.setText("共有" + replyNum + "条评论");
         }
         tv_trTitle.setText(entity.getTitle());
-        Html.ImageGetter imageGetter = new HtmlHttpImageGetter(tv_content, Constants.REFERER, true);
-        Spanned spanned = Html.fromHtml(entity.getContent(), imageGetter, new HtmlTagHandler(new HtmlTagHandler.OnImageClickListener() {
-            @Override
-            public void onImageClick(View view, String url) {
-                ArrayList<String> imgList = new ArrayList<>();
-                imgList.add(Constants.REFERER + url);
-                Intent intent = new Intent(context, AppMultiImageShowActivity.class);
-                intent.putStringArrayListExtra("photos", imgList);
-                context.startActivity(intent);
-                context.overridePendingTransition(R.anim.zoom_in, 0);
-            }
-        }));
-        tv_content.setMovementMethod(LinkMovementMethod.getInstance());
-        tv_content.setText(spanned);
+        if (entity.getContent() != null) {
+            Html.ImageGetter imageGetter = new HtmlHttpImageGetter(tv_content, Constants.REFERER, true);
+            Spanned spanned = Html.fromHtml(entity.getContent(), imageGetter, new HtmlTagHandler(new HtmlTagHandler.OnImageClickListener() {
+                @Override
+                public void onImageClick(View view, String url) {
+                    ArrayList<String> imgList = new ArrayList<>();
+                    imgList.add(Constants.REFERER + url);
+                    Intent intent = new Intent(context, AppMultiImageShowActivity.class);
+                    intent.putStringArrayListExtra("photos", imgList);
+                    context.startActivity(intent);
+                    context.overridePendingTransition(R.anim.zoom_in, 0);
+                }
+            }));
+            tv_content.setMovementMethod(LinkMovementMethod.getInstance());
+            tv_content.setText(spanned);
+        }
         if (entity.getmFileInfos() != null && entity.getmFileInfos().size() > 0) {
             GlideImgManager.loadImage(context, entity.getmFileInfos().get(0).getUrl(),
                     R.drawable.app_default, R.drawable.app_default, mFileImg);

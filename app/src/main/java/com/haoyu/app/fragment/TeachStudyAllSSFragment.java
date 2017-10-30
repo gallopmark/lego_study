@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.haoyu.app.activity.TeachingResearchSSActivity;
-import com.haoyu.app.adapter.TeachingResearchAdapter;
+import com.haoyu.app.adapter.TeachingSSaysAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.dialog.CommentDialog;
@@ -48,7 +48,7 @@ public class TeachStudyAllSSFragment extends BaseFragment implements XRecyclerVi
     @BindView(R.id.emptyView)
     TextView emptyView;
     private List<DiscussEntity> mDatas = new ArrayList<>();
-    private TeachingResearchAdapter adapter;
+    private TeachingSSaysAdapter adapter;
     private boolean isRefresh, isLoadMore;
     private int page = 1;
     private OnResponseListener onResponseListener;
@@ -63,7 +63,7 @@ public class TeachStudyAllSSFragment extends BaseFragment implements XRecyclerVi
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);
-        adapter = new TeachingResearchAdapter(context, mDatas);
+        adapter = new TeachingSSaysAdapter(context, mDatas);
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setLoadingListener(this);
         emptyView.setText(getResources().getString(R.string.study_says_emptylist));
@@ -164,7 +164,7 @@ public class TeachStudyAllSSFragment extends BaseFragment implements XRecyclerVi
                 }
             }
         });
-        adapter.setRequestClickCallBack(new TeachingResearchAdapter.RequestClickCallBack() {
+        adapter.setRequestClickCallBack(new TeachingSSaysAdapter.RequestClickCallBack() {
             @Override
             public void support(DiscussEntity entity, int position) {
                 if (entity.isSupport())

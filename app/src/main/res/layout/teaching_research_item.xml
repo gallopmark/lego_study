@@ -59,18 +59,12 @@
                 android:id="@+id/tv_content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
                 android:ellipsize="end"
                 android:maxLines="3"
                 android:textColor="@color/gray"
-                android:layout_marginBottom="10dp"
                 android:textSize="@dimen/font_size_15" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/fileRV"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_size_10" />
         </LinearLayout>
 
     </LinearLayout>
@@ -131,6 +125,6 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="12dp"
+        android:layout_height="@dimen/margin_size_8"
         android:background="@color/spaceColor" />
 </LinearLayout>

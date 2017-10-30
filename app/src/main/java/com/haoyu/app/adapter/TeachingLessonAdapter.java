@@ -21,11 +21,11 @@ import java.util.List;
  * 描述: 社区创课列表适配器
  * 作者:马飞奔 Administrator
  */
-public class TeachingCCAdapter extends BaseArrayRecyclerAdapter<TeachingLessonEntity> {
+public class TeachingLessonAdapter extends BaseArrayRecyclerAdapter<TeachingLessonEntity> {
     private Context mContext;
     private RequestClickCallBack requestClickCallBack;
 
-    public TeachingCCAdapter(Context context, List<TeachingLessonEntity> mDatas) {
+    public TeachingLessonAdapter(Context context, List<TeachingLessonEntity> mDatas) {
         super(mDatas);
         this.mContext = context;
     }
@@ -49,12 +49,13 @@ public class TeachingCCAdapter extends BaseArrayRecyclerAdapter<TeachingLessonEn
         final TextView tv_advise = holder.obtainView(R.id.tv_advise);
         RoundRectProgressBar mRrogressBar = holder.obtainView(R.id.mRrogressBar);
         TextView tv_day = holder.obtainView(R.id.tv_day);
+        tv_createTime.setText(TimeUtil.converTime(entity.getCreateTime()));
         tv_title.setText(entity.getTitle());
-        tv_content.setText(entity.getContent());
-        if (TimeUtil.getSurplusDay(entity.getCreateTime()) <= 0) {
-            tv_period.setVisibility(View.VISIBLE);
+        if (entity.getContent() != null) {
+            Spanned spanned = Html.fromHtml(entity.getContent());
+            tv_content.setText(spanned);
         } else {
-            tv_period.setVisibility(View.GONE);
+            tv_content.setText(null);
         }
         if (entity.getCreator() != null && entity.getCreator().getAvatar() != null) {
             GlideImgManager.loadCircleImage(mContext, entity.getCreator().getAvatar()
@@ -66,14 +67,6 @@ public class TeachingCCAdapter extends BaseArrayRecyclerAdapter<TeachingLessonEn
             tv_userName.setText(entity.getCreator().getRealName());
         } else {
             tv_userName.setText("");
-        }
-        tv_createTime.setText(TimeUtil.converTime(entity.getCreateTime()));
-        tv_title.setText(entity.getTitle());
-        if (entity.getContent() != null) {
-            Spanned spanned = Html.fromHtml(entity.getContent());
-            tv_content.setText(spanned);
-        } else {
-            tv_content.setText(null);
         }
         if (entity.getmDiscussionRelations() != null && entity.getmDiscussionRelations().size() > 0) {
             tv_Heat.setText(String.valueOf(entity.getmDiscussionRelations().get(0).getBrowseNum()));
@@ -87,6 +80,11 @@ public class TeachingCCAdapter extends BaseArrayRecyclerAdapter<TeachingLessonEn
         mRrogressBar.setMax(60);
         mRrogressBar.setProgress(60 - entity.getRemainDay());
         tv_day.setText("还剩" + entity.getRemainDay() + "天");
+        if (entity.getRemainDay() <= 0) {
+            tv_period.setVisibility(View.VISIBLE);
+        } else {
+            tv_period.setVisibility(View.GONE);
+        }
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {

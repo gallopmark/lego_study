@@ -265,7 +265,7 @@
         <!--研说评论回复列表-->
         <activity android:name="com.haoyu.app.activity.AppMoreChildReplyActivity" />
         <!--创课详情-->
-        <activity android:name="com.haoyu.app.activity.TeachingResearchCCActivity" />
+        <activity android:name="com.haoyu.app.activity.TeachingGenClassActivity" />
         <!--创课发起-->
         <activity
             android:name="com.haoyu.app.activity.TeachingResearchCreateCCActivity"
@@ -325,7 +325,6 @@
         <activity
             android:name="com.haoyu.app.activity.MFileInfoPreViewActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity android:name="com.haoyu.app.activity.AppWebViewActivity" />
     </application>
 
 </manifest>
