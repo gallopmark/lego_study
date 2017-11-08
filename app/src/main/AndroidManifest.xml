@@ -325,6 +325,8 @@
         <activity
             android:name="com.haoyu.app.activity.MFileInfoPreViewActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+
+
     </application>
 
 </manifest>
