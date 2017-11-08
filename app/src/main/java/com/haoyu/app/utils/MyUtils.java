@@ -2,31 +2,26 @@ package com.haoyu.app.utils;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
+import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.WindowManager;
+
+import java.io.File;
 
 /**
  * Created by bruce on 14-11-6.
  */
 public final class MyUtils {
-    
+
     private MyUtils() {
     }
 
-    public static float dp2px(Resources resources, float dp) {
-        final float scale = resources.getDisplayMetrics().density;
-        return  dp * scale + 0.5f;
-    }
-
-    public static float sp2px(Resources resources, float sp){
-        final float scale = resources.getDisplayMetrics().scaledDensity;
-        return sp * scale;
-    }
 
     /**
      * 格式化显示的时间
@@ -42,13 +37,14 @@ public final class MyUtils {
         return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes,
                 seconds) : String.format("%02d:%02d", minutes, seconds);
     }
+
     //屏幕像素
-    public static int screenWidthPixels(Activity activity){
+    public static int screenWidthPixels(Activity activity) {
         return activity.getResources().getDisplayMetrics().widthPixels;
     }
 
     // 获得当前屏幕的宽度
-    public  static int getWidth(Activity activity) {
+    public static int getWidth(Activity activity) {
         WindowManager manager = activity.getWindowManager();
         DisplayMetrics outMetrics = new DisplayMetrics();
         manager.getDefaultDisplay().getMetrics(outMetrics);
@@ -65,17 +61,7 @@ public final class MyUtils {
 
         return outMetrics.heightPixels;
     }
-    /* 隐藏状态栏 */
-    private static Activity mActivity;
-    public static void Porit(Activity activity) {
 
-        WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
-        lp.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        activity.getWindow().setAttributes(lp);
-        activity.getWindow()
-                .clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-
-    }
 
     /* 显示状态栏 */
     public static void Land(Activity activity) {
@@ -85,6 +71,7 @@ public final class MyUtils {
         activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
     }
+
     /**
      * 隐藏虚拟按键，并且全屏
      */
@@ -103,19 +90,35 @@ public final class MyUtils {
     }
 
 
-    //判断是否有网络
-    public static boolean isNetWorkAvailable(Context context) {
-        ConnectivityManager manager = (ConnectivityManager) context
-                .getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (manager != null) {
-            NetworkInfo info = manager.getActiveNetworkInfo();
-            if (info != null && info.isConnected()) {
-                return true;
-            } else {
-                return false;
-            }
+    public static String getVersionCode(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        PackageInfo packageInfo;
+        String versionCode = "";
+        try {
+            packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            versionCode = packageInfo.versionCode + "";
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
+    }
+
+    public static void installAPK(Context context, File apkFile) {
+        if (Build.VERSION.SDK_INT < 23) {
+            Intent install = new Intent(Intent.ACTION_VIEW);
+            install.setDataAndType(Uri.fromFile(apkFile), "application/vnd.android.package-archive");
+            install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(install);
         } else {
-            return false;
+            //在AndroidManifest中的android:authorities值
+            Uri apkUri = FileProvider.getUriForFile(context, "com.haoyu.app.lego.student.provider", apkFile);
+            Intent install = new Intent(Intent.ACTION_VIEW);
+            install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            //添加这一句表示对目标应用临时授权该Uri所代表的文件
+            install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            install.setDataAndType(apkUri, "application/vnd.android.package-archive");
+            context.startActivity(install);
         }
     }
+
 }
