@@ -309,7 +309,6 @@
         <activity android:name="com.haoyu.app.activity.EValuationSummaryActivity" />
         <!--调查问卷问答更多详情-->
         <activity android:name="com.haoyu.app.activity.AppSurveyAnswerActivity" />
-
         <!--多媒体选择器-->
         <activity android:name="com.haoyu.app.pickerlib.MediaGridActivity" />
         <activity
@@ -325,6 +324,9 @@
         <activity
             android:name="com.haoyu.app.activity.MFileInfoPreViewActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+
+        <service android:name="com.haoyu.app.service.DownloadService" />
+
     </application>
 
 </manifest>
