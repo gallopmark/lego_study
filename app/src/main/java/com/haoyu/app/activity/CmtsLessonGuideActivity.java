@@ -13,7 +13,7 @@ import butterknife.BindView;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class TeachingResearchCCGuideActivity extends BaseActivity {
+public class CmtsLessonGuideActivity extends BaseActivity {
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
 

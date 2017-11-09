@@ -56,8 +56,8 @@ import static android.R.attr.id;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class TeachingGenClassActivity extends BaseActivity {
-    private TeachingGenClassActivity context = this;
+public class CmtsLessonActivity extends BaseActivity {
+    private CmtsLessonActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.loadingView)

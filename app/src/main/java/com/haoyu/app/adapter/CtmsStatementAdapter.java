@@ -20,11 +20,11 @@ import java.util.List;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class TeachingSSaysAdapter extends BaseArrayRecyclerAdapter<DiscussEntity> {
+public class CtmsStatementAdapter extends BaseArrayRecyclerAdapter<DiscussEntity> {
     private Context mContext;
     private RequestClickCallBack requestClickCallBack;
 
-    public TeachingSSaysAdapter(Context mContext, List<DiscussEntity> mDatas) {
+    public CtmsStatementAdapter(Context mContext, List<DiscussEntity> mDatas) {
         super(mDatas);
         this.mContext = mContext;
     }

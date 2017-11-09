@@ -5,8 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.TeachingResearchATActivity;
-import com.haoyu.app.adapter.TeachingMovementAdapter;
+import com.haoyu.app.activity.CmtsMovementActivity;
+import com.haoyu.app.adapter.CtmsMovementAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.entity.Paginator;
@@ -42,7 +42,7 @@ public class TSMovementChildFragment extends BaseFragment implements XRecyclerVi
     @BindView(R.id.emptyView)
     TextView emptyView;
     private List<TeachingMovementEntity> mDatas = new ArrayList<>();
-    private TeachingMovementAdapter adapter;
+    private CtmsMovementAdapter adapter;
     private boolean isRefresh, isLoadMore;
     private int page = 1;
     private String baseUrl;
@@ -59,7 +59,7 @@ public class TSMovementChildFragment extends BaseFragment implements XRecyclerVi
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);
-        adapter = new TeachingMovementAdapter(context, mDatas);
+        adapter = new CtmsMovementAdapter(context, mDatas);
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setLoadingListener(this);
         emptyView.setText(getResources().getString(R.string.teach_active_emptylist));
@@ -160,7 +160,7 @@ public class TSMovementChildFragment extends BaseFragment implements XRecyclerVi
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
                     TeachingMovementEntity entity = mDatas.get(selected);
-                    Intent intent = new Intent(context, TeachingResearchATActivity.class);
+                    Intent intent = new Intent(context, CmtsMovementActivity.class);
                     intent.putExtra("entity", entity);
                     startActivity(intent);
                 }

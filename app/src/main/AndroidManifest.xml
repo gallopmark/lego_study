@@ -253,30 +253,30 @@
         <activity android:name="com.haoyu.app.activity.EducationConsultActivity" />
 
         <!--研说-->
-        <activity android:name="com.haoyu.app.activity.TeachingResearchActivity" />
+        <activity android:name="com.haoyu.app.activity.CmtsMainActivity" />
         <!--创建研说-->
         <activity
-            android:name="com.haoyu.app.activity.TeachingResearchCreateSSActivity"
+            android:name="com.haoyu.app.activity.CmtsStatementCreateActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <!--研说详情-->
-        <activity android:name="com.haoyu.app.activity.TeachingResearchSSActivity" />
+        <activity android:name="com.haoyu.app.activity.CmtsStatementActivity" />
         <!--研说评论列表-->
         <activity android:name="com.haoyu.app.activity.AppMoreMainReplyActivity" />
         <!--研说评论回复列表-->
         <activity android:name="com.haoyu.app.activity.AppMoreChildReplyActivity" />
         <!--创课详情-->
-        <activity android:name="com.haoyu.app.activity.TeachingGenClassActivity" />
+        <activity android:name="com.haoyu.app.activity.CmtsLessonActivity" />
         <!--创课发起-->
         <activity
-            android:name="com.haoyu.app.activity.TeachingResearchCreateCCActivity"
+            android:name="com.haoyu.app.activity.CmtsLessonCreateActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <!--创课规则-->
-        <activity android:name="com.haoyu.app.activity.TeachingResearchCCRuleActivity" />
-        <activity android:name="com.haoyu.app.activity.TeachingResearchCCGuideActivity" />
+        <activity android:name="com.haoyu.app.activity.CmtsLessonRuleActivity" />
+        <activity android:name="com.haoyu.app.activity.CmtsLessonGuideActivity" />
 
         <!--查看更多建议-->
         <!--社区活动详情页-->
-        <activity android:name="com.haoyu.app.activity.TeachingResearchATActivity" />
+        <activity android:name="com.haoyu.app.activity.CmtsMovementActivity" />
         <activity android:name="com.haoyu.app.activity.AppMoreCommentActivity" />
         <activity android:name="com.haoyu.app.activity.AppMoreReplyActivity" />
 

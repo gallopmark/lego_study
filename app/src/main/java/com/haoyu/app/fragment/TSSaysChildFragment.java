@@ -5,8 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.TeachingResearchSSActivity;
-import com.haoyu.app.adapter.TeachingSSaysAdapter;
+import com.haoyu.app.activity.CmtsStatementActivity;
+import com.haoyu.app.adapter.CtmsStatementAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.dialog.CommentDialog;
@@ -48,7 +48,7 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
     @BindView(R.id.emptyView)
     TextView emptyView;
     private List<DiscussEntity> mDatas = new ArrayList<>();
-    private TeachingSSaysAdapter adapter;
+    private CtmsStatementAdapter adapter;
     private boolean isRefresh, isLoadMore;
     private int page = 1;
     private String baseUrl;
@@ -65,7 +65,7 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);
-        adapter = new TeachingSSaysAdapter(context, mDatas);
+        adapter = new CtmsStatementAdapter(context, mDatas);
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setLoadingListener(this);
         emptyView.setText(getResources().getString(R.string.study_says_emptylist));
@@ -168,13 +168,13 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
                     DiscussEntity entity = mDatas.get(selected);
-                    Intent intent = new Intent(context, TeachingResearchSSActivity.class);
+                    Intent intent = new Intent(context, CmtsStatementActivity.class);
                     intent.putExtra("entity", entity);
                     startActivity(intent);
                 }
             }
         });
-        adapter.setRequestClickCallBack(new TeachingSSaysAdapter.RequestClickCallBack() {
+        adapter.setRequestClickCallBack(new CtmsStatementAdapter.RequestClickCallBack() {
             @Override
             public void support(DiscussEntity entity, int position) {
                 if (entity.isSupport())

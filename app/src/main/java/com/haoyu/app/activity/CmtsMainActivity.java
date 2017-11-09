@@ -21,8 +21,8 @@ import butterknife.BindView;
  * 描述:教研
  * 作者:马飞奔 Administrator
  */
-public class TeachingResearchActivity extends BaseActivity {
-    private TeachingResearchActivity context = this;
+public class CmtsMainActivity extends BaseActivity {
+    private CmtsMainActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.radioGroup)
@@ -61,9 +61,9 @@ public class TeachingResearchActivity extends BaseActivity {
             @Override
             public void onRightClick(View view) {
                 if (selected == 1)
-                    startActivity(new Intent(context, TeachingResearchCreateSSActivity.class));
+                    startActivity(new Intent(context, CmtsStatementCreateActivity.class));
                 else if (selected == 2)
-                    startActivity(new Intent(context, TeachingResearchCreateCCActivity.class));
+                    startActivity(new Intent(context, CmtsLessonCreateActivity.class));
             }
         });
     }

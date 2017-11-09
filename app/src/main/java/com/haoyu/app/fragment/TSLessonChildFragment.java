@@ -5,8 +5,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.TeachingGenClassActivity;
-import com.haoyu.app.adapter.TeachingLessonAdapter;
+import com.haoyu.app.activity.CmtsLessonActivity;
+import com.haoyu.app.adapter.CtmsLessonAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.dialog.CommentDialog;
@@ -47,7 +47,7 @@ public class TSLessonChildFragment extends BaseFragment implements XRecyclerView
     @BindView(R.id.emptyView)
     TextView emptyView;
     private List<TeachingLessonEntity> mDatas = new ArrayList<>();
-    private TeachingLessonAdapter adapter;
+    private CtmsLessonAdapter adapter;
     private boolean isRefresh, isLoadMore;
     private int page = 1;
     private String baseUrl;
@@ -64,7 +64,7 @@ public class TSLessonChildFragment extends BaseFragment implements XRecyclerView
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);
-        adapter = new TeachingLessonAdapter(context, mDatas);
+        adapter = new CtmsLessonAdapter(context, mDatas);
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setLoadingListener(this);
         emptyView.setText(getResources().getString(R.string.gen_class_emptylist));
@@ -166,13 +166,13 @@ public class TSLessonChildFragment extends BaseFragment implements XRecyclerView
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
                     TeachingLessonEntity entity = mDatas.get(selected);
-                    Intent intent = new Intent(context, TeachingGenClassActivity.class);
+                    Intent intent = new Intent(context, CmtsLessonActivity.class);
                     intent.putExtra("entity", entity);
                     startActivity(intent);
                 }
             }
         });
-        adapter.setRequestClickCallBack(new TeachingLessonAdapter.RequestClickCallBack() {
+        adapter.setRequestClickCallBack(new CtmsLessonAdapter.RequestClickCallBack() {
             @Override
             public void support(TeachingLessonEntity entity, int position) {
                 if (entity.isSupport())

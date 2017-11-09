@@ -79,8 +79,8 @@ import okhttp3.Request;
  * 描述: 社区活动详情
  * 作者:马飞奔 Administrator
  */
-public class TeachingResearchATActivity extends BaseActivity implements View.OnClickListener {
-    private TeachingResearchATActivity context = this;
+public class CmtsMovementActivity extends BaseActivity implements View.OnClickListener {
+    private CmtsMovementActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.loadingView)
