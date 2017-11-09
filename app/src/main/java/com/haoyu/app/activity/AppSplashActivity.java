@@ -38,7 +38,7 @@ public class AppSplashActivity extends BaseActivity {
         if (firstLogin()) {
             startActivity(new Intent(context, LoginActivity.class));
         } else {
-            startActivity(new Intent(context, AppHomePageActivity.class));
+            startActivity(new Intent(context, MainActivity.class));
         }
         finish();
     }

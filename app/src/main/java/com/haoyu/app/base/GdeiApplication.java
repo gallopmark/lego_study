@@ -7,9 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Environment;
 
-import com.baidu.mobstat.SendStrategyEnum;
 import com.baidu.mobstat.StatService;
-import com.haoyu.app.activity.AppHomePageActivity;
+import com.haoyu.app.activity.MainActivity;
 import com.haoyu.app.activity.AppSplashActivity;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.SharePreferenceHelper;
@@ -114,7 +113,7 @@ public class GdeiApplication extends Application {
     public void restartApp() {
         Intent intent = new Intent();
         if (!SharePreferenceHelper.getPassWord(this).equals(""))
-            intent.setClass(this, AppHomePageActivity.class);
+            intent.setClass(this, MainActivity.class);
         else
             intent.setClass(this, AppSplashActivity.class);
         PendingIntent restartIntent = PendingIntent.getActivity(
