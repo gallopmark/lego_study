@@ -1,11 +1,9 @@
 package com.haoyu.app.adapter;
 
-import android.view.View;
 import android.widget.TextView;
+
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
-
 import com.haoyu.app.entity.MEvaluateItemSubmissions;
-
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.view.StarBar;
 
@@ -40,10 +38,10 @@ public class TeachStudyEvaluateAdapter extends BaseArrayRecyclerAdapter<MEvaluat
             }
 
         }
-        //获取评价得到的分数
-        ratingBar1.setOnClickListener(new View.OnClickListener() {
+        //获取评价得到的分
+        ratingBar1.setOnStarChangeListener(new StarBar.OnStarChangeListener() {
             @Override
-            public void onClick(View v) {
+            public void onStarChange(float mark) {
                 tv_score.setText(String.valueOf((int) (ratingBar1.getStarMark() * 20) + "分"));
                 evaluateItem.evaluateItem(entity.getId(), ratingBar1.getStarMark() * 20);
             }
@@ -51,6 +49,7 @@ public class TeachStudyEvaluateAdapter extends BaseArrayRecyclerAdapter<MEvaluat
 
 
     }
+
     public interface EvaluateItem {
         void evaluateItem(String id, double score);
     }

@@ -11,9 +11,13 @@ import android.widget.TextView;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.ExitApplication;
 import com.haoyu.app.dialog.MaterialDialog;
+import com.haoyu.app.entity.VersionEntity;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.service.DownloadService;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.FileCacheUtils;
+import com.haoyu.app.utils.MyUtils;
+import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.SharePreferenceHelper;
 import com.haoyu.app.view.AppToolBar;
 
@@ -27,6 +31,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Request;
 
 
 /**
@@ -48,6 +53,8 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     TextView tv_cacheDownloadSize;  //离线文件大小
     @BindView(R.id.tv_feedback)
     TextView tv_feedback; // 意见反馈
+    @BindView(R.id.tv_version)
+    TextView tv_version;//版本检测
     @BindView(R.id.tv_about_us)
     TextView tv_about_us; // 关于我们
     @BindView(R.id.bt_logout)
@@ -94,6 +101,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         tv_feedback.setOnClickListener(context);
         tv_about_us.setOnClickListener(context);
         bt_logout.setOnClickListener(context);
+        tv_version.setOnClickListener(context);
     }
 
     @Override
@@ -124,6 +132,9 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 map.put("firstLogin", true);
                 helper.saveSharePreference(map);
                 startActivity(new Intent(context, LoginActivity.class));
+                break;
+            case R.id.tv_version:
+                getVersion();
                 break;
         }
     }
@@ -205,5 +216,58 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         });
         dialog.setNegativeButton("取消", null);
         dialog.show();
+    }
+
+    private void getVersion() {
+        addSubscription(OkHttpClientManager.getAsyn(context, Constants.updateUrl, new OkHttpClientManager.ResultCallback<VersionEntity>() {
+            @Override
+            public void onError(Request request, Exception e) {
+
+            }
+
+            @Override
+            public void onResponse(VersionEntity versionEntity) {
+                specifyApkVersion(versionEntity);
+            }
+        }));
+    }
+
+    private void alertVersionUpdate(final VersionEntity versionEntity) {
+        final MaterialDialog materialDialog = new MaterialDialog(context);
+        materialDialog.setMessage(versionEntity.getUpdateLog());
+        materialDialog.setTitle("发现新版本");
+        materialDialog.setNegativeButton("稍后下载", new MaterialDialog.ButtonClickListener() {
+            @Override
+            public void onClick(View v, AlertDialog dialog) {
+                materialDialog.dismiss();
+            }
+        });
+        materialDialog.setPositiveButton("立即下载", new MaterialDialog.ButtonClickListener() {
+            @Override
+            public void onClick(View v, AlertDialog dialog) {
+                Intent intent = new Intent(context, DownloadService.class);
+                intent.putExtra("url", versionEntity.getDownurl());
+                intent.putExtra("versionName", versionEntity.getVersionName());
+                startService(intent);
+            }
+        });
+        materialDialog.show();
+    }
+
+
+    private void specifyApkVersion(VersionEntity versionEntity) {
+        String apkUrl = Constants.fileDownDir + "/lego_study_" + versionEntity.getVersionName() + ".apk";
+        File file = new File(apkUrl);
+        if (versionEntity != null && versionEntity.getVersionCode() != null) {
+            if (!versionEntity.getVersionCode().equals(MyUtils.getVersionCode(context))) {
+                if (file.exists()) {
+                    MyUtils.installAPK(context, file);
+                } else {
+                    alertVersionUpdate(versionEntity);
+                }
+            } else {
+                toast(context, "已经是最新版本啦！");
+            }
+        }
     }
 }

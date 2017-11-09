@@ -33,10 +33,8 @@ import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.view.AppToolBar;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
@@ -86,7 +84,6 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
     private String stageId;//学段
     private String lecturerId;//授课人Id
     private boolean needFile;
-    private List<String> contentList = new ArrayList<>();
     private String scoreContent;
     private File videoFile;
     private FileUploadResult fileResult;
@@ -138,7 +135,7 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
             public void onRightClick(View view) {
                 String startTime = tv_start.getText().toString().trim();
                 String endTime = tv_end.getText().toString().trim();
-                if (contentList.size() == 0) {
+                if (maps.size() == 0) {
                     showMaterialDialog("提示", "至少填写一项评分项");
                 } else if (startTime.length() == 0) {
                     showMaterialDialog("提示", "请设置开始时间");
@@ -204,9 +201,12 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
         }
     }
 
+
+    private Map<Integer, String> maps = new HashMap<>();
+
     private void addView() {
         final View view = getLayoutInflater().inflate(R.layout.ws_teaching_study_score_item, null);
-        EditText et_score = getView(view, R.id.et_score);
+        final EditText et_score = getView(view, R.id.et_score);
         ImageView iv_delete = getView(view, R.id.iv_delete);
         et_score.addTextChangedListener(new TextWatcher() {
             @Override
@@ -216,24 +216,24 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+                int index = ll_parent.indexOfChild(view);
                 scoreContent = editable.toString();
-
+                maps.put(index, scoreContent);
             }
         });
-        if(scoreContent!=null){
-            contentList.add(scoreContent);
-        }
         ll_parent.addView(view);
         iv_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int index = ll_parent.indexOfChild(view);
+                if (maps.containsKey(index)) {
+                    maps.remove(index);
+                }
                 ll_parent.removeView(view);
-                contentList.remove(scoreContent);
             }
         });
     }
@@ -478,11 +478,11 @@ public class WSTeachingStudySubmitActivity extends BaseActivity implements View.
 
     private boolean submitEvaluate(final String activityId) {
         int count = 0;
-        for (String content : contentList) {
+        for (String content : maps.values()) {
             if (evaluateContent(activityId, content))
                 count++;
         }
-        if (count == contentList.size())
+        if (count == maps.size())
             return true;
         else
             return false;
