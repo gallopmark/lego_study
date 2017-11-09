@@ -303,8 +303,7 @@
         <!--填写听课评课-->
         <activity
             android:name="com.haoyu.app.activity.TeachingStudyFillActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden|adjustPan" />
-
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <!--评价总结及建议列表-->
         <activity android:name="com.haoyu.app.activity.EValuationSummaryActivity" />
         <!--调查问卷问答更多详情-->

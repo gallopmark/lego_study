@@ -524,6 +524,8 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
                     empty_comment.setVisibility(View.GONE);
                     CommentEntity entity = response.getResponseData();
                     entity.setCreator(getCreator(entity.getCreator()));
+                    discussNum++;
+                    tv_discussCount.setText(String.valueOf(discussNum));
                     if (mComments.size() < 5) {
                         mComments.add(response.getResponseData());
                         adapter.notifyDataSetChanged();
