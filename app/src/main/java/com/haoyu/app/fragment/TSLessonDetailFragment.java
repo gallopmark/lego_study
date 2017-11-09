@@ -9,6 +9,7 @@ import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ImageView;
@@ -532,15 +533,29 @@ public class TSLessonDetailFragment extends BaseFragment implements View.OnClick
             }
             rv_advise.setVisibility(View.VISIBLE);
         } else {
-            tv_emptyAdvise.setVisibility(View.VISIBLE);
-            String text = "目前还没人提建议，\n赶紧去发表您的建议吧！";
-            SpannableString ssb = new SpannableString(text);
-            ssb.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.defaultColor)), text.indexOf("去") + 1, text.indexOf("吧"), SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv_emptyAdvise.setText(null);
-            tv_emptyAdvise.append(ssb);
+            setEmpty_text();
             rv_advise.setVisibility(View.GONE);
         }
         bottomView.setVisibility(View.VISIBLE);
+    }
+
+    private void setEmpty_text() {
+        tv_emptyAdvise.setVisibility(View.VISIBLE);
+        String text = "目前还没人提建议，\n赶紧去发表您的建议吧！";
+        SpannableString ssb = new SpannableString(text);
+        int start = text.indexOf("去") + 1;
+        int end = text.indexOf("吧");
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                showCommentDialog(false);
+            }
+        };
+        ssb.setSpan(clickableSpan, start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.defaultColor)),
+                start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tv_emptyAdvise.setMovementMethod(LinkMovementMethod.getInstance());
+        tv_emptyAdvise.setText(ssb);
     }
 
     @Override
@@ -560,7 +575,6 @@ public class TSLessonDetailFragment extends BaseFragment implements View.OnClick
             }
         });
         tv_more_reply.setOnClickListener(this);
-        tv_emptyAdvise.setOnClickListener(this);
         bottomView.setOnClickListener(this);
         adviseAdapter.setOnPostClickListener(new AppDiscussionAdapter.OnPostClickListener() {
             @Override
@@ -713,9 +727,6 @@ public class TSLessonDetailFragment extends BaseFragment implements View.OnClick
                 break;
             case R.id.tv_supportNum:
                 createLike();
-                break;
-            case R.id.tv_emptyAdvise:
-                showCommentDialog(false);
                 break;
             case R.id.bottomView:
                 showCommentDialog(false);
@@ -890,6 +901,6 @@ public class TSLessonDetailFragment extends BaseFragment implements View.OnClick
     }
 
     private void setAdvise(int adviseNum) {
-        tv_adviseCount.setText("收到" + adviseNum + "条建议");
+        tv_adviseCount.setText("收到\u1500" + adviseNum + "\u1500条建议");
     }
 }

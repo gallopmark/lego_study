@@ -17,9 +17,15 @@ import java.util.List;
  * 作者:马飞奔 Administrator
  */
 public class MFileInfoAdapter extends BaseArrayRecyclerAdapter<MFileInfo> {
+    private boolean hideDivider;
 
     public MFileInfoAdapter(List<MFileInfo> mDatas) {
         super(mDatas);
+    }
+
+    public MFileInfoAdapter(List<MFileInfo> mDatas, boolean hideDivider) {
+        super(mDatas);
+        this.hideDivider = hideDivider;
     }
 
     @Override
@@ -36,9 +42,14 @@ public class MFileInfoAdapter extends BaseArrayRecyclerAdapter<MFileInfo> {
         Common.setFileType(fileInfo.getUrl(), iv_fileType);
         tv_mFileName.setText(fileInfo.getFileName());
         tv_mFileSize.setText(Common.FormetFileSize(fileInfo.getFileSize()));
-        if (position == getItemCount() - 1)
+        if (hideDivider) {
             divider.setVisibility(View.GONE);
-        else
-            divider.setVisibility(View.VISIBLE);
+        } else {
+            if (position == getItemCount() - 1) {
+                divider.setVisibility(View.GONE);
+            } else {
+                divider.setVisibility(View.VISIBLE);
+            }
+        }
     }
 }

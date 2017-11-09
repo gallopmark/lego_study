@@ -207,4 +207,9 @@
     <color name="tab_teachss">#FF9100</color>
     <color name="tab_teachcc">#88BF1D</color>
     <color name="tab_teachat">#478EF8</color>
+
+    <color name="seekbar_background">#99ffffff</color>
+    <color name="seekbar_secondaryProgress">#9951B64E</color>
+    <color name="seekbar_progress">#9911B1D5</color>
+    <color name="videoplayer_control">#80000000</color>
 </resources>

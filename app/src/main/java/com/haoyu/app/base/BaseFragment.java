@@ -33,11 +33,12 @@ public abstract class BaseFragment extends Fragment {
     protected Unbinder unbinder;
     public CompositeDisposable rxSubscriptions = new CompositeDisposable();
     private Disposable rxBusable;
-    private Toast mToast;
+    private Toast mToast, fullToast;
 
     public abstract int createView();
 
-    public abstract void initData();
+    public void initData() {
+    }
 
     public void initView(View view) {
     }
@@ -116,14 +117,14 @@ public abstract class BaseFragment extends Fragment {
         else
             iv_result.setImageResource(R.drawable.publish_failure);
         tv_result.setText(content);
-        if (mToast == null) {//只有mToast==null时才重新创建，否则只需更改提示文字
-            mToast = new Toast(context);
-            mToast.setDuration(Toast.LENGTH_LONG);
-            mToast.setGravity(Gravity.FILL, 0, 0);
-            mToast.setView(view);
+        if (fullToast == null) {//只有mToast==null时才重新创建，否则只需更改提示文字
+            fullToast = new Toast(context);
+            fullToast.setDuration(Toast.LENGTH_LONG);
+            fullToast.setGravity(Gravity.FILL, 0, 0);
+            fullToast.setView(view);
         } else
-            mToast.setView(view);
-        mToast.show();
+            fullToast.setView(view);
+        fullToast.show();
     }
 
     public void cancelToast() {

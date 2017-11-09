@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fl_video"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <com.pili.pldroid.player.widget.PLVideoTextureView
+        android:id="@+id/videoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+    <ImageView
+        android:id="@+id/iv_play"
+        android:layout_width="@dimen/margin_size_60"
+        android:layout_height="@dimen/margin_size_60"
+        android:layout_gravity="center"
+        android:padding="@dimen/margin_size_6"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_video_grid" />
+
+    <TextView
+        android:id="@+id/tv_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="@dimen/margin_size_20"
+        android:text="即将播放..."
+        android:textColor="@color/transdefaultColor"
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
+
+    <com.haoyu.app.view.CircularProgressView
+        android:id="@+id/cpvLoading"
+        android:layout_width="@dimen/margin_size_40"
+        android:layout_height="@dimen/margin_size_40"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:border_Width="@dimen/margin_size_2" />
+
+    <include
+        android:id="@+id/fl_controller"
+        layout="@layout/video_controller"
+        android:visibility="gone" />
+</FrameLayout>

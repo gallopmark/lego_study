@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fl_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_videoTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/videoplayer_control"
+        android:ellipsize="middle"
+        android:paddingBottom="@dimen/margin_size_10"
+        android:paddingLeft="@dimen/margin_size_12"
+        android:paddingRight="@dimen/margin_size_12"
+        android:paddingTop="@dimen/margin_size_10"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/ll_attribute"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/videoplayer_control"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/margin_size_10"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_10"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_attribute"
+            android:layout_width="@dimen/margin_size_20"
+            android:layout_height="@dimen/margin_size_20"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_brightness" />
+
+        <com.haoyu.app.view.RoundRectProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_3"
+            android:layout_marginTop="@dimen/margin_size_12"
+            app:progress_background_color="@color/seekbar_background"
+            app:progress_color="@color/defaultColor" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/videoplayer_control"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/margin_size_10"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_10"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/iv_direction"
+            android:layout_width="@dimen/margin_size_20"
+            android:layout_height="@dimen/margin_size_20"
+            android:layout_gravity="center"
+            android:src="@drawable/video_btn_fast_forword" />
+
+        <TextView
+            android:id="@+id/tv_duration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_12"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_playState"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/videoplayer_control"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/margin_size_8"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_8">
+
+        <ImageView
+            android:id="@+id/iv_playState"
+            android:layout_width="@dimen/margin_size_24"
+            android:layout_height="@dimen/margin_size_24"
+            android:layout_gravity="center"
+            android:padding="@dimen/margin_size_4"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_pause" />
+
+        <TextView
+            android:id="@+id/tv_current"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_8"
+            android:text="00:00"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+
+        <SeekBar
+            android:id="@+id/seekbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_8"
+            android:layout_marginRight="@dimen/margin_size_8"
+            android:layout_weight="1"
+            android:maxHeight="@dimen/margin_size_4"
+            android:minHeight="@dimen/margin_size_4"
+            android:paddingBottom="@dimen/margin_size_4"
+            android:paddingTop="@dimen/margin_size_4"
+            android:progressDrawable="@drawable/horizontal_seekbar"
+            android:thumb="@drawable/mn_player_thumb"
+            android:thumbOffset="0dp" />
+
+        <TextView
+            android:id="@+id/tv_videoSize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="@dimen/margin_size_8"
+            android:text="00:00"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+
+        <ImageView
+            android:id="@+id/iv_expand"
+            android:layout_width="@dimen/margin_size_24"
+            android:layout_height="@dimen/margin_size_24"
+            android:layout_gravity="center"
+            android:padding="@dimen/margin_size_4"
+            android:scaleType="centerInside"
+            android:src="@drawable/quanping" />
+    </LinearLayout>
+</FrameLayout>
