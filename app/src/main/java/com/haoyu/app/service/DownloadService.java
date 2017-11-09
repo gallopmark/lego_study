@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.support.v7.app.NotificationCompat;
+import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.RemoteViews;
 
@@ -98,7 +98,7 @@ public class DownloadService extends Service {
 
     private void notification() {
         builder =
-                new NotificationCompat.Builder(this);
+                new NotificationCompat.Builder(this, null);
         builder.setSmallIcon(R.drawable.lego_ico);
         remoteViews = new RemoteViews(getPackageName(), R.layout.notification_layout);
         remoteViews.setImageViewResource(R.id.iv_icon, R.drawable.lego_ico);
