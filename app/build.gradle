@@ -64,4 +64,5 @@ dependencies {
     compile 'com.github.barteksc:android-pdf-viewer:2.7.0'
     compile 'com.android.support:design:26.0.0-beta1'
     compile 'com.android.support:recyclerview-v7:26.0.0-beta1'
+    compile 'com.android.support:appcompat-v7:26.0.0-beta1'
 }
