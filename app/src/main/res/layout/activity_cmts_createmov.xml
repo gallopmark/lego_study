@@ -1,0 +1,390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:right_button_text="发布"
+        app:show_right_button="true"
+        app:title_text="@string/teach_active" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolBar"
+        android:overScrollMode="never"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/add_picture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/spaceColor"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginBottom="@dimen/margin_size_14"
+                    android:layout_marginTop="@dimen/margin_size_14"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/teaching_research_add" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/margin_size_6"
+                        android:text="添加封面"
+                        android:textColor="@color/faq_type"
+                        android:textSize="@dimen/font_size_14" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <ImageView
+                android:id="@+id/iv_img"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scaleType="fitXY"
+                android:visibility="gone" />
+
+            <EditText
+                android:id="@+id/et_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:gravity="left|center"
+                android:hint="标题"
+                android:maxLines="1"
+                android:padding="@dimen/margin_size_14"
+                android:textColorHint="@color/gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <View
+                android:id="@+id/line_title"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_size_10"
+                android:background="@color/spaceColor" />
+
+            <LinearLayout
+                android:id="@+id/ll_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_size_14"
+                    android:text="活动类型"
+                    android:textSize="@dimen/font_size_16" />
+
+                <TextView
+                    android:id="@+id/tv_atType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:drawableRight="@drawable/go_into"
+                    android:padding="@dimen/margin_size_14"
+                    android:textSize="@dimen/font_size_16" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_size_10"
+                android:background="@color/spaceColor" />
+
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:gravity="left"
+                android:hint="活动内容"
+                android:maxLength="1000"
+                android:maxLines="8"
+                android:minLines="8"
+                android:padding="@dimen/margin_size_14"
+                android:scrollbarStyle="insideOverlay"
+                android:scrollbars="vertical"
+                android:textColorHint="@color/gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <View
+                android:id="@+id/line_content"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_size_10"
+                android:background="@color/spaceColor" />
+
+            <EditText
+                android:id="@+id/et_host"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="主办单位"
+                android:maxLines="1"
+                android:padding="@dimen/margin_size_14"
+                android:textSize="@dimen/font_size_16" />
+
+            <View
+                android:id="@+id/line_host"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_size_10"
+                android:background="@color/spaceColor" />
+
+            <EditText
+                android:id="@+id/et_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="活动地点"
+                android:maxLines="1"
+                android:padding="@dimen/margin_size_14"
+                android:textSize="@dimen/font_size_16" />
+
+            <View
+                android:id="@+id/line_address"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_size_10"
+                android:background="@color/spaceColor" />
+
+            <LinearLayout
+                android:id="@+id/ll_beginTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_size_14"
+                    android:text="开始时间"
+                    android:textSize="@dimen/font_size_16" />
+
+                <TextView
+                    android:id="@+id/tv_beginTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:drawablePadding="@dimen/margin_size_10"
+                    android:drawableRight="@drawable/go_into"
+                    android:gravity="right|center"
+                    android:padding="@dimen/margin_size_14"
+                    android:textSize="@dimen/font_size_16" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_size_10"
+                android:background="@color/spaceColor" />
+
+            <LinearLayout
+                android:id="@+id/ll_endTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_size_14"
+                    android:text="结束时间"
+                    android:textSize="@dimen/font_size_16" />
+
+                <TextView
+                    android:id="@+id/tv_endTime"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:drawablePadding="@dimen/margin_size_10"
+                    android:drawableRight="@drawable/go_into"
+                    android:gravity="right|center"
+                    android:padding="@dimen/margin_size_14"
+                    android:textSize="@dimen/font_size_16" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_size_10"
+                android:background="@color/spaceColor" />
+
+            <LinearLayout
+                android:id="@+id/ll_tv_partType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="参与方式"
+                    android:padding="@dimen/margin_size_14"
+                    android:textSize="@dimen/font_size_16" />
+
+                <TextView
+                    android:id="@+id/tv_partType"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:drawableRight="@drawable/go_into"
+                    android:padding="@dimen/margin_size_14"
+                    android:textSize="@dimen/font_size_16" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/spaceColor" />
+
+            <com.haoyu.app.view.ComstomListView
+                android:id="@+id/cl_parttype"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:divider="@color/transparent"
+                android:listSelector="@drawable/item_click_selector"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/ll_partType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_size_10"
+                    android:background="@color/spaceColor" />
+
+                <LinearLayout
+                    android:id="@+id/ll_ticketNum"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/margin_size_14"
+                        android:text="发票数量"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <EditText
+                        android:id="@+id/et_ticketNum"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:hint="(1-9999)"
+                        android:inputType="number"
+                        android:maxLines="1"
+                        android:padding="@dimen/margin_size_14" />
+                </LinearLayout>
+
+                <View
+                    android:id="@+id/line_ticketNum"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_size_10"
+                    android:background="@color/spaceColor" />
+
+                <LinearLayout
+                    android:id="@+id/ll_partTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/margin_size_14"
+                        android:text="报名截止时间"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <TextView
+                        android:id="@+id/tv_partTime"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:drawablePadding="@dimen/margin_size_10"
+                        android:drawableRight="@drawable/go_into"
+                        android:padding="@dimen/margin_size_14"
+                        android:textSize="@dimen/font_size_16" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:id="@+id/ll_partUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/margin_size_10"
+                    android:background="@color/spaceColor" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:ellipsize="end"
+                        android:hint="受邀人员"
+                        android:padding="@dimen/margin_size_14"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <TextView
+                        android:id="@+id/tv_partUser"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/white"
+                        android:drawableRight="@drawable/go_into"
+                        android:ellipsize="end"
+                        android:maxLines="3"
+                        android:padding="@dimen/margin_size_14"
+                        android:textSize="@dimen/font_size_16" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_size_10"
+                android:background="@color/spaceColor" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>

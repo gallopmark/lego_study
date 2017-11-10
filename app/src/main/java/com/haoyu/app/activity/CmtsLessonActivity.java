@@ -23,7 +23,7 @@ import com.haoyu.app.entity.TeachingLessonAttribute;
 import com.haoyu.app.entity.TeachingLessonData;
 import com.haoyu.app.entity.TeachingLessonEntity;
 import com.haoyu.app.filePicker.LFilePicker;
-import com.haoyu.app.fragment.TSLessonDetailFragment;
+import com.haoyu.app.fragment.CmtsLessonFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.rxBus.RxBus;
@@ -68,11 +68,19 @@ public class CmtsLessonActivity extends BaseActivity {
     TextView empty_detail;
     private TeachingLessonEntity lessonEntity;
     private String lessonId;
-    private TSLessonDetailFragment fragment;
+    private CmtsLessonFragment fragment;
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_teaching_genclass;
+        return R.layout.activity_cmts_detail;
+    }
+
+    @Override
+    public void initView() {
+        String title = getResources().getString(R.string.gen_class_detail);
+        String empty_text = getResources().getString(R.string.gen_class_emptyDetail);
+        toolBar.setTitle_text(title);
+        empty_detail.setText(empty_text);
     }
 
     @Override
@@ -357,13 +365,13 @@ public class CmtsLessonActivity extends BaseActivity {
             return;
         }
         TeachingLessonAttribute attribute = responseData.getmLessonAttribute();
-        fragment = new TSLessonDetailFragment();
+        fragment = new CmtsLessonFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("entity", lessonEntity);
         bundle.putSerializable("mLesson", mLesson);
         bundle.putSerializable("attribute", attribute);
         fragment.setArguments(bundle);
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.content, fragment).commit();
+        manager.beginTransaction().replace(R.id.container, fragment).commit();
     }
 }

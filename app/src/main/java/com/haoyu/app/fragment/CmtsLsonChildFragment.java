@@ -5,16 +5,16 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.CmtsStatementActivity;
-import com.haoyu.app.adapter.CtmsStatementAdapter;
+import com.haoyu.app.activity.CmtsLessonActivity;
+import com.haoyu.app.adapter.CtmsLessonAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.dialog.CommentDialog;
 import com.haoyu.app.entity.AttitudeMobileResult;
-import com.haoyu.app.entity.DiscussEntity;
-import com.haoyu.app.entity.DiscussListResult;
 import com.haoyu.app.entity.Paginator;
 import com.haoyu.app.entity.ReplyResult;
+import com.haoyu.app.entity.TeachingLessonEntity;
+import com.haoyu.app.entity.TeachingLessonListResult;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.utils.Action;
@@ -32,13 +32,12 @@ import java.util.Map;
 import butterknife.BindView;
 import okhttp3.Request;
 
-
 /**
- * 创建日期：2017/10/24 on 15:17
- * 描述:全部研说
+ * 创建日期：2017/10/24 on 15:33
+ * 描述:
  * 作者:马飞奔 Administrator
  */
-public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.LoadingListener {
+public class CmtsLsonChildFragment extends BaseFragment implements XRecyclerView.LoadingListener {
     @BindView(R.id.loadingView)
     LoadingView loadingView;
     @BindView(R.id.loadFailView)
@@ -47,8 +46,8 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
     XRecyclerView xRecyclerView;
     @BindView(R.id.emptyView)
     TextView emptyView;
-    private List<DiscussEntity> mDatas = new ArrayList<>();
-    private CtmsStatementAdapter adapter;
+    private List<TeachingLessonEntity> mDatas = new ArrayList<>();
+    private CtmsLessonAdapter adapter;
     private boolean isRefresh, isLoadMore;
     private int page = 1;
     private String baseUrl;
@@ -65,17 +64,17 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);
-        adapter = new CtmsStatementAdapter(context, mDatas);
+        adapter = new CtmsLessonAdapter(context, mDatas);
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setLoadingListener(this);
-        emptyView.setText(getResources().getString(R.string.study_says_emptylist));
+        emptyView.setText(getResources().getString(R.string.gen_class_emptylist));
         type = getArguments().getInt("type", 1);
         if (type == 1) {
-            baseUrl = Constants.OUTRT_NET + "/m/discussion/cmts?discussionRelations[0].relation.id=cmts"
-                    + "&discussionRelations[0].relation.type=discussion&orders=CREATE_TIME.DESC";
+            baseUrl = Constants.OUTRT_NET + "/m/lesson/cmts/new?discussionRelations[0].relation.id=cmts"
+                    + "&discussionRelations[0].relation.type=lesson&orders=CREATE_TIME.DESC";
         } else {
-            baseUrl = Constants.OUTRT_NET + "/m/discussion/cmts?discussionRelations[0].relation.id=cmts"
-                    + "&discussionRelations[0].relation.type=discussion&orders=CREATE_TIME.DESC"
+            baseUrl = Constants.OUTRT_NET + "/m/lesson/cmts/new?discussionRelations[0].relation.id=cmts"
+                    + "&discussionRelations[0].relation.type=lesson&orders=CREATE_TIME.DESC"
                     + "&creator.id=" + getUserId();
         }
     }
@@ -83,7 +82,7 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
     @Override
     public void initData() {
         String url = baseUrl + "&page=" + page;
-        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<DiscussListResult>() {
+        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<TeachingLessonListResult>() {
             @Override
             public void onBefore(Request request) {
                 if (isRefresh || isLoadMore) {
@@ -108,12 +107,12 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
             }
 
             @Override
-            public void onResponse(DiscussListResult response) {
+            public void onResponse(TeachingLessonListResult response) {
                 loadingView.setVisibility(View.GONE);
                 if (response != null && response.getResponseData() != null
-                        && response.getResponseData().getmDiscussions() != null
-                        && response.getResponseData().getmDiscussions().size() > 0) {
-                    updateUI(response.getResponseData().getmDiscussions(), response.getResponseData().getPaginator());
+                        && response.getResponseData().getmLessons() != null
+                        && response.getResponseData().getmLessons().size() > 0) {
+                    updateUI(response.getResponseData().getmLessons(), response.getResponseData().getPaginator());
                 } else {
                     if (isRefresh) {
                         xRecyclerView.refreshComplete(true);
@@ -128,7 +127,7 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
         }));
     }
 
-    private void updateUI(List<DiscussEntity> list, Paginator paginator) {
+    private void updateUI(List<TeachingLessonEntity> list, Paginator paginator) {
         if (xRecyclerView.getVisibility() != View.VISIBLE)
             xRecyclerView.setVisibility(View.VISIBLE);
         if (isRefresh) {
@@ -153,7 +152,6 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
             onResponseListener.getTotalCount(totalCount);
     }
 
-
     @Override
     public void setListener() {
         loadFailView.setOnRetryListener(new LoadFailView.OnRetryListener() {
@@ -167,16 +165,16 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
             public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
-                    DiscussEntity entity = mDatas.get(selected);
-                    Intent intent = new Intent(context, CmtsStatementActivity.class);
+                    TeachingLessonEntity entity = mDatas.get(selected);
+                    Intent intent = new Intent(context, CmtsLessonActivity.class);
                     intent.putExtra("entity", entity);
                     startActivity(intent);
                 }
             }
         });
-        adapter.setRequestClickCallBack(new CtmsStatementAdapter.RequestClickCallBack() {
+        adapter.setRequestClickCallBack(new CtmsLessonAdapter.RequestClickCallBack() {
             @Override
-            public void support(DiscussEntity entity, int position) {
+            public void support(TeachingLessonEntity entity, int position) {
                 if (entity.isSupport())
                     toast("您已点赞过");
                 else
@@ -184,17 +182,12 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
             }
 
             @Override
-            public void comment(DiscussEntity entity, int position) {
+            public void giveAdvice(TeachingLessonEntity entity, int position) {
                 showInputDialog(position);
             }
         });
     }
 
-    /**
-     * 创建观点（点赞）
-     *
-     * @param position
-     */
     private void createLike(final int position) {
         String url = Constants.OUTRT_NET + "/m/attitude";
         final String entityId = mDatas.get(position).getId();
@@ -214,9 +207,9 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
                     if (mDatas.get(position).getmDiscussionRelations() != null && mDatas.get(position).getmDiscussionRelations().size() > 0) {
                         int supportNum = mDatas.get(position).getmDiscussionRelations().get(0).getSupportNum() + 1;
                         mDatas.get(position).getmDiscussionRelations().get(0).setSupportNum(supportNum);
+                        adapter.notifyDataSetChanged();
                     }
                     mDatas.get(position).setSupport(true);
-                    adapter.notifyDataSetChanged();
                 } else if (response != null && response.getResponseMsg() != null) {
                     mDatas.get(position).setSupport(true);
                     toast("您已点赞过");
@@ -233,28 +226,28 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
         dialog.setSendCommentListener(new CommentDialog.OnSendCommentListener() {
             @Override
             public void sendComment(String content) {
-                createComment(content, position);
+                giveAdvice(content, position);
             }
         });
     }
 
-    private void createComment(String content, final int position) {
-        DiscussEntity entity = mDatas.get(position);
-        if (entity.getmDiscussionRelations() != null
-                && entity.getmDiscussionRelations().size() > 0) {
+    private void giveAdvice(String content, final int position) {
+        if (mDatas.get(position).getmDiscussionRelations() != null
+                && mDatas.get(position).getmDiscussionRelations().size() > 0) {
+            String relationId = mDatas.get(position).getmDiscussionRelations().get(0).getId();
+            String url = Constants.OUTRT_NET + "/m/discussion/post";
             Map<String, String> map = new HashMap<>();
+            map.put("discussionUser.discussionRelation.id", relationId);
             map.put("content", content);
-            map.put("discussionUser.discussionRelation.id", entity
-                    .getmDiscussionRelations().get(0).getId());
-            addSubscription(OkHttpClientManager.postAsyn(context, Constants.OUTRT_NET + "/m/discussion/post", new OkHttpClientManager.ResultCallback<ReplyResult>() {
-
+            addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<ReplyResult>() {
                 @Override
                 public void onBefore(Request request) {
                     showTipDialog();
                 }
 
+
                 @Override
-                public void onError(Request request, Exception exception) {
+                public void onError(Request request, Exception e) {
                     hideTipDialog();
                     onNetWorkError();
                 }
@@ -294,41 +287,41 @@ public class TSSaysChildFragment extends BaseFragment implements XRecyclerView.L
 
     @Override
     public void obBusEvent(MessageEvent event) {
-        if (event.getAction().equals(Action.CREATE_STUDY_SAYS) && event.obj != null && event.obj instanceof DiscussEntity) {  //创建研说
+        if (event.getAction().equals(Action.CREATE_GEN_CLASS) && event.obj != null && event.obj instanceof TeachingLessonEntity) {  //创建创课
             if (xRecyclerView.getVisibility() == View.GONE) {
                 xRecyclerView.setVisibility(View.VISIBLE);
                 emptyView.setVisibility(View.GONE);
             }
-            DiscussEntity entity = (DiscussEntity) event.obj;
+            TeachingLessonEntity entity = (TeachingLessonEntity) event.obj;
             mDatas.add(0, entity);
             adapter.notifyDataSetChanged();
-        } else if (event.getAction().equals(Action.SUPPORT_STUDY_SAYS)) {   //研说点赞
-            if (event.obj != null && event.obj instanceof DiscussEntity) {
-                DiscussEntity entity = (DiscussEntity) event.obj;
-                int selected = mDatas.indexOf(entity);
-                if (selected != -1) {
-                    mDatas.set(selected, entity);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        } else if (event.getAction().equals(Action.CREATE_MAIN_REPLY)) {    //创建研说评论
-            if (event.obj != null && event.obj instanceof DiscussEntity) {
-                DiscussEntity entity = (DiscussEntity) event.obj;
-                int selected = mDatas.indexOf(entity);
-                if (selected != -1) {
-                    mDatas.set(selected, entity);
-                    adapter.notifyDataSetChanged();
-                }
-            }
-        } else if (event.getAction().equals(Action.DELETE_STUDY_SAYS)) {   //删除研说
-            if (event.obj != null && event.obj instanceof DiscussEntity) {
-                DiscussEntity entity = (DiscussEntity) event.obj;
+        } else if (event.getAction().equals(Action.DELETE_GEN_CLASS)) {   //删除创课
+            if (event.obj != null && event.obj instanceof TeachingLessonEntity) {
+                TeachingLessonEntity entity = (TeachingLessonEntity) event.obj;
                 mDatas.remove(entity);
                 adapter.notifyDataSetChanged();
             }
             if (mDatas.size() == 0) {
                 xRecyclerView.setVisibility(View.GONE);
                 emptyView.setVisibility(View.VISIBLE);
+            }
+        } else if (event.getAction().equals(Action.SUPPORT_STUDY_CLASS)) {    //创课点赞
+            if (event.obj != null && event.obj instanceof TeachingLessonEntity) {
+                TeachingLessonEntity entity = (TeachingLessonEntity) event.obj;
+                int selected = mDatas.indexOf(entity);
+                if (selected != -1) {
+                    mDatas.set(selected, entity);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        } else if (event.getAction().equals(Action.GIVE_STUDY_ADVICE)) {   //创课提建议
+            if (event.obj != null && event.obj instanceof TeachingLessonEntity) {
+                TeachingLessonEntity entity = (TeachingLessonEntity) event.obj;
+                int selected = mDatas.indexOf(entity);
+                if (selected != -1) {
+                    mDatas.set(selected, entity);
+                    adapter.notifyDataSetChanged();
+                }
             }
         }
     }

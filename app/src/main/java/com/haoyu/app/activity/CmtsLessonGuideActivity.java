@@ -19,7 +19,7 @@ public class CmtsLessonGuideActivity extends BaseActivity {
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_teaching_research_cc_guide;
+        return R.layout.activity_cmts_lessonguide;
     }
 
     @Override

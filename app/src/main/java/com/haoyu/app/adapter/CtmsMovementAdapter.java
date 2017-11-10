@@ -1,7 +1,6 @@
 package com.haoyu.app.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.Button;
@@ -9,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.CmtsMovementActivity;
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
 import com.haoyu.app.entity.TeachingMovementEntity;
 import com.haoyu.app.imageloader.GlideImgManager;
@@ -27,7 +25,7 @@ import java.util.List;
 public class CtmsMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMovementEntity> {
     private Context mContext;
     private int imageHeight;
-    private RegisterCallBack registerCallBack;
+    private OnButtonClick onButtonClick;
 
     public CtmsMovementAdapter(Context context, List<TeachingMovementEntity> mDatas) {
         super(mDatas);
@@ -35,8 +33,8 @@ public class CtmsMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMoveme
         imageHeight = ScreenUtils.getScreenHeight(context) / 7 * 2;
     }
 
-    public void setRegisterCallBack(RegisterCallBack registerCallBack) {
-        this.registerCallBack = registerCallBack;
+    public void setOnButtonClick(OnButtonClick onButtonClick) {
+        this.onButtonClick = onButtonClick;
     }
 
     @Override
@@ -64,7 +62,7 @@ public class CtmsMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMoveme
         } else if (entity.getState() != null && entity.getState().equals("register")) {
             tv_type.setText("报名中");
             tv_type.setBackgroundResource(R.drawable.teaching_research_apply);
-            if (entity.getmMovementRegisters() != null && entity.getmMovementRegisters().size() > 0
+            if (entity.getmMovementRegisters().size() > 0
                     && entity.getmMovementRegisters().get(0).getId() != null) {
                 bt_type.setText("取消报名");
             } else {
@@ -85,7 +83,11 @@ public class CtmsMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMoveme
             bt_type.setBackgroundResource(R.drawable.round_label);
             bt_type.setTextColor(ContextCompat.getColor(mContext, R.color.defaultColor));
         } else {
-            bt_type.setVisibility(View.GONE);
+            tv_type.setText("已结束");
+            tv_type.setBackgroundResource(R.drawable.teaching_research_apply);
+            bt_type.setText("查看详情");
+            bt_type.setBackgroundResource(R.drawable.round_label);
+            bt_type.setTextColor(ContextCompat.getColor(mContext, R.color.defaultColor));
         }
         if (entity.getmMovementRelations() != null && entity.getmMovementRelations().size() > 0) {
             TeachingMovementEntity.MovementRelation relation = entity.getmMovementRelations().get(0);
@@ -101,7 +103,7 @@ public class CtmsMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMoveme
             tv_time.setText(TimeUtil.convertDayOfMinute(relation.getTimePeriod().getStartTime(),
                     relation.getTimePeriod().getEndTime()));
         } else {
-            tv_time.setText("活动时间未确定");
+            tv_time.setText("");
         }
         tv_address.setText(entity.getLocation());
         if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
@@ -114,24 +116,20 @@ public class CtmsMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMoveme
             @Override
             public void onClick(View v) {
                 if (entity.getState() != null && entity.getState().equals("register")) {
-                    if (entity.getmMovementRegisters() != null && entity.getmMovementRegisters().size() > 0
+                    if (entity.getmMovementRegisters().size() > 0
                             && entity.getmMovementRegisters().get(0).getId() != null) {
-                        if (registerCallBack != null) {
-                            registerCallBack.unregister(position, entity.getmMovementRegisters().get(0).getId());
+                        if (onButtonClick != null) {
+                            onButtonClick.unregister(position, entity.getmMovementRegisters().get(0).getId());
                         }
                     } else {
-                        if (registerCallBack != null) {
-                            registerCallBack.register(position, entity.getId());
+                        if (onButtonClick != null) {
+                            onButtonClick.register(position, entity.getId());
                         }
                     }
                 } else {
-                    String id = entity.getId();
-                    Intent intent = new Intent(mContext, CmtsMovementActivity.class);
-                    intent.putExtra("id", id);
-                    if (entity.getmMovementRelations() != null && entity.getmMovementRelations().size() > 0) {
-                        intent.putExtra("relationId", entity.getmMovementRelations().get(0).getId());
+                    if (onButtonClick != null) {
+                        onButtonClick.onClick(position, entity);
                     }
-                    mContext.startActivity(intent);
                 }
             }
         });
@@ -142,7 +140,9 @@ public class CtmsMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMoveme
         return R.layout.teaching_research_activity_item;
     }
 
-    public interface RegisterCallBack {
+    public interface OnButtonClick {
+        void onClick(int position, TeachingMovementEntity entity);
+
         void register(int position, String activityId);
 
         void unregister(int position, String registerId);

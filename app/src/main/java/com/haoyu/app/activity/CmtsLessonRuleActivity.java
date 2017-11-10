@@ -45,7 +45,7 @@ public class CmtsLessonRuleActivity extends BaseActivity implements View.OnClick
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_teaching_research_cc_rule;
+        return R.layout.activity_cmts_lessonrule;
     }
 
     @Override

@@ -75,7 +75,7 @@ public class CmtsStatementCreateActivity extends BaseActivity {
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_teaching_research_create_ss;
+        return R.layout.activity_cmts_createss;
     }
 
     @Override

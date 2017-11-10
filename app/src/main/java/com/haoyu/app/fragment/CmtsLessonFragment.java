@@ -75,7 +75,7 @@ import okhttp3.Request;
  * 描述:创课详情fragment
  * 作者:马飞奔 Administrator
  */
-public class TSLessonDetailFragment extends BaseFragment implements View.OnClickListener {
+public class CmtsLessonFragment extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.contentView)
     StickyScrollView contentView;
     @BindView(R.id.mRrogressBar)

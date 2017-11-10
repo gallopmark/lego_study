@@ -11,11 +11,10 @@
         android:layout_height="wrap_content"
         app:left_button_image="@drawable/app_back"
         app:right_button_image="@drawable/teaching_research_dot"
-        app:show_right_button="false"
-        app:title_text="@string/gen_class_detail" />
+        app:show_right_button="false" />
 
     <FrameLayout
-        android:id="@+id/content"
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -41,7 +40,6 @@
             android:drawablePadding="@dimen/margin_size_10"
             android:drawableTop="@drawable/empty_list"
             android:gravity="center"
-            android:text="@string/gen_class_emptyDetail"
             android:textColor="@color/gray"
             android:textSize="@dimen/font_size_18"
             android:visibility="gone" />

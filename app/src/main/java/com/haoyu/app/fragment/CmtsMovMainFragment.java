@@ -19,7 +19,7 @@ import butterknife.BindView;
  * 描述:教研活动
  * 作者:马飞奔 Administrator
  */
-public class TSMovementMainFragment extends BaseFragment {
+public class CmtsMovMainFragment extends BaseFragment {
     @BindView(R.id.radioGroup)
     RadioGroup radioGroup;
     @BindView(R.id.rb_all)
@@ -30,7 +30,7 @@ public class TSMovementMainFragment extends BaseFragment {
     String text_all;
     @BindString(R.string.teach_active_my)
     String text_my;
-    private TSMovementChildFragment f1, f2;
+    private CmtsMovChildFragment f1, f2;
     private FragmentManager fragmentManager;
     private int checkIndex = 1;
 
@@ -53,11 +53,11 @@ public class TSMovementMainFragment extends BaseFragment {
         switch (checkIndex) {
             case 1:
                 if (f1 == null) {
-                    f1 = new TSMovementChildFragment();
+                    f1 = new CmtsMovChildFragment();
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", 1);
                     f1.setArguments(bundle);
-                    f1.setOnResponseListener(new TSMovementChildFragment.OnResponseListener() {
+                    f1.setOnResponseListener(new CmtsMovChildFragment.OnResponseListener() {
                         @Override
                         public void getTotalCount(int totalCount) {
                             rb_all.setText(text_all + "（" + getCount(totalCount) + "）");
@@ -70,11 +70,11 @@ public class TSMovementMainFragment extends BaseFragment {
                 break;
             case 2:
                 if (f2 == null) {
-                    f2 = new TSMovementChildFragment();
+                    f2 = new CmtsMovChildFragment();
                     Bundle bundle = new Bundle();
                     bundle.putInt("type", 2);
                     f2.setArguments(bundle);
-                    f2.setOnResponseListener(new TSMovementChildFragment.OnResponseListener() {
+                    f2.setOnResponseListener(new CmtsMovChildFragment.OnResponseListener() {
                         @Override
                         public void getTotalCount(int totalCount) {
                             rb_my.setText(text_my + "（" + getCount(totalCount) + "）");

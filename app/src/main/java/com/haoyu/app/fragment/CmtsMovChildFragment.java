@@ -32,7 +32,7 @@ import okhttp3.Request;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class TSMovementChildFragment extends BaseFragment implements XRecyclerView.LoadingListener {
+public class CmtsMovChildFragment extends BaseFragment implements XRecyclerView.LoadingListener {
     @BindView(R.id.loadingView)
     LoadingView loadingView;
     @BindView(R.id.loadFailView)

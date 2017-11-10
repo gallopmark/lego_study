@@ -7,9 +7,9 @@ import android.view.View;
 import android.widget.RadioGroup;
 
 import com.haoyu.app.base.BaseActivity;
-import com.haoyu.app.fragment.TSLessonMainFragment;
-import com.haoyu.app.fragment.TSMovementMainFragment;
-import com.haoyu.app.fragment.TSSaysMainFragment;
+import com.haoyu.app.fragment.CmtsLsonMainFragment;
+import com.haoyu.app.fragment.CmtsMovMainFragment;
+import com.haoyu.app.fragment.CmtsSaysMainFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.view.AppToolBar;
 
@@ -33,15 +33,15 @@ public class CmtsMainActivity extends BaseActivity {
     View line_class;
     @BindView(R.id.line_activity)
     View line_activity;
-    private TSSaysMainFragment ssFragment;
-    private TSLessonMainFragment ccFragment;
-    private TSMovementMainFragment atFragment;
+    private CmtsSaysMainFragment ssFragment;
+    private CmtsLsonMainFragment ccFragment;
+    private CmtsMovMainFragment atFragment;
     private FragmentManager fragmentManager;
     private int selected = 1;
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_teaching_research;
+        return R.layout.activity_cmts_main;
     }
 
     @Override
@@ -82,7 +82,7 @@ public class CmtsMainActivity extends BaseActivity {
                 line_class.setVisibility(View.VISIBLE);
                 break;
             case 3:
-                toolBar.setShow_right_button(false);
+                toolBar.setShow_right_button(true);
                 line_activity.setVisibility(View.VISIBLE);
                 break;
         }
@@ -91,21 +91,21 @@ public class CmtsMainActivity extends BaseActivity {
         switch (selected) {
             case 1:
                 if (ssFragment == null) {
-                    ssFragment = new TSSaysMainFragment();
+                    ssFragment = new CmtsSaysMainFragment();
                     transaction.add(R.id.content, ssFragment);
                 } else
                     transaction.show(ssFragment);
                 break;
             case 2:
                 if (ccFragment == null) {
-                    ccFragment = new TSLessonMainFragment();
+                    ccFragment = new CmtsLsonMainFragment();
                     transaction.add(R.id.content, ccFragment);
                 } else
                     transaction.show(ccFragment);
                 break;
             case 3:
                 if (atFragment == null) {
-                    atFragment = new TSMovementMainFragment();
+                    atFragment = new CmtsMovMainFragment();
                     transaction.add(R.id.content, atFragment);
                 } else
                     transaction.show(atFragment);

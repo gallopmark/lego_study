@@ -67,7 +67,7 @@ public class CmtsLessonCreateActivity extends BaseActivity implements View.OnCli
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_teaching_research_create_cc;
+        return R.layout.activity_cmts_createlson;
     }
 
     @Override
