@@ -6,7 +6,7 @@ package com.haoyu.app.entity;
 
 public class VersionEntity {
     private String versionName;
-    private String versionCode;
+    private int versionCode;
     private String downurl;
     private String updateLog;
 
@@ -18,11 +18,11 @@ public class VersionEntity {
         this.versionName = versionName;
     }
 
-    public String getVersionCode() {
+    public int getVersionCode() {
         return versionCode;
     }
 
-    public void setVersionCode(String versionCode) {
+    public void setVersionCode(int versionCode) {
         this.versionCode = versionCode;
     }
 
