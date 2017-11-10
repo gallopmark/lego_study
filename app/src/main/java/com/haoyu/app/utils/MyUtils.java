@@ -89,14 +89,13 @@ public final class MyUtils {
         }
     }
 
-
-    public static String getVersionCode(Context context) {
+    public static int getVersionCode(Context context) {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo;
-        String versionCode = "";
+        int versionCode =0;
         try {
             packageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
-            versionCode = packageInfo.versionCode + "";
+            versionCode = packageInfo.versionCode ;
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

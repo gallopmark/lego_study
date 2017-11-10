@@ -798,14 +798,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void specifyApkVersion(VersionEntity versionEntity) {
         String apkUrl = Constants.fileDownDir + "/lego_study_" + versionEntity.getVersionName() + ".apk";
         File file = new File(apkUrl);
-        if (versionEntity != null && versionEntity.getVersionCode() != null) {
-            if (!versionEntity.getVersionCode().equals(MyUtils.getVersionCode(context))) {
-                if (file.exists()) {
-                    MyUtils.installAPK(context, file);
-                } else {
-                    alertVersionUpdate(versionEntity);
-                }
+        if (versionEntity.getVersionCode() > MyUtils.getVersionCode(context)) {
+            if (file.exists()) {
+                MyUtils.installAPK(context, file);
+            } else {
+                alertVersionUpdate(versionEntity);
             }
+
         }
     }
 }
