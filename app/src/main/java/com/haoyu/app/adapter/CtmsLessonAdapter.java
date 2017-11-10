@@ -21,11 +21,11 @@ import java.util.List;
  * 描述: 社区创课列表适配器
  * 作者:马飞奔 Administrator
  */
-public class TeachingLessonAdapter extends BaseArrayRecyclerAdapter<TeachingLessonEntity> {
+public class CtmsLessonAdapter extends BaseArrayRecyclerAdapter<TeachingLessonEntity> {
     private Context mContext;
     private RequestClickCallBack requestClickCallBack;
 
-    public TeachingLessonAdapter(Context context, List<TeachingLessonEntity> mDatas) {
+    public CtmsLessonAdapter(Context context, List<TeachingLessonEntity> mDatas) {
         super(mDatas);
         this.mContext = context;
     }

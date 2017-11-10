@@ -69,8 +69,8 @@ import okhttp3.Request;
  * 描述: 教研话题详情
  * 作者:马飞奔 Administrator
  */
-public class TeachingResearchSSActivity extends BaseActivity implements View.OnClickListener {
-    private TeachingResearchSSActivity context = this;
+public class CmtsStatementActivity extends BaseActivity implements View.OnClickListener {
+    private CmtsStatementActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.loadingView)

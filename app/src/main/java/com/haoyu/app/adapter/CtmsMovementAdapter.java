@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.TeachingResearchATActivity;
+import com.haoyu.app.activity.CmtsMovementActivity;
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
 import com.haoyu.app.entity.TeachingMovementEntity;
 import com.haoyu.app.imageloader.GlideImgManager;
@@ -24,12 +24,12 @@ import java.util.List;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class TeachingMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMovementEntity> {
+public class CtmsMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMovementEntity> {
     private Context mContext;
     private int imageHeight;
     private RegisterCallBack registerCallBack;
 
-    public TeachingMovementAdapter(Context context, List<TeachingMovementEntity> mDatas) {
+    public CtmsMovementAdapter(Context context, List<TeachingMovementEntity> mDatas) {
         super(mDatas);
         this.mContext = context;
         imageHeight = ScreenUtils.getScreenHeight(context) / 7 * 2;
@@ -126,7 +126,7 @@ public class TeachingMovementAdapter extends BaseArrayRecyclerAdapter<TeachingMo
                     }
                 } else {
                     String id = entity.getId();
-                    Intent intent = new Intent(mContext, TeachingResearchATActivity.class);
+                    Intent intent = new Intent(mContext, CmtsMovementActivity.class);
                     intent.putExtra("id", id);
                     if (entity.getmMovementRelations() != null && entity.getmMovementRelations().size() > 0) {
                         intent.putExtra("relationId", entity.getmMovementRelations().get(0).getId());

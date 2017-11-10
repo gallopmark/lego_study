@@ -15,8 +15,8 @@ import butterknife.BindView;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class TeachingResearchCCRuleActivity extends BaseActivity implements View.OnClickListener {
-    private TeachingResearchCCRuleActivity context = this;
+public class CmtsLessonRuleActivity extends BaseActivity implements View.OnClickListener {
+    private CmtsLessonRuleActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;  //返回
     @BindView(R.id.scrollview)

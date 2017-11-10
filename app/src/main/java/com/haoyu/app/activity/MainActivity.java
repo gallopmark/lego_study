@@ -74,8 +74,8 @@ import okhttp3.Request;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class AppHomePageActivity extends BaseActivity implements View.OnClickListener {
-    private AppHomePageActivity context = this;
+public class MainActivity extends BaseActivity implements View.OnClickListener {
+    private MainActivity context = this;
     @BindView(R.id.toggle)
     ImageView toggle;
     @BindView(R.id.iv_scan)
@@ -146,7 +146,7 @@ public class AppHomePageActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_app_homepage;
+        return R.layout.activity_main;
     }
 
     @Override
@@ -481,7 +481,7 @@ public class AppHomePageActivity extends BaseActivity implements View.OnClickLis
         communityAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
-                startActivity(new Intent(context, TeachingResearchActivity.class));
+                startActivity(new Intent(context, CmtsMainActivity.class));
             }
         });
     }
@@ -548,7 +548,7 @@ public class AppHomePageActivity extends BaseActivity implements View.OnClickLis
                 startActivity(intent);
                 break;
             case R.id.commuity_learn:
-                startActivity(new Intent(context, TeachingResearchActivity.class));
+                startActivity(new Intent(context, CmtsMainActivity.class));
                 break;
             case R.id.rl_myTrain:
                 setPopupView(tv_myTrain, myTrains);
@@ -569,7 +569,7 @@ public class AppHomePageActivity extends BaseActivity implements View.OnClickLis
                 menu.toggle(true);
                 break;
             case R.id.tv_teaching:  //侧滑菜单教研
-                startActivity(new Intent(context, TeachingResearchActivity.class));
+                startActivity(new Intent(context, CmtsMainActivity.class));
                 break;
             case R.id.tv_workshop:  //侧滑菜单工作坊群
                 intent.setClass(context, WorkshopGroupActivity.class);

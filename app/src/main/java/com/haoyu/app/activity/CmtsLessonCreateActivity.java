@@ -45,8 +45,8 @@ import okhttp3.Request;
  * 描述: 发起创课项目
  * 作者:马飞奔 Administrator
  */
-public class TeachingResearchCreateCCActivity extends BaseActivity implements View.OnClickListener {
-    private TeachingResearchCreateCCActivity context = this;
+public class CmtsLessonCreateActivity extends BaseActivity implements View.OnClickListener {
+    private CmtsLessonCreateActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.bt_enter)
@@ -134,7 +134,7 @@ public class TeachingResearchCreateCCActivity extends BaseActivity implements Vi
         Common.hideSoftInput(context);
         switch (v.getId()) {
             case R.id.bt_enter:
-                startActivity(new Intent(context, TeachingResearchCCGuideActivity.class));
+                startActivity(new Intent(context, CmtsLessonGuideActivity.class));
                 break;
             case R.id.tv_stage:
                 if (!isInitStage) {
