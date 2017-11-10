@@ -32,6 +32,7 @@ import com.haoyu.app.dialog.CommentDialog;
 import com.haoyu.app.entity.AttitudeMobileResult;
 import com.haoyu.app.entity.MFileInfo;
 import com.haoyu.app.entity.MFileInfoData;
+import com.haoyu.app.entity.MobileUser;
 import com.haoyu.app.entity.Paginator;
 import com.haoyu.app.entity.ReplyEntity;
 import com.haoyu.app.entity.ReplyListResult;
@@ -152,7 +153,7 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
 
     @Override
     public int createView() {
-        return R.layout.fragment_teaching_genclass;
+        return R.layout.fragment_cmts_lesson;
     }
 
     @Override
@@ -231,7 +232,6 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
         if (isEmpty(att.getTopicBase()) && isEmpty(att.getLearnDetail()) && isEmpty(att.getDesignPrinciple())) {
             layout_frame.setVisibility(View.GONE);
         } else {
-            layout_frame.setVisibility(View.VISIBLE);
             Resources resources = getResources();
             if (!isEmpty(att.getTopicBase())) {
                 String topicBase = resources.getString(R.string.gen_class_topicBase);
@@ -249,7 +249,6 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
         if (isEmpty(att.getStemElement()) && isEmpty(att.getExamples()) && isEmpty(att.getModels()) && isEmpty(att.getRethink()) && isEmpty(att.getExpand())) {
             layout_activity.setVisibility(View.GONE);
         } else {
-            layout_activity.setVisibility(View.VISIBLE);
             Resources resources = getResources();
             if (!isEmpty(att.getStemElement())) {
                 String stem = resources.getString(R.string.gen_class_stem_element);
@@ -349,6 +348,9 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
     }
 
     private void addView(String title, String content, LinearLayout parent) {
+        if (parent.getVisibility() != View.VISIBLE) {
+            parent.setVisibility(View.VISIBLE);
+        }
         TextView tv_title = createTitleView();
         tv_title.setText(title);
         TextView tv_content = createContentView();
@@ -401,8 +403,8 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
         getAdvise();
     }
 
-    private void getFiles() {
-        String url = Constants.OUTRT_NET + "/m/file?fileRelations[0].relation.id=" + relationId + "&fileRelations[0].relation.type=discussion&limit=2&orders=CREATE_TIME.DESC";
+    public void getFiles() {
+        String url = Constants.OUTRT_NET + "/m/file?fileRelations[0].relation.id=" + lessonId + "&fileRelations[0].relation.type=discussion&limit=2&orders=CREATE_TIME.DESC";
         addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<MFileInfoData>>() {
             @Override
             public void onBefore(Request request) {
@@ -450,7 +452,7 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
                 public void onClick(View view) {
                     Intent intent = new Intent(context, MFileInfosActivity.class);
                     intent.putExtra("title", "课程资源");
-                    intent.putExtra("relationId", relationId);
+                    intent.putExtra("relationId", lessonId);
                     intent.putExtra("relationType", "discussion");
                     startActivity(intent);
                 }
@@ -817,6 +819,7 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
                     tv_emptyAdvise.setVisibility(View.GONE);
                     if (adviseList.size() < 5) {
                         ReplyEntity entity = response.getResponseData();
+                        entity.setCreator(getCreator(entity.getCreator()));
                         adviseList.add(entity);
                         adviseAdapter.notifyDataSetChanged();
                         if (rv_advise.getVisibility() != View.VISIBLE) {
@@ -840,6 +843,20 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
                 }
             }
         }, map));
+    }
+
+    private MobileUser getCreator(MobileUser creaotr) {
+        if (creaotr == null) {
+            creaotr = new MobileUser();
+            creaotr.setId(getUserId());
+            creaotr.setAvatar(getAvatar());
+            creaotr.setRealName(getRealName());
+        } else {
+            creaotr.setId(getUserId());
+            creaotr.setAvatar(getAvatar());
+            creaotr.setRealName(getRealName());
+        }
+        return creaotr;
     }
 
     @Override
@@ -901,6 +918,6 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
     }
 
     private void setAdvise(int adviseNum) {
-        tv_adviseCount.setText("收到\u1500" + adviseNum + "\u1500条建议");
+        tv_adviseCount.setText("收到 " + adviseNum + " 条建议");
     }
 }

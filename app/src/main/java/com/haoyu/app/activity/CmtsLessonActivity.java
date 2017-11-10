@@ -26,7 +26,6 @@ import com.haoyu.app.filePicker.LFilePicker;
 import com.haoyu.app.fragment.CmtsLessonFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
-import com.haoyu.app.rxBus.RxBus;
 import com.haoyu.app.utils.Action;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
@@ -78,7 +77,7 @@ public class CmtsLessonActivity extends BaseActivity {
     @Override
     public void initView() {
         String title = getResources().getString(R.string.gen_class_detail);
-        String empty_text = getResources().getString(R.string.gen_class_emptyDetail);
+        String empty_text = getResources().getString(R.string.gen_class_emptylist);
         toolBar.setTitle_text(title);
         empty_detail.setText(empty_text);
     }
@@ -210,9 +209,9 @@ public class CmtsLessonActivity extends BaseActivity {
                             uploadDialog.dismiss();
                             if (response != null && response.getResponseCode() != null &&
                                     response.getResponseCode().equals("00")) {
-                                MessageEvent event = new MessageEvent();
-                                event.action = "fileUpload";
-                                RxBus.getDefault().post(event);
+                                if (fragment != null) {
+                                    fragment.getFiles();
+                                }
                             } else {
                                 showErrorDialog(file);
                             }

@@ -79,7 +79,11 @@ public class CtmsLessonAdapter extends BaseArrayRecyclerAdapter<TeachingLessonEn
         }
         mRrogressBar.setMax(60);
         mRrogressBar.setProgress(60 - entity.getRemainDay());
-        tv_day.setText("还剩" + entity.getRemainDay() + "天");
+        if (entity.getRemainDay() <= 0) {
+            tv_day.setText("已结束");
+        } else {
+            tv_day.setText("还剩" + entity.getRemainDay() + "天");
+        }
         if (entity.getRemainDay() <= 0) {
             tv_period.setVisibility(View.VISIBLE);
         } else {
