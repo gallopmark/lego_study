@@ -47,14 +47,14 @@ public class CmtsStatementActivity extends BaseActivity {
     LoadingView loadingView;
     @BindView(R.id.loadFailView)
     LoadFailView loadFailView;
-    @BindView(R.id.empty_detail)
-    TextView empty_detail;
+    @BindView(R.id.tv_empty)
+    TextView tv_empty;
     private DiscussEntity discussEntity;
     private String relationId;  //研说id,研说关系Id
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_cmts_detail;
+        return R.layout.activity_currency;
     }
 
     @Override
@@ -62,7 +62,8 @@ public class CmtsStatementActivity extends BaseActivity {
         String title = getResources().getString(R.string.study_says_detail);
         String empty_text = getResources().getString(R.string.study_says_emptylist);
         toolBar.setTitle_text(title);
-        empty_detail.setText(empty_text);
+        toolBar.getIv_rightImage().setImageResource(R.drawable.teaching_research_dot);
+        tv_empty.setText(empty_text);
         discussEntity = (DiscussEntity) getIntent().getSerializableExtra("entity");
         relationId = discussEntity.getId();
     }
@@ -87,7 +88,7 @@ public class CmtsStatementActivity extends BaseActivity {
                 if (discussResult != null && discussResult.getResponseData() != null) {
                     updateUI(discussResult.getResponseData());
                 } else {
-                    empty_detail.setVisibility(View.VISIBLE);
+                    tv_empty.setVisibility(View.VISIBLE);
                 }
             }
         }));

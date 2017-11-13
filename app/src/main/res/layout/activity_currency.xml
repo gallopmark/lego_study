@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <com.haoyu.app.view.AppToolBar
         android:id="@+id/toolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:left_button_image="@drawable/app_back"
-        app:right_button_image="@drawable/teaching_research_dot"
         app:show_right_button="false" />
 
     <FrameLayout
@@ -33,15 +32,15 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/empty_detail"
+            android:id="@+id/tv_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawablePadding="@dimen/margin_size_10"
+            android:drawablePadding="@dimen/margin_size_12"
             android:drawableTop="@drawable/empty_list"
             android:gravity="center"
-            android:textColor="@color/gray"
-            android:textSize="@dimen/font_size_18"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_16"
             android:visibility="gone" />
     </FrameLayout>
 </LinearLayout>

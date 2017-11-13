@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/contentView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/spaceColor"
+    android:fillViewport="true"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:paddingBottom="@dimen/margin_size_12"
+            android:paddingLeft="@dimen/margin_size_8"
+            android:paddingRight="@dimen/margin_size_8">
+
+            <TextView
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/margin_size_10"
+                android:layout_marginTop="@dimen/margin_size_10"
+                android:gravity="center"
+                android:textSize="@dimen/font_size_16"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_project"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_14" />
+
+            <TextView
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_6"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_14" />
+
+            <TextView
+                android:id="@+id/tv_creator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_6"
+                android:gravity="right"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_14" />
+
+            <TextView
+                android:id="@+id/tv_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_6"
+                android:gravity="right"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_14" />
+
+            <TextView
+                android:id="@+id/tv_train"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_6"
+                android:gravity="right"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_8"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/course_title_left"
+            android:drawablePadding="@dimen/margin_size_6"
+            android:paddingBottom="@dimen/margin_size_10"
+            android:paddingTop="@dimen/margin_size_10"
+            android:text="工作坊简介"
+            android:textSize="@dimen/font_size_16" />
+
+        <TextView
+            android:id="@+id/tv_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_1"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="@dimen/margin_size_12"
+            android:textColor="@color/gray"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_emptySummary"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/margin_size_1"
+            android:background="@color/white"
+            android:drawablePadding="@dimen/margin_size_8"
+            android:drawableTop="@drawable/empty_content"
+            android:gravity="center"
+            android:padding="@dimen/margin_size_16"
+            android:text="暂无简介"
+            android:textColor="@color/gray"
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_8"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/course_title_left"
+            android:drawablePadding="@dimen/margin_size_6"
+            android:paddingBottom="@dimen/margin_size_10"
+            android:paddingTop="@dimen/margin_size_10"
+            android:text="研修方案"
+            android:textSize="@dimen/font_size_16" />
+
+        <LinearLayout
+            android:id="@+id/ll_fileLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_size_1"
+            android:background="@color/white"
+            android:gravity="center"
+            android:padding="@dimen/margin_size_20"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/iv_fileType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scaleType="centerCrop" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_size_10"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_mFileName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/blow_gray"
+                    android:textSize="@dimen/font_size_16" />
+
+                <TextView
+                    android:id="@+id/tv_mFileSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_size_4"
+                    android:textColor="@color/faq_type"
+                    android:textSize="@dimen/font_size_14" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_emptyFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_1"
+            android:background="@color/white"
+            android:drawablePadding="@dimen/margin_size_8"
+            android:drawableTop="@drawable/empty_resources"
+            android:gravity="center"
+            android:padding="@dimen/margin_size_16"
+            android:text="没有研修方案"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_8"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/course_title_left"
+            android:drawablePadding="@dimen/margin_size_6"
+            android:paddingBottom="@dimen/margin_size_10"
+            android:paddingTop="@dimen/margin_size_10"
+            android:text="团队活跃度"
+            android:textSize="@dimen/font_size_16" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_1"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/margin_size_16"
+            android:paddingTop="@dimen/margin_size_16">
+
+            <TextView
+                android:id="@+id/tv_students"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:id="@+id/tv_tasks"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:id="@+id/tv_questions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:id="@+id/tv_resources"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_8"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/course_title_left"
+                    android:drawablePadding="@dimen/margin_size_6"
+                    android:paddingBottom="@dimen/margin_size_10"
+                    android:paddingTop="@dimen/margin_size_10"
+                    android:text="优秀学员"
+                    android:textSize="@dimen/font_size_16" />
+
+                <LinearLayout
+                    android:id="@+id/ll_indicator"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:gravity="right|center"
+                    android:orientation="horizontal"
+                    android:paddingRight="@dimen/margin_size_12" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_emptyStudent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/margin_size_1"
+                android:background="@color/white"
+                android:drawablePadding="@dimen/margin_size_10"
+                android:drawableTop="@drawable/empty_body"
+                android:gravity="center"
+                android:padding="@dimen/margin_size_16"
+                android:text="暂时没有优秀学员"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/font_size_16"
+                android:visibility="gone" />
+
+            <com.haoyu.app.view.CustomViewPager
+                android:id="@+id/excellentPager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_size_16"
+                android:layout_marginTop="@dimen/margin_size_1"
+                android:background="@color/white"
+                android:scrollbars="none"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_8"
+            android:background="@color/white"
+            android:drawableLeft="@drawable/course_title_left"
+            android:drawablePadding="@dimen/margin_size_5"
+            android:paddingBottom="@dimen/margin_size_10"
+            android:paddingTop="@dimen/margin_size_10"
+            android:text="研修简报"
+            android:textSize="@dimen/font_size_16" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/margin_size_1"
+            android:background="@color/white"
+            android:descendantFocusability="blocksDescendants">
+
+            <TextView
+                android:id="@+id/tv_empty"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="@dimen/margin_size_30"
+                android:drawablePadding="@dimen/margin_minus_30"
+                android:drawableTop="@drawable/train_empty_brief"
+                android:gravity="center"
+                android:text="暂无简报"
+                android:textColor="@color/gray"
+                android:textSize="@dimen/font_size_16"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never" />
+        </RelativeLayout>
+
+        <Button
+            android:id="@+id/bt_more"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_size_10"
+            android:layout_marginTop="@dimen/margin_size_10"
+            android:background="@color/spaceColor"
+            android:gravity="center"
+            android:padding="@dimen/margin_size_12"
+            android:text="查看所有简报"
+            android:textColor="@color/defaultColor"
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
+    </LinearLayout>
+</ScrollView>
