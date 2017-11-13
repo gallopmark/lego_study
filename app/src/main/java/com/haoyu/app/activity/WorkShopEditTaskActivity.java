@@ -20,7 +20,9 @@ import android.widget.TextView;
 
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
+import com.haoyu.app.entity.MWorkshopSection;
 import com.haoyu.app.entity.TimePeriod;
+import com.haoyu.app.entity.WorkshopPhaseResult;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
@@ -67,6 +69,7 @@ public class WorkShopEditTaskActivity extends BaseActivity implements View.OnCli
     private int defaultYear, defaultMonth, defaultDay;
     private String startTime, endTime, startDesc, endDesc;
     private String workShopId, taskId, oldTitle, oldDate;
+    private boolean create;
     private long oldStartTime, oldEndTime;
     private boolean hasOldDate;
 
@@ -78,6 +81,12 @@ public class WorkShopEditTaskActivity extends BaseActivity implements View.OnCli
     @Override
     public void initView() {
         workShopId = getIntent().getStringExtra("workShopId");
+        create = getIntent().getBooleanExtra("create", false);
+        if (create) {
+            toolBar.setTitle_text("添加新阶段");
+        } else {
+            toolBar.setTitle_text("修改阶段");
+        }
         taskId = getIntent().getStringExtra("relationId");
         oldTitle = getIntent().getStringExtra("title");
         oldStartTime = getIntent().getLongExtra("startTime", -1);
@@ -163,7 +172,11 @@ public class WorkShopEditTaskActivity extends BaseActivity implements View.OnCli
                 } else if (title.equals(oldTitle) && time.equals(oldDate)) {
                     finish();
                 } else {
-                    alterTask();
+                    if (create) {
+                        addStage();
+                    } else {
+                        alterTask();
+                    }
                 }
             }
         });
@@ -232,6 +245,39 @@ public class WorkShopEditTaskActivity extends BaseActivity implements View.OnCli
                 tv_picker.setCompoundDrawables(null, null, zhankai, null);
                 break;
         }
+    }
+
+    //添加新阶段
+    private void addStage() {
+        String title = et_title.getText().toString().trim();
+        String url = Constants.OUTRT_NET + "/master_" + workShopId + "/unique_uid_" + getUserId() + "/m/workshop_section";
+        Map<String, String> map = new HashMap<>();
+        map.put("workshopId", workShopId);
+        map.put("title", title);
+        map.put("startTime", startTime);
+        map.put("endTime", endTime);
+        map.put("sortNum", String.valueOf(0));
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<WorkshopPhaseResult>() {
+            @Override
+            public void onError(Request request, Exception e) {
+                hideTipDialog();
+                onNetWorkError(context);
+            }
+
+            @Override
+            public void onResponse(WorkshopPhaseResult response) {
+                hideTipDialog();
+                if (response != null && response.getResponseData() != null) {
+                    MWorkshopSection section = response.getResponseData();
+                    Intent intent = new Intent();
+                    intent.putExtra("section", section);
+                    setResult(RESULT_OK, intent);
+                    finish();
+                } else {
+                    toastFullScreen("添加失败", false);
+                }
+            }
+        }, map));
     }
 
     private void alterTask() {

@@ -294,7 +294,9 @@
         <activity android:name="com.haoyu.app.activity.BriefingDetailActivity" />
 
         <!--听课评课详情-->
-        <activity android:name="com.haoyu.app.activity.TeachingStudyActivity" />
+        <activity
+            android:name="com.haoyu.app.activity.TeachingStudyActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden" />
         <!--听课评课的结果-->
         <activity android:name="com.haoyu.app.activity.TeachingStudyResultDetailActiivty" />
         <!--听课评课的得分明细-->

@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:right_button_text="提交"
-        app:show_right_button="true"
-        app:title_text="修改阶段" />
+        app:show_right_button="true" />
 
     <View
         android:layout_width="match_parent"
