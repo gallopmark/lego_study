@@ -48,7 +48,6 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
 
-import static android.R.attr.id;
 
 /**
  * 创建日期：2017/10/25 on 17:54
@@ -256,7 +255,7 @@ public class CmtsLessonActivity extends BaseActivity {
     /*拿到上传临时文件返回的结果再次提交到创课表*/
     private FileUploadDataResult commitContent(FileUploadResult mResult) throws Exception {
         if (mResult != null && mResult.getResponseData() != null) {
-            String url = Constants.OUTRT_NET + "/m/lesson/cmts/" + id + "/upload";
+            String url = Constants.OUTRT_NET + "/m/lesson/cmts/" + lessonId + "/upload";
             Gson gson = new GsonBuilder().create();
             Map<String, String> map = new HashMap<>();
             map.put("fileInfos[0].id", mResult.getResponseData().getId());
