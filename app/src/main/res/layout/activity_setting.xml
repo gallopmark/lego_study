@@ -124,7 +124,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@drawable/item_click_selector"
-        android:drawableLeft="@drawable/feedback"
+        android:drawableLeft="@drawable/version_download"
         android:drawablePadding="@dimen/margin_size_12"
         android:drawableRight="@drawable/go_into"
         android:paddingBottom="@dimen/margin_size_14"

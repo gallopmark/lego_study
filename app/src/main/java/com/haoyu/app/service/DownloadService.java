@@ -124,7 +124,6 @@ public class DownloadService extends Service {
         notificationManager.notify(NOTIFY, notification);
     }
 
-
     @Override
     public void onDestroy() {
         super.onDestroy();
