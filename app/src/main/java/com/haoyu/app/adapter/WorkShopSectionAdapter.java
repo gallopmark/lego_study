@@ -290,31 +290,37 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
                 } else
                     ic_type.setImageResource(R.drawable.ws_questionnaire_default);
                 tv_typeName.setText("调查问卷");
-            } else if (entity.getType().equals("debate")) {
+            } else if (entity.getType() != null && entity.getType().equals("debate")) {
                 if (mainPosition == mainIndex && childPosition == position) {
                     ic_type.setImageResource(R.drawable.ws_bianlun_press);
                 } else
                     ic_type.setImageResource(R.drawable.ws_bianlun_default);
                 tv_typeName.setText("在线辩论");
-            } else if (entity.getType().equals("lcec")) {
+            } else if (entity.getType() != null && entity.getType().equals("lcec")) {
                 if (mainPosition == mainIndex && childPosition == position) {
                     ic_type.setImageResource(R.drawable.ws_tingke_press);
                 } else
                     ic_type.setImageResource(R.drawable.ws_tingke_default);
                 tv_typeName.setText("听课评课");
-            } else if (entity.getType().equals("lesson_plan")) {
+            } else if (entity.getType() != null && entity.getType().equals("lesson_plan")) {
                 if (mainPosition == mainIndex && childPosition == position) {
                     ic_type.setImageResource(R.drawable.ws_beike_press);
                 } else
                     ic_type.setImageResource(R.drawable.ws_beike_default);
                 tv_typeName.setText("集体备课");
-            } else if (entity.getType().equals("test")) {
+            } else if (entity.getType() != null && entity.getType().equals("test")) {
                 if (mainPosition == mainIndex && childPosition == position) {
                     ic_type.setImageResource(R.drawable.progress_test_press);
                 } else
                     ic_type.setImageResource(R.drawable.progress_test_default);
                 tv_typeName.setText("在线测验");
-            } else if (entity.getType().equals("video")) {
+            } else if (entity.getType() != null && entity.getType().equals("video")) {
+                if (mainPosition == mainIndex && childPosition == position) {
+                    ic_type.setImageResource(R.drawable.progress_video_press);
+                } else
+                    ic_type.setImageResource(R.drawable.progress_video_default);
+                tv_typeName.setText("教学观摩");
+            } else if (entity.getType() != null && entity.getType().equals("discuss_class")) {
                 if (mainPosition == mainIndex && childPosition == position) {
                     ic_type.setImageResource(R.drawable.progress_video_press);
                 } else

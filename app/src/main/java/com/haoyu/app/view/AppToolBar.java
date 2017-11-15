@@ -118,7 +118,7 @@ public class AppToolBar extends LinearLayout {
         right_button_text = typedArray.getString(R.styleable.AppToolBar_right_button_text);
         right_button_textColor = typedArray.getColor(R.styleable.AppToolBar_right_button_textColor, Color.WHITE);
         right_background = typedArray.getResourceId(R.styleable.AppToolBar_right_background, R.drawable.app_toolbar_selector);
-        show_right_button = typedArray.getBoolean(R.styleable.AppToolBar_show_right_button, true);
+        show_right_button = typedArray.getBoolean(R.styleable.AppToolBar_show_right_button, false);
         typedArray.recycle();
     }
 
@@ -144,8 +144,10 @@ public class AppToolBar extends LinearLayout {
             setLeft_button_textColor(left_button_textColor);
             showLeftView = true;
         } else {
-            if (left_button_imageId != -1)
+            if (left_button_imageId == -1) {
+                left_button_imageId = R.drawable.app_back;
                 setLeft_button_imageId(left_button_imageId);
+            }
             showLeftView = false;
         }
         iv_leftImage.setBackgroundResource(left_background);
@@ -154,14 +156,10 @@ public class AppToolBar extends LinearLayout {
             setRight_button_text(right_button_text);
             setRight_button_textColor(right_button_textColor);
             showRightView = true;
-            iv_rightImage.setVisibility(GONE);
-            tv_rightView.setVisibility(show_right_button ? VISIBLE : INVISIBLE);
         } else {
             if (right_button_imageId != -1)
                 setRight_button_imageId(right_button_imageId);
             showRightView = false;
-            iv_rightImage.setVisibility(show_right_button ? VISIBLE : INVISIBLE);
-            tv_rightView.setVisibility(GONE);
         }
         iv_rightImage.setBackgroundResource(right_background);
         tv_rightView.setBackgroundResource(right_background);
@@ -210,6 +208,7 @@ public class AppToolBar extends LinearLayout {
      * @param left_button_imageId 资源图片id
      */
     public void setLeft_button_imageId(int left_button_imageId) {
+        showLeftView = false;
         iv_leftImage.setImageResource(left_button_imageId);
     }
 
@@ -219,6 +218,7 @@ public class AppToolBar extends LinearLayout {
      * @param left_button_text
      */
     public void setLeft_button_text(CharSequence left_button_text) {
+        showLeftView = true;
         tv_leftView.setText(left_button_text);
     }
 
@@ -228,6 +228,7 @@ public class AppToolBar extends LinearLayout {
      * @param left_button_textColor
      */
     public void setLeft_button_textColor(int left_button_textColor) {
+        showLeftView = true;
         tv_leftView.setTextColor(left_button_textColor);
     }
 
@@ -237,6 +238,7 @@ public class AppToolBar extends LinearLayout {
      * @param left_button_textSize
      */
     public void setLeft_button_textSize(float left_button_textSize) {
+        showLeftView = true;
         tv_leftView.setTextSize(left_button_textSize);
     }
 
@@ -262,6 +264,7 @@ public class AppToolBar extends LinearLayout {
      * @param right_button_imageId
      */
     public void setRight_button_imageId(int right_button_imageId) {
+        showRightView = false;
         iv_rightImage.setImageResource(right_button_imageId);
     }
 
@@ -271,6 +274,7 @@ public class AppToolBar extends LinearLayout {
      * @param right_button_text
      */
     public void setRight_button_text(CharSequence right_button_text) {
+        showRightView = true;
         tv_rightView.setText(right_button_text);
     }
 
@@ -280,6 +284,7 @@ public class AppToolBar extends LinearLayout {
      * @param right_button_textColor
      */
     public void setRight_button_textColor(int right_button_textColor) {
+        showRightView = true;
         tv_rightView.setTextColor(right_button_textColor);
     }
 
@@ -289,6 +294,7 @@ public class AppToolBar extends LinearLayout {
      * @param right_button_textSize
      */
     public void setRight_button_textSize(float right_button_textSize) {
+        showRightView = true;
         tv_rightView.setTextSize(right_button_textSize);
     }
 

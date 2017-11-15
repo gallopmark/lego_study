@@ -172,6 +172,12 @@ public class WorkShopTaskAdapter extends BaseArrayRecyclerAdapter<MWorkshopSecti
                 else
                     ic_type.setImageResource(R.drawable.progress_video_default);
                 tv_typeName.setText("教学观摩");
+            } else if (entity.getType() != null && entity.getType().equals("discuss_class")) {
+                if (mainPosition == mainIndex && childPosition == position) {
+                    ic_type.setImageResource(R.drawable.progress_video_press);
+                } else
+                    ic_type.setImageResource(R.drawable.progress_video_default);
+                tv_typeName.setText("教学观摩");
             } else {
                 if (mainPosition == mainIndex && childPosition == position)
                     ic_type.setImageResource(R.drawable.course_word_selected);

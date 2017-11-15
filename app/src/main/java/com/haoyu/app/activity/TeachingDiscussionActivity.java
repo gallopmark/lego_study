@@ -508,20 +508,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
                 hideTipDialog();
                 if (response != null && response.getResponseData() != null) {
                     ReplyEntity entity = response.getResponseData();
-                    if (entity.getCreator() == null) {
-                        MobileUser creator = new MobileUser();
-                        creator.setId(getUserId());
-                        creator.setAvatar(getAvatar());
-                        creator.setRealName(getRealName());
-                        entity.setCreator(creator);
-                    } else {
-                        if (entity.getCreator().getId() == null || (entity.getCreator().getId() != null && entity.getCreator().getId().toLowerCase().equals("null")))
-                            entity.getCreator().setId(getUserId());
-                        if (entity.getCreator().getAvatar() == null || (entity.getCreator().getAvatar() != null && entity.getCreator().getAvatar().toLowerCase().equals("null")))
-                            entity.getCreator().setAvatar(getAvatar());
-                        if (entity.getCreator().getRealName() == null || (entity.getCreator().getRealName() != null && entity.getCreator().getRealName().toLowerCase().equals("null")))
-                            entity.getCreator().setRealName(getRealName());
-                    }
+                    entity.setCreator(entity.getCreator());
                     int childPostCount = mDatas.get(position).getChildPostCount() + 1;
                     mDatas.get(position).setChildPostCount(childPostCount);
                     if (mDatas.get(position).getChildReplyEntityList() != null && mDatas.get(position).getChildReplyEntityList().size() < 10) {
@@ -564,20 +551,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
                         empty_comment.setVisibility(View.GONE);
                     if (mDatas.size() < 5) {
                         ReplyEntity entity = response.getResponseData();
-                        if (entity.getCreator() == null) {
-                            MobileUser creator = new MobileUser();
-                            creator.setId(getUserId());
-                            creator.setAvatar(getAvatar());
-                            creator.setRealName(getRealName());
-                            entity.setCreator(creator);
-                        } else {
-                            if (entity.getCreator().getId() == null || (entity.getCreator().getId() != null && entity.getCreator().getId().toLowerCase().equals("null")))
-                                entity.getCreator().setId(getUserId());
-                            if (entity.getCreator().getAvatar() == null || (entity.getCreator().getAvatar() != null && entity.getCreator().getAvatar().toLowerCase().equals("null")))
-                                entity.getCreator().setAvatar(getAvatar());
-                            if (entity.getCreator().getRealName() == null || (entity.getCreator().getRealName() != null && entity.getCreator().getRealName().toLowerCase().equals("null")))
-                                entity.getCreator().setRealName(getRealName());
-                        }
+                        entity.setCreator(entity.getCreator());
                         mDatas.add(entity);
                         adapter.notifyDataSetChanged();
                     } else {
@@ -592,6 +566,20 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
                 }
             }
         }, map));
+    }
+
+    private MobileUser getCreator(MobileUser creaotr) {
+        if (creaotr == null) {
+            creaotr = new MobileUser();
+            creaotr.setId(getUserId());
+            creaotr.setAvatar(getAvatar());
+            creaotr.setRealName(getRealName());
+        } else {
+            creaotr.setId(getUserId());
+            creaotr.setAvatar(getAvatar());
+            creaotr.setRealName(getRealName());
+        }
+        return creaotr;
     }
 
     /**

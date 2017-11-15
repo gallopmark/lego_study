@@ -42,6 +42,10 @@ public class AppActivityViewEntity implements Serializable {
     @Expose
     @SerializedName("mLcec")    //听课评课
     private MLcecMobileEntity mLcec;
+    @Expose
+    @SerializedName("mVideoDC")  //评课议课
+    private ClassDiscussEntity mVideoDC;
+
 
     public ActivityResult getmActivityResult() {
         return mActivityResult;
@@ -105,6 +109,14 @@ public class AppActivityViewEntity implements Serializable {
 
     public void setmLcec(MLcecMobileEntity mLcec) {
         this.mLcec = mLcec;
+    }
+
+    public ClassDiscussEntity getmVideoDC() {
+        return mVideoDC;
+    }
+
+    public void setmVideoDC(ClassDiscussEntity mVideoDC) {
+        this.mVideoDC = mVideoDC;
     }
 
     public class ActivityResult implements Serializable {
@@ -657,6 +669,71 @@ public class AppActivityViewEntity implements Serializable {
 
         public void setType(String type) {
             this.type = type;
+        }
+    }
+
+    public class ClassDiscussEntity implements Serializable {
+        @Expose
+        @SerializedName("id")
+        private String id;
+        @Expose
+        @SerializedName("summary")
+        private String summary;
+        @Expose
+        @SerializedName("stage")
+        private String stage;
+        @Expose
+        @SerializedName("subject")
+        private String subject;
+        @Expose
+        @SerializedName("textbook")
+        private String textbook;
+        @Expose
+        @SerializedName("subPostNum")
+        private int subPostNum;
+        @Expose
+        @SerializedName("videoFiles")
+        private List<MFileInfo> videoFiles;
+        @Expose
+        @SerializedName("attchFiles")
+        private List<MFileInfo> attchFiles;
+
+        public String getId() {
+            return id;
+        }
+
+        public String getSummary() {
+            return summary;
+        }
+
+        public String getStage() {
+            return stage;
+        }
+
+        public String getSubject() {
+            return subject;
+        }
+
+        public String getTextbook() {
+            return textbook;
+        }
+
+        public int getSubPostNum() {
+            return subPostNum;
+        }
+
+        public List<MFileInfo> getVideoFiles() {
+            if (videoFiles == null) {
+                return new ArrayList<>();
+            }
+            return videoFiles;
+        }
+
+        public List<MFileInfo> getAttchFiles() {
+            if (attchFiles == null) {
+                return new ArrayList<>();
+            }
+            return attchFiles;
         }
     }
 }

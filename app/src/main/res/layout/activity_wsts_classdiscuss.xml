@@ -12,11 +12,11 @@
         android:layout_height="wrap_content"
         app:left_button_image="@drawable/app_back" />
 
-    <ScrollView
+    <com.haoyu.app.view.VerticalScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll_outSideBottom"
+        android:layout_above="@+id/tv_bottomView"
         android:layout_below="@+id/toolBar"
         android:fillViewport="true"
         android:overScrollMode="never"
@@ -25,6 +25,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/spaceColor"
             android:descendantFocusability="blocksDescendants"
             android:orientation="vertical">
 
@@ -32,7 +33,9 @@
                 android:id="@+id/ll_outSideTop"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:paddingBottom="@dimen/margin_size_12">
 
                 <TextView
                     android:id="@+id/tv_time"
@@ -46,56 +49,37 @@
                     android:textSize="@dimen/font_size_16" />
 
                 <TextView
-                    android:id="@+id/tv_study_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_size_12"
-                    android:layout_marginRight="@dimen/margin_size_12"
-                    android:layout_marginTop="@dimen/margin_size_12"
-                    android:textSize="@dimen/font_size_18" />
-
-                <LinearLayout
+                    android:id="@+id/tv_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin_size_12"
-                    android:background="@color/white"
-                    android:orientation="vertical">
+                    android:textSize="@dimen/font_size_17"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/tv_activity_type"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/blow_gray"
-                        android:textSize="@dimen/font_size_14" />
+                <TextView
+                    android:id="@+id/tv_stage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_size_12"
+                    android:layout_marginRight="@dimen/margin_size_12"
+                    android:textColor="@color/faq_title"
+                    android:textSize="@dimen/font_size_14" />
 
-                    <TextView
-                        android:id="@+id/tv_subject"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/blow_gray"
-                        android:textSize="@dimen/font_size_14" />
-
-                    <TextView
-                        android:id="@+id/tv_lecture"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/blow_gray"
-                        android:textSize="@dimen/font_size_14" />
-
-                    <TextView
-                        android:id="@+id/tv_bookversion"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/blow_gray"
-                        android:textSize="@dimen/font_size_14" />
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_textBook"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_size_12"
+                    android:layout_marginRight="@dimen/margin_size_12"
+                    android:layout_marginTop="@dimen/margin_size_2"
+                    android:textColor="@color/faq_title"
+                    android:textSize="@dimen/font_size_14" />
             </LinearLayout>
 
             <FrameLayout
                 android:id="@+id/fl_video"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
+                android:layout_height="wrap_content" />
 
             <LinearLayout
                 android:id="@+id/ll_videoOutSide"
@@ -103,45 +87,31 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/spaceColor"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/margin_size_12">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/margin_size_6"
-                        android:src="@drawable/biaotiyuan" />
-
-                    <TextView
-                        android:id="@+id/tv_evaluation"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="评课方向"
-                        android:textSize="@dimen/font_size_16" />
-                </LinearLayout>
+                    android:layout_gravity="center"
+                    android:background="@color/white"
+                    android:drawableLeft="@drawable/biaotiyuan"
+                    android:drawablePadding="@dimen/margin_size_6"
+                    android:padding="@dimen/margin_size_12"
+                    android:text="活动说明"
+                    android:textSize="@dimen/font_size_16" />
 
                 <TextView
                     android:id="@+id/tv_content"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_size_1"
+                    android:background="@color/white"
                     android:padding="@dimen/margin_size_12"
                     android:textSize="@dimen/font_size_16" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_size_1"
-                    android:background="@color/spaceColor" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rv_file"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@color/white"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
                     android:visibility="gone" />
@@ -170,6 +140,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/white"
                     android:descendantFocusability="blocksDescendants">
 
                     <com.haoyu.app.view.LoadFailView
@@ -200,6 +171,7 @@
                         android:layout_height="match_parent"
                         android:nestedScrollingEnabled="false"
                         android:overScrollMode="never"
+                        android:paddingBottom="@dimen/margin_size_16"
                         android:visibility="gone" />
                 </RelativeLayout>
 
@@ -207,8 +179,8 @@
                     android:id="@+id/tv_more_reply"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_size_10"
-                    android:layout_marginTop="@dimen/margin_size_10"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
                     android:background="@color/spaceColor"
                     android:gravity="center"
                     android:padding="@dimen/margin_size_12"
@@ -217,67 +189,17 @@
                     android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
+    </com.haoyu.app.view.VerticalScrollView>
 
-    <LinearLayout
-        android:id="@+id/ll_outSideBottom"
+    <TextView
+        android:id="@+id/tv_bottomView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/ll_left"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/defaultColor"
-            android:gravity="center"
-            android:orientation="horizontal"
-            android:padding="@dimen/margin_size_12">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:scaleType="centerCrop"
-                android:src="@drawable/teach_study_discuss" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/margin_size_6"
-                android:gravity="center"
-                android:text="发表评论"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_size_16" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_right"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/orange"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/iv_bottomRight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:scaleType="centerCrop" />
-
-            <TextView
-                android:id="@+id/tv_bottomRight"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:padding="@dimen/margin_size_12"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_size_16" />
-        </LinearLayout>
-    </LinearLayout>
+        android:layout_margin="@dimen/margin_size_12"
+        android:background="@color/spaceColor"
+        android:padding="@dimen/margin_size_12"
+        android:text="输入内容，参与议课"
+        android:textColor="@color/blow_gray"
+        android:textSize="@dimen/font_size_16" />
 </RelativeLayout>

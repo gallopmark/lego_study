@@ -670,10 +670,11 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
             public void onResponse(ReplyResult response) {
                 hideTipDialog();
                 if (response != null && response.getResponseData() != null) {
-                    ReplyEntity entity = response.getResponseData();
                     int childPostCount = adviseList.get(position).getChildPostCount() + 1;
                     adviseList.get(position).setChildPostCount(childPostCount);
                     if (adviseList.get(position).getChildReplyEntityList() != null && adviseList.get(position).getChildReplyEntityList().size() < 10) {
+                        ReplyEntity entity = response.getResponseData();
+                        entity.setCreator(getCreator(entity.getCreator()));
                         adviseList.get(position).getChildReplyEntityList().add(entity);
                     } else {
                         toastFullScreen("回复成功", true);

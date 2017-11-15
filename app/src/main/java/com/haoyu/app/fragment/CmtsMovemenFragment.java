@@ -618,7 +618,9 @@ public class CmtsMovemenFragment extends BaseFragment implements View.OnClickLis
                     if (commentList.get(childPosition).getChildList().size() >= 10) {
                         toastFullScreen("评论成功", true);
                     } else {
-                        commentList.get(childPosition).getChildList().add(response.getResponseData());
+                        CommentEntity entity = response.getResponseData();
+                        entity.setCreator(getCreator(entity.getCreator()));
+                        commentList.get(childPosition).getChildList().add(entity);
                         commentAdapter.notifyDataSetChanged();
                     }
                 } else {

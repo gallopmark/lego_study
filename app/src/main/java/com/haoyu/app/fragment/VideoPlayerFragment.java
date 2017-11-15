@@ -462,9 +462,6 @@ public class VideoPlayerFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void idle() {
-        if (onRequestedOrientation != null) {
-            onRequestedOrientation.onRequested(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        }
         tv_loading.setText("即将播放...");
         tv_loading.setVisibility(View.VISIBLE);
         if (cpvLoading.getVisibility() != View.GONE) {

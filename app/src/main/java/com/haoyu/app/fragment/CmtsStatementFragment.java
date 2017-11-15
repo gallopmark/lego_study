@@ -354,24 +354,11 @@ public class CmtsStatementFragment extends BaseFragment implements View.OnClickL
             public void onResponse(ReplyResult response) {
                 hideTipDialog();
                 if (response != null && response.getResponseData() != null) {
-                    ReplyEntity entity = response.getResponseData();
-                    if (entity.getCreator() == null) {
-                        MobileUser creator = new MobileUser();
-                        creator.setId(getUserId());
-                        creator.setAvatar(getAvatar());
-                        creator.setRealName(getRealName());
-                        entity.setCreator(creator);
-                    } else {
-                        if (entity.getCreator().getId() == null || (entity.getCreator().getId() != null && entity.getCreator().getId().toLowerCase().equals("null")))
-                            entity.getCreator().setId(getUserId());
-                        if (entity.getCreator().getAvatar() == null || (entity.getCreator().getAvatar() != null && entity.getCreator().getAvatar().toLowerCase().equals("null")))
-                            entity.getCreator().setAvatar(getAvatar());
-                        if (entity.getCreator().getRealName() == null || (entity.getCreator().getRealName() != null && entity.getCreator().getRealName().toLowerCase().equals("null")))
-                            entity.getCreator().setRealName(getRealName());
-                    }
                     int childPostCount = replyList.get(position).getChildPostCount() + 1;
                     replyList.get(position).setChildPostCount(childPostCount);
                     if (replyList.get(position).getChildReplyEntityList() != null && replyList.get(position).getChildReplyEntityList().size() < 10) {
+                        ReplyEntity entity = response.getResponseData();
+                        entity.setCreator(getCreator(entity.getCreator()));
                         replyList.get(position).getChildReplyEntityList().add(entity);
                     } else {
                         toastFullScreen("评论成功", true);

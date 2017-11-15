@@ -11,14 +11,12 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -68,12 +66,12 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
 
 /**
- * 创建日期：2017/8/30 on 10:29
- * 描述:听课评课
- * 作者:马飞奔 Administrator
+ * 创建日期：2017/11/2.
+ * 描述:评课议课
+ * 作者:Administrator
  */
-public class TeachingStudyActivity extends BaseActivity implements View.OnClickListener {
-    private TeachingStudyActivity context = this;
+public class WSClassDiscussInfoActivity extends BaseActivity implements View.OnClickListener {
+    private WSClassDiscussInfoActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.scrollView)
@@ -82,26 +80,19 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     LinearLayout ll_outSideTop;
     @BindView(R.id.tv_time)
     TextView tv_time;
-    @BindView(R.id.tv_study_title)
-    TextView tv_study_title; //听课评课标题
-    @BindView(R.id.tv_activity_type)
-    TextView tv_activity_type;  //活动类型
-    @BindView(R.id.tv_subject)
-    TextView tv_subject; //年级学科
-    @BindView(R.id.tv_lecture)
-    TextView tv_lecture; //授课人
-    @BindView(R.id.tv_bookversion)
-    TextView tv_bookversion; //选用教材
+    @BindView(R.id.tv_title)
+    TextView tv_title;
+    @BindView(R.id.tv_stage)
+    TextView tv_stage;
+    @BindView(R.id.tv_textBook)
+    TextView tv_textBook;
 
+    /*videoplayer layout*/
     @BindView(R.id.fl_video)
-    FrameLayout fl_video;  //视频文件
-    private int smallHeight;
-    private VideoPlayerFragment videoFragment;
+    FrameLayout fl_video;
 
     @BindView(R.id.ll_videoOutSide)
     LinearLayout ll_videoOutSide;
-    @BindView(R.id.tv_evaluation)
-    TextView tv_evaluation;
     @BindView(R.id.tv_content)
     TextView tv_content;
     @BindView(R.id.rv_file)
@@ -109,31 +100,23 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     @BindView(R.id.ll_discussion)
     LinearLayout ll_discussion;
     @BindView(R.id.tv_discussCount)
-    TextView tv_discussCount;   //评论总数
+    TextView tv_discussCount;
     @BindView(R.id.loadFailView)
     LoadFailView loadFailView;
-    @BindView(R.id.recyclerView)
-    RecyclerView recyclerView;
     @BindView(R.id.tv_emptyComment)
     TextView tv_emptyComment;
+    @BindView(R.id.recyclerView)
+    RecyclerView recyclerView;
     @BindView(R.id.tv_more_reply)
-    TextView tv_more_reply;   //更多回复内容
-
-    @BindView(R.id.ll_outSideBottom)
-    LinearLayout ll_outSideBottom;
-    @BindView(R.id.ll_left)
-    LinearLayout ll_left;
-    @BindView(R.id.ll_right)
-    LinearLayout ll_right;
-    @BindView(R.id.iv_bottomRight)
-    ImageView iv_bottomRight;
-    @BindView(R.id.tv_bottomRight)
-    TextView tv_bottomRight;
-    private boolean running;   //是否在培训时间内、活动是否进行中
+    TextView tv_more_reply;
+    @BindView(R.id.tv_bottomView)
+    TextView tv_bottomView;
+    private boolean running;
+    private String activityId, activityTitle;
     private TimePeriod timePeriod;
-    private String workshopId, activityId;
-    private AppActivityViewEntity.MLcecMobileEntity lcecEntity;
-    private boolean hasSubmitEvaluate;
+    private AppActivityViewEntity.ClassDiscussEntity mVideoDC;
+    private int smallHeight;
+    private VideoPlayerFragment videoFragment;
     private int discussNum;//总回复数
     private AppCommentAdapter adapter;
     private List<CommentEntity> mComments = new ArrayList<>();
@@ -141,17 +124,17 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_teaching_study;
+        return R.layout.activity_wsts_classdiscuss;
     }
 
     @Override
     public void initView() {
         running = getIntent().getBooleanExtra("running", false);
         timePeriod = (TimePeriod) getIntent().getSerializableExtra("timePeriod");
-        workshopId = getIntent().getStringExtra("workshopId");
         activityId = getIntent().getStringExtra("activityId");
-        lcecEntity = (AppActivityViewEntity.MLcecMobileEntity) getIntent().getSerializableExtra("mlcec");
-        setSupportToolbar();
+        activityTitle = getIntent().getStringExtra("activityTitle");
+        mVideoDC = (AppActivityViewEntity.ClassDiscussEntity) getIntent().getSerializableExtra("discussClass");
+        setToolBar();
         showData();
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -161,8 +144,8 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
         registRxBus();
     }
 
-    private void setSupportToolbar() {
-        toolBar.setTitle_text("听课评课");
+    private void setToolBar() {
+        toolBar.setTitle_text("教学观摩");
         toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
             @Override
             public void onLeftClick(View view) {
@@ -172,12 +155,10 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     }
 
     private void showData() {
-        setTime_text();
-        setTop_text();
-        setmVideo_layout(lcecEntity.getmVideo());
-        setContext_text(lcecEntity.getContent());
-        setmFileInfos(lcecEntity.getmFileInfos());
-        setBottom_layout(lcecEntity.isHasSubmitEvaluate());
+        setOutSideTop();
+        setVideo_info(mVideoDC.getVideoFiles());
+        setContext_text(mVideoDC.getSummary());
+        setFile_info(mVideoDC.getAttchFiles());
     }
 
     private void setTime_text() {
@@ -197,48 +178,34 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private void setTop_text() {
-        if (lcecEntity.getTitle() != null) {
-            tv_study_title.setText(Html.fromHtml(lcecEntity.getTitle()));
+    private void setOutSideTop() {
+        setTime_text();
+        tv_title.setText(activityTitle);
+        String stage_text = "学段/学科：";
+        if (mVideoDC.getStage() != null) {
+            stage_text += mVideoDC.getStage();
         }
-        String activityType = "活动类型：";
-        if (lcecEntity.getType() != null && lcecEntity.getType().equals("offLine")) {
-            activityType += "现场评课";
-        } else if (lcecEntity.getType() != null && lcecEntity.getType().equals("onLine")) {
-            activityType += "实录评课";
+        if (mVideoDC.getSubject() != null) {
+            stage_text += ("/" + mVideoDC.getSubject());
         }
-        tv_activity_type.setText(activityType);
-        String bookversion = "选用教材：";
-        if (lcecEntity.getTextbook() != null) {
-            bookversion += lcecEntity.getTextbook();
+        tv_stage.setText(stage_text);
+        String textBook = "选用教材：";
+        if (mVideoDC.getTextbook() != null) {
+            textBook += mVideoDC.getTextbook();
         }
-        tv_bookversion.setText(bookversion);
-        String lecture = "授课人：";
-        if (lcecEntity.getTeacher() != null && lcecEntity.getTeacher().getRealName() != null) {
-            lecture += lcecEntity.getTeacher().getRealName();
-        }
-        tv_lecture.setText(lecture);
-        String ssubject = "年级学科：";
-        if (lcecEntity.getStage() != null && lcecEntity.getSubject() != null) {
-            ssubject += lcecEntity.getStage() + "\u3000" + lcecEntity.getSubject();
-        } else if (lcecEntity.getStage() != null) {
-            ssubject += lcecEntity.getStage();
-        } else if (lcecEntity.getSubject() != null) {
-            ssubject += lcecEntity.getSubject();
-        }
-        tv_subject.setText(ssubject);
+        tv_textBook.setText(textBook);
     }
 
-    private void setmVideo_layout(MFileInfo video) {
-        if (video != null && !TextUtils.isEmpty(video.getUrl())) {
-            fl_video.setVisibility(View.VISIBLE);
+    private void setVideo_info(List<MFileInfo> videoFiles) {
+        if (videoFiles.size() > 0) {
+            MFileInfo fileInfo = videoFiles.get(0);
             smallHeight = ScreenUtils.getScreenHeight(context) / 5 * 2;
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) fl_video.getLayoutParams();
-            params.height = smallHeight;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, smallHeight);
             fl_video.setLayoutParams(params);
             videoFragment = new VideoPlayerFragment();
             Bundle bundle = new Bundle();
-            bundle.putString("videoUrl", video.getUrl());
+            bundle.putString("videoUrl", fileInfo.getUrl());
+            bundle.putString("videoTitle", activityTitle);
             videoFragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.fl_video, videoFragment).commit();
@@ -248,8 +215,6 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
                     setRequestedOrientation(orientation);
                 }
             });
-        } else {
-            fl_video.setVisibility(View.GONE);
         }
     }
 
@@ -275,18 +240,18 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private void setmFileInfos(final List<MFileInfo> mFileInfos) {
-        if (mFileInfos != null && mFileInfos.size() > 0) {
+    private void setFile_info(final List<MFileInfo> attchFiles) {
+        if (attchFiles.size() > 0) {
             rv_file.setVisibility(View.VISIBLE);
             FullyLinearLayoutManager layoutManager = new FullyLinearLayoutManager(context);
             layoutManager.setOrientation(FullyLinearLayoutManager.VERTICAL);
             rv_file.setLayoutManager(layoutManager);
-            MFileInfoAdapter adapter = new MFileInfoAdapter(mFileInfos, true);
+            MFileInfoAdapter adapter = new MFileInfoAdapter(attchFiles);
             rv_file.setAdapter(adapter);
             adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
-                    MFileInfo fileInfo = mFileInfos.get(position);
+                    MFileInfo fileInfo = attchFiles.get(position);
                     Intent intent = new Intent(context, MFileInfoActivity.class);
                     intent.putExtra("fileInfo", fileInfo);
                     startActivity(intent);
@@ -294,19 +259,6 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
             });
         } else {
             rv_file.setVisibility(View.GONE);
-        }
-    }
-
-    private void setBottom_layout(boolean hasSubmitEvaluate) {
-        this.hasSubmitEvaluate = hasSubmitEvaluate;
-        if (hasSubmitEvaluate) {
-            ll_right.setBackgroundColor(ContextCompat.getColor(context, R.color.node_select));
-            iv_bottomRight.setImageResource(R.drawable.teach_study_detail);
-            tv_bottomRight.setText("查看评课结果");
-        } else {
-            ll_right.setBackgroundColor(ContextCompat.getColor(context, R.color.orange));
-            iv_bottomRight.setImageResource(R.drawable.teach_study_insert);
-            tv_bottomRight.setText("填写评课表");
         }
     }
 
@@ -323,8 +275,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
                 videoFragment.setFullScreen(false);
             }
             showOutSize();
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) fl_video.getLayoutParams();
-            params.height = smallHeight;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, smallHeight);
             fl_video.setLayoutParams(params);
         } else { //横屏
             if (videoFragment != null) {
@@ -335,28 +286,23 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
             int screenHeight = ScreenUtils.getScreenHeight(context);
             int statusHeight = ScreenUtils.getStatusHeight(context);
             int realHeight = screenHeight - statusHeight;
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) fl_video.getLayoutParams();
-            params.weight = screeWidth;
-            params.height = realHeight;
-            params.setMargins(0, 0, 0, 0);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(screeWidth, realHeight);
             fl_video.setLayoutParams(params);
         }
     }
 
     private void showOutSize() {
-        tv_time.setVisibility(View.VISIBLE);
         toolBar.setVisibility(View.VISIBLE);
         ll_outSideTop.setVisibility(View.VISIBLE);
         ll_videoOutSide.setVisibility(View.VISIBLE);
-        ll_outSideBottom.setVisibility(View.VISIBLE);
+        tv_bottomView.setVisibility(View.VISIBLE);
     }
 
     private void hideOutSize() {
         toolBar.setVisibility(View.GONE);
-        tv_time.setVisibility(View.GONE);
         ll_outSideTop.setVisibility(View.GONE);
         ll_videoOutSide.setVisibility(View.GONE);
-        ll_outSideBottom.setVisibility(View.GONE);
+        tv_bottomView.setVisibility(View.GONE);
     }
 
     @Override
@@ -372,7 +318,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     public void initData() {
         tv_more_reply.setVisibility(View.GONE);
         showTipDialog();
-        String url = Constants.OUTRT_NET + "/m/comment?relation.id=" + activityId + "&relation.type=lcec&orders=CREATE_TIME.ASC&limit=5";
+        String url = Constants.OUTRT_NET + "/m/comment?relation.id=" + activityId + "&relation.type=discuss_class&orders=CREATE_TIME.ASC&limit=5";
         addSubscription(Flowable.just(url).map(new Function<String, CommentListResult>() {
             @Override
             public CommentListResult apply(String url) throws Exception {
@@ -403,7 +349,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
                 && commentListResult.getResponseData().getmComments().size() > 0) {
             for (int i = 0; i < commentListResult.getResponseData().getmComments().size(); i++) {
                 String mainPostId = commentListResult.getResponseData().getmComments().get(i).getId();
-                url = Constants.OUTRT_NET + "/m/comment?relation.id=" + activityId + "&relation.type=lcec"
+                url = Constants.OUTRT_NET + "/m/comment?relation.id=" + activityId + "&relation.type=discuss_class"
                         + "&mainId=" + mainPostId + "&orders=CREATE_TIME.ASC";
                 try {
                     String Jsonarr = OkHttpClientManager.getAsString(context, url);
@@ -471,15 +417,8 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void setListener() {
-        ll_right.setOnClickListener(context);
-        ll_left.setOnClickListener(context);
-        loadFailView.setOnRetryListener(new LoadFailView.OnRetryListener() {
-            @Override
-            public void onRetry(View v) {
-                initData();
-            }
-        });
         tv_more_reply.setOnClickListener(context);
+        tv_bottomView.setOnClickListener(context);
         adapter.setCommentCallBack(new AppCommentAdapter.CommentCallBack() {
             @Override
             public void comment(int position, CommentEntity entity) {
@@ -504,7 +443,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
                 replyPosition = position;
                 Intent intent = new Intent(context, AppMoreReplyActivity.class);
                 intent.putExtra("entity", entity);
-                intent.putExtra("relationType", "lcec");
+                intent.putExtra("relationType", "discuss_class");
                 intent.putExtra("relationId", activityId);
                 startActivity(intent);
             }
@@ -523,38 +462,18 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View view) {
-        Intent intent = new Intent();
         switch (view.getId()) {
             case R.id.tv_more_reply:
-                intent.setClass(context, AppMoreCommentActivity.class);
+                Intent intent = new Intent(context, AppMoreCommentActivity.class);
                 intent.putExtra("relationId", activityId);
-                intent.putExtra("relationType", "lcec");
+                intent.putExtra("relationType", "discuss_class");
                 startActivity(intent);
                 return;
-            case R.id.ll_left:
+            case R.id.tv_bottomView:
                 if (running) {
                     showCommentDialog(false);
                 } else {
                     showMaterialDialog("提示", "活动已结束,无法参与听课评课");
-                }
-                return;
-            case R.id.ll_right:
-                if (hasSubmitEvaluate) {
-                    //查看听课评课明细
-                    intent.setClass(context, TeachingStudyResultDetailActiivty.class);
-                    intent.putExtra("workshopId", workshopId);
-                    intent.putExtra("leceId", lcecEntity.getId());
-                    startActivity(intent);
-                } else {
-                    //填写评课表
-                    if (running) {
-                        intent.setClass(context, TeachingStudyFillActivity.class);
-                        intent.putExtra("workshopId", workshopId);
-                        intent.putExtra("leceId", lcecEntity.getId());
-                        startActivityForResult(intent, 1);
-                    } else {
-                        showMaterialDialog("提示", "活动已结束,无法参与听课评课");
-                    }
                 }
                 return;
         }
@@ -580,7 +499,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
         String url = Constants.OUTRT_NET + "/m/comment";
         Map<String, String> map = new HashMap<>();
         map.put("relation.id", activityId);
-        map.put("relation.type", "lcec");
+        map.put("relation.type", "discuss_class");
         map.put("content", content);
         addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<CommentEntity>>() {
             @Override
@@ -637,7 +556,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
         String url = Constants.OUTRT_NET + "/m/comment";
         Map<String, String> map = new HashMap<>();
         map.put("relation.id", activityId);
-        map.put("relation.type", "lcec");
+        map.put("relation.type", "discuss_class");
         map.put("content", content);
         map.put("mainId", mComments.get(childPosition).getId());
         addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<CommentEntity>>() {
@@ -745,15 +664,6 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            hasSubmitEvaluate = true;
-            setBottom_layout(hasSubmitEvaluate);
-        }
-    }
-
-    @Override
     public void obBusEvent(MessageEvent event) {
         if (event.action.equals(Action.CREATE_CHILD_COMMENT)) {
             if (event.getBundle() != null && event.getBundle().getSerializable("mainComment") != null
@@ -796,4 +706,5 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
             }
         }
     }
+
 }
