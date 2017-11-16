@@ -3,9 +3,16 @@ package com.haoyu.app.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.text.method.ScrollingMovementMethod;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -20,10 +27,12 @@ import com.haoyu.app.download.DownloadManager;
 import com.haoyu.app.download.DownloadTask;
 import com.haoyu.app.entity.MFileInfo;
 import com.haoyu.app.filePicker.FileUtils;
+import com.haoyu.app.fragment.VideoPlayerFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.MediaFile;
+import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.view.AppToolBar;
 import com.haoyu.app.view.RoundRectProgressBar;
 
@@ -75,6 +84,11 @@ public class MFileInfoActivity extends BaseActivity {
     @BindView(R.id.tv_txt)
     TextView tv_txt;
 
+    @BindView(R.id.container)
+    FrameLayout container;  //视频文件
+    private int smallHeight;
+    private VideoPlayerFragment videoFragment;
+
     private boolean isDownload, isKonw;
     private String fileRoot = Constants.fileDownDir;
     private String url, fileName, filePath;
@@ -102,8 +116,82 @@ public class MFileInfoActivity extends BaseActivity {
             intent.putExtra("fileName", fileName);
             startActivity(intent);
             finish();
-        } else
+        } else if (MediaFile.isVideoFileType(url)) {
+            setVideoFragment();
+        } else {
+            ll_fileInfo.setVisibility(View.VISIBLE);
             previewFile(mFileInfo);
+        }
+    }
+
+    private void setVideoFragment() {
+        container.setBackgroundColor(ContextCompat.getColor(context, R.color.videoplayer_control));
+        smallHeight = ScreenUtils.getScreenHeight(context) / 5 * 2;
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) container.getLayoutParams();
+        params.height = smallHeight;
+        container.setLayoutParams(params);
+        videoFragment = new VideoPlayerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("videoUrl", url);
+        videoFragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.container, videoFragment).commit();
+        videoFragment.setOnRequestedOrientation(new VideoPlayerFragment.OnRequestedOrientation() {
+            @Override
+            public void onRequested(int orientation) {
+                setRequestedOrientation(orientation);
+            }
+        });
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // 判断Android当前的屏幕是横屏还是竖屏。横竖屏判断
+        setOrientattion(newConfig.orientation);
+    }
+
+    private void setOrientattion(int orientation) {
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {   //竖屏
+            if (videoFragment != null) {
+                videoFragment.setFullScreen(false);
+            }
+            showOutSize();
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) container.getLayoutParams();
+            params.height = smallHeight;
+            container.setLayoutParams(params);
+        } else { //横屏
+            if (videoFragment != null) {
+                videoFragment.setFullScreen(true);
+            }
+            hideOutSize();
+            int screeWidth = ScreenUtils.getScreenWidth(context);
+            int screenHeight = ScreenUtils.getScreenHeight(context);
+            int statusHeight = ScreenUtils.getStatusHeight(context);
+            int realHeight = screenHeight - statusHeight;
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) container.getLayoutParams();
+            params.weight = screeWidth;
+            params.height = realHeight;
+            params.setMargins(0, 0, 0, 0);
+            container.setLayoutParams(params);
+        }
+    }
+
+    private void showOutSize() {
+        toolBar.setVisibility(View.VISIBLE);
+    }
+
+    private void hideOutSize() {
+        toolBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     private void previewFile(MFileInfo mFileInfo) {

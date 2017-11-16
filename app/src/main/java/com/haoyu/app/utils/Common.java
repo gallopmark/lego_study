@@ -190,6 +190,8 @@ public class Common {
                 iv_fileType.setImageResource(R.drawable.resources_zip);
             } else if (getFileType(url).equals(".APK")) {
                 iv_fileType.setImageResource(R.drawable.ic_launcher);
+            } else if (MediaFile.isVideoFileType(url)) {
+                iv_fileType.setImageResource(R.drawable.resources_video);
             } else {
                 iv_fileType.setImageResource(R.drawable.resources_unknown);
             }

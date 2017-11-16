@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:background="@color/white">
 
     <com.haoyu.app.view.AppToolBar
         android:id="@+id/toolBar"
@@ -61,7 +60,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_discussTime"
+                android:id="@+id/tv_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/spaceColor"
@@ -73,7 +72,7 @@
                 android:textSize="@dimen/font_size_16" />
 
             <TextView
-                android:id="@+id/tv_discussTitle"
+                android:id="@+id/tv_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/margin_size_12"
@@ -112,63 +111,20 @@
                     android:textSize="@dimen/font_size_14" />
             </LinearLayout>
 
-            <org.sufficientlysecure.htmltextview.HtmlTextView
-                android:id="@+id/tv_discussContent"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="@dimen/margin_size_4"
                 android:padding="@dimen/margin_size_12"
                 android:textSize="@dimen/font_size_16" />
 
-            <LinearLayout
-                android:id="@+id/ll_fileLayout"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rv_file"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_size_10"
-                    android:background="@color/spaceColor" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/biaotiyuan"
-                        android:drawablePadding="@dimen/margin_size_5"
-                        android:padding="@dimen/margin_size_12"
-                        android:text="相关文档"
-                        android:textSize="@dimen/font_size_16" />
-
-                    <LinearLayout
-                        android:id="@+id/fileIndicator"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="@dimen/margin_size_10"
-                        android:gravity="right"
-                        android:orientation="horizontal" />
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/margin_size_1"
-                    android:background="@color/spaceColor" />
-
-                <com.haoyu.app.view.DecoratorViewPager
-                    android:id="@+id/viewPager"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:nestedScrollingEnabled="true"
-                    android:overScrollMode="never" />
-            </LinearLayout>
+                android:nestedScrollingEnabled="false"
+                android:overScrollMode="never"
+                android:visibility="gone" />
 
             <LinearLayout
                 android:id="@+id/ll_discussion"
@@ -182,29 +138,14 @@
                 android:visibility="gone">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/discussion_pinglun"
-                    android:drawablePadding="@dimen/margin_size_6"
-                    android:text="已有 "
-                    android:textColor="@color/blow_gray"
-                    android:textSize="@dimen/font_size_16" />
-
-                <TextView
                     android:id="@+id/tv_discussCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_size_2"
-                    android:layout_marginRight="@dimen/margin_size_2"
+                    android:layout_gravity="center"
+                    android:drawableLeft="@drawable/discussion_pinglun"
+                    android:drawablePadding="@dimen/margin_size_6"
                     android:gravity="center"
-                    android:text="1666"
-                    android:textColor="@color/blow_gray"
-                    android:textSize="@dimen/font_size_16" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" 条回复"
+                    android:text="已有 1666 条回复"
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_16" />
             </LinearLayout>
@@ -214,14 +155,6 @@
                 android:layout_height="match_parent"
                 android:descendantFocusability="blocksDescendants">
 
-                <com.haoyu.app.view.LoadingView
-                    android:id="@+id/loadingView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_margin="@dimen/margin_size_30"
-                    android:visibility="gone" />
-
                 <com.haoyu.app.view.LoadFailView
                     android:id="@+id/loadFailView"
                     android:layout_width="wrap_content"
@@ -230,67 +163,19 @@
                     android:layout_margin="@dimen/margin_size_30"
                     android:visibility="gone" />
 
-                <LinearLayout
-                    android:id="@+id/empty_comment"
+                <TextView
+                    android:id="@+id/tv_emptyComment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_margin="@dimen/margin_size_30"
+                    android:drawablePadding="@dimen/margin_size_10"
+                    android:drawableTop="@drawable/empty_list"
                     android:gravity="center"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/empty_list" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/margin_size_10"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="目前还没人参与研讨，"
-                            android:textColor="@color/gray"
-                            android:textSize="@dimen/font_size_16" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="赶紧去"
-                                android:textColor="@color/gray"
-                                android:textSize="@dimen/font_size_16" />
-
-                            <TextView
-                                android:id="@+id/tv_comment"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginLeft="@dimen/margin_size_2"
-                                android:layout_marginRight="@dimen/margin_size_2"
-                                android:text="参与研讨发表意见"
-                                android:textColor="@color/defaultColor"
-                                android:textSize="@dimen/font_size_16" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="吧！"
-                                android:textColor="@color/gray"
-                                android:textSize="@dimen/font_size_16" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
+                    android:lineSpacingExtra="@dimen/margin_size_2"
+                    android:textColor="@color/blow_gray"
+                    android:textSize="@dimen/font_size_16"
+                    android:visibility="gone" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerView"
@@ -329,5 +214,6 @@
         android:padding="@dimen/margin_size_12"
         android:text="输入内容，参与研讨"
         android:textColor="@color/blow_gray"
-        android:textSize="@dimen/font_size_16" />
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
 </RelativeLayout>

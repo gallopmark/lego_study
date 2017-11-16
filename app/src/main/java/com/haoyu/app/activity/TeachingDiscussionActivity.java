@@ -1,24 +1,28 @@
 package com.haoyu.app.activity;
 
 import android.content.Intent;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haoyu.app.adapter.AppDiscussionAdapter;
+import com.haoyu.app.adapter.MFileInfoAdapter;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
+import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.dialog.CommentDialog;
 import com.haoyu.app.entity.AppActivityViewEntity;
 import com.haoyu.app.entity.AppActivityViewResult;
@@ -34,17 +38,15 @@ import com.haoyu.app.entity.TimePeriod;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.utils.Action;
-import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
+import com.haoyu.app.view.FullyLinearLayoutManager;
 import com.haoyu.app.view.LoadFailView;
-import com.haoyu.app.view.LoadingView;
 import com.haoyu.app.view.StickyScrollView;
 
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter;
-import org.sufficientlysecure.htmltextview.HtmlTextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -76,36 +78,28 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
     TextView tv_close;
     @BindView(R.id.scrollView)
     StickyScrollView scrollView;
-    @BindView(R.id.tv_discussTime)
-    TextView tv_discussTime;   //教学研讨时间
-    @BindView(R.id.tv_discussTitle)
-    TextView tv_discussTitle;  //教学研讨标题
+    @BindView(R.id.tv_time)
+    TextView tv_time;   //教学研讨时间
+    @BindView(R.id.tv_title)
+    TextView tv_title;  //教学研讨标题
     @BindView(R.id.tv_partNum)
     TextView tv_partNum;   //参与人数
     @BindView(R.id.tv_browseNum)
     TextView tv_browseNum;   //浏览人数
-    @BindView(R.id.tv_discussContent)
-    HtmlTextView tv_discussContent;   //教学研讨内容
-    @BindView(R.id.ll_fileLayout)
-    LinearLayout ll_fileLayout;   //文档
-    @BindView(R.id.fileIndicator)
-    LinearLayout fileIndicator;  //指示器
-    @BindView(R.id.viewPager)
-    ViewPager viewPager;
+    @BindView(R.id.tv_content)
+    TextView tv_content;   //教学研讨内容
+    @BindView(R.id.rv_file)
+    RecyclerView rv_file;
     @BindView(R.id.ll_discussion)
     LinearLayout ll_discussion;
     @BindView(R.id.tv_discussCount)
     TextView tv_discussCount;   //研讨回复数量
-    @BindView(R.id.loadingView)
-    LoadingView loadingView;
     @BindView(R.id.loadFailView)
     LoadFailView loadFailView;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-    @BindView(R.id.empty_comment)
-    LinearLayout empty_comment;
-    @BindView(R.id.tv_comment)
-    TextView tv_comment;
+    @BindView(R.id.tv_emptyComment)
+    TextView tv_emptyComment;
     @BindView(R.id.tv_more_reply)
     TextView tv_more_reply;   //更多回复内容
     @BindView(R.id.tv_bottomView)
@@ -115,10 +109,10 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
     private String discussType, activityId, workshopId, discussionRelationId, baseUrl, postUrl;
     private int needMainNum, needSubNum, mainNum, subNum;  //要求完成主回复，子回复；已完成主回复，子回复。
     private AppActivityViewEntity.DiscussionUserMobileEntity discussEntity;
-    private ImageView[] fileIndicatorViews;
     private int discussNum;//总回复数
     private List<ReplyEntity> mDatas = new ArrayList<>();
     private AppDiscussionAdapter adapter;
+    private int childPosition, replyPosition;
 
     @Override
     public int setLayoutResID() {
@@ -139,10 +133,10 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
         discussEntity = (AppActivityViewEntity.DiscussionUserMobileEntity) getIntent().getSerializableExtra("discussUser");
         if (discussType != null && discussType.equals("course")) {
             baseUrl = Constants.OUTRT_NET + "/" + activityId + "/study/m/discussion/post";
-            postUrl = Constants.OUTRT_NET + "/" + activityId + "unique_uid_" + getUserId() + "/m/discussion/post";
+            postUrl = Constants.OUTRT_NET + "/" + activityId + "/unique_uid_" + getUserId() + "/m/discussion/post";
         } else {
             baseUrl = Constants.OUTRT_NET + "/student_" + workshopId + "/m/discussion/post";
-            postUrl = Constants.OUTRT_NET + "/student_" + workshopId + "unique_uid_" + getUserId() + "/m/discussion/post";
+            postUrl = Constants.OUTRT_NET + "/student_" + workshopId + "/unique_uid_" + getUserId() + "/m/discussion/post";
         }
         setSupportToolbar();
         showTips();
@@ -206,133 +200,74 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
         }
     }
 
-    private void showData(DiscussEntity discussEntity) {
+    private void showData(DiscussEntity entity) {
         if (running) {
             if (timePeriod != null && timePeriod.getMinutes() > 0) {
                 String time = "离活动结束还剩：" + TimeUtil.dateDiff(timePeriod.getMinutes());
-                tv_discussTime.setText(Html.fromHtml(time));
+                tv_time.setText(Html.fromHtml(time));
             } else {
                 if (timePeriod != null && timePeriod.getState() != null) {
-                    tv_discussTime.setText("活动" + timePeriod.getState());
+                    tv_time.setText("活动" + timePeriod.getState());
                 } else {
-                    tv_discussTime.setText("活动进行中");
+                    tv_time.setText("活动进行中");
                 }
             }
         } else {
-            tv_discussTime.setText("活动已结束");
+            tv_time.setText("活动已结束");
         }
-        if (discussEntity.getmDiscussionRelations() != null && discussEntity.getmDiscussionRelations().size() > 0) {
-            int browseNum = discussEntity.getmDiscussionRelations().get(0).getBrowseNum();
+        if (entity.getmDiscussionRelations() != null && entity.getmDiscussionRelations().size() > 0) {
+            int browseNum = entity.getmDiscussionRelations().get(0).getBrowseNum();
             tv_browseNum.setText("浏览人数：" + browseNum);
-            int followNum = discussEntity.getmDiscussionRelations().get(0).getParticipateNum();
+            int followNum = entity.getmDiscussionRelations().get(0).getParticipateNum();
             tv_partNum.setText("参与人数：" + followNum);
         }
-        if (discussEntity.getTitle() != null)
-            tv_discussTitle.setText(Html.fromHtml(discussEntity.getTitle()));
-        tv_discussContent.setHtml(discussEntity.getContent(), new HtmlHttpImageGetter(tv_discussContent, Constants.REFERER));
-        if (discussEntity.getmFileInfos() != null && discussEntity.getmFileInfos().size() > 0) {
-            ll_fileLayout.setVisibility(View.VISIBLE);
-            FilePageAdapter filePageAdapter = new FilePageAdapter(discussEntity.getmFileInfos());
-            viewPager.setAdapter(filePageAdapter);
-            if (discussEntity.getmFileInfos().size() > 1) {
-                fileIndicatorViews = new ImageView[discussEntity.getmFileInfos().size()];
-                for (int i = 0; i < discussEntity.getmFileInfos().size(); i++) {   //位置从0开始 页数从1开始
-                    fileIndicatorViews[i] = new ImageView(context);
-                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                    params.leftMargin = (int) getResources().getDimension(R.dimen.margin_size_5);
-                    fileIndicatorViews[i].setLayoutParams(params);
-                    fileIndicatorViews[i].setImageResource(R.drawable.course_yuandian_default);
-                    fileIndicator.addView(fileIndicatorViews[i]);
-                }
-                fileIndicatorViews[0].setImageResource(R.drawable.course_yuandian_press);
-            }
+        if (entity.getTitle() != null) {
+            tv_title.setText(Html.fromHtml(entity.getTitle()));
+        }
+        setContent_text(entity.getContent());
+        setFileInfos(entity.getmFileInfos());
+    }
 
-            viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-                @Override
-                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-                }
-
-                @Override
-                public void onPageSelected(int position) {
-                    if (fileIndicatorViews != null && fileIndicatorViews.length > 0) {
-                        for (int i = 0; i < fileIndicatorViews.length; i++) {
-                            if (i == position)
-                                fileIndicatorViews[i].setImageResource(R.drawable.course_yuandian_press);
-                            else
-                                fileIndicatorViews[i].setImageResource(R.drawable.course_yuandian_default);
-                        }
-                    }
-                }
-
-                @Override
-                public void onPageScrollStateChanged(int state) {
-
-                }
-            });
+    private void setContent_text(String content) {
+        if (content != null && content.trim().length() > 0) {
+            Html.ImageGetter imageGetter = new HtmlHttpImageGetter(tv_content, Constants.REFERER, true);
+            Spanned spanned = Html.fromHtml(content, imageGetter, null);
+            tv_content.setMovementMethod(LinkMovementMethod.getInstance());
+            tv_content.setText(spanned);
+            tv_content.setVisibility(View.VISIBLE);
         } else {
-            ll_fileLayout.setVisibility(View.GONE);
+            tv_content.setVisibility(View.GONE);
         }
     }
 
-    class FilePageAdapter extends PagerAdapter {
-        private List<MFileInfo> fileInfos;
-
-        public FilePageAdapter(List<MFileInfo> fileInfos) {
-            this.fileInfos = fileInfos;
-        }
-
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }
-
-        @Override
-        public int getCount() {
-            return fileInfos.size();
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object obj) {
-            return view == obj;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            View view = getLayoutInflater().inflate(R.layout.page_file_item, null);
-            ImageView iv_fileType = view.findViewById(R.id.iv_fileType);
-            TextView tv_mFileName = view.findViewById(R.id.tv_mFileName);
-            TextView tv_mFileSize = view.findViewById(R.id.tv_mFileSize);
-            final MFileInfo fileInfo = fileInfos.get(position);
-            Common.setFileType(fileInfo.getUrl(), iv_fileType);
-            tv_mFileName.setText(fileInfo.getFileName());
-            tv_mFileSize.setText(Common.FormetFileSize(fileInfo.getFileSize()));
-            view.setOnClickListener(new View.OnClickListener() {
+    private void setFileInfos(final List<MFileInfo> fileInfos) {
+        if (fileInfos != null && fileInfos.size() > 0) {
+            rv_file.setVisibility(View.VISIBLE);
+            FullyLinearLayoutManager layoutManager = new FullyLinearLayoutManager(context);
+            layoutManager.setOrientation(FullyLinearLayoutManager.VERTICAL);
+            rv_file.setLayoutManager(layoutManager);
+            MFileInfoAdapter adapter = new MFileInfoAdapter(fileInfos, true);
+            rv_file.setAdapter(adapter);
+            rv_file.setAdapter(adapter);
+            adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
                 @Override
-                public void onClick(View v) {
-                    if (fileInfo.getUrl() == null)
-                        toast(context, "下载的链接不存在");
-                    else {
-                        Intent intent = new Intent(context, MFileInfoActivity.class);
-                        intent.putExtra("fileInfo", fileInfo);
-                        startActivity(intent);
-                    }
+                public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
+                    MFileInfo fileInfo = fileInfos.get(position);
+                    Intent intent = new Intent(context, MFileInfoActivity.class);
+                    intent.putExtra("fileInfo", fileInfo);
+                    startActivity(intent);
                 }
             });
-            container.addView(view, 0);//添加页卡
-            return view;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);//删除页卡
+        } else {
+            rv_file.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void initData() {
         String url = baseUrl + "?discussionUser.discussionRelation.id=" + discussionRelationId + "&orders=CREATE_TIME.ASC&limit=5";
-        loadingView.setVisibility(View.VISIBLE);
         tv_more_reply.setVisibility(View.GONE);
+        showTipDialog();
         addSubscription(Flowable.just(url).map(new Function<String, ReplyListResult>() {
             @Override
             public ReplyListResult apply(String url) throws Exception {
@@ -348,13 +283,13 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
                 .subscribe(new Consumer<ReplyListResult>() {
                     @Override
                     public void accept(ReplyListResult response) throws Exception {
-                        loadingView.setVisibility(View.GONE);
+                        hideTipDialog();
                         updateUI(response);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
-                        loadingView.setVisibility(View.GONE);
+                        hideTipDialog();
                         loadFailView.setVisibility(View.VISIBLE);
                     }
                 }));
@@ -389,23 +324,57 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
 
     private void updateUI(ReplyListResult response) {
         mDatas.clear();
-        ll_discussion.setVisibility(View.VISIBLE);
+        if (ll_discussion.getVisibility() != View.VISIBLE) {
+            ll_discussion.setVisibility(View.VISIBLE);
+        }
+        if (tv_bottomView.getVisibility() != View.VISIBLE) {
+            tv_bottomView.setVisibility(View.VISIBLE);
+        }
         if (response != null && response.getResponseData() != null && response.getResponseData().getmDiscussionPosts() != null
                 && response.getResponseData().getmDiscussionPosts().size() > 0) {
             recyclerView.setVisibility(View.VISIBLE);
             mDatas.addAll(response.getResponseData().getmDiscussionPosts());
             adapter.notifyDataSetChanged();
-            if (response.getResponseData().getPaginator() != null && response.getResponseData().getPaginator().getHasNextPage())
-                tv_more_reply.setVisibility(View.VISIBLE);
-            if (response.getResponseData().getPaginator() != null)
+            if (response.getResponseData().getPaginator() != null) {
+                if (response.getResponseData().getPaginator().getHasNextPage()) {
+                    tv_more_reply.setText("查看所有评论");
+                    tv_more_reply.setVisibility(View.VISIBLE);
+                }
                 discussNum = response.getResponseData().getPaginator().getTotalCount();
+            }
         } else {
-            empty_comment.setVisibility(View.VISIBLE);
+            setEmpty_text();
         }
-        tv_discussCount.setText(String.valueOf(discussNum));
+        setDiscussCount(discussNum);
     }
 
-    private int childPosition, replyPosition;
+    private void setEmpty_text() {
+        tv_emptyComment.setVisibility(View.VISIBLE);
+        String text = "目前还没人参与评论，\n赶紧去发表您的评论吧！";
+        SpannableString ssb = new SpannableString(text);
+        int start = text.indexOf("去") + 1;
+        int end = text.indexOf("吧");
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                if (running) {
+                    showCommentDialog(false);
+                } else {
+                    showMaterialDialog("提示", "活动已结束，无法参与研讨");
+                }
+            }
+        };
+        ssb.setSpan(clickableSpan, start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ssb.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.defaultColor)),
+                start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tv_emptyComment.setMovementMethod(LinkMovementMethod.getInstance());
+        tv_emptyComment.setText(ssb);
+    }
+
+    private void setDiscussCount(int discussNum) {
+        String text = "已有 " + discussNum + " 回复";
+        tv_discussCount.setText(text);
+    }
 
     @Override
     public void setListener() {
@@ -417,7 +386,6 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
             }
         });
         ll_discussion.setOnClickListener(context);
-        tv_comment.setOnClickListener(context);
         tv_bottomView.setOnClickListener(context);
         tv_more_reply.setOnClickListener(context);
         adapter.setOnPostClickListener(new AppDiscussionAdapter.OnPostClickListener() {
@@ -507,11 +475,11 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
             public void onResponse(ReplyResult response) {
                 hideTipDialog();
                 if (response != null && response.getResponseData() != null) {
-                    ReplyEntity entity = response.getResponseData();
-                    entity.setCreator(entity.getCreator());
                     int childPostCount = mDatas.get(position).getChildPostCount() + 1;
                     mDatas.get(position).setChildPostCount(childPostCount);
                     if (mDatas.get(position).getChildReplyEntityList() != null && mDatas.get(position).getChildReplyEntityList().size() < 10) {
+                        ReplyEntity entity = response.getResponseData();
+                        entity.setCreator(getCreator(entity.getCreator()));
                         mDatas.get(position).getChildReplyEntityList().add(entity);
                     } else {
                         toastFullScreen("评论成功", true);
@@ -547,11 +515,11 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
                 if (response != null && response.getResponseData() != null) {
                     if (recyclerView.getVisibility() != View.VISIBLE)
                         recyclerView.setVisibility(View.VISIBLE);
-                    if (empty_comment.getVisibility() != View.GONE)
-                        empty_comment.setVisibility(View.GONE);
+                    if (tv_emptyComment.getVisibility() != View.GONE)
+                        tv_emptyComment.setVisibility(View.GONE);
                     if (mDatas.size() < 5) {
                         ReplyEntity entity = response.getResponseData();
-                        entity.setCreator(entity.getCreator());
+                        entity.setCreator(getCreator(entity.getCreator()));
                         mDatas.add(entity);
                         adapter.notifyDataSetChanged();
                     } else {
@@ -560,7 +528,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
                     }
                     getActivityInfo();
                     discussNum++;
-                    tv_discussCount.setText(String.valueOf(discussNum));
+                    setDiscussCount(discussNum);
                 } else {
                     toastFullScreen("评论失败", false);
                 }
@@ -640,10 +608,10 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
                     adapter.notifyDataSetChanged();
                     if (mDatas.size() == 0) {
                         recyclerView.setVisibility(View.GONE);
-                        empty_comment.setVisibility(View.VISIBLE);
+                        tv_emptyComment.setVisibility(View.VISIBLE);
                     }
                     discussNum--;
-                    tv_discussCount.setText(String.valueOf(discussNum));
+                    setDiscussCount(discussNum);
                     getActivityInfo();
                     initData();
                 }
@@ -721,7 +689,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
     public void obBusEvent(MessageEvent event) {
         if (event.action.equals(Action.CREATE_MAIN_REPLY) && event.obj != null && event.obj instanceof ReplyEntity) {
             discussNum++;
-            tv_discussCount.setText(String.valueOf(discussNum));
+            setDiscussCount(discussNum);
             ReplyEntity entity = (ReplyEntity) event.obj;
             if (mDatas.size() < 5) {
                 mDatas.add(entity);
@@ -765,7 +733,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
         } else if (event.action.equals(Action.DELETE_MAIN_REPLY) && event.obj != null
                 && event.obj instanceof ReplyEntity) {
             discussNum--;
-            tv_discussCount.setText(String.valueOf(discussNum));
+            setDiscussCount(discussNum);
             ReplyEntity entity = (ReplyEntity) event.obj;
             if (mDatas.contains(entity)) {
                 mDatas.remove(entity);

@@ -43,7 +43,6 @@ import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.utils.Action;
 import com.haoyu.app.utils.Constants;
-import com.haoyu.app.utils.HtmlTagHandler;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.utils.TimeUtil;
@@ -256,17 +255,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
     private void setContext_text(String content) {
         if (content != null && content.trim().length() > 0) {
             Html.ImageGetter imageGetter = new HtmlHttpImageGetter(tv_content, Constants.REFERER, true);
-            HtmlTagHandler tagHandler = new HtmlTagHandler(new HtmlTagHandler.OnImageClickListener() {
-                @Override
-                public void onImageClick(View view, String url) {
-                    ArrayList<String> imgList = new ArrayList<>();
-                    imgList.add(Constants.REFERER + url);
-                    Intent intent = new Intent(context, AppMultiImageShowActivity.class);
-                    intent.putStringArrayListExtra("photos", imgList);
-                    startActivity(intent);
-                }
-            });
-            Spanned spanned = Html.fromHtml(content, imageGetter, tagHandler);
+            Spanned spanned = Html.fromHtml(content, imageGetter, null);
             tv_content.setMovementMethod(LinkMovementMethod.getInstance());
             tv_content.setText(spanned);
             tv_content.setVisibility(View.VISIBLE);
