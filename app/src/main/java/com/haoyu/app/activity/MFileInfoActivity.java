@@ -1,32 +1,32 @@
 package com.haoyu.app.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
-import android.text.method.ScrollingMovementMethod;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.barteksc.pdfviewer.PDFView;
-import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.download.DownloadListener;
 import com.haoyu.app.download.DownloadManager;
 import com.haoyu.app.download.DownloadTask;
 import com.haoyu.app.entity.MFileInfo;
 import com.haoyu.app.filePicker.FileUtils;
+import com.haoyu.app.fragment.OfficeViewerFragment;
+import com.haoyu.app.fragment.PDFViewerFragment;
+import com.haoyu.app.fragment.PictureViewerFragment;
+import com.haoyu.app.fragment.TxtViewerFragment;
 import com.haoyu.app.fragment.VideoPlayerFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
@@ -36,11 +36,7 @@ import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.view.AppToolBar;
 import com.haoyu.app.view.RoundRectProgressBar;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,6 +49,8 @@ import butterknife.BindView;
  */
 public class MFileInfoActivity extends BaseActivity {
     private MFileInfoActivity context = this;
+    @BindView(R.id.rootView)
+    LinearLayout rootView;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.ll_fileInfo)
@@ -63,12 +61,8 @@ public class MFileInfoActivity extends BaseActivity {
     TextView tv_fileName;   //文件名称
     @BindView(R.id.tv_fileSize)
     TextView tv_fileSize;   //文件大小
-    @BindView(R.id.tv_nonsupport)
-    TextView tv_nonsupport;  //文件不支持在线预览
-    @BindView(R.id.ll_support)
-    LinearLayout ll_support;   //文件支持在线预览（office文件）,调用第三方（微软）打开
-    @BindView(R.id.tv_support)
-    TextView tv_support;
+    @BindView(R.id.tv_tips)
+    TextView tv_tips;  //文件不支持在线预览
     @BindView(R.id.bt_download)
     Button bt_download;  //下载、继续下载、打开文件按钮
     @BindView(R.id.ll_downloadInfo)
@@ -79,20 +73,17 @@ public class MFileInfoActivity extends BaseActivity {
     RoundRectProgressBar downloadBar;  //显示文件下载进度
     @BindView(R.id.iv_pause)
     ImageView iv_pause;   //暂停下载按钮
-    @BindView(R.id.pdfView)
-    PDFView pdfView;
-    @BindView(R.id.tv_txt)
-    TextView tv_txt;
 
     @BindView(R.id.container)
     FrameLayout container;  //视频文件
     private int smallHeight;
+    private FragmentManager fragmentManager;
     private VideoPlayerFragment videoFragment;
 
-    private boolean isDownload, isKonw;
+    private OfficeViewerFragment officeFragment;
+    private boolean isDownload;
     private String fileRoot = Constants.fileDownDir;
     private String url, fileName, filePath;
-    private AlertDialog gestureDialog;
 
     @Override
     public int setLayoutResID() {
@@ -110,12 +101,9 @@ public class MFileInfoActivity extends BaseActivity {
         }
         url = mFileInfo.getUrl();
         fileName = mFileInfo.getFileName();
+        fragmentManager = getSupportFragmentManager();
         if (MediaFile.isImageFileType(url)) {
-            Intent intent = new Intent(context, MFileInfoPreViewActivity.class);
-            intent.putExtra("url", url);
-            intent.putExtra("fileName", fileName);
-            startActivity(intent);
-            finish();
+            setPictureFragment();
         } else if (MediaFile.isVideoFileType(url)) {
             setVideoFragment();
         } else {
@@ -124,8 +112,16 @@ public class MFileInfoActivity extends BaseActivity {
         }
     }
 
+    private void setPictureFragment() {
+        PictureViewerFragment fragment = new PictureViewerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("url", url);
+        fragment.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+    }
+
     private void setVideoFragment() {
-        container.setBackgroundColor(ContextCompat.getColor(context, R.color.videoplayer_control));
+        rootView.setBackgroundColor(ContextCompat.getColor(context, R.color.videoplayer_control));
         smallHeight = ScreenUtils.getScreenHeight(context) / 5 * 2;
         LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) container.getLayoutParams();
         params.height = smallHeight;
@@ -134,7 +130,6 @@ public class MFileInfoActivity extends BaseActivity {
         Bundle bundle = new Bundle();
         bundle.putString("videoUrl", url);
         videoFragment.setArguments(bundle);
-        FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.container, videoFragment).commit();
         videoFragment.setOnRequestedOrientation(new VideoPlayerFragment.OnRequestedOrientation() {
             @Override
@@ -187,9 +182,15 @@ public class MFileInfoActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK && getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                return true;
+            } else if (officeFragment != null) {
+                fragmentManager.beginTransaction().remove(officeFragment).commit();
+                officeFragment = null;
+                return true;
+            }
         }
         return super.onKeyDown(keyCode, event);
     }
@@ -214,68 +215,20 @@ public class MFileInfoActivity extends BaseActivity {
 
     /*打开pdf文件*/
     private void openPdfFile(String filePath) {
-        ll_fileInfo.setVisibility(View.GONE);
-        pdfView.setVisibility(View.VISIBLE);
-        pdfView.fromFile(new File(filePath))
-                .swipeHorizontal(true)
-                .defaultPage(0)
-                .enableDoubletap(true)
-                .enableSwipe(false)
-                .scrollHandle(new DefaultScrollHandle(context))
-                .onLoad(new OnLoadCompleteListener() {
-                    @Override
-                    public void loadComplete(int nbPages) {
-                        if (!isKonw) {
-                            showGestureDialog();
-                        }
-                    }
-                })
-                .load();
+        PDFViewerFragment fragment = new PDFViewerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("filePath", filePath);
+        fragment.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     /*打开txt文件*/
     private void openTxtFile(String filePath) {
-        File file = new File(filePath);
-        BufferedReader reader;
-        String text = "";
-        try {
-            FileInputStream fis = new FileInputStream(file);
-            BufferedInputStream in = new BufferedInputStream(fis);
-            in.mark(4);
-            byte[] first3bytes = new byte[3];
-            in.read(first3bytes);//找到文档的前三个字节并自动判断文档类型。
-            in.reset();
-            if (first3bytes[0] == (byte) 0xEF && first3bytes[1] == (byte) 0xBB
-                    && first3bytes[2] == (byte) 0xBF) {// utf-8
-                reader = new BufferedReader(new InputStreamReader(in, "utf-8"));
-            } else if (first3bytes[0] == (byte) 0xFF
-                    && first3bytes[1] == (byte) 0xFE) {
-                reader = new BufferedReader(
-                        new InputStreamReader(in, "unicode"));
-            } else if (first3bytes[0] == (byte) 0xFE
-                    && first3bytes[1] == (byte) 0xFF) {
-                reader = new BufferedReader(new InputStreamReader(in,
-                        "utf-16be"));
-            } else if (first3bytes[0] == (byte) 0xFF
-                    && first3bytes[1] == (byte) 0xFF) {
-                reader = new BufferedReader(new InputStreamReader(in,
-                        "utf-16le"));
-            } else {
-                reader = new BufferedReader(new InputStreamReader(in, "GBK"));
-            }
-            String str = reader.readLine();
-            while (str != null) {
-                text = text + str + "\n";
-                str = reader.readLine();
-            }
-            reader.close();
-            ll_fileInfo.setVisibility(View.GONE);
-            tv_txt.setVisibility(View.VISIBLE);
-            tv_txt.setText(text);
-            tv_txt.setMovementMethod(ScrollingMovementMethod.getInstance());
-        } catch (Exception e) {
-
-        }
+        TxtViewerFragment fragment = new TxtViewerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("filePath", filePath);
+        fragment.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
     }
 
     /*显示文件信息，名称、大小、类型*/
@@ -286,9 +239,9 @@ public class MFileInfoActivity extends BaseActivity {
         tv_fileName.setText(fileInfo.getFileName());
         tv_fileSize.setText(FileUtils.getReadableFileSize(fileInfo.getFileSize()));
         if (MediaFile.isOfficeFileType(url)) {
-            ll_support.setVisibility(View.VISIBLE);
+            setSupport_text(url);
         } else {
-            tv_nonsupport.setVisibility(View.VISIBLE);
+            tv_tips.setText("由于文件格式问题，\n暂不支持在线浏览,请下载后查看");
         }
         if (isDownload) {
             bt_download.setVisibility(View.VISIBLE);
@@ -297,6 +250,37 @@ public class MFileInfoActivity extends BaseActivity {
         } else {
             bt_download.setVisibility(View.GONE);
         }
+    }
+
+    private void setSupport_text(final String url) {
+        String text = "由于文件格式问题，暂不支持本地查看\n您可以点击 在线预览 在浏览器查阅";
+        SpannableString ssb = new SpannableString(text);
+        int start = text.indexOf("击") + 1;
+        int end = text.indexOf("览") + 1;
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View view) {
+                setOfficeViewer(url);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                ds.bgColor = ContextCompat.getColor(context, R.color.white);
+                ds.setColor(ContextCompat.getColor(context, R.color.defaultColor));
+                ds.setUnderlineText(false);
+            }
+        };
+        ssb.setSpan(clickableSpan, start, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tv_tips.setMovementMethod(LinkMovementMethod.getInstance());
+        tv_tips.setText(ssb);
+    }
+
+    private void setOfficeViewer(String url) {
+        officeFragment = new OfficeViewerFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("url", url);
+        officeFragment.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.container, officeFragment).commit();
     }
 
     private void beginDownload() {
@@ -364,31 +348,6 @@ public class MFileInfoActivity extends BaseActivity {
         }).start();
     }
 
-    private void showGestureDialog() {
-        gestureDialog = new AlertDialog.Builder(context, R.style.GestureDialog).create();
-        gestureDialog.show();
-        View view = View.inflate(context, R.layout.dialog_gesture_tips, null);
-        TextView tv_tips = view.findViewById(R.id.tv_tips);
-        ImageView iv_center = view.findViewById(R.id.iv_center);
-        tv_tips.setText("手势可放大缩小");
-        iv_center.setImageResource(R.drawable.gesture_big);
-        view.findViewById(R.id.bt_know).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                isKonw = true;
-                gestureDialog.dismiss();
-            }
-        });
-        gestureDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-            @Override
-            public void onDismiss(DialogInterface dialogInterface) {
-                isKonw = true;
-            }
-        });
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        gestureDialog.setContentView(view, params);
-    }
-
     @Override
     public void setListener() {
         toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
@@ -401,12 +360,6 @@ public class MFileInfoActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
-                    case R.id.tv_support:
-                        Intent intent = new Intent(context, MFileInfoPreViewActivity.class);
-                        intent.putExtra("url", "https://view.officeapps.live.com/op/view.aspx?src=" + url);
-                        intent.putExtra("fileName", fileName);
-                        startActivity(intent);
-                        return;
                     case R.id.bt_download:
                         if (isDownload) {
                             if (new File(filePath).exists())
@@ -428,16 +381,12 @@ public class MFileInfoActivity extends BaseActivity {
                 }
             }
         };
-        tv_support.setOnClickListener(listener);
         bt_download.setOnClickListener(listener);
         iv_pause.setOnClickListener(listener);
     }
 
     @Override
     protected void onDestroy() {
-        if (gestureDialog != null)
-            gestureDialog.dismiss();
-        pdfView.recycle();
         DownloadManager.getInstance().pause(url);
         super.onDestroy();
     }

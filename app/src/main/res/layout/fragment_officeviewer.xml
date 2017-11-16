@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <com.haoyu.app.view.AppToolBar
-        android:id="@+id/toolBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:show_right_button="false"
-        app:title_text="文件预览" />
 
     <FrameLayout
         android:id="@+id/fl_content"
@@ -18,11 +10,10 @@
         android:layout_height="match_parent"
         android:overScrollMode="never" />
 
-    <LinearLayout
-        android:id="@+id/ll_failure"
+    <FrameLayout
+        android:id="@+id/fl_failure"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
 
@@ -38,5 +29,5 @@
             android:text="网页加载失败，点击空白刷新！"
             android:textColor="@color/blow_gray"
             android:textSize="@dimen/font_size_16" />
-    </LinearLayout>
-</LinearLayout>
+    </FrameLayout>
+</FrameLayout>

@@ -326,9 +326,6 @@
         <!--文件预览-->
         <activity android:name="com.haoyu.app.activity.MFileInfosActivity" />
         <activity android:name="com.haoyu.app.activity.MFileInfoActivity" />
-        <activity
-            android:name="com.haoyu.app.activity.MFileInfoPreViewActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <service android:name="com.haoyu.app.service.DownloadService" />
 
