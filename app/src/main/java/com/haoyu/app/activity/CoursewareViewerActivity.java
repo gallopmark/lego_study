@@ -377,7 +377,7 @@ public class CoursewareViewerActivity extends BaseActivity {
     private void updateAttempt() {
         final String activityId = getIntent().getStringExtra("activityId");
         final String mTextInfoUserId = getIntent().getStringExtra("mTextInfoUserId");
-        final String url = Constants.OUTRT_NET + "/" + activityId + "/teach/m/textInfo/user/updateAttempt";
+        final String url = Constants.OUTRT_NET + "/" + activityId + "/study/m/textInfo/user/updateAttempt";
         addSubscription(Flowable.timer(interval, TimeUnit.SECONDS).map(new Function<Long, BaseResponseResult>() {
             @Override
             public BaseResponseResult apply(Long aLong) throws Exception {
@@ -416,7 +416,7 @@ public class CoursewareViewerActivity extends BaseActivity {
     }
 
     private AppActivityViewResult getActivityInfo(String activityId) throws Exception {
-        String url = Constants.OUTRT_NET + "/" + activityId + "/teach/m/activity/ncts/" + activityId + "/view";
+        String url = Constants.OUTRT_NET + "/" + activityId + "/study/m/activity/ncts/" + activityId + "/view";
         String json = OkHttpClientManager.getAsString(context, url);
         AppActivityViewResult result = new Gson().fromJson(json, AppActivityViewResult.class);
         return result;
