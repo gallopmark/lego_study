@@ -246,7 +246,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     private void showInfoDialog() {
         MaterialDialog dialog = new MaterialDialog(context);
         dialog.setTitle("提示");
-        dialog.setMessage("请选择正确版本的App登录");
+        dialog.setMessage("您不是学员身份，请选择正确版本登录");
         dialog.setPositiveButton("我知道了", new MaterialDialog.ButtonClickListener() {
             @Override
             public void onClick(View v, AlertDialog dialog) {
