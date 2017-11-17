@@ -263,6 +263,8 @@ public class CoursewareViewerActivity extends BaseActivity {
 
             @Override
             public void onSuccess(AndroidDownladTask downloadTask, String savePath) {
+                isDownload = true;
+                filePath = savePath;
                 if (new File(savePath).isFile() && MediaFile.isPdfFileType(url)) {
                     openPdfFile(savePath);
                 } else if (new File(savePath).isFile() && MediaFile.isTxtFileType(url)) {
