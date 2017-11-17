@@ -18,9 +18,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.base.BaseActivity;
-import com.haoyu.app.download.DownloadListener;
-import com.haoyu.app.download.DownloadManager;
-import com.haoyu.app.download.DownloadTask;
+import com.haoyu.app.download.AndroidDownladTask;
+import com.haoyu.app.download.OnDownloadStatusListener;
 import com.haoyu.app.entity.MFileInfo;
 import com.haoyu.app.filePicker.FileUtils;
 import com.haoyu.app.fragment.OfficeViewerFragment;
@@ -82,6 +81,7 @@ public class MFileInfoActivity extends BaseActivity {
 
     private OfficeViewerFragment officeFragment;
     private boolean isDownload;
+    private AndroidDownladTask downladTask;
     private String fileRoot = Constants.fileDownDir;
     private String url, fileName, filePath;
 
@@ -288,14 +288,18 @@ public class MFileInfoActivity extends BaseActivity {
             toast(context, "文件链接不存在");
             return;
         }
-        if (fileName == null)
-            fileName = Common.getFileName(url);
+        if (fileName == null) fileName = Common.getFileName(url);
         ll_downloadInfo.setVisibility(View.VISIBLE);
         Map<String, String> headers = new HashMap<>();
         headers.put("Referer", Constants.REFERER);
-        DownloadManager.getInstance().create(url).setFilePath(fileRoot).setFileName(fileName).addHeaders(headers).addListener(new DownloadListener() {
+        downladTask = new AndroidDownladTask.Builder().setUrl(url).setFilePath(fileRoot).setFileName(fileName).setHeaders(headers).setmListner(new OnDownloadStatusListener() {
             @Override
-            public void onProgress(DownloadTask downloadTask, long soFarBytes, long totalBytes) {
+            public void onPrepared(AndroidDownladTask downloadTask, long fileSize) {
+                tv_fileSize.setText(FileUtils.getReadableFileSize(fileSize));
+            }
+
+            @Override
+            public void onProgress(AndroidDownladTask downloadTask, long soFarBytes, long totalBytes) {
                 String downloadSize = Common.FormetFileSize(soFarBytes);
                 String fileSize = Common.FormetFileSize(totalBytes);
                 tv_downloadInfo.setText("下载中...(" + downloadSize + "/" + fileSize + ")");
@@ -304,30 +308,20 @@ public class MFileInfoActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccess(DownloadTask downloadTask, String savePath) {
-                if (savePath != null && new File(savePath).exists()) {
-                    isDownload = true;
-                    filePath = savePath;
-                    if (new File(savePath).isFile() && MediaFile.isPdfFileType(url)) {
-                        openPdfFile(filePath);
-                    } else if (new File(savePath).isFile() && MediaFile.isTxtFileType(url)) {
-                        openTxtFile(filePath);
-                    } else {
-                        bt_download.setVisibility(View.VISIBLE);
-                        bt_download.setText("其他应用打开");
-                        ll_downloadInfo.setVisibility(View.GONE);
-                    }
+            public void onSuccess(AndroidDownladTask downloadTask, String savePath) {
+                if (new File(savePath).isFile() && MediaFile.isPdfFileType(url)) {
+                    openPdfFile(savePath);
+                } else if (new File(savePath).isFile() && MediaFile.isTxtFileType(url)) {
+                    openTxtFile(savePath);
                 } else {
-                    isDownload = true;
                     bt_download.setVisibility(View.VISIBLE);
-                    bt_download.setText("继续下载");
+                    bt_download.setText("其他应用打开");
                     ll_downloadInfo.setVisibility(View.GONE);
-                    toastFullScreen("下载的文件不存在", false);
                 }
             }
 
             @Override
-            public void onFailed(DownloadTask downloadTask) {
+            public void onFailed(AndroidDownladTask downloadTask) {
                 toastFullScreen("文件下载出错", false);
                 bt_download.setVisibility(View.VISIBLE);
                 bt_download.setText("继续下载");
@@ -335,17 +329,18 @@ public class MFileInfoActivity extends BaseActivity {
             }
 
             @Override
-            public void onPaused(DownloadTask downloadTask) {
+            public void onPaused(AndroidDownladTask downloadTask) {
                 bt_download.setVisibility(View.VISIBLE);
                 bt_download.setText("继续下载");
                 ll_downloadInfo.setVisibility(View.GONE);
             }
 
             @Override
-            public void onCancel(DownloadTask downloadTask) {
+            public void onCancel(AndroidDownladTask downloadTask) {
 
             }
-        }).start();
+        }).build();
+        downladTask.start();
     }
 
     @Override
@@ -376,7 +371,9 @@ public class MFileInfoActivity extends BaseActivity {
                         }
                         return;
                     case R.id.iv_pause:
-                        DownloadManager.getInstance().pause(url);
+                        if (downladTask != null) {
+                            downladTask.pause();
+                        }
                         return;
                 }
             }
@@ -387,7 +384,9 @@ public class MFileInfoActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        DownloadManager.getInstance().pause(url);
+        if (downladTask != null) {
+            downladTask.pause();
+        }
         super.onDestroy();
     }
 }
