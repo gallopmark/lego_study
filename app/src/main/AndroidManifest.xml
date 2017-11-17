@@ -155,12 +155,9 @@
         <activity android:name="com.haoyu.app.activity.AppTestResultActivity" />
         <activity android:name="com.haoyu.app.activity.AppPageTestActivity" />
         <!--活动教学课件-->
-        <activity android:name="com.haoyu.app.activity.CoursewareFileActivity" />
         <activity
-            android:name="com.haoyu.app.activity.CoursewareLinkActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity android:name="com.haoyu.app.activity.CoursewareEditorActivity" />
+            android:name="com.haoyu.app.activity.CoursewareViewerActivity"
+            android:windowSoftInputMode="adjustResize" />
         <!--文件选择-->
         <activity android:name="com.haoyu.app.filePicker.LFilePickerActivity" />
         <!--课程学习问卷调查-->

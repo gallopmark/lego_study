@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
-import com.github.barteksc.pdfviewer.scroll.DefaultScrollHandle;
+import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.haoyu.app.lego.student.R;
 
 import java.io.File;
@@ -31,6 +31,7 @@ public class PDFViewerFragment extends Fragment {
     private Activity context;
     private String filePath;
     private PDFView pdfView;
+    private TextView tv_page;
     private boolean isRead;
     private AlertDialog dialog;
 
@@ -43,27 +44,36 @@ public class PDFViewerFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pdfviewer, container, false);
         pdfView = view.findViewById(R.id.pdfView);
+        tv_page = view.findViewById(R.id.tv_page);
         openPdfFile();
         return view;
     }
 
     private void openPdfFile() {
-        pdfView.setVisibility(View.VISIBLE);
         pdfView.fromFile(new File(filePath))
                 .swipeHorizontal(true)
                 .defaultPage(0)
                 .enableDoubletap(true)
-                .enableSwipe(false)
-                .scrollHandle(new DefaultScrollHandle(context))
+                .enableSwipe(true)
+                .enableAnnotationRendering(false) // render annotations (such as comments, colors or forms)
+                .scrollHandle(null)
+                .linkHandler(null)
+                .enableAntialiasing(true) //  .enableAnnotationRendering(false) // render annotations (such as comments, colors or forms)
                 .onLoad(new OnLoadCompleteListener() {
                     @Override
                     public void loadComplete(int nbPages) {
                         if (!isRead) {
                             showGestureDialog();
                         }
+                    }
+                })
+                .onPageChange(new OnPageChangeListener() {
+                    @Override
+                    public void onPageChanged(int page, int pageCount) {
+                        tv_page.setText((page + 1) + "/" + pageCount);
                     }
                 })
                 .load();
