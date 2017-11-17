@@ -14,9 +14,8 @@ import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.haoyu.app.download.DownloadListener;
-import com.haoyu.app.download.DownloadManager;
-import com.haoyu.app.download.DownloadTask;
+import com.haoyu.app.download.AndroidDownladTask;
+import com.haoyu.app.download.OnDownloadStatusListener;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.MyUtils;
@@ -53,45 +52,51 @@ public class DownloadService extends Service {
     private long time;
 
     private void download(String url, String downloadPath, final String fileName) {
-        DownloadManager.getInstance().create(url).setFilePath(downloadPath).setFileName(fileName).addListener(new DownloadListener() {
+        new AndroidDownladTask.Builder().setUrl(url).setFilePath(downloadPath).setFileName(fileName).setmListner(new OnDownloadStatusListener() {
             @Override
-            public void onProgress(DownloadTask downloadTask, long soFarBytes, long totalBytes) {
+            public void onPrepared(AndroidDownladTask downloadTask, long fileSize) {
+                //tv_fileSize.setText(FileUtils.getReadableFileSize(fileSize));
+            }
+
+            @Override
+            public void onProgress(AndroidDownladTask downloadTask, long soFarBytes, long totalBytes) {
                 if ((System.currentTimeMillis() - time) > 400 || soFarBytes == totalBytes) {
                     int percent = 0;
                     if (totalBytes > 0) {
                         percent = (int) (soFarBytes * 100 / totalBytes);
-                        remoteViews.setProgressBar(R.id.pb_progress, (int) totalBytes, (int) soFarBytes, false);
-                        remoteViews.setTextViewText(R.id.tv_percent, percent + "%");
-                        notifiy();
-                        time = System.currentTimeMillis();
                     }
+                    remoteViews.setProgressBar(R.id.pb_progress, (int) totalBytes, (int) soFarBytes, false);
+                    remoteViews.setTextViewText(R.id.tv_percent, percent + "%");
+                    notifiy();
+                    time = System.currentTimeMillis();
                 }
+
             }
 
             @Override
-            public void onSuccess(DownloadTask downloadTask, String savePath) {
+            public void onSuccess(AndroidDownladTask downloadTask, String savePath) {
                 MyUtils.installAPK(getApplicationContext(), new File(Constants.fileDownDir + "/" + fileName));
-
+                stopSelf();
             }
 
             @Override
-            public void onFailed(DownloadTask downloadTask) {
+            public void onFailed(AndroidDownladTask downloadTask) {
                 remoteViews.setViewVisibility(R.id.pb_progress, View.GONE);
                 remoteViews.setViewVisibility(R.id.tv_retry, View.VISIBLE);
                 notifiy();
+            }
+
+            @Override
+            public void onPaused(AndroidDownladTask downloadTask) {
 
             }
 
             @Override
-            public void onPaused(DownloadTask downloadTask) {
+            public void onCancel(AndroidDownladTask downloadTask) {
 
             }
+        }).build().start();
 
-            @Override
-            public void onCancel(DownloadTask downloadTask) {
-
-            }
-        }).start();
     }
 
     NotificationCompat.Builder builder;
