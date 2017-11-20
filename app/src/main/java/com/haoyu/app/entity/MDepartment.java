@@ -3,12 +3,14 @@ package com.haoyu.app.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+
 /**
  * 创建日期：2017/3/21 on 15:29
  * 描述:单位信息
  * 作者:马飞奔 Administrator
  */
-public class MDepartment {
+public class MDepartment implements Serializable{
     /**
      * province	省编码	String	N
      * city	市编码	String	N

@@ -138,7 +138,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private TextView tv_userName;   //侧滑菜单用户名
     private TextView tv_deptName;   //侧滑菜单用户部门名称
     private ArrayMap<String, MobileUserTrainInfoResult> mInfoMap = new ArrayMap<>();  //将已经加载的数据添加到map集合，避免重复加载
-    private final static int SCANNIN_GREQUEST_CODE = 1;
+    private final static int SCANNIN_GREQUEST_CODE = 1, REQUSET_USERINFO_CODE = 2;
     private boolean showCommuity;  //课程是否是自主选课，是否限制学时
     private String trainId;
     private TimePeriod trainingTime;
@@ -563,7 +563,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 scrollToPosition(ll_CommunityLayout);
                 break;
             case R.id.ll_userInfo:  //侧滑菜单个人信息
-                startActivity(new Intent(context, AppUserInfoActivity.class));
+                intent.setClass(context, AppUserInfoActivity.class);
+                startActivityForResult(intent, REQUSET_USERINFO_CODE);
                 break;
             case R.id.tv_learn:  //侧滑菜单学习
                 menu.toggle(true);
@@ -649,18 +650,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        /**
-         * 处理二维码扫描结果
-         */
-        if (requestCode == SCANNIN_GREQUEST_CODE && data != null && data.getExtras() != null) {
-            //处理扫描结果（在界面上显示）
-            Bundle bundle = data.getExtras();
-            if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
-                String result = bundle.getString(CodeUtils.RESULT_STRING);
-                parseCaptureResult(result);
-            } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
-                toast(context, "解析二维码失败");
-            }
+        switch (requestCode) {
+            case SCANNIN_GREQUEST_CODE:
+             /* 处理二维码扫描结果*/
+                if (data != null && data.getExtras() != null) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                        String result = bundle.getString(CodeUtils.RESULT_STRING);
+                        parseCaptureResult(result);
+                    } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                        toast(context, "解析二维码失败");
+                    }
+                }
+                break;
+            case REQUSET_USERINFO_CODE:
+                if (data != null) {
+                    String avatar = data.getStringExtra("avatar");
+                    GlideImgManager.loadCircleImage(context.getApplicationContext(), avatar, R.drawable.user_default, R.drawable.user_default, iv_userIco);
+                }
+                break;
         }
     }
 
