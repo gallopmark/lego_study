@@ -17,7 +17,6 @@ import io.reactivex.functions.Consumer;
  * 作者:马飞奔 Administrator
  */
 public class AppSplashActivity extends BaseActivity {
-    private AppSplashActivity context = this;
 
     @Override
     public int setLayoutResID() {
@@ -36,16 +35,11 @@ public class AppSplashActivity extends BaseActivity {
 
     private void enter() {
         if (firstLogin()) {
-            startActivity(new Intent(context, LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
         } else {
-            startActivity(new Intent(context, MainActivity.class));
+            startActivity(new Intent(this, MainActivity.class));
         }
         finish();
-    }
-
-    @Override
-    public void setListener() {
-
     }
 
     @Override
