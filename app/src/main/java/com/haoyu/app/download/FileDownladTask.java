@@ -331,9 +331,8 @@ public class FileDownladTask extends Thread {
         private int WRITE_TIMEOUT = 60;
         private OnDownloadStatusListener mListner;
 
-        public Builder with(Context context) {
+        public Builder(Context context) {
             this.context = context;
-            return this;
         }
 
         public Builder setRetryTime(int retryTime) {

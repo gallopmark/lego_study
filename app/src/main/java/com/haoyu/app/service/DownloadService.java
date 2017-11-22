@@ -52,7 +52,7 @@ public class DownloadService extends Service {
     private long time;
 
     private void download(String url, String downloadPath, final String fileName) {
-        new FileDownladTask.Builder().with(this).setUrl(url).setFilePath(downloadPath).setFileName(fileName).setmListner(new OnDownloadStatusListener() {
+        new FileDownladTask.Builder(this).setUrl(url).setFilePath(downloadPath).setFileName(fileName).setmListner(new OnDownloadStatusListener() {
             @Override
             public void onPreDownload(FileDownladTask downloadTask) {
 

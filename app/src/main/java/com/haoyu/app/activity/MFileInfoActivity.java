@@ -222,7 +222,7 @@ public class MFileInfoActivity extends BaseActivity {
         showFileContent();
         Map<String, String> headers = new HashMap<>();
         headers.put("Referer", Constants.REFERER);
-        downladTask = new FileDownladTask.Builder().with(context).setUrl(url).setFilePath(fileRoot).setFileName(fileName).setHeaders(headers).setmListner(new OnDownloadStatusListener() {
+        downladTask = new FileDownladTask.Builder(context).setUrl(url).setFilePath(fileRoot).setFileName(fileName).setHeaders(headers).setmListner(new OnDownloadStatusListener() {
             @Override
             public void onPreDownload(FileDownladTask downloadTask) {
                 showFileContent();
