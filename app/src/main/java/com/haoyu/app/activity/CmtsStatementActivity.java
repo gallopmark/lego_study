@@ -104,7 +104,7 @@ public class CmtsStatementActivity extends BaseActivity {
         bundle.putSerializable("entity", entity);
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss();
     }
 
     @Override

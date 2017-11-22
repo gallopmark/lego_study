@@ -88,6 +88,6 @@ public class WorkShopDetailActivity extends BaseActivity {
         bundle.putSerializable("entity", entity);
         bundle.putSerializable("fileInfo", mFileInfo);
         fragment.setArguments(bundle);
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss();
     }
 }

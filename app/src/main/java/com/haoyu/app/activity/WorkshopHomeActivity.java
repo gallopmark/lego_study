@@ -125,7 +125,7 @@ public class WorkshopHomeActivity extends BaseActivity {
             bundle.putSerializable("mWorkshopUser", mWorkshopUser);
             bundle.putSerializable("mWorkshopSections", (Serializable) mWorkshopSections);
             fragment.setArguments(bundle);
-            fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+            fragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss();
         } else {
             tv_empty.setText("没有相关信息~");
             tv_empty.setVisibility(View.VISIBLE);

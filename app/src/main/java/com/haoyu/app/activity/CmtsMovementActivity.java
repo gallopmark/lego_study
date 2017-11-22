@@ -119,7 +119,7 @@ public class CmtsMovementActivity extends BaseActivity {
         Bundle bundle = new Bundle();
         bundle.putSerializable("entity", entity);
         fragment.setArguments(bundle);
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss();
     }
 
     @Override

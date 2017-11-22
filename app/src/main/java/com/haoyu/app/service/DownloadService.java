@@ -14,7 +14,7 @@ import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import com.haoyu.app.download.AndroidDownladTask;
+import com.haoyu.app.download.FileDownladTask;
 import com.haoyu.app.download.OnDownloadStatusListener;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Constants;
@@ -52,14 +52,19 @@ public class DownloadService extends Service {
     private long time;
 
     private void download(String url, String downloadPath, final String fileName) {
-        new AndroidDownladTask.Builder().setUrl(url).setFilePath(downloadPath).setFileName(fileName).setmListner(new OnDownloadStatusListener() {
+        new FileDownladTask.Builder().with(this).setUrl(url).setFilePath(downloadPath).setFileName(fileName).setmListner(new OnDownloadStatusListener() {
             @Override
-            public void onPrepared(AndroidDownladTask downloadTask, long fileSize) {
+            public void onPreDownload(FileDownladTask downloadTask) {
+
+            }
+
+            @Override
+            public void onPrepared(FileDownladTask downloadTask, long fileSize) {
                 //tv_fileSize.setText(FileUtils.getReadableFileSize(fileSize));
             }
 
             @Override
-            public void onProgress(AndroidDownladTask downloadTask, long soFarBytes, long totalBytes) {
+            public void onProgress(FileDownladTask downloadTask, long soFarBytes, long totalBytes) {
                 if ((System.currentTimeMillis() - time) > 400 || soFarBytes == totalBytes) {
                     int percent = 0;
                     if (totalBytes > 0) {
@@ -74,25 +79,25 @@ public class DownloadService extends Service {
             }
 
             @Override
-            public void onSuccess(AndroidDownladTask downloadTask, String savePath) {
+            public void onSuccess(FileDownladTask downloadTask, String savePath) {
                 MyUtils.installAPK(getApplicationContext(), new File(Constants.fileDownDir + "/" + fileName));
                 stopSelf();
             }
 
             @Override
-            public void onFailed(AndroidDownladTask downloadTask) {
+            public void onFailed(FileDownladTask downloadTask) {
                 remoteViews.setViewVisibility(R.id.pb_progress, View.GONE);
                 remoteViews.setViewVisibility(R.id.tv_retry, View.VISIBLE);
                 notifiy();
             }
 
             @Override
-            public void onPaused(AndroidDownladTask downloadTask) {
+            public void onPaused(FileDownladTask downloadTask) {
 
             }
 
             @Override
-            public void onCancel(AndroidDownladTask downloadTask) {
+            public void onCancel(FileDownladTask downloadTask) {
 
             }
         }).build().start();

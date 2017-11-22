@@ -90,6 +90,6 @@ public class AppUserInfoActivity extends BaseActivity {
         bundle.putSerializable("user", user);
         fragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss();
     }
 }

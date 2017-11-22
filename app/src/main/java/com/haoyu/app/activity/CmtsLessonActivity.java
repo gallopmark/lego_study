@@ -371,6 +371,6 @@ public class CmtsLessonActivity extends BaseActivity {
         bundle.putSerializable("attribute", attribute);
         fragment.setArguments(bundle);
         FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.container, fragment).commit();
+        manager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss();
     }
 }
