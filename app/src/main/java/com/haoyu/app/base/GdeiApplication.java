@@ -8,10 +8,11 @@ import android.content.Intent;
 import android.os.Environment;
 
 import com.baidu.mobstat.StatService;
-import com.haoyu.app.activity.MainActivity;
 import com.haoyu.app.activity.AppSplashActivity;
+import com.haoyu.app.activity.MainActivity;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.SharePreferenceHelper;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import org.wlf.filedownloader.FileDownloadConfiguration;
@@ -37,6 +38,7 @@ public class GdeiApplication extends Application {
         ZXingLibrary.initDisplayOpinion(this);
         initFileDownloader();
         StatService.start(this);
+        CrashReport.initCrashReport(this);
 //        // 以下用来捕获程序崩溃异常
 //        if (!Config.DEBUG) {
 //            Thread.setDefaultUncaughtExceptionHandler(restartHandler); // 程序崩溃时触发线程
