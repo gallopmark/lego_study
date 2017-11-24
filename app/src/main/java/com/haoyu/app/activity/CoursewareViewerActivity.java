@@ -33,11 +33,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
-import com.haoyu.app.download.FileDownloadTask;
-import com.haoyu.app.download.OnDownloadStatusListener;
 import com.haoyu.app.entity.AppActivityViewResult;
 import com.haoyu.app.entity.CourseSectionActivity;
-import com.haoyu.app.filePicker.FileUtils;
 import com.haoyu.app.fragment.CoursewareEditorFragment;
 import com.haoyu.app.fragment.CoursewareLinkFragment;
 import com.haoyu.app.fragment.OfficeViewerFragment;
@@ -49,6 +46,10 @@ import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.view.AppToolBar;
 import com.haoyu.app.view.RoundRectProgressBar;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.FileDownloadListener;
+import com.liulishuo.filedownloader.FileDownloader;
+import com.liulishuo.filedownloader.util.FileDownloadUtils;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -110,7 +111,6 @@ public class CoursewareViewerActivity extends BaseActivity {
     private String fileRoot = Constants.coursewareDir;
     private String url, filePath, fileName;
     private boolean isDownload;
-    private FileDownloadTask downladTask;
     private FragmentManager fragmentManager;
     private OfficeViewerFragment officeFragment;
     /**********************/
@@ -140,7 +140,15 @@ public class CoursewareViewerActivity extends BaseActivity {
         fragmentManager = getSupportFragmentManager();
         if (type.equals("file")) {   //pdf文件
             url = getIntent().getStringExtra("url");
-            beginDownload();
+            if (url == null) {
+                toast(context, "文件链接不存在");
+            } else {
+                fileName = Common.getFileName(url);
+                FileDownloader.setup(context);
+                if (!isFileExists()) {
+                    beginDownload();
+                }
+            }
         } else if (type.equals("link")) { //外链
             url = getIntent().getStringExtra("url");
             setLinkFragment(url);
@@ -173,73 +181,83 @@ public class CoursewareViewerActivity extends BaseActivity {
         return super.onKeyDown(keyCode, event);
     }
 
-    private void beginDownload() {
-        if (url == null) {
-            toast(context, "文件链接不存在");
-            return;
+    private boolean isFileExists() {
+        String savePath = FileDownloadUtils.getTargetFilePath(fileRoot, true, fileName);
+        if (savePath != null && new File(savePath).exists()) {
+            isDownload = true;
+            filePath = savePath;
+            showFileContent();
+            generateFile();
+            return true;
         }
-        if (fileName == null) fileName = Common.getFileName(url);
-        showFileContent();
-        Map<String, String> headers = new HashMap<>();
-        headers.put("Referer", Constants.REFERER);
-        downladTask = new FileDownloadTask.Builder(context).setUrl(url).setFilePath(fileRoot).setFileName(fileName).setHeaders(headers).setmListner(new OnDownloadStatusListener() {
-            @Override
-            public void onPreDownload(FileDownloadTask downloadTask) {
-                showFileContent();
-            }
-
-            @Override
-            public void onPrepared(FileDownloadTask downloadTask, long fileSize) {
-                ll_downloadInfo.setVisibility(View.VISIBLE);
-                tv_fileSize.setText(FileUtils.getReadableFileSize(fileSize));
-            }
-
-            @Override
-            public void onProgress(FileDownloadTask downloadTask, long soFarBytes, long totalBytes) {
-                String downloadSize = Common.FormetFileSize(soFarBytes);
-                String fileSize = Common.FormetFileSize(totalBytes);
-                tv_downloadInfo.setText("下载中...(" + downloadSize + "/" + fileSize + ")");
-                downloadBar.setMax((int) totalBytes);
-                downloadBar.setProgress((int) soFarBytes);
-            }
-
-            @Override
-            public void onSuccess(FileDownloadTask downloadTask, String savePath) {
-                isDownload = true;
-                filePath = savePath;
-                if (new File(savePath).isFile() && MediaFile.isPdfFileType(url)) {
-                    openPdfFile(savePath);
-                } else if (new File(savePath).isFile() && MediaFile.isTxtFileType(url)) {
-                    openTxtFile(savePath);
-                } else {
-                    bt_download.setVisibility(View.VISIBLE);
-                    bt_download.setText("其他应用打开");
-                    ll_downloadInfo.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onFailed(FileDownloadTask downloadTask) {
-                toastFullScreen("文件下载出错", false);
-                bt_download.setVisibility(View.VISIBLE);
-                bt_download.setText("继续下载");
-                ll_downloadInfo.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onPaused(FileDownloadTask downloadTask) {
-                bt_download.setVisibility(View.VISIBLE);
-                bt_download.setText("继续下载");
-                ll_downloadInfo.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancel(FileDownloadTask downloadTask) {
-
-            }
-        }).build();
-        downladTask.start();
+        return false;
     }
+
+    private void generateFile() {
+        if (new File(filePath).isFile() && MediaFile.isPdfFileType(url)) {
+            openPdfFile(filePath);
+        } else if (new File(filePath).isFile() && MediaFile.isTxtFileType(url)) {
+            openTxtFile(filePath);
+        } else {
+            ll_fileInfo.setVisibility(View.VISIBLE);
+            bt_download.setVisibility(View.VISIBLE);
+            bt_download.setText("其他应用打开");
+            ll_downloadInfo.setVisibility(View.GONE);
+        }
+    }
+
+    private void beginDownload() {
+        String path = fileRoot + File.separator + fileName;
+        FileDownloader.getImpl().create(url)
+                .addHeader("Referer", Constants.REFERER)
+                .setPath(path, false)
+                .setListener(downloadListener).start();
+    }
+
+    private FileDownloadListener downloadListener = new FileDownloadListener() {
+        @Override
+        protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            showFileContent();
+        }
+
+        @Override
+        protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            ll_downloadInfo.setVisibility(View.VISIBLE);
+            tv_fileSize.setText(Common.FormetFileSize(totalBytes));
+            String downloadSize = Common.FormetFileSize(soFarBytes);
+            String fileSize = Common.FormetFileSize(totalBytes);
+            tv_downloadInfo.setText("下载中...(" + downloadSize + "/" + fileSize + ")");
+            downloadBar.setMax(totalBytes);
+            downloadBar.setProgress(soFarBytes);
+        }
+
+        @Override
+        protected void completed(BaseDownloadTask task) {
+            isDownload = true;
+            filePath = task.getTargetFilePath();
+            generateFile();
+        }
+
+        @Override
+        protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            bt_download.setVisibility(View.VISIBLE);
+            bt_download.setText("继续下载");
+            ll_downloadInfo.setVisibility(View.GONE);
+        }
+
+        @Override
+        protected void error(BaseDownloadTask task, Throwable e) {
+            toastFullScreen("文件下载出错", false);
+            bt_download.setVisibility(View.VISIBLE);
+            bt_download.setText("继续下载");
+            ll_downloadInfo.setVisibility(View.GONE);
+        }
+
+        @Override
+        protected void warn(BaseDownloadTask task) {
+
+        }
+    };
 
     private void showFileContent() {
         ll_fileInfo.setVisibility(View.VISIBLE);
@@ -477,9 +495,7 @@ public class CoursewareViewerActivity extends BaseActivity {
                         }
                         return;
                     case R.id.iv_pause:
-                        if (downladTask != null) {
-                            downladTask.pause();
-                        }
+                        FileDownloader.getImpl().pause(downloadListener);
                         return;
                 }
             }
@@ -601,9 +617,7 @@ public class CoursewareViewerActivity extends BaseActivity {
 
     @Override
     protected void onDestroy() {
-        if (downladTask != null) {
-            downladTask.pause();
-        }
         super.onDestroy();
+        FileDownloader.getImpl().pause(downloadListener);
     }
 }

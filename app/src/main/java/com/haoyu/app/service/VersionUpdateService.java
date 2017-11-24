@@ -26,7 +26,6 @@ import com.haoyu.app.utils.Common;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloadListener;
 import com.liulishuo.filedownloader.FileDownloader;
-import com.liulishuo.filedownloader.util.FileDownloadUtils;
 
 import java.io.File;
 
@@ -125,53 +124,55 @@ public class VersionUpdateService extends Service {
         FileDownloader.getImpl().create(url)
                 .setPath(savePath, false)
                 .setAutoRetryTimes(1)
-                .setListener(new FileDownloadListener() {
-                    @Override
-                    protected void retry(BaseDownloadTask task, Throwable ex, int retryingTimes, int soFarBytes) {
-                        String error_text = "下载失败，正在重试！";
-                        remoteViews.setTextViewText(R.id.tv_tips, error_text);
-                    }
-
-                    @Override
-                    protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                        remoteViews.setTextViewText(R.id.tv_tips, fileName);
-                        remoteViews.setImageViewResource(R.id.iv_ico, R.drawable.lego_ico);
-                        notifyId();
-                    }
-
-                    @Override
-                    protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-                        remoteViews.setProgressBar(R.id.downloadBar, totalBytes, soFarBytes, false);
-                        String progres_text = "已下载 " + Common.accuracy(soFarBytes, totalBytes, 0);
-                        remoteViews.setTextViewText(R.id.tv_progress, progres_text);
-                        notifyId();
-                    }
-
-                    @Override
-                    protected void completed(BaseDownloadTask task) {
-                        stopSelf();
-                        String savePath = task.getTargetFilePath();
-                        installAPK(new File(savePath));
-                    }
-
-                    @Override
-                    protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-
-                    }
-
-                    @Override
-                    protected void error(BaseDownloadTask task, Throwable e) {
-                        isError = true;
-                        String error_text = "下载失败，请点击重试！";
-                        remoteViews.setTextViewText(R.id.tv_tips, error_text);
-                    }
-
-                    @Override
-                    protected void warn(BaseDownloadTask task) {
-
-                    }
-                }).start();
+                .setListener(downloadListener).start();
     }
+
+    private FileDownloadListener downloadListener = new FileDownloadListener() {
+        @Override
+        protected void retry(BaseDownloadTask task, Throwable ex, int retryingTimes, int soFarBytes) {
+            String error_text = "下载失败，正在重试！";
+            remoteViews.setTextViewText(R.id.tv_tips, error_text);
+        }
+
+        @Override
+        protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            remoteViews.setTextViewText(R.id.tv_tips, fileName);
+            remoteViews.setImageViewResource(R.id.iv_ico, R.drawable.lego_ico);
+            notifyId();
+        }
+
+        @Override
+        protected void progress(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+            remoteViews.setProgressBar(R.id.downloadBar, totalBytes, soFarBytes, false);
+            String progres_text = "已下载 " + Common.accuracy(soFarBytes, totalBytes, 0);
+            remoteViews.setTextViewText(R.id.tv_progress, progres_text);
+            notifyId();
+        }
+
+        @Override
+        protected void completed(BaseDownloadTask task) {
+            stopSelf();
+            String savePath = task.getTargetFilePath();
+            installAPK(new File(savePath));
+        }
+
+        @Override
+        protected void paused(BaseDownloadTask task, int soFarBytes, int totalBytes) {
+
+        }
+
+        @Override
+        protected void error(BaseDownloadTask task, Throwable e) {
+            isError = true;
+            String error_text = "下载失败，请点击重试！";
+            remoteViews.setTextViewText(R.id.tv_tips, error_text);
+        }
+
+        @Override
+        protected void warn(BaseDownloadTask task) {
+
+        }
+    };
 
     private void notifyId() {
         notificationManager.notify(NOTIFICATION_ID, notification);
@@ -208,12 +209,6 @@ public class VersionUpdateService extends Service {
         mToast.show();
     }
 
-    private void release() {
-        int downloadId = FileDownloadUtils.generateId(url, savePath, false);
-        FileDownloader.getImpl().pause(downloadId);
-        notificationManager.cancel(NOTIFICATION_ID);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -221,4 +216,8 @@ public class VersionUpdateService extends Service {
         unregisterReceiver(receiver);
     }
 
+    private void release() {
+        FileDownloader.getImpl().pause(downloadListener);
+        notificationManager.cancel(NOTIFICATION_ID);
+    }
 }
