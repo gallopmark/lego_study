@@ -777,8 +777,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             public void onResponse(VersionEntity entity) {
                 if (entity.getVersionCode() > getVersionCode()) {
                     updateTips(entity);
-                } else {
-                    toast(context, "已经是最新版本啦");
                 }
             }
         }));
