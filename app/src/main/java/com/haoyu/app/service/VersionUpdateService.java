@@ -19,7 +19,6 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.haoyu.app.base.LegoApplication;
 import com.haoyu.app.lego.student.BuildConfig;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.AppToast;
@@ -194,8 +193,6 @@ public class VersionUpdateService extends Service {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             }
             startActivity(intent);
-            LegoApplication.getInstance().exit();
-            System.exit(0);
         } catch (Exception e) {
             toast(this, "安装失败");
         }
