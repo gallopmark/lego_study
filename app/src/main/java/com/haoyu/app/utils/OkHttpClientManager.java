@@ -9,7 +9,7 @@ import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.google.gson.Gson;
 import com.google.gson.internal.$Gson$Types;
-import com.haoyu.app.base.GdeiApplication;
+import com.haoyu.app.base.LegoApplication;
 import com.haoyu.app.entity.LoginResult;
 
 import java.io.File;
@@ -79,7 +79,7 @@ public class OkHttpClientManager {
 
     private OkHttpClientManager() {
         CookieJar cookieJar =
-                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(GdeiApplication.getInstance()));
+                new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(LegoApplication.getInstance()));
         mOkHttpClient = new OkHttpClient.Builder()
                 .readTimeout(READ_TIMEOUT, TimeUnit.SECONDS)//设置读取超时时间
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)//设置写的超时时间

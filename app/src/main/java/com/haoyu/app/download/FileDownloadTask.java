@@ -29,7 +29,7 @@ import okhttp3.ResponseBody;
  * 作者:xiaoma
  */
 
-public class FileDownladTask extends Thread {
+public class FileDownloadTask extends Thread {
     private OnDownloadStatusListener mListner;//下载回调监听
     private OkHttpClient mHttpClient;
     private Context context;
@@ -58,12 +58,12 @@ public class FileDownladTask extends Thread {
             switch (msg.what) {
                 case CODE_PREDOWNLOAD:
                     if (mListner != null) {
-                        mListner.onPreDownload(FileDownladTask.this);
+                        mListner.onPreDownload(FileDownloadTask.this);
                     }
                     break;
                 case CODE_PREPARED:
                     if (mListner != null) {
-                        mListner.onPrepared(FileDownladTask.this, totalSize);
+                        mListner.onPrepared(FileDownloadTask.this, totalSize);
                     }
                     break;
                 case CODE_DOWNLOADING:
@@ -71,12 +71,12 @@ public class FileDownladTask extends Thread {
                     long progress = bundle.getLong("progress");
                     long contentLength = bundle.getLong("fileSize");
                     if (mListner != null) {
-                        mListner.onProgress(FileDownladTask.this, progress, contentLength);
+                        mListner.onProgress(FileDownloadTask.this, progress, contentLength);
                     }
                     break;
                 case CODE_PAUSE:
                     if (mListner != null) {
-                        mListner.onPaused(FileDownladTask.this);
+                        mListner.onPaused(FileDownloadTask.this);
                     }
                     mListner = null;
                     removeCallbacksAndMessages(null);
@@ -85,20 +85,20 @@ public class FileDownladTask extends Thread {
                     isDownloading = false;
                     String savePath = (String) msg.obj;
                     if (mListner != null) {
-                        mListner.onSuccess(FileDownladTask.this, savePath);
+                        mListner.onSuccess(FileDownloadTask.this, savePath);
                     }
                     break;
                 case CODE_ERROR:
                     isDownloading = false;
                     if (mListner != null) {
-                        mListner.onFailed(FileDownladTask.this);
+                        mListner.onFailed(FileDownloadTask.this);
                     }
                     break;
             }
         }
     };
 
-    public FileDownladTask(Builder builder) {
+    public FileDownloadTask(Builder builder) {
         mHttpClient = new OkHttpClient.Builder()
                 .readTimeout(builder.READ_TIMEOUT, TimeUnit.SECONDS)//设置读取超时时间
                 .writeTimeout(builder.WRITE_TIMEOUT, TimeUnit.SECONDS)//设置写的超时时间
@@ -282,7 +282,7 @@ public class FileDownladTask extends Thread {
         handler.removeCallbacksAndMessages(null);
         cleanFile(new File(getAbsolutePath()));
         if (mListner != null) {
-            mListner.onCancel(FileDownladTask.this);
+            mListner.onCancel(FileDownloadTask.this);
         }
     }
 
@@ -389,8 +389,8 @@ public class FileDownladTask extends Thread {
             return this;
         }
 
-        public FileDownladTask build() {
-            return new FileDownladTask(this);
+        public FileDownloadTask build() {
+            return new FileDownloadTask(this);
         }
     }
 

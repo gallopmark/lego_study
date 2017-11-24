@@ -7,29 +7,29 @@ package com.haoyu.app.download;
  */
 
 public interface OnDownloadStatusListener {
-    void onPreDownload(FileDownladTask downloadTask);
+    void onPreDownload(FileDownloadTask downloadTask);
 
-    void onPrepared(FileDownladTask downloadTask, long fileSize);
+    void onPrepared(FileDownloadTask downloadTask, long fileSize);
 
     /**
      * 通知当前的下载进度
      */
-    void onProgress(FileDownladTask downloadTask, long soFarBytes, long totalBytes);
+    void onProgress(FileDownloadTask downloadTask, long soFarBytes, long totalBytes);
 
     /**
      * 通知下载成功
      */
-    void onSuccess(FileDownladTask downloadTask, String savePath);
+    void onSuccess(FileDownloadTask downloadTask, String savePath);
 
     /**
      * 通知下载失败
      */
-    void onFailed(FileDownladTask downloadTask);
+    void onFailed(FileDownloadTask downloadTask);
 
     /**
      * 通知下载暂停
      */
-    void onPaused(FileDownladTask downloadTask);
+    void onPaused(FileDownloadTask downloadTask);
 
-    void onCancel(FileDownladTask downloadTask);
+    void onCancel(FileDownloadTask downloadTask);
 }

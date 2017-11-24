@@ -27,7 +27,7 @@ import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.github.barteksc.pdfviewer.listener.OnPageChangeListener;
 import com.haoyu.app.base.BaseActivity;
-import com.haoyu.app.download.FileDownladTask;
+import com.haoyu.app.download.FileDownloadTask;
 import com.haoyu.app.download.OnDownloadStatusListener;
 import com.haoyu.app.entity.MFileInfo;
 import com.haoyu.app.filePicker.FileUtils;
@@ -99,7 +99,7 @@ public class MFileInfoActivity extends BaseActivity {
 
     private OfficeViewerFragment officeFragment;
     private boolean isDownload;
-    private FileDownladTask downladTask;
+    private FileDownloadTask downladTask;
     private String fileRoot = Constants.fileDownDir;
     private MFileInfo fileInfo;
     private String url, fileName, filePath;
@@ -222,20 +222,20 @@ public class MFileInfoActivity extends BaseActivity {
         showFileContent();
         Map<String, String> headers = new HashMap<>();
         headers.put("Referer", Constants.REFERER);
-        downladTask = new FileDownladTask.Builder(context).setUrl(url).setFilePath(fileRoot).setFileName(fileName).setHeaders(headers).setmListner(new OnDownloadStatusListener() {
+        downladTask = new FileDownloadTask.Builder(context).setUrl(url).setFilePath(fileRoot).setFileName(fileName).setHeaders(headers).setmListner(new OnDownloadStatusListener() {
             @Override
-            public void onPreDownload(FileDownladTask downloadTask) {
+            public void onPreDownload(FileDownloadTask downloadTask) {
                 showFileContent();
             }
 
             @Override
-            public void onPrepared(FileDownladTask downloadTask, long fileSize) {
+            public void onPrepared(FileDownloadTask downloadTask, long fileSize) {
                 ll_downloadInfo.setVisibility(View.VISIBLE);
                 tv_fileSize.setText(FileUtils.getReadableFileSize(fileSize));
             }
 
             @Override
-            public void onProgress(FileDownladTask downloadTask, long soFarBytes, long totalBytes) {
+            public void onProgress(FileDownloadTask downloadTask, long soFarBytes, long totalBytes) {
                 String downloadSize = Common.FormetFileSize(soFarBytes);
                 String fileSize = Common.FormetFileSize(totalBytes);
                 tv_downloadInfo.setText("下载中...(" + downloadSize + "/" + fileSize + ")");
@@ -244,7 +244,7 @@ public class MFileInfoActivity extends BaseActivity {
             }
 
             @Override
-            public void onSuccess(FileDownladTask downloadTask, String savePath) {
+            public void onSuccess(FileDownloadTask downloadTask, String savePath) {
                 isDownload = true;
                 filePath = savePath;
                 if (new File(savePath).isFile() && MediaFile.isPdfFileType(url)) {
@@ -259,7 +259,7 @@ public class MFileInfoActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailed(FileDownladTask downloadTask) {
+            public void onFailed(FileDownloadTask downloadTask) {
                 toastFullScreen("文件下载出错", false);
                 bt_download.setVisibility(View.VISIBLE);
                 bt_download.setText("继续下载");
@@ -267,14 +267,14 @@ public class MFileInfoActivity extends BaseActivity {
             }
 
             @Override
-            public void onPaused(FileDownladTask downloadTask) {
+            public void onPaused(FileDownloadTask downloadTask) {
                 bt_download.setVisibility(View.VISIBLE);
                 bt_download.setText("继续下载");
                 ll_downloadInfo.setVisibility(View.GONE);
             }
 
             @Override
-            public void onCancel(FileDownladTask downloadTask) {
+            public void onCancel(FileDownloadTask downloadTask) {
 
             }
         }).build();

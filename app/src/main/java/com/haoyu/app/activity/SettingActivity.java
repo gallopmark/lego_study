@@ -2,6 +2,8 @@ package com.haoyu.app.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -9,14 +11,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.base.BaseActivity;
-import com.haoyu.app.base.ExitApplication;
+import com.haoyu.app.base.LegoApplication;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.VersionEntity;
 import com.haoyu.app.lego.student.R;
-import com.haoyu.app.service.DownloadService;
+import com.haoyu.app.service.VersionUpdateService;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.FileCacheUtils;
-import com.haoyu.app.utils.MyUtils;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.SharePreferenceHelper;
 import com.haoyu.app.view.AppToolBar;
@@ -126,7 +127,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 startActivity(new Intent(context, AboutUsActivity.class));
                 break;
             case R.id.bt_logout:
-                ExitApplication.getInstance().logout();
+                LegoApplication.getInstance().exit();
                 SharePreferenceHelper helper = new SharePreferenceHelper(context);
                 Map<String, Object> map = new HashMap<>();
                 map.put("firstLogin", true);
@@ -226,46 +227,47 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
             }
 
             @Override
-            public void onResponse(VersionEntity versionEntity) {
-                specifyApkVersion(versionEntity);
+            public void onResponse(VersionEntity entity) {
+                if (entity.getVersionCode() > getVersionCode()) {
+                    updateTips(entity);
+                } else {
+                    toast(context, "已经是最新版本啦");
+                }
             }
         }));
     }
 
-    private void alertVersionUpdate(final VersionEntity versionEntity) {
-        final MaterialDialog materialDialog = new MaterialDialog(context);
-        materialDialog.setMessage(versionEntity.getUpdateLog());
-        materialDialog.setTitle("发现新版本");
-        materialDialog.setNegativeButton("稍后下载", new MaterialDialog.ButtonClickListener() {
-            @Override
-            public void onClick(View v, AlertDialog dialog) {
-                materialDialog.dismiss();
-            }
-        });
-        materialDialog.setPositiveButton("立即下载", new MaterialDialog.ButtonClickListener() {
-            @Override
-            public void onClick(View v, AlertDialog dialog) {
-                Intent intent = new Intent(context, DownloadService.class);
-                intent.putExtra("url", versionEntity.getDownurl());
-                intent.putExtra("versionName", versionEntity.getVersionName());
-                startService(intent);
-            }
-        });
-        materialDialog.show();
+    private int getVersionCode() {
+        PackageManager packageManager = getPackageManager();
+        PackageInfo packageInfo;
+        int versionCode = 0;
+        try {
+            packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
+            versionCode = packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return versionCode;
     }
 
-    private void specifyApkVersion(VersionEntity versionEntity) {
-        String apkUrl = Constants.fileDownDir + "/lego_study_" + versionEntity.getVersionName() + ".apk";
-        File file = new File(apkUrl);
-        if (versionEntity.getVersionCode() > MyUtils.getVersionCode(context)) {
-            if (file.exists()) {
-                MyUtils.installAPK(context, file);
-            } else {
-                alertVersionUpdate(versionEntity);
+    private void updateTips(final VersionEntity entity) {
+        final MaterialDialog dialog = new MaterialDialog(context);
+        dialog.setMessage(entity.getUpdateLog());
+        dialog.setTitle("发现新版本");
+        dialog.setNegativeButton("稍后下载", null);
+        dialog.setPositiveButton("立即下载", new MaterialDialog.ButtonClickListener() {
+            @Override
+            public void onClick(View v, AlertDialog dialog) {
+                startService(entity);
             }
+        });
+        dialog.show();
+    }
 
-        } else {
-            toast(context, "已经是最新版本啦");
-        }
+    private void startService(VersionEntity entity) {
+        Intent intent = new Intent(context, VersionUpdateService.class);
+        intent.putExtra("url", entity.getDownurl());
+        intent.putExtra("versionName", entity.getVersionName());
+        startService(intent);
     }
 }

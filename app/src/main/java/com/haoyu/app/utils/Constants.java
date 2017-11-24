@@ -2,7 +2,7 @@ package com.haoyu.app.utils;
 
 import android.os.Environment;
 
-import com.haoyu.app.base.GdeiApplication;
+import com.haoyu.app.base.LegoApplication;
 
 public class Constants {
 
@@ -53,10 +53,10 @@ public class Constants {
 
     static {
         if (existsSdcard()) {
-            rootDir = GdeiApplication.getInstance().getExternalFilesDir(null).getAbsolutePath();
+            rootDir = LegoApplication.getInstance().getExternalFilesDir(null).getAbsolutePath();
             mediaCache = SDCardUtil.getSDCardPath() + "/lego_study/media_cache";
         } else {
-            rootDir = GdeiApplication.getInstance().getFilesDir().getAbsolutePath();
+            rootDir = LegoApplication.getInstance().getFilesDir().getAbsolutePath();
             mediaCache = SDCardUtil.getRootDirectoryPath() + "/lego_study/media_cache";
         }
 

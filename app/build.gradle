@@ -46,7 +46,7 @@ dependencies {
     /*gson*/
     compile 'com.google.code.gson:gson:2.8.1'
     /*fileDownloader*/
-    //    compile 'com.liulishuo.filedownloader:library:1.6.2'
+    compile 'com.liulishuo.filedownloader:library:1.6.8'
     compile 'org.wlf:FileDownloader:0.3.2'
     /*greenDao*/
     //    compile 'org.greenrobot:greendao:3.2.0'
