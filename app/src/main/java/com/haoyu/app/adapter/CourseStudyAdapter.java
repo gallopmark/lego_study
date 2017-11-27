@@ -30,6 +30,7 @@ import com.haoyu.app.view.CircleProgressBar;
 import org.wlf.filedownloader.DownloadFileInfo;
 import org.wlf.filedownloader.FileDownloader;
 import org.wlf.filedownloader.base.Status;
+import org.wlf.filedownloader.listener.OnDeleteDownloadFileListener;
 import org.wlf.filedownloader.listener.OnFileDownloadStatusListener;
 import org.wlf.filedownloader.listener.simple.OnSimpleFileDownloadStatusListener;
 
@@ -309,14 +310,17 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                 public void onClick(View view) {
                     if (url != null) {
                         if (NetStatusUtil.isConnected(context)) {
-                            if (NetStatusUtil.isWifi(context))
+                            if (NetStatusUtil.isWifi(context)) {
                                 beginDownload(url);
-                            else
+                            } else {
                                 netWorkTips(url);
-                        } else
-                            tips("无法连接到服务器，请检查网络设置！");
-                    } else
+                            }
+                        } else {
+                            beginDownload(url);
+                        }
+                    } else {
                         tips("下载失败，视频文件不存在！");
+                    }
 
                 }
             });
@@ -324,7 +328,7 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                 @Override
                 public void onClick(View view) {
                     DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
-                    if (fileInfo != null && fileInfo.getStatus() == Status.DOWNLOAD_STATUS_DOWNLOADING) {
+                    if (fileInfo != null && fileInfo.getStatus() != Status.DOWNLOAD_STATUS_DOWNLOADING) {
                         FileDownloader.pause(url);
                     } else {
                         beginDownload(url);
@@ -440,8 +444,25 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
     private void beginDownload(final String url) {
         DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
         if (fileInfo != null && fileInfo.getStatus() == Status.DOWNLOAD_STATUS_FILE_NOT_EXIST)
-            FileDownloader.delete(url, true, null);
-        FileDownloader.start(url);
+            FileDownloader.delete(url, true, new OnDeleteDownloadFileListener() {
+                @Override
+                public void onDeleteDownloadFilePrepared(DownloadFileInfo downloadFileNeedDelete) {
+
+                }
+
+                @Override
+                public void onDeleteDownloadFileSuccess(DownloadFileInfo downloadFileDeleted) {
+                    FileDownloader.start(url);
+                }
+
+                @Override
+                public void onDeleteDownloadFileFailed(DownloadFileInfo downloadFileInfo, DeleteDownloadFileFailReason failReason) {
+                    FileDownloader.start(url);
+                }
+            });
+        else {
+            FileDownloader.start(url);
+        }
         FileDownloader.registerDownloadStatusListener(mOnFileDownloadStatusListener);
     }
 

@@ -42,7 +42,6 @@
             android:ellipsize="middle"
             android:gravity="left"
             android:maxLines="2"
-            android:text="教育系统突发公共事件简介.mp4"
             android:textSize="@dimen/font_size_16" />
     </LinearLayout>
 

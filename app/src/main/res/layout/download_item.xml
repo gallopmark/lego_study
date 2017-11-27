@@ -37,8 +37,7 @@
                 android:layout_gravity="center"
                 android:ellipsize="middle"
                 android:gravity="left"
-                android:maxLines="1"
-                android:text="教育系统突发公共事件简介"
+                android:singleLine="true"
                 android:textSize="@dimen/font_size_16" />
 
             <LinearLayout
@@ -54,7 +53,6 @@
                     android:layout_gravity="center"
                     android:layout_weight="1"
                     android:gravity="left"
-                    android:text="已下载12M/33M"
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_14" />
 
@@ -63,7 +61,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="下载中..."
                     android:textColor="@color/blow_gray"
                     android:textSize="@dimen/font_size_14" />
             </LinearLayout>

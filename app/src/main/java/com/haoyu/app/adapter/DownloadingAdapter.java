@@ -35,7 +35,6 @@ public class DownloadingAdapter extends BaseArrayRecyclerAdapter<DownloadFileInf
     private OnDownLoadFinishListener onDownLoadFinishListener;
     private boolean edit = false;
     private List<DownloadFileInfo> mSelected = new ArrayList<>();
-    private Map<String, Boolean> loadingMap = new HashMap<>();
     private Map<Integer, Boolean> hashMap = new HashMap<>();
     private OnSelectedListener onSelectedListener;
 
@@ -112,30 +111,22 @@ public class DownloadingAdapter extends BaseArrayRecyclerAdapter<DownloadFileInf
         progressBar.setProgress((int) fileInfo.getDownloadedSizeLong());
         if (fileInfo.getStatus() == Status.DOWNLOAD_STATUS_FILE_NOT_EXIST) {
             tv_state.setText("文件已被删除");
-            loadingMap.put(url, false);
         } else if (fileInfo.getStatus() == Status.DOWNLOAD_STATUS_DOWNLOADING) {
             tv_state.setText("正在下载");
-            loadingMap.put(url, true);
         } else if (fileInfo.getStatus() == Status.DOWNLOAD_STATUS_WAITING) {
             tv_state.setText("等待下载");
-            loadingMap.put(url, false);
         } else if (fileInfo.getStatus() == Status.DOWNLOAD_STATUS_PREPARING) {
             tv_state.setText("正在连接资源");
-            loadingMap.put(url, false);
         } else if (fileInfo.getStatus() == Status.DOWNLOAD_STATUS_PREPARED) {
             tv_state.setText("连接到了资源");
-            loadingMap.put(url, false);
         } else if (fileInfo.getStatus() == Status.DOWNLOAD_STATUS_RETRYING) {
             tv_state.setText("下载重试");
         } else if (fileInfo.getStatus() == Status.DOWNLOAD_STATUS_PAUSED) {
             tv_state.setText("下载暂停");
-            loadingMap.put(url, false);
         } else if (fileInfo.getStatus() == Status.DOWNLOAD_STATUS_ERROR) {
             tv_state.setText("下载失败");
-            loadingMap.put(url, false);
         } else {
             tv_state.setText("下载错误");
-            loadingMap.put(url, false);
         }
         if (fileInfo.getStatus() == Status.DOWNLOAD_STATUS_DOWNLOADING) {
             iv_state.setImageResource(R.drawable.download_play);
@@ -145,10 +136,11 @@ public class DownloadingAdapter extends BaseArrayRecyclerAdapter<DownloadFileInf
         rl_download.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (loadingMap.get(url) == true) {
-                    FileDownloader.pause(url);
-                } else {
+                DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
+                if (fileInfo != null && fileInfo.getStatus() != Status.DOWNLOAD_STATUS_DOWNLOADING) {
                     beginDownload(url);
+                } else {
+                    FileDownloader.pause(url);
                 }
             }
         });
@@ -164,10 +156,11 @@ public class DownloadingAdapter extends BaseArrayRecyclerAdapter<DownloadFileInf
                         hashMap.put(position, true);
                     }
                 } else {
-                    if (loadingMap.get(url) == true) {
-                        FileDownloader.pause(url);
-                    } else {
+                    DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
+                    if (fileInfo != null && fileInfo.getStatus() != Status.DOWNLOAD_STATUS_DOWNLOADING) {
                         beginDownload(url);
+                    } else {
+                        FileDownloader.pause(url);
                     }
                 }
             }
@@ -263,7 +256,6 @@ public class DownloadingAdapter extends BaseArrayRecyclerAdapter<DownloadFileInf
                 remainingTime) {
             // 正在下载，downloadSpeed为当前下载速度，单位KB/s，remainingTime为预估的剩余时间，单位秒
             String url = downloadFileInfo.getUrl();
-            loadingMap.put(url, true);
             if (url != null && viewMap.get(url) != null) {
                 View itemView = viewMap.get(url);
                 CircleProgressBar progressBar = itemView.findViewById(R.id.progressBar);
@@ -299,7 +291,6 @@ public class DownloadingAdapter extends BaseArrayRecyclerAdapter<DownloadFileInf
         public void onFileDownloadStatusPaused(DownloadFileInfo downloadFileInfo) {
             // 下载已被暂停
             String url = downloadFileInfo.getUrl();
-            loadingMap.put(url, false);
             if (url != null && viewMap.get(url) != null) {
                 View itemView = viewMap.get(url);
                 ImageView iv_state = itemView.findViewById(R.id.iv_state);
@@ -319,7 +310,6 @@ public class DownloadingAdapter extends BaseArrayRecyclerAdapter<DownloadFileInf
 
         @Override
         public void onFileDownloadStatusFailed(String url, DownloadFileInfo downloadFileInfo, FileDownloadStatusFailReason failReason) {
-            loadingMap.put(url, false);
             // 下载失败
             if (url != null && viewMap.get(url) != null) {
                 View itemView = viewMap.get(url);
