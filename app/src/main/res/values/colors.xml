@@ -212,4 +212,8 @@
     <color name="seekbar_secondaryProgress">#9951B64E</color>
     <color name="seekbar_progress">#9911B1D5</color>
     <color name="videoplayer_control">#80000000</color>
+
+    <color name="startColor">@color/defaultColor</color>
+    <color name="centerColor">#1095E4</color>
+    <color name="endColor">#1980E3</color>
 </resources>
