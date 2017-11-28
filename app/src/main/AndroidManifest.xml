@@ -318,6 +318,9 @@
         <!--文件预览-->
         <activity android:name="com.haoyu.app.activity.MFileInfosActivity" />
         <activity android:name="com.haoyu.app.activity.MFileInfoActivity" />
+        <activity android:name="com.haoyu.app.activity.VideoPlayerLibActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
 
         <service android:name="com.haoyu.app.service.VersionUpdateService" />
 

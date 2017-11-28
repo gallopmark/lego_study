@@ -49,6 +49,7 @@ public class VersionUpdateService extends Service {
     private boolean isError;
     private String ACTION_DELETE = "ACTION_DELETE";
     private String ACTION_CLICK = "ACTION_CLICK";
+    private boolean isStarted;
 
     private BroadcastReceiver receiver = new BroadcastReceiver() {
         @Override
@@ -102,7 +103,9 @@ public class VersionUpdateService extends Service {
             fileName += System.currentTimeMillis() + ".apk";
         }
         savePath += (File.separator + fileName);
-        excute();
+        if (!isStarted) {   //如果已经启动下载，则跳过此次下载
+            excute();
+        }
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -121,6 +124,7 @@ public class VersionUpdateService extends Service {
     }
 
     public void excute() {
+        isStarted = true;
         FileDownloader.getImpl().create(url)
                 .setPath(savePath, false)
                 .setAutoRetryTimes(1)

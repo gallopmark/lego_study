@@ -1,5 +1,6 @@
 package com.haoyu.app.activity;
 
+import android.content.Intent;
 import android.support.annotation.IdRes;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +26,7 @@ import org.wlf.filedownloader.FileDownloader;
 import org.wlf.filedownloader.base.Status;
 import org.wlf.filedownloader.listener.OnDeleteDownloadFilesListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -230,7 +232,17 @@ public class AppDownloadActivity extends BaseActivity implements View.OnClickLis
                 setEdit();
             }
         });
-
+        downloadCompleteAdapter.setOnItemClickListener(new DownloadCompleteAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DownloadFileInfo fileInfo) {
+                String path = fileInfo.getFilePath();
+                if (path != null && new File(path).exists()) {
+                    Intent intent = new Intent(context, VideoPlayerLibActivity.class);
+                    intent.putExtra("videoUrl", path);
+                    startActivity(intent);
+                }
+            }
+        });
     }
 
     private void setEdit() {

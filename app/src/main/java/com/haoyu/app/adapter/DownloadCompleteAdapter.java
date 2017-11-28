@@ -9,12 +9,9 @@ import android.widget.TextView;
 
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
 import com.haoyu.app.lego.student.R;
-import com.haoyu.app.utils.Common;
-import com.haoyu.app.dialog.MaterialDialog;
 
 import org.wlf.filedownloader.DownloadFileInfo;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,10 +28,15 @@ public class DownloadCompleteAdapter extends BaseArrayRecyclerAdapter<DownloadFi
     private List<DownloadFileInfo> mSelected = new ArrayList<>();
     private Map<Integer, Boolean> hashMap = new HashMap<>();
     private OnSelectedListener onSelectedListener;
+    private OnItemClickListener onItemClickListener;
 
     public DownloadCompleteAdapter(Context context, List<DownloadFileInfo> mDatas) {
         super(mDatas);
         this.context = context;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     public boolean isEdit() {
@@ -96,10 +98,8 @@ public class DownloadCompleteAdapter extends BaseArrayRecyclerAdapter<DownloadFi
                         hashMap.put(position, true);
                     }
                 } else {
-                    if (fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
-                        Common.openFile(context, new File(fileInfo.getFilePath()));
-                    } else {
-                        showToolDialog();
+                    if (onItemClickListener != null) {
+                        onItemClickListener.onItemClick(fileInfo);
                     }
                 }
             }
@@ -122,15 +122,11 @@ public class DownloadCompleteAdapter extends BaseArrayRecyclerAdapter<DownloadFi
         });
     }
 
-    private void showToolDialog() {
-        MaterialDialog dialog = new MaterialDialog(context);
-        dialog.setTitle("提示");
-        dialog.setMessage("下载的文件已被删除");
-        dialog.setPositiveButton("我知道了", null);
-        dialog.show();
-    }
-
     public interface OnSelectedListener {
         void onSelected(List<DownloadFileInfo> mSelect);
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(DownloadFileInfo fileInfo);
     }
 }

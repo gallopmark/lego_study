@@ -23,14 +23,9 @@ import android.graphics.Rect;
 import android.hardware.Camera;
 import android.os.Build;
 import android.os.Handler;
-import android.util.Log;
 import android.view.SurfaceHolder;
-import android.view.Window;
 
 import java.io.IOException;
-
-import static android.R.attr.top;
-import static android.R.attr.width;
 
 /**
  * This object wraps the Camera service object and expects to be the only one talking to it. The
@@ -223,19 +218,21 @@ public final class CameraManager {
     public Rect getFramingRect() {
         Point screenResolution = configManager.getScreenResolution();
         // if (framingRect == null) {
-            if (camera == null) {
-                return null;
-            }
+        if (camera == null) {
+            return null;
+        }
+        if (screenResolution == null) {
+            return null;
+        }
+        int leftOffset = (screenResolution.x - FRAME_WIDTH) / 2;
 
-            int leftOffset = (screenResolution.x - FRAME_WIDTH) / 2;
-
-            int topOffset = 0;
-            if (FRAME_MARGINTOP != -1) {
-                topOffset = FRAME_MARGINTOP;
-            } else {
-                topOffset = (screenResolution.y - FRAME_HEIGHT) / 2;
-            }
-            framingRect = new Rect(leftOffset, topOffset, leftOffset + FRAME_WIDTH, topOffset + FRAME_HEIGHT);
+        int topOffset = 0;
+        if (FRAME_MARGINTOP != -1) {
+            topOffset = FRAME_MARGINTOP;
+        } else {
+            topOffset = (screenResolution.y - FRAME_HEIGHT) / 2;
+        }
+        framingRect = new Rect(leftOffset, topOffset, leftOffset + FRAME_WIDTH, topOffset + FRAME_HEIGHT);
         // }
         return framingRect;
     }

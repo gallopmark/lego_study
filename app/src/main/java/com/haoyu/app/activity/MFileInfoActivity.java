@@ -2,8 +2,7 @@ package com.haoyu.app.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -31,13 +30,11 @@ import com.haoyu.app.entity.MFileInfo;
 import com.haoyu.app.filePicker.FileUtils;
 import com.haoyu.app.fragment.OfficeViewerFragment;
 import com.haoyu.app.fragment.PictureViewerFragment;
-import com.haoyu.app.fragment.VideoPlayerFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.MediaFile;
 import com.haoyu.app.utils.PixelFormat;
-import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.view.AppToolBar;
 import com.haoyu.app.view.RoundRectProgressBar;
 import com.liulishuo.filedownloader.BaseDownloadTask;
@@ -66,8 +63,6 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class MFileInfoActivity extends BaseActivity {
     private MFileInfoActivity context = this;
-    @BindView(R.id.rootView)
-    LinearLayout rootView;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.ll_fileInfo)
@@ -93,9 +88,7 @@ public class MFileInfoActivity extends BaseActivity {
 
     @BindView(R.id.container)
     FrameLayout container;  //视频文件
-    private int smallHeight;
     private FragmentManager fragmentManager;
-    private VideoPlayerFragment videoFragment;
 
     private OfficeViewerFragment officeFragment;
     private boolean isDownload;
@@ -119,16 +112,16 @@ public class MFileInfoActivity extends BaseActivity {
         }
         url = fileInfo.getUrl();
         fileName = fileInfo.getFileName();
-        if (fileName == null) fileName = Common.getFileName(url);
         fragmentManager = getSupportFragmentManager();
         if (MediaFile.isImageFileType(url)) {
             setPictureFragment();
         } else if (MediaFile.isVideoFileType(url)) {
-            setVideoFragment();
+            playVideo();
         } else {
             if (url == null) {
                 toast(context, "文件链接不存在");
             } else {
+                if (fileName == null) fileName = Common.getFileName(url);
                 FileDownloader.setup(context);
                 if (!isFileExists()) {
                     beginDownload();
@@ -145,77 +138,20 @@ public class MFileInfoActivity extends BaseActivity {
         fragmentManager.beginTransaction().replace(R.id.container, fragment).commit();
     }
 
-    private void setVideoFragment() {
-        rootView.setBackgroundColor(ContextCompat.getColor(context, R.color.videoplayer_control));
-        smallHeight = ScreenUtils.getScreenHeight(context) / 5 * 2;
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) container.getLayoutParams();
-        params.height = smallHeight;
-        container.setLayoutParams(params);
-        videoFragment = new VideoPlayerFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("videoUrl", url);
-        videoFragment.setArguments(bundle);
-        fragmentManager.beginTransaction().replace(R.id.container, videoFragment).commit();
-        videoFragment.setOnRequestedOrientation(new VideoPlayerFragment.OnRequestedOrientation() {
-            @Override
-            public void onRequested(int orientation) {
-                setRequestedOrientation(orientation);
-            }
-        });
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // 判断Android当前的屏幕是横屏还是竖屏。横竖屏判断
-        setOrientattion(newConfig.orientation);
-    }
-
-    private void setOrientattion(int orientation) {
-        if (orientation == Configuration.ORIENTATION_PORTRAIT) {   //竖屏
-            if (videoFragment != null) {
-                videoFragment.setFullScreen(false);
-            }
-            showOutSize();
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) container.getLayoutParams();
-            params.height = smallHeight;
-            container.setLayoutParams(params);
-        } else { //横屏
-            if (videoFragment != null) {
-                videoFragment.setFullScreen(true);
-            }
-            hideOutSize();
-            int screeWidth = ScreenUtils.getScreenWidth(context);
-            int screenHeight = ScreenUtils.getScreenHeight(context);
-            int statusHeight = ScreenUtils.getStatusHeight(context);
-            int realHeight = screenHeight - statusHeight;
-            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) container.getLayoutParams();
-            params.weight = screeWidth;
-            params.height = realHeight;
-            params.setMargins(0, 0, 0, 0);
-            container.setLayoutParams(params);
-        }
-    }
-
-    private void showOutSize() {
-        toolBar.setVisibility(View.VISIBLE);
-    }
-
-    private void hideOutSize() {
-        toolBar.setVisibility(View.GONE);
+    private void playVideo() {
+        Intent intent = new Intent(context, VideoPlayerLibActivity.class);
+        intent.putExtra("videoUrl", url);
+        intent.putExtra("videoTitle", fileName);
+        startActivity(intent);
+        finish();
     }
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (getRequestedOrientation() != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                return true;
-            } else if (officeFragment != null) {
-                fragmentManager.beginTransaction().remove(officeFragment).commit();
-                officeFragment = null;
-                return true;
-            }
+        if (keyCode == KeyEvent.KEYCODE_BACK && officeFragment != null) {
+            fragmentManager.beginTransaction().remove(officeFragment).commit();
+            officeFragment = null;
+            return true;
         }
         return super.onKeyDown(keyCode, event);
     }

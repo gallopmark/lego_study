@@ -2,8 +2,6 @@ package com.haoyu.app.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -16,6 +14,7 @@ import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.VersionEntity;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.service.VersionUpdateService;
+import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.FileCacheUtils;
 import com.haoyu.app.utils.OkHttpClientManager;
@@ -228,26 +227,13 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
 
             @Override
             public void onResponse(VersionEntity entity) {
-                if (entity.getVersionCode() > getVersionCode()) {
+                if (entity.getVersionCode() > Common.getVersionCode(context)) {
                     updateTips(entity);
                 } else {
                     toast(context, "已经是最新版本啦");
                 }
             }
         }));
-    }
-
-    private int getVersionCode() {
-        PackageManager packageManager = getPackageManager();
-        PackageInfo packageInfo;
-        int versionCode = 0;
-        try {
-            packageInfo = packageManager.getPackageInfo(getPackageName(), 0);
-            versionCode = packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return versionCode;
     }
 
     private void updateTips(final VersionEntity entity) {
@@ -269,5 +255,27 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         intent.putExtra("url", entity.getDownurl());
         intent.putExtra("versionName", entity.getVersionName());
         startService(intent);
+        if (!Common.isNotificationEnabled(context)) {
+            openTips();
+        }
+    }
+
+    private void openTips() {
+        MaterialDialog dialog = new MaterialDialog(context);
+        dialog.setTitle("提示");
+        dialog.setMessage("通知已关闭，是否允许应用推送通知？");
+        dialog.setPositiveButton("开启", new MaterialDialog.ButtonClickListener() {
+            @Override
+            public void onClick(View v, AlertDialog dialog) {
+                Common.openSettings(context);
+            }
+        });
+        dialog.setNegativeButton("取消", new MaterialDialog.ButtonClickListener() {
+            @Override
+            public void onClick(View v, AlertDialog dialog) {
+                toast(context, "已进入后台更新");
+            }
+        });
+        dialog.show();
     }
 }

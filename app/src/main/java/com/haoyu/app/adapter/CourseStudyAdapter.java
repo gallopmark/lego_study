@@ -329,9 +329,9 @@ public class CourseStudyAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity
                 public void onClick(View view) {
                     DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
                     if (fileInfo != null && fileInfo.getStatus() != Status.DOWNLOAD_STATUS_DOWNLOADING) {
-                        FileDownloader.pause(url);
-                    } else {
                         beginDownload(url);
+                    } else {
+                        FileDownloader.pause(url);
                     }
                 }
             });

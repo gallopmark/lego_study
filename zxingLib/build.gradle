@@ -19,13 +19,6 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile files('libs/zxing.jar')
+    compile 'com.google.zxing:core:3.3.0'
     compile 'com.android.support:support-v4:27.0.0'
 }
-
-ext {
-    PUBLISH_GROUP_ID = 'cn.yipianfengye.android'
-    PUBLISH_ARTIFACT_ID = 'zxing-library'
-    PUBLISH_VERSION = '2.1'
-}
-
