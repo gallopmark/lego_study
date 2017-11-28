@@ -92,7 +92,7 @@ public class Common {
 
     public static String getFileName(String url) {
         String fileName = "";
-        if (url != null && url.lastIndexOf("/") != -1) {
+        if (url != null && url.lastIndexOf("/") >0) {
             fileName = url.substring(url.lastIndexOf("/") + 1, url.length());
         }
         return fileName;

@@ -12,29 +12,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/videoplayer_control"
-        android:padding="@dimen/title_padding">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:src="@drawable/fanhui" />
-
-        <TextView
-            android:id="@+id/tv_videoName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_size_8"
-            android:textColor="@color/white"
-            android:textSize="@dimen/title_textsize" />
-    </LinearLayout>
-
     <ImageView
         android:id="@+id/iv_play"
         android:layout_width="@dimen/margin_size_60"
@@ -65,6 +42,6 @@
 
     <include
         android:id="@+id/fl_controller"
-        layout="@layout/video_controller"
+        layout="@layout/videoplayer_controller"
         android:visibility="gone" />
 </FrameLayout>

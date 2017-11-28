@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.NetStatusUtil;
 import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.view.CircularProgressView;
@@ -49,11 +50,6 @@ import io.reactivex.functions.Consumer;
 
 public class VideoPlayerLibActivity extends BaseActivity implements View.OnClickListener {
     private VideoPlayerLibActivity context = this;
-    @BindView(R.id.iv_back)
-    ImageView iv_back;
-    @BindView(R.id.tv_videoName)
-    TextView tv_videoName;
-
     @BindView(R.id.fl_video)
     FrameLayout fl_video;
     @BindView(R.id.iv_play)
@@ -68,8 +64,10 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
 
     @BindView(R.id.fl_controller)
     FrameLayout fl_controller;
-    @BindView(R.id.tv_videoTitle)
-    TextView tv_videoTitle;
+    @BindView(R.id.iv_back)
+    ImageView iv_back;
+    @BindView(R.id.tv_videoName)
+    TextView tv_videoName;
     @BindView(R.id.ll_attribute)
     LinearLayout ll_attribute;
     @BindView(R.id.iv_attribute)
@@ -90,23 +88,11 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
     TextView tv_current;
     @BindView(R.id.tv_videoSize)
     TextView tv_videoSize;
-    @BindView(R.id.iv_expand)
-    ImageView iv_expand;
-    private String videoUrl, videoTitle;
+    private String videoUrl;
     private AudioManager mAudioManager;
     private boolean progress_turn, attrbute_turn;
     private long currentDuration = -1, lastDuration = -1;  //当前播放位置
-    private String errorMsg;
-
-    private boolean isHttp;  //是否是本地文件
-    private NetWorkReceiver receiver;
-    private MaterialDialog dialog;
-    private boolean openPlayer;
-    private boolean openWithMobile = false;
-
-    /**
-     * 视频窗口的宽和高
-     */
+    /*** 视频窗口的宽和高*/
     private int playerWidth, playerHeight;
     private int maxVolume, currentVolume;
     private float mBrightness = -1f; // 亮度
@@ -119,6 +105,13 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
     private final int CODE_ATTRBUTE = 1;
     private final int CODE_ENDGESTURE = 2;
 
+    private String errorMsg;
+    private boolean isHttp;  //是否是本地文件
+    private NetWorkReceiver receiver;
+    private MaterialDialog dialog;
+    private boolean openPlayer, isPrepared;
+    private boolean openWithMobile = false;
+
     @Override
     public int setLayoutResID() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -129,19 +122,16 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
     @Override
     public void initView() {
         videoUrl = getIntent().getStringExtra("videoUrl");
-        videoTitle = getIntent().getStringExtra("videoTitle");
+        String videoTitle = getIntent().getStringExtra("videoTitle");
         if (videoUrl.startsWith("http") || videoUrl.startsWith("https")) {
             isHttp = true;
         } else {
             isHttp = false;
         }
-        iv_expand.setVisibility(View.GONE);
-        if (videoTitle != null && videoTitle.trim().length() > 0) {
-            tv_videoTitle.setVisibility(View.VISIBLE);
-            tv_videoTitle.setText(videoTitle);
-        } else {
-            tv_videoTitle.setVisibility(View.GONE);
+        if (videoTitle == null) {
+            videoTitle = Common.getFileName(videoUrl);
         }
+        tv_videoName.setText(videoTitle);
         setVideoLayout();
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
@@ -218,7 +208,7 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
             @Override
             public boolean onTouch(View view, MotionEvent event) {
                 // 手势里除了singleTapUp，没有其他检测up的方法
-                if (!openPlayer) return true;
+                if (!isPrepared) return true;
                 if (event.getAction() == MotionEvent.ACTION_UP) {
                     GESTURE_FLAG = 0;// 手指离开屏幕后，重置调节音量或进度的标志
                     endGesture();
@@ -344,8 +334,18 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
     }
 
     @Override
+    public void initData() {
+        if (NetStatusUtil.isWifi(context)) {   //如果是wifi网络环境直接播放视频
+            openPlayer = true;
+            iv_play.setVisibility(View.GONE);
+            playVideo();
+        }
+    }
+
+    @Override
     public void setListener() {
         iv_play.setOnClickListener(context);
+        iv_back.setOnClickListener(context);
         iv_playState.setOnClickListener(context);
         seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -367,6 +367,9 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
+            case R.id.iv_back:
+                finish();
+                break;
             case R.id.iv_play:
                 if (isHttp && NetStatusUtil.isConnected(context) && !NetStatusUtil.isWifi(context)) {
                     netStateTips();
@@ -492,6 +495,7 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
     }
 
     private void prepared() {
+        isPrepared = true;
         tv_loading.setVisibility(View.GONE);
         if (tv_loading.getVisibility() != View.GONE) {
             tv_loading.setVisibility(View.GONE);
@@ -514,6 +518,8 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
     }
 
     private void pause() {
+        tv_loading.setVisibility(View.GONE);
+        cpvLoading.setVisibility(View.GONE);
         iv_play.setVisibility(View.VISIBLE);
         videoView.pause();
         iv_playState.setImageResource(R.drawable.ic_play);
@@ -530,6 +536,8 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
             }
         } else {
             lastDuration = 0;
+            tv_loading.setText("已播放结束");
+            tv_loading.setVisibility(View.VISIBLE);
         }
     }
 

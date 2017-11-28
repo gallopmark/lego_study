@@ -18,6 +18,7 @@ import android.text.Spanned;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -29,7 +30,7 @@ import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.NetStatusUtil;
-import com.haoyu.app.utils.ScreenUtils;
+import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.view.CircularProgressView;
 import com.haoyu.app.view.RoundRectProgressBar;
 import com.pili.pldroid.player.AVOptions;
@@ -97,17 +98,25 @@ public class VideoPlayerFragment extends BaseFragment implements View.OnClickLis
     private AudioManager mAudioManager;
     private boolean progress_turn, attrbute_turn;
     private long currentDuration = -1, lastDuration;  //当前播放位置
-    private int currentVolume;
+    /*** 视频窗口的宽和高*/
+    private int playerWidth, playerHeight;
+    private int maxVolume, currentVolume;
     private float mBrightness = -1f; // 亮度
+    private boolean firstScroll = false;// 每次触摸屏幕后，第一次scroll的标志
+    private static final float STEP_VOLUME = 6f;// 协调音量滑动时的步长，避免每次滑动都改变，导致改变过快
+    private int GESTURE_FLAG = 0;// 1,调节进度，2，调节音量,3.调节亮度
+    private static final int GESTURE_MODIFY_PROGRESS = 1;
+    private static final int GESTURE_MODIFY_VOLUME = 2;
+    private static final int GESTURE_MODIFY_BRIGHT = 3;
+    private final int CODE_ATTRBUTE = 1;
+    private final int CODE_ENDGESTURE = 2;
+
     private String errorMsg;
 
     private NetWorkReceiver receiver;
     private MaterialDialog materialDialog;
-    private boolean openPlayer;
+    private boolean openPlayer, isPrepared;
     private boolean openWithMobile = false;
-
-    private final int CODE_ATTRBUTE = 1;
-    private final int CODE_ENDGESTURE = 2;
 
     private OnRequestedOrientation onRequestedOrientation;
 
@@ -134,7 +143,10 @@ public class VideoPlayerFragment extends BaseFragment implements View.OnClickLis
             tv_videoTitle.setText(spanned);
             tv_videoTitle.setVisibility(View.VISIBLE);
         }
+        setVideoLayout();
         mAudioManager = (AudioManager) activity.getSystemService(Context.AUDIO_SERVICE);
+        maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
+        currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
         activity.setVolumeControlStream(AudioManager.STREAM_MUSIC);
         AVOptions options = new AVOptions();
         options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 20 * 1000);
@@ -147,79 +159,80 @@ public class VideoPlayerFragment extends BaseFragment implements View.OnClickLis
         activity.registerReceiver(receiver, filter);
     }
 
-    @Override
-    public void setListener() {
-        iv_play.setOnClickListener(this);
-        iv_playState.setOnClickListener(this);
-        iv_expand.setOnClickListener(this);
-        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                videoView.seekTo(seekBar.getProgress());
-            }
-        });
-        final GestureDetector detector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
-            private boolean firstTouch;
-            private boolean volumeControl;
-            private boolean toSeek;
-
+    private void setVideoLayout() {
+        final GestureDetector gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onDown(MotionEvent e) {
-                firstTouch = true;
+                firstScroll = true;// 设定是触摸屏幕后第一次scroll的标志
                 fl_controller.setVisibility(View.VISIBLE);
-                return super.onDown(e);
+                return false;
             }
 
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 float mOldX = e1.getX(), mOldY = e1.getY();
-                float deltaY = mOldY - e2.getY();
-                final float deltaX = mOldX - e2.getX();
-                int screenWidthPixels = ScreenUtils.getScreenWidth(context);
-                if (firstTouch) {
-                    toSeek = Math.abs(distanceX) >= Math.abs(distanceY);
-                    volumeControl = mOldX > screenWidthPixels * 0.5f;
-                    firstTouch = false;
-                }
-                if (toSeek) {
-                    onProgressSlide(-deltaX / fl_video.getWidth());
-                } else {
-                    float percent = deltaY / fl_video.getHeight();
-                    if (volumeControl) {
-                        onVolumeSlide(deltaY);
+                int y = (int) e2.getRawY();
+                if (firstScroll) {// 以触摸屏幕后第一次滑动为标准，避免在屏幕上操作切换混乱
+                    // 横向的距离变化大则调整进度，纵向的变化大则调整音量
+                    if (Math.abs(distanceX) >= Math.abs(distanceY)) {
+                        GESTURE_FLAG = GESTURE_MODIFY_PROGRESS;
                     } else {
-                        onBrightnessSlide(percent);
+                        if (mOldX > playerWidth * 3.0 / 5) {// 音量
+                            GESTURE_FLAG = GESTURE_MODIFY_VOLUME;
+                        } else if (mOldX < playerWidth * 2.0 / 5) {// 亮度
+                            GESTURE_FLAG = GESTURE_MODIFY_BRIGHT;
+                        }
                     }
                 }
-                return super.onScroll(e1, e2, distanceX, distanceY);
+                // 如果每次触摸屏幕后第一次scroll是调节进度，那之后的scroll事件都处理音量进度，直到离开屏幕执行下一次操作
+                float percent = (mOldY - y) / playerHeight;
+                if (GESTURE_FLAG == GESTURE_MODIFY_PROGRESS) {
+                    progress_turn = true;
+                    float deltaX = mOldX - e2.getX();
+                    float percentage = -deltaX / playerWidth;
+                    onProgressSlide(percentage);
+                } else if (GESTURE_FLAG == GESTURE_MODIFY_VOLUME) { // 如果每次触摸屏幕后第一次scroll是调节音量，那之后的scroll事件都处理音量调节，直到离开屏幕执行下一次操作
+                    onVolumeSlide(distanceX, distanceY);
+                } else if (GESTURE_FLAG == GESTURE_MODIFY_BRIGHT) { // 如果每次触摸屏幕后第一次scroll是调节亮度，那之后的scroll事件都处理亮度调节，直到离开屏幕执行下一次操作
+                    onBrightnessSlide(percent);
+                }
+                firstScroll = false;// 第一次scroll执行完成，修改标志
+                return false;
             }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                return false;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                return false;
+            }
+
         });
-        fl_video.setClickable(true);
+        fl_video.setLongClickable(true);
+        gestureDetector.setIsLongpressEnabled(true);
         fl_video.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                if (!openPlayer) return true;
-                view.getParent().requestDisallowInterceptTouchEvent(true);
-                if (detector.onTouchEvent(event)) {
-                    return true;
+                // 手势里除了singleTapUp，没有其他检测up的方法
+                if (!isPrepared) return true;
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    GESTURE_FLAG = 0;// 手指离开屏幕后，重置调节音量或进度的标志
+                    endGesture();
                 }
-                // 处理手势结束
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_UP:
-                        view.getParent().requestDisallowInterceptTouchEvent(false);
-                        endGesture();
-                        break;
-                }
-                return false;
+                return gestureDetector.onTouchEvent(event);
+            }
+        });
+        /** 获取视频播放窗口的尺寸 */
+        ViewTreeObserver viewObserver = fl_video.getViewTreeObserver();
+        viewObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                fl_video.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                playerWidth = fl_video.getWidth();
+                playerHeight = fl_video.getHeight();
             }
         });
     }
@@ -282,39 +295,34 @@ public class VideoPlayerFragment extends BaseFragment implements View.OnClickLis
     }
 
     //加减音量
-    private void onVolumeSlide(float deltaY) {
+    private void onVolumeSlide(float distanceX, float distanceY) {
         if (!attrbute_turn) {
             attrbute_turn = true;
         }
-        int maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-        if (currentVolume == -1) {
-            currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-            if (currentVolume < 0)
-                currentVolume = 0;
-        }
-        if (deltaY > 0) {
-            currentVolume++;
-            if (currentVolume > maxVolume) {
-                currentVolume = maxVolume;
+        currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
+        if (Math.abs(distanceY) > Math.abs(distanceX)) {// 纵向移动大于横向移动
+            if (distanceY >= PixelFormat.dp2px(context, STEP_VOLUME)) {// 音量调大,注意横屏时的坐标体系,尽管左上角是原点，但横向向上滑动时distanceY为正
+                if (currentVolume < maxVolume) {// 为避免调节过快，distanceY应大于一个设定值
+                    currentVolume++;
+                }
+            } else if (distanceY <= -PixelFormat.dp2px(context, STEP_VOLUME)) {// 音量调小
+                if (currentVolume > 0) {
+                    currentVolume--;
+                }
             }
-        } else {
-            currentVolume--;
-            if (currentVolume < 0) {
-                currentVolume = 0;
+            if (ll_attribute.getVisibility() != View.VISIBLE) {
+                ll_attribute.setVisibility(View.VISIBLE);
             }
+            if (currentVolume > 0) {
+                iv_attribute.setImageResource(R.drawable.ic_voice_max);
+            } else {
+                iv_attribute.setImageResource(R.drawable.ic_voice_min);
+            }
+            progressBar.setMax(maxVolume);
+            progressBar.setProgress(currentVolume);
+            // 变更声音
+            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
         }
-        // 变更声音
-        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
-        if (ll_attribute.getVisibility() != View.VISIBLE) {
-            ll_attribute.setVisibility(View.VISIBLE);
-        }
-        if (currentVolume > 0) {
-            iv_attribute.setImageResource(R.drawable.ic_voice_max);
-        } else {
-            iv_attribute.setImageResource(R.drawable.ic_voice_min);
-        }
-        progressBar.setMax(maxVolume);
-        progressBar.setProgress(currentVolume);
     }
 
     private void endGesture() {
@@ -332,6 +340,28 @@ public class VideoPlayerFragment extends BaseFragment implements View.OnClickLis
         }
         handler.removeMessages(CODE_ENDGESTURE);
         handler.sendEmptyMessageDelayed(CODE_ENDGESTURE, 5000);
+    }
+
+    @Override
+    public void setListener() {
+        iv_play.setOnClickListener(this);
+        iv_playState.setOnClickListener(this);
+        iv_expand.setOnClickListener(this);
+        seekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                videoView.seekTo(seekBar.getProgress());
+            }
+        });
     }
 
     @Override
@@ -439,6 +469,7 @@ public class VideoPlayerFragment extends BaseFragment implements View.OnClickLis
         videoView.setOnErrorListener(new PLMediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(PLMediaPlayer plMediaPlayer, int errorCode) {
+                lastDuration = plMediaPlayer.getCurrentPosition();
                 error(errorCode);
                 return false;
             }
@@ -470,6 +501,7 @@ public class VideoPlayerFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void prepared() {
+        isPrepared = true;
         tv_loading.setVisibility(View.GONE);
         if (tv_loading.getVisibility() != View.GONE) {
             tv_loading.setVisibility(View.GONE);
@@ -492,6 +524,9 @@ public class VideoPlayerFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void pause() {
+        tv_loading.setVisibility(View.GONE);
+        cpvLoading.setVisibility(View.GONE);
+        iv_play.setVisibility(View.VISIBLE);
         videoView.pause();
         iv_playState.setImageResource(R.drawable.ic_play);
     }
@@ -500,14 +535,15 @@ public class VideoPlayerFragment extends BaseFragment implements View.OnClickLis
         tv_loading.setVisibility(View.GONE);
         cpvLoading.setVisibility(View.GONE);
         iv_play.setVisibility(View.VISIBLE);
-        if (seekbar.getProgress() >= seekbar.getMax()) {
-            lastDuration = 0;
-        } else {
-            lastDuration = seekbar.getProgress();
+        if (seekbar.getProgress() < seekbar.getMax()) {
             if (errorMsg != null) {
                 tv_loading.setText(errorMsg);
                 tv_loading.setVisibility(View.VISIBLE);
             }
+        } else {
+            lastDuration = 0;
+            tv_loading.setText("已播放结束");
+            tv_loading.setVisibility(View.VISIBLE);
         }
     }
 
