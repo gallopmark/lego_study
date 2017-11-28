@@ -297,9 +297,9 @@
                 android:id="@+id/excellentPager"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_size_16"
                 android:layout_marginTop="@dimen/margin_size_1"
                 android:background="@color/white"
+                android:padding="@dimen/margin_size_16"
                 android:scrollbars="none"
                 android:visibility="gone" />
         </LinearLayout>
