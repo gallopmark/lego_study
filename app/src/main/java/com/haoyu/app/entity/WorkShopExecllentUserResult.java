@@ -18,7 +18,7 @@ public class WorkShopExecllentUserResult {
     private String responseCode;
     @Expose
     @SerializedName("responseData")
-    private WorkShopExecllentUserResponseData responseData;
+    private WorkshopUsers responseData;
     @Expose
     @SerializedName("responseMsg")
     private String responseMsg;
@@ -34,11 +34,11 @@ public class WorkShopExecllentUserResult {
         this.responseCode = responseCode;
     }
 
-    public WorkShopExecllentUserResponseData getResponseData() {
+    public WorkshopUsers getResponseData() {
         return responseData;
     }
 
-    public void setResponseData(WorkShopExecllentUserResponseData responseData) {
+    public void setResponseData(WorkshopUsers responseData) {
         this.responseData = responseData;
     }
 
@@ -58,7 +58,7 @@ public class WorkShopExecllentUserResult {
         this.success = success;
     }
 
-    public class WorkShopExecllentUserResponseData implements Serializable{
+    public class WorkshopUsers implements Serializable{
         @Expose
         @SerializedName("mWorkshopUsers")
         private List<WorkShopMobileUser> mWorkshopUsers = new ArrayList<>();

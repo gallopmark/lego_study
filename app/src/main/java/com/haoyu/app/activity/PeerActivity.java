@@ -5,7 +5,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.haoyu.app.adapter.RecyclerGridViewAdapter;
+import com.haoyu.app.adapter.PeerAdapter;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.entity.EducationConsultResult;
 import com.haoyu.app.entity.MobileUser;
@@ -40,7 +40,7 @@ public class PeerActivity extends BaseActivity implements XRecyclerView.LoadingL
     XRecyclerView xRecyclerView;
     @BindView(R.id.tv_empty)
     TextView tv_empty;
-    private RecyclerGridViewAdapter mAdapter;
+    private PeerAdapter mAdapter;
     private List<MobileUser> usersList = new ArrayList<>();
     private boolean isRefresh, isLoadMore;
     private int page = 1;
@@ -56,7 +56,7 @@ public class PeerActivity extends BaseActivity implements XRecyclerView.LoadingL
         layoutManager.setOrientation(GridLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);
         xRecyclerView.setArrowImageView(R.drawable.refresh_arrow);
-        mAdapter = new RecyclerGridViewAdapter(context, usersList);
+        mAdapter = new PeerAdapter(context, usersList);
         xRecyclerView.setAdapter(mAdapter);
     }
 

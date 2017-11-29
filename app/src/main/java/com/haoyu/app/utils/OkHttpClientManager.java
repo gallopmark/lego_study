@@ -55,9 +55,9 @@ import okio.Sink;
  * Created by xiaoma on 2016/7/10.
  */
 public class OkHttpClientManager {
-    public final static int CONNECT_TIMEOUT = 60;
-    public final static int READ_TIMEOUT = 120;
-    public final static int WRITE_TIMEOUT = 120;
+    public final static int CONNECT_TIMEOUT = 30;
+    public final static int READ_TIMEOUT = 60;
+    public final static int WRITE_TIMEOUT = 60;
     private static volatile OkHttpClientManager mInstance;
     private OkHttpClient mOkHttpClient;
     private Gson mGson;

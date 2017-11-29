@@ -3,20 +3,16 @@ package com.haoyu.app.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.util.ArrayMap;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -42,14 +38,14 @@ import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
+import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.utils.TimeUtil;
-import com.haoyu.app.view.CustomViewPager;
 import com.haoyu.app.view.FullyLinearLayoutManager;
+import com.haoyu.app.view.PullToLoadMoreLayout;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Request;
@@ -60,7 +56,7 @@ import okhttp3.Request;
  * 作者:xiaoma
  */
 
-public class WSDetailFragment extends BaseFragment {
+public class WSDetailFragment extends BaseFragment implements PullToLoadMoreLayout.OnPullToLeftListener {
     @BindView(R.id.tv_title)
     TextView tv_title;   //工作坊标题
     @BindView(R.id.tv_project)
@@ -79,12 +75,6 @@ public class WSDetailFragment extends BaseFragment {
     TextView tv_emptySummary;
     @BindView(R.id.ll_fileLayout)
     LinearLayout ll_fileLayout;
-    @BindView(R.id.iv_fileType)
-    ImageView iv_fileType;  //文件类型
-    @BindView(R.id.tv_mFileName)
-    TextView tv_mFileName; //文件名
-    @BindView(R.id.tv_mFileSize)
-    TextView tv_mFileSize;  //文件大小
     @BindView(R.id.tv_emptyFile)
     TextView tv_emptyFile;  //空文件
     @BindView(R.id.tv_students)
@@ -95,12 +85,15 @@ public class WSDetailFragment extends BaseFragment {
     TextView tv_questions; //学员提问数量
     @BindView(R.id.tv_resources)
     TextView tv_resources;//学习资源数量
-    @BindView(R.id.excellentPager)
-    CustomViewPager excellentPager;
+    @BindView(R.id.pull_group)
+    PullToLoadMoreLayout pull_group;
+    @BindView(R.id.rv_student)
+    RecyclerView rv_student;
+    private List<MobileUser> users = new ArrayList<>();
+    private UsersAdapter userAdapter;
+    private boolean isLoadMore;
     @BindView(R.id.tv_emptyStudent)
     TextView tv_emptyStudent;  //空优秀学员
-    @BindView(R.id.ll_indicator)
-    LinearLayout ll_indicator;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;  //简报列表
     private List<BriefingEntity> mDatas = new ArrayList<>();
@@ -109,12 +102,8 @@ public class WSDetailFragment extends BaseFragment {
     TextView tv_empty;  //空简报内容
     @BindView(R.id.bt_more)
     Button bt_more;  //工作坊简介(研修简报)展开内容或者收起内容
-    private ExcellentPager excellentAdapter;
-    private ImageView[] indicatorViews;
-    private ArrayMap<Integer, List<MobileUser>> dataMap = new ArrayMap<>();
     private String workshopId;
-    private int userPage = 1, limit = 4;
-    private int userTotalPage;
+    private int userPage = 1, limit = 20;
 
     @Override
     public int createView() {
@@ -123,13 +112,17 @@ public class WSDetailFragment extends BaseFragment {
 
     @Override
     public void initView(View view) {
+        FullyLinearLayoutManager gridManager = new FullyLinearLayoutManager(context);
+        gridManager.setOrientation(FullyLinearLayoutManager.HORIZONTAL);
+        rv_student.setLayoutManager(gridManager);
+        userAdapter = new UsersAdapter(users);
+        rv_student.setAdapter(userAdapter);
+        pull_group.setOnPullToLeftListener(this);
         FullyLinearLayoutManager layoutManager = new FullyLinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         adapter = new BriefingAdapter(mDatas);
         recyclerView.setAdapter(adapter);
-        excellentAdapter = new ExcellentPager(dataMap);
-        excellentPager.setAdapter(excellentAdapter);
         Bundle bundle = getArguments();
         WorkShopMobileEntity entity = (WorkShopMobileEntity) bundle.getSerializable("entity");
         MFileInfo fileInfo = (MFileInfo) bundle.getSerializable("fileInfo");
@@ -185,10 +178,13 @@ public class WSDetailFragment extends BaseFragment {
         setNum_text(entity.getStudentNum(), entity.getActivityNum(), entity.getFaqQuestionNum(), entity.getResourceNum());
         if (fileInfo != null) {
             ll_fileLayout.setVisibility(View.VISIBLE);
-            tv_emptyFile.setVisibility(View.GONE);
+            ImageView iv_fileType = ll_fileLayout.findViewById(R.id.iv_fileType);
+            TextView tv_mFileName = ll_fileLayout.findViewById(R.id.tv_mFileName);
+            TextView tv_mFileSize = ll_fileLayout.findViewById(R.id.tv_mFileSize);
             Common.setFileType(fileInfo.getUrl(), iv_fileType);
             tv_mFileName.setText(fileInfo.getFileName());
             tv_mFileSize.setText(Common.FormetFileSize(fileInfo.getFileSize()));
+            tv_emptyFile.setVisibility(View.GONE);
             ll_fileLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -241,21 +237,33 @@ public class WSDetailFragment extends BaseFragment {
 
     /*获取优秀学员*/
     private void getUsers() {
-        String usersUrl = Constants.OUTRT_NET + "/m/workshop_user/" + workshopId + "/excellent_users?page=" + userPage + "&limit=" + limit;
-        addSubscription(OkHttpClientManager.getAsyn(context, usersUrl, new OkHttpClientManager.ResultCallback<WorkShopExecllentUserResult>() {
+        String url = Constants.OUTRT_NET + "/m/workshop_user/" + workshopId + "/excellent_users?page=" + userPage + "&limit=" + limit;
+        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<WorkShopExecllentUserResult>() {
+            @Override
+            public void onBefore(Request request) {
+                showTipDialog();
+            }
+
             @Override
             public void onError(Request request, Exception e) {
+                hideTipDialog();
                 onNetWorkError();
             }
 
             @Override
             public void onResponse(WorkShopExecllentUserResult response) {
+                hideTipDialog();
                 if (response != null && response.getResponseData() != null && response.getResponseData().getmWorkshopUsers() != null
                         && response.getResponseData().getmWorkshopUsers().size() > 0) {
                     updateUserPage(response.getResponseData().getmWorkshopUsers(), response.getResponseData().getPaginator());
                 } else {
-                    excellentPager.setVisibility(View.GONE);
-                    tv_emptyStudent.setVisibility(View.VISIBLE);
+                    if (isLoadMore) {
+                        pull_group.completeToUpload();
+                        pull_group.setLoadingMoreEnabled(false);
+                    } else {
+                        pull_group.setVisibility(View.GONE);
+                        tv_emptyStudent.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         }));
@@ -263,43 +271,19 @@ public class WSDetailFragment extends BaseFragment {
 
     /*更新优秀学员page*/
     private void updateUserPage(List<WorkShopMobileUser> workShopMobileUsers, Paginator paginator) {
-        if (paginator != null) {
-            userTotalPage = paginator.getTotalPages();
-            updateUserIndicator(userTotalPage);
-        }
-        List<MobileUser> users = new ArrayList<>();
         for (int i = 0; i < workShopMobileUsers.size(); i++) {
             if (workShopMobileUsers.get(i).getmUser() != null) {
                 users.add(workShopMobileUsers.get(i).getmUser());
             }
         }
-        if (users.size() > 0) {
-            excellentPager.setVisibility(View.VISIBLE);
-            tv_emptyStudent.setVisibility(View.GONE);
-            dataMap.put(userPage - 1, users);
-            excellentAdapter.notifyDataSetChanged();
+        userAdapter.notifyDataSetChanged();
+        if (isLoadMore) {
+            pull_group.completeToUpload();
         }
-    }
-
-    /*创建优秀学员分页提示*/
-    private void updateUserIndicator(int totalPage) {
-        if (totalPage > 0) {
-            indicatorViews = new ImageView[totalPage];
-            for (int i = 0; i < totalPage; i++) {   //位置从0开始 页数从1开始
-                indicatorViews[i] = new ImageView(context);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-                params.leftMargin = (int) getResources().getDimension(R.dimen.margin_size_6);
-                indicatorViews[i].setLayoutParams(params);
-                indicatorViews[i].setImageResource(R.drawable.course_yuandian_default);
-                ll_indicator.addView(indicatorViews[i]);
-                dataMap.put(i, null);
-            }
-            indicatorViews[0].setImageResource(R.drawable.course_yuandian_press);
-            if (totalPage > 1) {
-                ll_indicator.setVisibility(View.VISIBLE);
-            } else {
-                ll_indicator.setVisibility(View.GONE);
-            }
+        if (paginator != null && paginator.getHasNextPage()) {
+            pull_group.setLoadingMoreEnabled(true);
+        } else {
+            pull_group.setLoadingMoreEnabled(false);
         }
     }
 
@@ -348,106 +332,6 @@ public class WSDetailFragment extends BaseFragment {
         });
     }
 
-    class ExcellentPager extends PagerAdapter {
-        private Map<Integer, List<MobileUser>> dataMap;
-
-        public ExcellentPager(ArrayMap<Integer, List<MobileUser>> dataMap) {
-            this.dataMap = dataMap;
-        }
-
-        public int getItemPosition(Object object) {
-            return POSITION_NONE;
-        }
-
-        @Override
-        public int getCount() {
-            return userTotalPage;
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object obj) {
-            return view == obj;
-        }
-
-        @Override
-        public Object instantiateItem(ViewGroup container, int position) {
-            StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(4, StaggeredGridLayoutManager.VERTICAL);
-            View view = getLayoutInflater().inflate(R.layout.workshop_excellent_user_item, null);
-            RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
-            recyclerView.setLayoutManager(layoutManager);
-            if (dataMap.get(position) != null) {
-                ExcellentRecyclerAdapter adapter = new ExcellentPager.ExcellentRecyclerAdapter(dataMap.get(position));
-                recyclerView.setAdapter(adapter);
-            } else {
-                recyclerView.setVisibility(View.GONE);
-            }
-            container.addView(view, 0);//添加页卡
-            return view;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);//删除页卡
-        }
-
-        class ExcellentRecyclerAdapter extends BaseArrayRecyclerAdapter<MobileUser> {
-
-            public ExcellentRecyclerAdapter(List<MobileUser> mDatas) {
-                super(mDatas);
-            }
-
-            @Override
-            public void onBindHoder(RecyclerHolder holder, MobileUser mobileUser, int position) {
-                View contentView = holder.obtainView(R.id.contentView);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ScreenUtils.getScreenWidth(context) / 4, LinearLayout.LayoutParams.WRAP_CONTENT);
-                contentView.setLayoutParams(params);
-                ImageView userIco = holder.obtainView(R.id.userIco);
-                TextView userName = holder.obtainView(R.id.userName);
-                GlideImgManager.loadCircleImage(context, mobileUser.getAvatar(), R.drawable.user_default, R.drawable.user_default, userIco);
-                userName.setText(mobileUser.getRealName());
-            }
-
-            @Override
-            public int bindView(int viewtype) {
-                return R.layout.workshop_detail_excellent_item;
-            }
-        }
-    }
-
-    /*更新优秀学员page*/
-    private void updateUserPage(List<WorkShopMobileUser> workShopMobileUsers) {
-        List<MobileUser> users = new ArrayList<>();
-        for (int i = 0; i < workShopMobileUsers.size(); i++) {
-            if (workShopMobileUsers.get(i).getmUser() != null) {
-                users.add(workShopMobileUsers.get(i).getmUser());
-            }
-        }
-        if (users.size() > 0) {
-            excellentPager.setVisibility(View.VISIBLE);
-            tv_emptyStudent.setVisibility(View.GONE);
-            dataMap.put(userPage - 1, users);
-            excellentAdapter.notifyDataSetChanged();
-        }
-    }
-
-    /*获取优秀学员*/
-    private void getExcellentUsers() {
-        String usersUrl = Constants.OUTRT_NET + "/m/workshop_user/" + workshopId + "/excellent_users?page=" + userPage + "&limit=" + limit;
-        addSubscription(OkHttpClientManager.getAsyn(context, usersUrl, new OkHttpClientManager.ResultCallback<WorkShopExecllentUserResult>() {
-            @Override
-            public void onError(Request request, Exception e) {
-
-            }
-
-            @Override
-            public void onResponse(WorkShopExecllentUserResult execllentUserResult) {
-                if (execllentUserResult.getResponseData() != null && execllentUserResult.getResponseData().getmWorkshopUsers() != null) {
-                    updateUserPage(execllentUserResult.getResponseData().getmWorkshopUsers());
-                }
-            }
-        }));
-    }
-
     @Override
     public void setListener() {
         bt_more.setOnClickListener(new View.OnClickListener() {
@@ -460,35 +344,44 @@ public class WSDetailFragment extends BaseFragment {
                 startActivity(intent);
             }
         });
-        excellentPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+    }
 
-            }
+    private class UsersAdapter extends BaseArrayRecyclerAdapter<MobileUser> {
+        private int width;
 
-            @Override
-            public void onPageSelected(int position) {
-                if (indicatorViews != null && indicatorViews.length > 0) {
-                    for (int i = 0; i < indicatorViews.length; i++) {
-                        if (i == position)
-                            indicatorViews[i].setImageResource(R.drawable.course_yuandian_press);
-                        else
-                            indicatorViews[i].setImageResource(R.drawable.course_yuandian_default);
-                    }
-                }
-                if (dataMap.get(position) == null) {
-                    userPage = position + 1;
-                    if (userPage <= userTotalPage) {
-                        getExcellentUsers();
-                    }
-                }
-            }
+        public UsersAdapter(List<MobileUser> mDatas) {
+            super(mDatas);
+            width = ScreenUtils.getScreenWidth(context) / 4;
+        }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
+        @Override
+        public int bindView(int viewtype) {
+            return R.layout.peer_item;
+        }
 
-            }
-        });
+        @Override
+        public void onBindHoder(RecyclerHolder holder, MobileUser user, int position) {
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, LinearLayout.LayoutParams.WRAP_CONTENT);
+            params.gravity = Gravity.CENTER;
+            params.bottomMargin = PixelFormat.dp2px(context, 16);
+            holder.itemView.setLayoutParams(params);
+            ImageView iv = holder.obtainView(R.id.person_img);
+            TextView tv = holder.obtainView(R.id.person_name);
+            tv.setText(user.getRealName());
+            GlideImgManager.loadCircleImage(context, user.getAvatar(), R.drawable.user_default, R.drawable.user_default, iv);
+        }
+    }
+
+    @Override
+    public void onReleaseFingerToUpload() {
+        isLoadMore = true;
+        userPage++;
+        getUsers();
+    }
+
+    @Override
+    public void onStartToUpload() {
+
     }
 
 }
