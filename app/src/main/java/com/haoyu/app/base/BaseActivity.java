@@ -99,7 +99,7 @@ public abstract class BaseActivity extends FragmentActivity {
         super.onCreate(bundle);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        LegoApplication.getInstance().addActivity(this);
+        LegoApplication.addActivity(this);
         setContentView(setLayoutResID());
         ButterKnife.bind(this);
         initView();
@@ -195,7 +195,7 @@ public abstract class BaseActivity extends FragmentActivity {
         cancelToast();
         unRegistRxBus();
         unsubscribe();
-        LegoApplication.getInstance().remove(this);
+        LegoApplication.remove(this);
     }
 
     private SharedPreferences getPreferences() {

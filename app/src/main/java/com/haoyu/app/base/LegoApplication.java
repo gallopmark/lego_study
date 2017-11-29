@@ -2,8 +2,12 @@ package com.haoyu.app.base;
 
 import android.app.Activity;
 import android.app.Application;
+import android.os.Environment;
 
 import com.baidu.mobstat.StatService;
+import com.franmontiel.persistentcookiejar.PersistentCookieJar;
+import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
+import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.haoyu.app.utils.Constants;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.uuzuche.lib_zxing.activity.ZXingLibrary;
@@ -13,16 +17,18 @@ import org.wlf.filedownloader.FileDownloadConfiguration;
 import java.util.LinkedList;
 import java.util.List;
 
+import okhttp3.CookieJar;
+
 
 public class LegoApplication extends Application {
 
-    private static LegoApplication instance;
+    private static LegoApplication application;
     private List<Activity> activities = new LinkedList<>();
 
     @Override
     public void onCreate() {
         super.onCreate();
-        instance = this;
+        application = this;
         ZXingLibrary.initDisplayOpinion(this);
         initFileDownloader();
         StatService.start(this);
@@ -48,22 +54,36 @@ public class LegoApplication extends Application {
         org.wlf.filedownloader.FileDownloader.init(configuration);
     }
 
-    public static LegoApplication getInstance() {
-        return instance;
+    public static void addActivity(Activity activity) {
+        application.activities.add(activity);
     }
 
-
-    public void addActivity(Activity activity) {
-        this.activities.add(activity);
-    }
-
-    public void exit() {
-        for (Activity activity : activities) {
+    public static void exit() {
+        for (Activity activity : application.activities) {
             activity.finish();
         }
     }
 
-    public void remove(Activity activity) {
-        activities.remove(activity);
+    public static void remove(Activity activity) {
+        application.activities.remove(activity);
+    }
+
+    public static CookieJar getCookieJar() {
+        return new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(application));
+    }
+
+    public static String getDefaultFilesDir() {
+        try {
+            return application.getExternalFilesDir(null).getAbsolutePath();
+        } catch (Exception e) {
+            return application.getFilesDir().getAbsolutePath();
+        }
+    }
+
+    public static String getExternalStorageDir() {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            return Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+        return Environment.getRootDirectory().getAbsolutePath();
     }
 }

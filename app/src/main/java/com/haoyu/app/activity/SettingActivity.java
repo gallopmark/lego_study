@@ -126,7 +126,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 startActivity(new Intent(context, AboutUsActivity.class));
                 break;
             case R.id.bt_logout:
-                LegoApplication.getInstance().exit();
+                LegoApplication.exit();
                 SharePreferenceHelper helper = new SharePreferenceHelper(context);
                 Map<String, Object> map = new HashMap<>();
                 map.put("firstLogin", true);

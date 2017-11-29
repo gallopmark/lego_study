@@ -1,19 +1,8 @@
 package com.haoyu.app.utils;
 
-import android.os.Environment;
-
 import com.haoyu.app.base.LegoApplication;
 
 public class Constants {
-
-    /*URL接口*/
-//    public static String LOGIN_URL = "http://login.px.lingnan.edu.cn/v1/tickets";
-//    public static String LOGIN_SERVER = "http://login.px.lingnan.edu.cn";
-//    public static String OUTRT_NET = "http://px.lingnan.edu.cn/ncts-app";
-    /*二师登录url和域名*/
-//    public static final String LOGIN_URL = "http://nealogin.lego.edu.cn/v1/tickets";
-//    public static final String LOGIN_SERVER = "http://nealogin.lego.edu.cn";
-//    public static final String OUTRT_NET = "http://neancts.lego.edu.cn/app";
 
     public static String LOGIN_URL = "http://legologin.gdei.edu.cn/v1/tickets";
     public static String LOGIN_SERVER = "http://legologin.gdei.edu.cn";
@@ -27,13 +16,10 @@ public class Constants {
 
     public static String speedAction = "speedAction";
 
-
     /*******************************************************************************************/
     /* 图片存放路径 */
     public static String mediaCache;
     public static String compressor;
-    /* 异常文件存放路径 */
-    public static String exceptionCrash;
     /* 下载文件存放的路径 */
     public static String fileDownDir;
     /*视频文件缓存目录*/
@@ -41,51 +27,21 @@ public class Constants {
     public static String coursewareDir;
     /* 项目根目录 */
     public static String rootDir;
-    /*数据库文件存放的路径*/
-    public static String dbPath;
     /*用户信息保存文件名*/
     public static String Prefs_user = "Prefs_user";
-
-    public static String COMMUNITY_NET;
-    //    public static String ACTION_POST_DISCUSS_REPLY = "ACTION_UPDATE_DISCUSS_REPLY";//主题研讨后主回复更新
-
+    /*版本更新链接*/
     public static String updateUrl = "http://legoncts.gdei.edu.cn/getAppVersion.html";
 
     static {
-        if (existsSdcard()) {
-            rootDir = LegoApplication.getInstance().getExternalFilesDir(null).getAbsolutePath();
-            mediaCache = SDCardUtil.getSDCardPath() + "/lego_study/media_cache";
-        } else {
-            rootDir = LegoApplication.getInstance().getFilesDir().getAbsolutePath();
-            mediaCache = SDCardUtil.getRootDirectoryPath() + "/lego_study/media_cache";
-        }
-
+        rootDir = LegoApplication.getDefaultFilesDir();
+        mediaCache = LegoApplication.getExternalStorageDir() + "/lego_study/media_cache";
         compressor = rootDir + "/compressor";
-        /* imageloader加载图片存放sdCard的路径 */
         /* 文件下载存放的路径 */
         fileDownDir = rootDir + "/file_downloader";
+        /**视频存放路径*/
         videoCache = rootDir + "/video";
         /*课件存放的路径*/
-        coursewareDir = rootDir + "/coursewareFile/";
-        /* 全局异常捕获信息存放的路径 */
-        exceptionCrash = rootDir + "/crash/";
-        dbPath = rootDir + "/db";
-
-//        /*工作坊域名*/
-//        WORK_SHOP_NET = "http://app.wsts.haoyuinfo.com";
-//        /*社区域名*/
-//        COMMUNITY_NET = "http://app.cmts.haoyuinfo.com";
-//        /* 内网域名 */
-        /*工作坊接口*/
-    }
-
-    /**
-     * 判断外置sdcard是否可以正常使用
-     *
-     * @return
-     */
-    public static Boolean existsSdcard() {
-        return Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState()) || !Environment.isExternalStorageRemovable();
+        coursewareDir = rootDir + "/coursewareFile";
     }
 
     public static final String[][] MIME_MapTable = {
