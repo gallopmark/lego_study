@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -92,7 +93,7 @@ public class Common {
 
     public static String getFileName(String url) {
         String fileName = "";
-        if (url != null && url.lastIndexOf("/") >0) {
+        if (url != null && url.lastIndexOf("/") > 0) {
             fileName = url.substring(url.lastIndexOf("/") + 1, url.length());
         }
         return fileName;
@@ -220,6 +221,7 @@ public class Common {
         return versionCode;
     }
 
+    /*通知是否已经关闭*/
     public static boolean isNotificationEnabled(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             String CHECK_OP_NO_THROW = "checkOpNoThrow";
@@ -241,6 +243,7 @@ public class Common {
         return false;
     }
 
+    /*打开设置*/
     public static void openSettings(Context context) {
         try {
             Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
@@ -249,5 +252,13 @@ public class Common {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /*是否注册了权限*/
+    public static boolean checkPermission(Context context, String permission) {
+        if (ActivityCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        }
+        return false;
     }
 }

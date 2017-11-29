@@ -7,8 +7,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -24,6 +22,7 @@ import com.haoyu.app.activity.AppMultiImageShowActivity;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.view.AppToolBar;
@@ -44,7 +43,7 @@ import io.reactivex.schedulers.Schedulers;
 
 /**
  * 创建日期：2017/6/16 on 14:17
- * 描述:
+ * 描述:相册或视频
  * 作者:马飞奔 Administrator
  */
 public class MediaGridActivity extends BaseActivity {
@@ -75,7 +74,7 @@ public class MediaGridActivity extends BaseActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (hasStoragePermission() && !initMedia) {
+        if (Common.checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) && !initMedia) {
             rl_tips.setVisibility(View.GONE);
             initMedia();
         }
@@ -92,22 +91,15 @@ public class MediaGridActivity extends BaseActivity {
         isCrop = option.isCrop();
         multiMode = option.isMultiMode();
         selectType = option.getSelectType();
-        if (selectType == MediaOption.TYPE_VIDEO)
+        if (selectType == MediaOption.TYPE_VIDEO) {
             toolBar.setTitle_text(getResources().getString(R.string.myVideos));
-        else
+        } else {
             toolBar.setTitle_text(getResources().getString(R.string.myPhotos));
-        if (!hasStoragePermission()) {   //如果没有申请sd卡权限
+        }
+        if (!Common.checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {   //如果没有申请sd卡权限
             ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_STORAGE);
         } else {
             initMedia();
-        }
-    }
-
-    private boolean hasStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        } else {
-            return true;
         }
     }
 
@@ -134,15 +126,17 @@ public class MediaGridActivity extends BaseActivity {
     }
 
     private void getLatelyMedia() {
-        if (selectType == MediaOption.TYPE_VIDEO)
-            toolBar.setTitle_text("最近视频");
-        else
-            toolBar.setTitle_text("最近照片");
+        if (selectType == MediaOption.TYPE_VIDEO) {
+            toolBar.setTitle_text(getResources().getString(R.string.recentVideos));
+        } else {
+            toolBar.setTitle_text(getResources().getString(R.string.recentPhotos));
+        }
         Flowable.just(context).map(new Function<MediaGridActivity, List<MediaItem>>() {
             @Override
             public List<MediaItem> apply(MediaGridActivity mediaGridActivity) throws Exception {
-                if (selectType == MediaOption.TYPE_VIDEO)
+                if (selectType == MediaOption.TYPE_VIDEO) {
                     return MediaSource.getLatelyVideos(context);
+                }
                 return MediaSource.getLatelyImages(context);
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<MediaItem>>() {
@@ -159,14 +153,15 @@ public class MediaGridActivity extends BaseActivity {
         mAdapter.setOnItemClickListener(new MediaGridAdapter.OnItemClickListener() {
             @Override
             public void onCamera() {
-                if (!hasCameraPermission()) {
+                if (!Common.checkPermission(context, Manifest.permission.CAMERA)) {
                     //第一请求权限被取消显示的判断，一般可以不写
                     ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA);
                 } else {
-                    if (selectType == MediaOption.TYPE_IMAGE)
+                    if (selectType == MediaOption.TYPE_IMAGE) {
                         takePhoto();
-                    else
+                    } else {
                         takeVideo();
+                    }
                 }
             }
 
@@ -189,50 +184,42 @@ public class MediaGridActivity extends BaseActivity {
         });
     }
 
-    private boolean hasCameraPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ContextCompat.checkSelfPermission(this,
-                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case REQUEST_STORAGE:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     initMedia();
                 } else {
                     rl_tips.setVisibility(View.VISIBLE);
-                    tv_tips.setText("存储权限已被禁止，请到【设置】——>【应用管理】——>" + getResources().getString(R.string.app_name) +
-                            "——>【权限】选择打开【存储】。");
+                    tv_tips.setText("存储权限已被禁止，请重新打开存储权限！");
                 }
                 break;
             case REQUEST_CAMERA:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (selectType == MediaOption.TYPE_VIDEO)
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (selectType == MediaOption.TYPE_VIDEO) {
                         takeVideo();
-                    else
+                    } else {
                         takePhoto();
-                } else
+                    }
+                } else {
                     tipsDialog();
+                }
                 break;
         }
     }
 
     private void tipsDialog() {
         MaterialDialog dialog = new MaterialDialog(context);
-        dialog.setTitle("相机权限");
-        dialog.setMessage("当前缺少相机权限，我们需要这个权限给你提供服务。如若需要，请点击【确定】");
+        dialog.setTitle("照相机");
+        dialog.setMessage("相机权限已被禁止，无法完成拍照，请重新打开相机权限。如若需要，请点击【确定】");
         dialog.setPositiveTextColor(ContextCompat.getColor(context, R.color.defaultColor));
         dialog.setNegativeTextColor(ContextCompat.getColor(context, R.color.blow_gray));
         dialog.setNegativeButton("取消", null);
         dialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
             @Override
             public void onClick(View v, AlertDialog dialog) {
-                openSettings();
+                Common.openSettings(context);
             }
         });
         dialog.show();
@@ -328,10 +315,11 @@ public class MediaGridActivity extends BaseActivity {
                     startActivityForResult(intent, MediaOption.REQUEST_CODE_CROP);
                 } else {
                     if (MediaPicker.getInstance().getSelectMediaCallBack() != null) {
-                        if (multiMode)
+                        if (multiMode) {
                             MediaPicker.getInstance().getSelectMediaCallBack().onSelected(mSelects);
-                        else
+                        } else {
                             MediaPicker.getInstance().getSelectMediaCallBack().onSelected(mSelects.get(0).getPath());
+                        }
                     }
                     finish();
                 }
@@ -380,7 +368,7 @@ public class MediaGridActivity extends BaseActivity {
         toolBar.setOnTitleClickListener(new AppToolBar.TitleOnClickListener() {
             @Override
             public void onLeftClick(View view) {
-                if (hasStoragePermission()) {
+                if (Common.checkPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     startActivity(new Intent(context, MediaFolderActivity.class));
                     overridePendingTransition(R.anim.fade_in, 0);
                 }
@@ -395,7 +383,7 @@ public class MediaGridActivity extends BaseActivity {
         bt_settings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                openSettings();
+                Common.openSettings(context);
             }
         });
         bottomLayout.setOnSystemUiVisibilityChangeListener(new View.OnSystemUiVisibilityChangeListener() {
@@ -410,16 +398,6 @@ public class MediaGridActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-    private void openSettings() {
-        try {
-            Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivity(intent);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

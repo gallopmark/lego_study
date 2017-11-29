@@ -86,7 +86,6 @@
             android:layout_margin="@dimen/margin_size_16"
             android:background="@color/white"
             android:lineSpacingExtra="@dimen/margin_size_2"
-            android:text="存储权限已被禁止，请到【设置】——>【应用管理】——>【岭南研修】——>【权限】选择打开【存储】。"
             android:textColor="@color/blow_gray"
             android:textSize="@dimen/font_size_16" />
 
