@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -18,8 +17,8 @@ import android.widget.TextView;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.view.AppToolBar;
-import com.uuzuche.lib_zxing.activity.CaptureFragment;
-import com.uuzuche.lib_zxing.activity.CodeUtils;
+import com.haoyu.app.zxing.CaptureFragment;
+import com.haoyu.app.zxing.CodeUtils;
 
 import butterknife.BindView;
 
@@ -80,7 +79,7 @@ public class AppCaptureActivity extends BaseActivity {
             requestCamera();
         } else {
             ll_noCamera.setVisibility(View.VISIBLE);
-            tv_tips.setText("相机权限已被禁止，请到【设置】——>【应用管理】——>" + getResources().getString(R.string.app_name) + "——>【权限】选择打开【相机】。");
+            tv_tips.setText("相机权限已被禁止，无法完成扫描，请重新打开相机权限。");
         }
     }
 
@@ -90,7 +89,6 @@ public class AppCaptureActivity extends BaseActivity {
         fl_my_container.setVisibility(View.VISIBLE);
         CaptureFragment captureFragment = new CaptureFragment();
         // 为二维码扫描界面设置定制化界面
-        CodeUtils.setFragmentArgs(captureFragment, R.layout.app_capture_camera);
         captureFragment.setAnalyzeCallback(analyzeCallback);
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_my_container, captureFragment).commit();
     }
@@ -127,24 +125,15 @@ public class AppCaptureActivity extends BaseActivity {
     CodeUtils.AnalyzeCallback analyzeCallback = new CodeUtils.AnalyzeCallback() {
         @Override
         public void onAnalyzeSuccess(Bitmap mBitmap, String result) {
-            Intent resultIntent = new Intent();
-            Bundle bundle = new Bundle();
-            bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_SUCCESS);
-            bundle.putString(CodeUtils.RESULT_STRING, result);
-            resultIntent.putExtras(bundle);
-            context.setResult(RESULT_OK, resultIntent);
-            context.finish();
+            Intent intent = new Intent();
+            intent.putExtra(CodeUtils.RESULT_STRING, result);
+            setResult(RESULT_OK, intent);
+            finish();
         }
 
         @Override
         public void onAnalyzeFailed() {
-            Intent resultIntent = new Intent();
-            Bundle bundle = new Bundle();
-            bundle.putInt(CodeUtils.RESULT_TYPE, CodeUtils.RESULT_FAILED);
-            bundle.putString(CodeUtils.RESULT_STRING, "");
-            resultIntent.putExtras(bundle);
-            context.setResult(RESULT_OK, resultIntent);
-            context.finish();
+            toast(context, "无法识别的二维码");
         }
     };
 }

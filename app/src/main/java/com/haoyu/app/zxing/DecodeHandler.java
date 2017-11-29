@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.uuzuche.lib_zxing.decoding;
+package com.haoyu.app.zxing;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,8 +28,6 @@ import com.google.zxing.MultiFormatReader;
 import com.google.zxing.ReaderException;
 import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
-import com.uuzuche.lib_zxing.R;
-import com.uuzuche.lib_zxing.activity.CaptureFragment;
 import com.uuzuche.lib_zxing.camera.CameraManager;
 import com.uuzuche.lib_zxing.camera.PlanarYUVLuminanceSource;
 
@@ -50,9 +48,9 @@ final class DecodeHandler extends Handler {
 
     @Override
     public void handleMessage(Message message) {
-        if (message.what == R.id.decode) {
+        if (message.what == com.uuzuche.lib_zxing.R.id.decode) {
             decode((byte[]) message.obj, message.arg1, message.arg2);
-        } else if (message.what == R.id.quit) {
+        } else if (message.what == com.uuzuche.lib_zxing.R.id.quit) {
             Looper.myLooper().quit();
         }
     }
@@ -92,14 +90,14 @@ final class DecodeHandler extends Handler {
         if (rawResult != null) {
             long end = System.currentTimeMillis();
             Log.d(TAG, "Found barcode (" + (end - start) + " ms):\n" + rawResult.toString());
-            Message message = Message.obtain(fragment.getHandler(), R.id.decode_succeeded, rawResult);
+            Message message = Message.obtain(fragment.getHandler(), com.uuzuche.lib_zxing.R.id.decode_succeeded, rawResult);
             Bundle bundle = new Bundle();
             bundle.putParcelable(DecodeThread.BARCODE_BITMAP, source.renderCroppedGreyscaleBitmap());
             message.setData(bundle);
             //Log.d(TAG, "Sending decode succeeded message...");
             message.sendToTarget();
         } else {
-            Message message = Message.obtain(fragment.getHandler(), R.id.decode_failed);
+            Message message = Message.obtain(fragment.getHandler(), com.uuzuche.lib_zxing.R.id.decode_failed);
             message.sendToTarget();
         }
     }

@@ -1,4 +1,4 @@
-package com.uuzuche.lib_zxing.activity;
+package com.haoyu.app.zxing;
 
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
@@ -8,7 +8,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -19,11 +18,10 @@ import android.view.ViewGroup;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
-import com.uuzuche.lib_zxing.R;
+import com.haoyu.app.lego.student.R;
+import com.haoyu.app.view.ViewfinderView;
 import com.uuzuche.lib_zxing.camera.CameraManager;
-import com.uuzuche.lib_zxing.decoding.CaptureActivityHandler;
 import com.uuzuche.lib_zxing.decoding.InactivityTimer;
-import com.uuzuche.lib_zxing.view.ViewfinderView;
 
 import java.io.IOException;
 import java.util.Vector;
@@ -49,37 +47,19 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
     private Camera camera;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         CameraManager.init(getActivity().getApplication());
-
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this.getActivity());
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-        Bundle bundle = getArguments();
-        View view = null;
-        if (bundle != null) {
-            int layoutId = bundle.getInt(CodeUtils.LAYOUT_ID);
-            if (layoutId != -1) {
-                view = inflater.inflate(layoutId, null);
-            }
-        }
-
-        if (view == null) {
-            view = inflater.inflate(R.layout.fragment_capture, null);
-        }
-
-        viewfinderView = (ViewfinderView) view.findViewById(R.id.viewfinder_view);
-        surfaceView = (SurfaceView) view.findViewById(R.id.preview_view);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_capture, null);
+        viewfinderView = view.findViewById(R.id.viewfinder_view);
+        surfaceView = view.findViewById(R.id.preview_view);
         surfaceHolder = surfaceView.getHolder();
-
         return view;
     }
 
@@ -94,7 +74,6 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
         }
         decodeFormats = null;
         characterSet = null;
-
         playBeep = true;
         AudioManager audioService = (AudioManager) getActivity().getSystemService(getActivity().AUDIO_SERVICE);
         if (audioService.getRingerMode() != AudioManager.RINGER_MODE_NORMAL) {
@@ -121,7 +100,6 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
         super.onDestroy();
     }
 
-
     /**
      * Handler scan result
      *
@@ -131,7 +109,6 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
     public void handleDecode(Result result, Bitmap barcode) {
         inactivityTimer.onActivity();
         playBeepSoundAndVibrate();
-
         if (result == null || TextUtils.isEmpty(result.getText())) {
             if (analyzeCallback != null) {
                 analyzeCallback.onAnalyzeFailed();
@@ -169,7 +146,6 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
             hasSurface = true;
             initCamera(holder);
         }
-
     }
 
     @Override
@@ -194,7 +170,6 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
 
     public void drawViewfinder() {
         viewfinderView.drawViewfinder();
-
     }
 
     private void initBeepSound() {
@@ -206,9 +181,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.setOnCompletionListener(beepListener);
-
-            AssetFileDescriptor file = getResources().openRawResourceFd(
-                    R.raw.beep);
+            AssetFileDescriptor file = getResources().openRawResourceFd(R.raw.beep);
             try {
                 mediaPlayer.setDataSource(file.getFileDescriptor(),
                         file.getStartOffset(), file.getLength());

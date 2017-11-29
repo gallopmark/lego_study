@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.uuzuche.lib_zxing.view;
+package com.haoyu.app.view;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -31,8 +31,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.google.zxing.ResultPoint;
-import com.uuzuche.lib_zxing.DisplayUtil;
-import com.uuzuche.lib_zxing.R;
+import com.haoyu.app.utils.ScreenUtils;
 import com.uuzuche.lib_zxing.camera.CameraManager;
 
 import java.util.Collection;
@@ -72,13 +71,13 @@ public final class ViewfinderView extends View {
         density = context.getResources().getDisplayMetrics().density;
         paint = new Paint();
         Resources resources = getResources();
-        maskColor = resources.getColor(R.color.viewfinder_mask);
-        resultColor = resources.getColor(R.color.result_view);
-        resultPointColor = resources.getColor(R.color.possible_result_points);
+        maskColor = resources.getColor(com.uuzuche.lib_zxing.R.color.viewfinder_mask);
+        resultColor = resources.getColor(com.uuzuche.lib_zxing.R.color.result_view);
+        resultPointColor = resources.getColor(com.uuzuche.lib_zxing.R.color.possible_result_points);
         possibleResultPoints = new HashSet<ResultPoint>(5);
 
         scanLight = BitmapFactory.decodeResource(resources,
-                R.drawable.scan_light);
+                com.uuzuche.lib_zxing.R.drawable.scan_light);
 
         initInnerRect(context, attrs);
     }
@@ -90,38 +89,38 @@ public final class ViewfinderView extends View {
      * @param attrs
      */
     private void initInnerRect(Context context, AttributeSet attrs) {
-        TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.innerrect);
+        TypedArray ta = context.obtainStyledAttributes(attrs, com.uuzuche.lib_zxing.R.styleable.innerrect);
 
         // 扫描框距离顶部
-        float innerMarginTop = ta.getDimension(R.styleable.innerrect_inner_margintop, -1);
+        float innerMarginTop = ta.getDimension(com.uuzuche.lib_zxing.R.styleable.innerrect_inner_margintop, -1);
         if (innerMarginTop != -1) {
             CameraManager.FRAME_MARGINTOP = (int) innerMarginTop;
         }
 
         // 扫描框的宽度
-        CameraManager.FRAME_WIDTH = (int) ta.getDimension(R.styleable.innerrect_inner_width, DisplayUtil.screenWidthPx / 2);
+        CameraManager.FRAME_WIDTH = (int) ta.getDimension(com.uuzuche.lib_zxing.R.styleable.innerrect_inner_width, ScreenUtils.getScreenWidth(context) / 2);
 
         // 扫描框的高度
-        CameraManager.FRAME_HEIGHT = (int) ta.getDimension(R.styleable.innerrect_inner_height, DisplayUtil.screenWidthPx / 2);
+        CameraManager.FRAME_HEIGHT = (int) ta.getDimension(com.uuzuche.lib_zxing.R.styleable.innerrect_inner_height, ScreenUtils.getScreenWidth(context) / 2);
 
         // 扫描框边角颜色
-        innercornercolor = ta.getColor(R.styleable.innerrect_inner_corner_color, Color.parseColor("#45DDDD"));
+        innercornercolor = ta.getColor(com.uuzuche.lib_zxing.R.styleable.innerrect_inner_corner_color, Color.parseColor("#45DDDD"));
         // 扫描框边角长度
-        innercornerlength = (int) ta.getDimension(R.styleable.innerrect_inner_corner_length, 65);
+        innercornerlength = (int) ta.getDimension(com.uuzuche.lib_zxing.R.styleable.innerrect_inner_corner_length, 65);
         // 扫描框边角宽度
-        innercornerwidth = (int) ta.getDimension(R.styleable.innerrect_inner_corner_width, 15);
+        innercornerwidth = (int) ta.getDimension(com.uuzuche.lib_zxing.R.styleable.innerrect_inner_corner_width, 15);
 
         // 扫描bitmap
-        Drawable drawable = ta.getDrawable(R.styleable.innerrect_inner_scan_bitmap);
+        Drawable drawable = ta.getDrawable(com.uuzuche.lib_zxing.R.styleable.innerrect_inner_scan_bitmap);
         if (drawable != null) {
         }
 
         // 扫描控件
-        scanLight = BitmapFactory.decodeResource(getResources(), ta.getResourceId(R.styleable.innerrect_inner_scan_bitmap, R.drawable.scan_light));
+        scanLight = BitmapFactory.decodeResource(getResources(), ta.getResourceId(com.uuzuche.lib_zxing.R.styleable.innerrect_inner_scan_bitmap, com.uuzuche.lib_zxing.R.drawable.scan_light));
         // 扫描速度
-        SCAN_VELOCITY = ta.getInt(R.styleable.innerrect_inner_scan_speed, 5);
+        SCAN_VELOCITY = ta.getInt(com.uuzuche.lib_zxing.R.styleable.innerrect_inner_scan_speed, 5);
 
-        isCircle = ta.getBoolean(R.styleable.innerrect_inner_scan_iscircle, true);
+        isCircle = ta.getBoolean(com.uuzuche.lib_zxing.R.styleable.innerrect_inner_scan_iscircle, true);
 
         ta.recycle();
     }
@@ -270,7 +269,7 @@ public final class ViewfinderView extends View {
         paint.setTextSize(TEXT_SIZE * density);
         paint.setAlpha(0x40);
         paint.setTypeface(Typeface.create("System", Typeface.BOLD));
-        canvas.drawText(getResources().getString(R.string.scan_text), frame.centerX(), (frame.bottom + (float) TEXT_PADDING_TOP * density), paint);
+        canvas.drawText(getResources().getString(com.uuzuche.lib_zxing.R.string.scan_text), frame.centerX(), (frame.bottom + (float) TEXT_PADDING_TOP * density), paint);
     }
 
 

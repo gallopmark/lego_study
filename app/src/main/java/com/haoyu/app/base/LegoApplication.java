@@ -10,7 +10,6 @@ import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
 import com.haoyu.app.utils.Constants;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 import org.wlf.filedownloader.FileDownloadConfiguration;
 
@@ -29,7 +28,6 @@ public class LegoApplication extends Application {
     public void onCreate() {
         super.onCreate();
         application = this;
-        ZXingLibrary.initDisplayOpinion(this);
         initFileDownloader();
         StatService.start(this);
         CrashReport.initCrashReport(this);

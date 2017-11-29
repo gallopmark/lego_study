@@ -28,7 +28,6 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.FormBody;
 import okhttp3.Headers;
-import okhttp3.Interceptor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
@@ -59,17 +58,6 @@ public class OkHttpClientManager {
                 .writeTimeout(WRITE_TIMEOUT, TimeUnit.SECONDS)//设置写的超时时间
                 .connectTimeout(CONNECT_TIMEOUT, TimeUnit.SECONDS)//设置连接超时时间
                 .cookieJar(LegoApplication.getCookieJar())
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request request = chain.request()
-                                .newBuilder()
-                                .addHeader("Accept-Encoding", "gzip")
-                                .addHeader("Referer", Constants.REFERER)
-                                .build();
-                        return chain.proceed(request);
-                    }
-                })
                 .build();
         mGson = new Gson();
     }
@@ -117,7 +105,7 @@ public class OkHttpClientManager {
      * @param callback
      */
     private Disposable _getAsyn(Context context, String url, final ResultCallback callback) {
-        Request request = new Request.Builder().url(url).tag(context).build();
+        Request request = new Request.Builder().url(url).tag(context).addHeader("Accept-Encoding", "gzip").build();
         return deliveryResult(context, callback, request);
     }
 
@@ -298,7 +286,7 @@ public class OkHttpClientManager {
     }
 
     private void _deleteAsyn(Context context, String url, final ResultCallback callback) {
-        final Request request = new Request.Builder().url(url).delete().build();
+        final Request request = new Request.Builder().url(url).addHeader("Accept-Encoding", "gzip").delete().build();
         deliveryResult(context, callback, request);
     }
 
@@ -407,7 +395,7 @@ public class OkHttpClientManager {
             }
         }
         RequestBody requestBody = builder.build();
-        return new Request.Builder().url(url).tag(context).post(requestBody).build();
+        return new Request.Builder().url(url).tag(context).addHeader("Accept-Encoding", "gzip").post(requestBody).build();
     }
 
     /**
@@ -589,7 +577,7 @@ public class OkHttpClientManager {
             }
         }
         RequestBody requestBody = formEncodingBuilder.build();
-        return new Request.Builder().url(url).tag(context).post(requestBody).build();
+        return new Request.Builder().url(url).tag(context).addHeader("Accept-Encoding", "gzip").post(requestBody).build();
     }
 
     private Request buildPutRequest(Context context, String url, Param[] params) {
@@ -603,7 +591,7 @@ public class OkHttpClientManager {
             }
         }
         RequestBody requestBody = formEncodingBuilder.build();
-        return new Request.Builder().url(url).tag(context).put(requestBody).build();
+        return new Request.Builder().url(url).tag(context).addHeader("Accept-Encoding", "gzip").put(requestBody).build();
     }
 
     private Request buildDeleteRequest(String url, Param[] params) {
@@ -617,7 +605,7 @@ public class OkHttpClientManager {
             }
         }
         RequestBody requestBody = formEncodingBuilder.build();
-        return new Request.Builder().url(url).delete(requestBody).build();
+        return new Request.Builder().url(url).addHeader("Accept-Encoding", "gzip").delete(requestBody).build();
     }
 
     public static abstract class ResultCallback<T> {
@@ -785,6 +773,7 @@ public class OkHttpClientManager {
         Request request = new Request.Builder()
                 .url(url)
                 .tag(context)
+                .addHeader("Accept-Encoding", "gzip")
                 .build();
         Response response = mOkHttpClient.newCall(request).execute();
         return response;

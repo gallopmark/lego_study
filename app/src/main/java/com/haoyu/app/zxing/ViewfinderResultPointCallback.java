@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package com.uuzuche.lib_zxing.view;
+package com.haoyu.app.zxing;
 
 import com.google.zxing.ResultPoint;
 import com.google.zxing.ResultPointCallback;
+import com.haoyu.app.view.ViewfinderView;
 
 public final class ViewfinderResultPointCallback implements ResultPointCallback {
 
