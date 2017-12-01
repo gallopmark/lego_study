@@ -163,9 +163,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     hideCenterBox();
                     if (isLoading) {
                         hideVideoCenterPause();
-                        showLoading();
                     } else {
-                        hideLoading();
                         hideVideoCenterPause();
                         if (mVideoView != null) {
                             mVideoView.start();
@@ -174,7 +172,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
                     break;
                 case VIDEO_FORWARD:
-                    hideLoading();
                     hideVideoCenterPause();
                     if (newPosition != 0) {
                         mVideoView.seekTo(newPosition);
@@ -182,30 +179,29 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
                     break;
                 case VIDEO_SEEKBARFORWARD:
-                        hideLoading();
-                        hideVideoCenterPause();
-                        showCenterBox();
-                        center_content.setText(MyUtils.generateTime(mVideoView
-                                .getCurrentPosition()));
-                        Drawable drawable;
-                        // / 这一步必须要做,否则不会显示.
-                        if (seekbarEndTrackPosition > seekbarStartTrackPosition)
-                            drawable = ContextCompat.getDrawable(context,
-                                    R.drawable.video_btn_fast_forword);
-                        else
-                            drawable = ContextCompat.getDrawable(context,
-                                    R.drawable.video_btn_back_forword);
-                        drawable.setBounds(0, 0, drawable.getMinimumWidth(),
-                                drawable.getMinimumHeight());
-                        center_content.setCompoundDrawables(drawable, null, null,
-                                null);
-                        videoHandler.removeMessages(VIDEO_HIDECENTERBOX);
-                        videoHandler.removeMessages(VIDEO_SEEKBARFORWARD);
-                        videoHandler.sendEmptyMessageDelayed(VIDEO_HIDECENTERBOX,
-                                1 * 500);
-                        setVideoProgress();
-                        seekbarEndTrackPosition = -1;
-                        seekbarStartTrackPosition = -1;
+                    hideVideoCenterPause();
+                    showCenterBox();
+                    center_content.setText(MyUtils.generateTime(mVideoView
+                            .getCurrentPosition()));
+                    Drawable drawable;
+                    // / 这一步必须要做,否则不会显示.
+                    if (seekbarEndTrackPosition > seekbarStartTrackPosition)
+                        drawable = ContextCompat.getDrawable(context,
+                                R.drawable.video_btn_fast_forword);
+                    else
+                        drawable = ContextCompat.getDrawable(context,
+                                R.drawable.video_btn_back_forword);
+                    drawable.setBounds(0, 0, drawable.getMinimumWidth(),
+                            drawable.getMinimumHeight());
+                    center_content.setCompoundDrawables(drawable, null, null,
+                            null);
+                    videoHandler.removeMessages(VIDEO_HIDECENTERBOX);
+                    videoHandler.removeMessages(VIDEO_SEEKBARFORWARD);
+                    videoHandler.sendEmptyMessageDelayed(VIDEO_HIDECENTERBOX,
+                            1 * 500);
+                    setVideoProgress();
+                    seekbarEndTrackPosition = -1;
+                    seekbarStartTrackPosition = -1;
 
                     break;
                 case VIDEO_HIDECONTROLLBAR:
@@ -219,7 +215,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                         showWarnControll();
                     } else {
                         if (videoPosition > 0) {
-                            showLoading();
                             hideWarnControll();
                             videoViewStart();
                             mVideoView.seekTo(videoPosition);
@@ -264,7 +259,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         mMaxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         updateVideoCatch();
         //开启播放
-
+        mVideoView.setBufferingIndicator(loadingView);
         MyUtils.Land(context);//取消手机的状态栏
         MyUtils.hideBottomUIMenu(context);//如果手机又虚拟按键则隐藏改虚拟按键
         isLocal = !(mVideoPath != null && (mVideoPath.startsWith("http://") || mVideoPath.startsWith("https://")));
@@ -293,7 +288,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         if (action.equals(Constants.speedAction)) {
             String obj = event.getObj().toString();
             if (!isLocal) {
-                hideLoading();
                 netType = obj;
                 if (NONE.equals(obj)) {
                     //没有网络
@@ -382,9 +376,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         AVOptions options = new AVOptions();
         // 设置链接超时时间
         options.setInteger(AVOptions.KEY_PREPARE_TIMEOUT, 20 * 1000);
-        options.setInteger(AVOptions.KEY_GET_AV_FRAME_TIMEOUT, 20 * 1000);
         options.setInteger(AVOptions.KEY_MEDIACODEC, 0);
-        options.setInteger(AVOptions.KEY_START_ON_PREPARED, 0);
         mVideoView.setAVOptions(options);
         mVideoView.setOnInfoListener(mOnInfoListener);
         mVideoView.setOnBufferingUpdateListener(mOnBufferingUpdateListener);
@@ -480,50 +472,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             mVideoView.pause();
             String message;
             switch (errorCode) {
-                case PLMediaPlayer.ERROR_CODE_INVALID_URI:
-                    message = "该视频暂时无法播放";
-                    showToastTips(message);
-                    videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
-                    break;
-                case PLMediaPlayer.ERROR_CODE_404_NOT_FOUND:
-                    message = "该视频暂时无法播放";
-                    showToastTips(message);
-                    videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
-                    break;
-                case PLMediaPlayer.ERROR_CODE_CONNECTION_REFUSED:
-                    message = "该视频暂时无法播放";
-                    showToastTips(message);
-                    videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
-                    break;
-                case PLMediaPlayer.ERROR_CODE_CONNECTION_TIMEOUT:
-                    showLoading();
-                    videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
-                    break;
-                case PLMediaPlayer.ERROR_CODE_EMPTY_PLAYLIST:
-                    showToastTips("Empty playlist !");
-                    showWarn();
-                    break;
-                case PLMediaPlayer.ERROR_CODE_STREAM_DISCONNECTED:
-                    showToastTips("Stream disconnected !");
-                    videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
-                    break;
-                case PLMediaPlayer.ERROR_CODE_IO_ERROR:
-                    showToastTips("该视频暂时无法播放！");
-                    hideLoading();
-                    videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
-                    break;
-                case PLMediaPlayer.ERROR_CODE_UNAUTHORIZED:
-                    showToastTips("Unauthorized Error !");
-                    break;
-                case PLMediaPlayer.ERROR_CODE_PREPARE_TIMEOUT:
-                    showToastTips("Prepare timeout !");
-                    videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
-                    break;
-                case PLMediaPlayer.ERROR_CODE_READ_FRAME_TIMEOUT:
-                    message = "该视频暂时无法播放";
-                    showToastTips(message);
-                    videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
-                    break;
                 case PLMediaPlayer.MEDIA_ERROR_UNKNOWN:
                     message = "该视频暂时无法播放";
                     showToastTips(message);
@@ -532,7 +480,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 default:
                     message = "该视频暂时无法播放,请稍后重试";
                     if (!isWarn) {
-                        hideLoading();
                         warnContent.setText("当前没有网络，\n请开启手机网络");
                     } else {
                         showToastTips(message);
@@ -546,7 +493,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     };
 
     private void videoViewStart() {
-        showLoading();
         mVideoView.setVideoPath(mVideoPath);
         mVideoView.start();
         mVideoView.seekTo(videoPosition);
@@ -608,11 +554,10 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
     private PLMediaPlayer.OnPreparedListener mOnPreparedListener = new PLMediaPlayer.OnPreparedListener() {
         @Override
-        public void onPrepared(PLMediaPlayer plMediaPlayer) {
+        public void onPrepared(PLMediaPlayer plMediaPlayer, int i) {
             if (mVideoView.getDuration() != -1) {
                 setVideoProgress();
                 updateVideoTime(1);
-                hideLoading();
                 isReCheck = false;
                 length = mVideoView.getDuration();
                 mVideoView.start();
@@ -660,7 +605,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             if (isLocal || !NONE.equals(netType)) {
                 mPause = !mPause;
                 if (mPause) {
-                    hideLoading();
                     videoPlay.setImageResource(R.drawable.ic_play);
                     mVideoView.pause();
                     mPauseStartTime = System.currentTimeMillis();
@@ -686,11 +630,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             switch (what) {
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_START:
                     hideVideoCenterPause();
-                    showLoading();
                     isLoading = true;
                     break;
                 case PLMediaPlayer.MEDIA_INFO_BUFFERING_END:
-                    hideLoading();
                     if (mVideoView.isPlaying())
                         hideVideoCenterPause();
                     else
@@ -781,7 +723,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
      * @param percent
      */
     private void onVolumeSlide(float percent) {
-        hideLoading();
         hideVideoCenterPause();
         if (volume == -1) {
             volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -795,12 +736,15 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         else if (index < 0)
             index = 0;
 
-
         // 变更进度条
         int i = (int) (index * 1.0 / mMaxVolume * 100);
         String s = i + "%";
+        if (i > 0) {
+            showImg(R.drawable.ic_voice_max);
+        } else {
+            showImg(R.drawable.ic_voice_min);
+        }
         showMessage(s);
-        // showImg(R.drawable.ic_);
         if (isLocal || !NONE.equals(netType)) {
             // 变更声音
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0);
@@ -812,8 +756,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
 
     //滑动屏幕快进
     private void onProgressSlide(float percent) {
-
-        hideLoading();
         hideVideoCenterPause();
         long position = mVideoView.getCurrentPosition();
         long duration = mVideoView.getDuration();
@@ -854,7 +796,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
      * @param percent
      */
     private void onBrightnessSlide(float percent) {
-        hideLoading();
         hideVideoCenterPause();
         hideCenterBox();
         if (brightness < 0) {
@@ -983,15 +924,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         center_content.setCompoundDrawables(drawable, null, null, null);
     }
 
-    // 显示加载进度条
-    private void showLoading() {
-        loadingView.setVisibility(View.VISIBLE);
-    }
-
-    // 隐藏加载进度条
-    private void hideLoading() {
-        loadingView.setVisibility(View.INVISIBLE);
-    }
 
     // 显示控制层
     private void showControllBar() {
