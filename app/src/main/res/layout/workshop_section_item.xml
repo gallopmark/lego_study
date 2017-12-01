@@ -83,8 +83,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:scaleType="center"
                         android:layout_marginRight="@dimen/margin_size_10"
+                        android:scaleType="center"
                         android:src="@drawable/progress_goto" />
                 </LinearLayout>
 
@@ -162,9 +162,9 @@
                         android:layout_gravity="center"
                         android:layout_weight="1"
                         android:drawablePadding="@dimen/margin_size_6"
-                        android:drawableTop="@drawable/workshop_teachvideo"
+                        android:drawableTop="@drawable/ws_classdiscuss"
                         android:gravity="center"
-                        android:text="教学观摩"
+                        android:text="评课议课"
                         android:textSize="@dimen/font_size_14" />
 
                     <TextView
