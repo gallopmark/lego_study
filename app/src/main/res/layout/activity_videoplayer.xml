@@ -53,13 +53,7 @@
                 android:src="@drawable/btn_retry_play"
                 android:visibility="gone" />
 
-            <ImageView
-                android:id="@+id/video_lock"
-                android:layout_width="@dimen/margin_size_35"
-                android:layout_height="@dimen/margin_size_35"
-                android:layout_gravity="left|center_vertical"
-                android:layout_marginLeft="@dimen/margin_size_20"
-                android:src="@drawable/playerunlocked" />
+
         </FrameLayout>
     </RelativeLayout>
 
