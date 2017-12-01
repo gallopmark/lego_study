@@ -325,7 +325,7 @@ public class WorkShopSectionAdapter extends BaseArrayRecyclerAdapter<MWorkshopSe
                     ic_type.setImageResource(R.drawable.progress_video_press);
                 } else
                     ic_type.setImageResource(R.drawable.progress_video_default);
-                tv_typeName.setText("评课议课");
+                tv_typeName.setText("教学观摩");
             } else {
                 if (mainPosition == mainIndex && childPosition == position) {
                     ic_type.setImageResource(R.drawable.course_word_selected);
