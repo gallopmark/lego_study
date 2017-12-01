@@ -87,10 +87,10 @@ public class AppCaptureActivity extends BaseActivity {
         requestCamera = true;
         ll_noCamera.setVisibility(View.GONE);
         fl_my_container.setVisibility(View.VISIBLE);
-        CaptureFragment captureFragment = new CaptureFragment();
+        CaptureFragment fragment = new CaptureFragment();
         // 为二维码扫描界面设置定制化界面
-        captureFragment.setAnalyzeCallback(analyzeCallback);
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_my_container, captureFragment).commit();
+        fragment.setAnalyzeCallback(analyzeCallback);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_my_container, fragment).commitAllowingStateLoss();
     }
 
     @Override

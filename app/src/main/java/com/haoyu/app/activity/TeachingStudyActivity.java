@@ -238,6 +238,7 @@ public class TeachingStudyActivity extends BaseActivity implements View.OnClickL
             videoFragment = new VideoPlayerFragment();
             Bundle bundle = new Bundle();
             bundle.putString("videoUrl", video.getUrl());
+            bundle.putString("videoTitle", lcecEntity.getTitle());
             videoFragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.fl_video, videoFragment).commit();

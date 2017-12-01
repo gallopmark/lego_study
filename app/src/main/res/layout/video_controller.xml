@@ -20,6 +20,18 @@
         android:textSize="@dimen/font_size_16"
         android:visibility="gone" />
 
+    <com.haoyu.app.view.LoadingView
+        android:id="@+id/indicator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@color/videoplayer_control"
+        android:gravity="center"
+        android:paddingBottom="@dimen/margin_size_8"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_8" />
+
     <LinearLayout
         android:id="@+id/ll_attribute"
         android:layout_width="120dp"
@@ -27,27 +39,22 @@
         android:layout_gravity="center"
         android:background="@color/videoplayer_control"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/margin_size_10"
-        android:paddingLeft="@dimen/margin_size_16"
-        android:paddingRight="@dimen/margin_size_16"
-        android:paddingTop="@dimen/margin_size_10"
+        android:padding="@dimen/margin_size_16"
         android:visibility="gone">
 
         <ImageView
             android:id="@+id/iv_attribute"
             android:layout_width="@dimen/margin_size_20"
             android:layout_height="@dimen/margin_size_20"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_brightness" />
+            android:layout_gravity="center" />
 
         <com.haoyu.app.view.RoundRectProgressBar
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_size_3"
+            android:layout_height="@dimen/margin_size_4"
             android:layout_marginTop="@dimen/margin_size_12"
             app:progress_background_color="@color/seekbar_background"
             app:progress_color="@color/defaultColor" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -78,8 +85,17 @@
             android:layout_marginLeft="@dimen/margin_size_12"
             android:textColor="@color/white"
             android:textSize="@dimen/font_size_16" />
-
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|bottom"
+        android:layout_marginBottom="@dimen/margin_size_20"
+        android:textColor="@color/transdefaultColor"
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll_playState"

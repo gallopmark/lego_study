@@ -92,6 +92,14 @@ public class LoadingView extends FrameLayout {
         mLoadTextView.setText(loadingText);
     }
 
+    public void setLoadingTextColor(int color) {
+        mLoadTextView.setTextColor(color);
+    }
+
+    public void setLoadingTextSize(int textSize) {
+        mLoadTextView.setTextSize(textSize);
+    }
+
     public void setmAnimation(AnimationDrawable mAnimation) {
         this.mAnimation = mAnimation;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
