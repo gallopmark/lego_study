@@ -22,6 +22,6 @@
 
     <include
         android:id="@+id/fl_controller"
-        layout="@layout/videoplayer_controller"
+        layout="@layout/videoplayelib_controller.xml"
         android:visibility="gone" />
 </FrameLayout>

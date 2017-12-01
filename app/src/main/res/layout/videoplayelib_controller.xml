@@ -1,24 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fl_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/tv_videoTitle"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/videoplayer_control"
-        android:ellipsize="middle"
-        android:paddingBottom="@dimen/margin_size_10"
-        android:paddingLeft="@dimen/margin_size_12"
-        android:paddingRight="@dimen/margin_size_12"
-        android:paddingTop="@dimen/margin_size_10"
-        android:singleLine="true"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_size_16"
-        android:visibility="gone" />
+        android:paddingBottom="@dimen/margin_size_8"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:paddingTop="@dimen/margin_size_8">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="@dimen/margin_size_40"
+            android:layout_height="@dimen/margin_size_40"
+            android:layout_gravity="center"
+            android:padding="@dimen/margin_size_6"
+            android:scaleType="centerCrop"
+            android:src="@drawable/fanhui" />
+
+        <TextView
+            android:id="@+id/tv_videoName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_8"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title_textsize" />
+    </LinearLayout>
 
     <com.haoyu.app.view.LoadingView
         android:id="@+id/indicator"
@@ -30,11 +42,12 @@
         android:paddingBottom="@dimen/margin_size_8"
         android:paddingLeft="@dimen/margin_size_16"
         android:paddingRight="@dimen/margin_size_16"
-        android:paddingTop="@dimen/margin_size_8" />
+        android:paddingTop="@dimen/margin_size_8"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/ll_attribute"
-        android:layout_width="120dp"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:background="@color/videoplayer_control"
@@ -44,8 +57,8 @@
 
         <ImageView
             android:id="@+id/iv_attribute"
-            android:layout_width="@dimen/margin_size_20"
-            android:layout_height="@dimen/margin_size_20"
+            android:layout_width="@dimen/margin_size_30"
+            android:layout_height="@dimen/margin_size_30"
             android:layout_gravity="center" />
 
         <com.haoyu.app.view.RoundRectProgressBar
@@ -55,6 +68,7 @@
             android:layout_marginTop="@dimen/margin_size_12"
             app:progress_background_color="@color/seekbar_background"
             app:progress_color="@color/defaultColor" />
+
     </LinearLayout>
 
     <LinearLayout
@@ -104,15 +118,15 @@
         android:layout_gravity="bottom"
         android:background="@color/videoplayer_control"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/margin_size_8"
+        android:paddingBottom="@dimen/margin_size_12"
         android:paddingLeft="@dimen/margin_size_16"
         android:paddingRight="@dimen/margin_size_16"
-        android:paddingTop="@dimen/margin_size_8">
+        android:paddingTop="@dimen/margin_size_12">
 
         <ImageView
             android:id="@+id/iv_playState"
-            android:layout_width="@dimen/margin_size_24"
-            android:layout_height="@dimen/margin_size_24"
+            android:layout_width="@dimen/margin_size_30"
+            android:layout_height="@dimen/margin_size_30"
             android:layout_gravity="center"
             android:padding="@dimen/margin_size_4"
             android:scaleType="centerCrop"
@@ -126,7 +140,7 @@
             android:layout_marginLeft="@dimen/margin_size_8"
             android:text="00:00"
             android:textColor="@color/white"
-            android:textSize="@dimen/font_size_16" />
+            android:textSize="@dimen/font_size_18" />
 
         <SeekBar
             android:id="@+id/seekbar"
@@ -137,8 +151,8 @@
             android:layout_marginLeft="@dimen/margin_size_8"
             android:layout_marginRight="@dimen/margin_size_8"
             android:layout_weight="1"
-            android:maxHeight="@dimen/margin_size_4"
-            android:minHeight="@dimen/margin_size_4"
+            android:maxHeight="@dimen/margin_size_6"
+            android:minHeight="@dimen/margin_size_6"
             android:paddingBottom="@dimen/margin_size_4"
             android:paddingTop="@dimen/margin_size_4"
             android:progressDrawable="@drawable/horizontal_seekbar"
@@ -153,15 +167,7 @@
             android:layout_marginRight="@dimen/margin_size_8"
             android:text="00:00"
             android:textColor="@color/white"
-            android:textSize="@dimen/font_size_16" />
+            android:textSize="@dimen/font_size_18" />
 
-        <ImageView
-            android:id="@+id/iv_expand"
-            android:layout_width="@dimen/margin_size_24"
-            android:layout_height="@dimen/margin_size_24"
-            android:layout_gravity="center"
-            android:padding="@dimen/margin_size_4"
-            android:scaleType="centerInside"
-            android:src="@drawable/quanping" />
     </LinearLayout>
 </FrameLayout>

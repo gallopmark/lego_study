@@ -1,5 +1,6 @@
 package com.haoyu.app.activity;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,7 +31,6 @@ import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.NetStatusUtil;
-import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.view.LoadingView;
 import com.haoyu.app.view.RoundRectProgressBar;
 import com.pili.pldroid.player.AVOptions;
@@ -99,14 +99,8 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
     private long currentDuration = -1, lastDuration = -1;  //当前播放位置
     /*** 视频窗口的宽和高*/
     private int playerWidth, playerHeight;
-    private int maxVolume, currentVolume;
+    private int maxVolume, currentVolume = -1;
     private float mBrightness = -1f; // 亮度
-    private boolean firstScroll = false;// 每次触摸屏幕后，第一次scroll的标志
-    private static final float STEP_VOLUME = 2f;// 协调音量滑动时的步长，避免每次滑动都改变，导致改变过快
-    private int GESTURE_FLAG = 0;// 1,调节进度，2，调节音量,3.调节亮度
-    private static final int GESTURE_MODIFY_PROGRESS = 1;
-    private static final int GESTURE_MODIFY_VOLUME = 2;
-    private static final int GESTURE_MODIFY_BRIGHT = 3;
     private PLHandler handler;
     private final int CODE_ATTRBUTE = 1;
     private final int CODE_ENDGESTURE = 2;
@@ -147,10 +141,9 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
         setVideoController();
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         maxVolume = mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
-        currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
         setVideoView();
-        handler = new PLHandler(context);
+        handler = new PLHandler();
         if (isHttp) {
             receiver = new NetWorkReceiver();
             IntentFilter filter = new IntentFilter();
@@ -175,9 +168,14 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
             }
         });
         final GestureDetector gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            private boolean firstTouch;
+            private boolean gesture_progress;
+            private boolean gesture_volume;
+            private boolean gesture_bright;
+
             @Override
             public boolean onDown(MotionEvent e) {
-                firstScroll = true;// 设定是触摸屏幕后第一次scroll的标志
+                firstTouch = true;
                 fl_controller.setVisibility(View.VISIBLE);
                 return false;
             }
@@ -185,33 +183,26 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
             @Override
             public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
                 float mOldX = e1.getX(), mOldY = e1.getY();
-                int y = (int) e2.getRawY();
-                if (firstScroll) {// 以触摸屏幕后第一次滑动为标准，避免在屏幕上操作切换混乱
-                    // 横向的距离变化大则调整进度，纵向的变化大则调整音量
-                    if (Math.abs(distanceX) >= Math.abs(distanceY)) {
-                        GESTURE_FLAG = GESTURE_MODIFY_PROGRESS;
-                    } else {
-                        if (mOldX > playerWidth * 3.0 / 5) {// 音量
-                            GESTURE_FLAG = GESTURE_MODIFY_VOLUME;
-                        } else if (mOldX < playerWidth * 2.0 / 5) {// 亮度
-                            GESTURE_FLAG = GESTURE_MODIFY_BRIGHT;
-                        }
-                    }
+                float deltaY = mOldY - e2.getY();
+                float deltaX = mOldX - e2.getX();
+                if (firstTouch) {
+                    gesture_progress = Math.abs(distanceX) >= Math.abs(distanceY);
+                    gesture_volume = mOldX > playerWidth * 3.0 / 5; // 音量
+                    gesture_bright = mOldX < playerWidth * 2.0 / 5; // 亮度
+                    firstTouch = false;
                 }
-                // 如果每次触摸屏幕后第一次scroll是调节进度，那之后的scroll事件都处理音量进度，直到离开屏幕执行下一次操作
-                float percent = (mOldY - y) / playerHeight;
-                if (GESTURE_FLAG == GESTURE_MODIFY_PROGRESS) {
-                    progress_turn = true;
-                    float deltaX = mOldX - e2.getX();
+                if (gesture_progress) {
                     float percentage = -deltaX / playerWidth;
                     onProgressSlide(percentage);
-                } else if (GESTURE_FLAG == GESTURE_MODIFY_VOLUME) { // 如果每次触摸屏幕后第一次scroll是调节音量，那之后的scroll事件都处理音量调节，直到离开屏幕执行下一次操作
-                    onVolumeSlide(distanceX, distanceY);
-                } else if (GESTURE_FLAG == GESTURE_MODIFY_BRIGHT) { // 如果每次触摸屏幕后第一次scroll是调节亮度，那之后的scroll事件都处理亮度调节，直到离开屏幕执行下一次操作
-                    onBrightnessSlide(percent);
+                } else {
+                    float percent = deltaY / playerHeight;
+                    if (gesture_volume) {
+                        onVolumeSlide(percent);
+                    } else if (gesture_bright) {
+                        onBrightnessSlide(percent);
+                    }
                 }
-                firstScroll = false;// 第一次scroll执行完成，修改标志
-                return false;
+                return super.onScroll(e1, e2, distanceX, distanceY);
             }
 
             @Override
@@ -232,7 +223,6 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
                 // 手势里除了singleTapUp，没有其他检测up的方法
                 if (!isPrepared) return true;
                 if (event.getAction() == MotionEvent.ACTION_UP) {
-                    GESTURE_FLAG = 0;// 手指离开屏幕后，重置调节音量或进度的标志
                     endGesture();
                 }
                 return gestureDetector.onTouchEvent(event);
@@ -298,34 +288,34 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
     }
 
     //加减音量
-    private void onVolumeSlide(float distanceX, float distanceY) {
+    private void onVolumeSlide(float percent) {
         if (!attrbute_turn) {
             attrbute_turn = true;
         }
-        currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
-        if (Math.abs(distanceY) > Math.abs(distanceX)) {// 纵向移动大于横向移动
-            if (distanceY >= PixelFormat.dp2px(context, STEP_VOLUME)) {// 音量调大,注意横屏时的坐标体系,尽管左上角是原点，但横向向上滑动时distanceY为正
-                if (currentVolume < maxVolume) {// 为避免调节过快，distanceY应大于一个设定值
-                    currentVolume++;
-                }
-            } else if (distanceY <= -PixelFormat.dp2px(context, STEP_VOLUME)) {// 音量调小
-                if (currentVolume > 0) {
-                    currentVolume--;
-                }
+        if (currentVolume < 0) {
+            currentVolume = mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC); // 获取当前值
+            if (currentVolume < 0) {
+                currentVolume = 0;
             }
-            if (ll_attribute.getVisibility() != View.VISIBLE) {
-                ll_attribute.setVisibility(View.VISIBLE);
-            }
-            if (currentVolume > 0) {
-                iv_attribute.setImageResource(R.drawable.ic_voice_max);
-            } else {
-                iv_attribute.setImageResource(R.drawable.ic_voice_min);
-            }
-            progressBar.setMax(maxVolume);
-            progressBar.setProgress(currentVolume);
-            // 变更声音
-            mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, currentVolume, 0);
         }
+        int mVolume = (int) (percent * maxVolume) + currentVolume;
+        if (mVolume > maxVolume) {
+            mVolume = maxVolume;
+        } else if (mVolume < 0) {
+            mVolume = 0;
+        }
+        if (ll_attribute.getVisibility() != View.VISIBLE) {
+            ll_attribute.setVisibility(View.VISIBLE);
+        }
+        if (mVolume > 0) {
+            iv_attribute.setImageResource(R.drawable.ic_voice_max);
+        } else {
+            iv_attribute.setImageResource(R.drawable.ic_voice_min);
+        }
+        progressBar.setMax(maxVolume);
+        progressBar.setProgress(mVolume);
+        // 变更声音
+        mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
     }
 
     private void endGesture() {
@@ -568,11 +558,7 @@ public class VideoPlayerLibActivity extends BaseActivity implements View.OnClick
     }
 
     private class PLHandler extends Handler {
-        private WeakReference<Context> reference;
-
-        public PLHandler(Context context) {
-            reference = new WeakReference<>(context);
-        }
+        private WeakReference<Activity> reference = new WeakReference<Activity>(context);
 
         @Override
         public void handleMessage(Message msg) {
