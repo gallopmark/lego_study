@@ -24,12 +24,12 @@ import com.haoyu.app.activity.AppTestHomeActivity;
 import com.haoyu.app.activity.AppTestResultActivity;
 import com.haoyu.app.activity.FreeChatActiviy;
 import com.haoyu.app.activity.TeachingDiscussionActivity;
-import com.haoyu.app.activity.TeachingStudyActivity;
+import com.haoyu.app.activity.WSTSInfoActivity;
 import com.haoyu.app.activity.VideoPlayerActivity;
-import com.haoyu.app.activity.WSClassDiscussEditActivity;
-import com.haoyu.app.activity.WSClassDiscussInfoActivity;
-import com.haoyu.app.activity.WSTeachingDiscussActivity;
-import com.haoyu.app.activity.WSTeachingStudyEditActivity;
+import com.haoyu.app.activity.WSCDEditActivity;
+import com.haoyu.app.activity.WSCDInfoActivity;
+import com.haoyu.app.activity.WSTDEditActivity;
+import com.haoyu.app.activity.WSTSEditActivity;
 import com.haoyu.app.activity.WorkShopEditTaskActivity;
 import com.haoyu.app.activity.WorkshopQuestionActivity;
 import com.haoyu.app.adapter.WorkShopSectionAdapter;
@@ -323,11 +323,11 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
                 intent.putExtra("workshopId", workshopId);
                 intent.putExtra("workSectionId", workSectionId);
                 if (type == 1) {
-                    intent.setClass(context, WSTeachingDiscussActivity.class);
+                    intent.setClass(context, WSTDEditActivity.class);
                 } else if (type == 2) {
-                    intent.setClass(context, WSClassDiscussEditActivity.class);
+                    intent.setClass(context, WSCDEditActivity.class);
                 } else {
-                    intent.setClass(context, WSTeachingStudyEditActivity.class);
+                    intent.setClass(context, WSTSEditActivity.class);
                 }
                 startActivityForResult(intent, REQUEST_ACTIVITY);
             }
@@ -632,7 +632,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
     /*打开听课评课*/
     private void openLcec(AppActivityViewResult response, CourseSectionActivity activity) {
         if (response.getResponseData() != null && response.getResponseData().getmLcec() != null) {
-            Intent intent = new Intent(context, TeachingStudyActivity.class);
+            Intent intent = new Intent(context, WSTSInfoActivity.class);
             if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().getState() != null && activity.getmTimePeriod().getState().equals("进行中"))
                 intent.putExtra("running", true);
             else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().getMinutes() > 0)
@@ -730,7 +730,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
 
     private void openDiscuss_class(AppActivityViewResult response, CourseSectionActivity activity) {
         if (response.getResponseData() != null && response.getResponseData().getmVideoDC() != null) {
-            Intent intent = new Intent(context, WSClassDiscussInfoActivity.class);
+            Intent intent = new Intent(context, WSCDInfoActivity.class);
             if (activity.getmTimePeriod() != null && activity.getmTimePeriod().getState() != null && activity.getmTimePeriod().getState().equals("进行中"))
                 intent.putExtra("running", true);
             else if (activity.getmTimePeriod() != null && activity.getmTimePeriod().getMinutes() > 0)

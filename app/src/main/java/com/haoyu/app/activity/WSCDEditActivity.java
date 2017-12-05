@@ -9,8 +9,8 @@ import android.view.View;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.entity.MWorkshopActivity;
-import com.haoyu.app.fragment.WSTSEditFragment;
-import com.haoyu.app.fragment.WSTSSubmitFragment;
+import com.haoyu.app.fragment.WSCDEditFragment;
+import com.haoyu.app.fragment.WSCDSubmitFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
@@ -23,13 +23,13 @@ import butterknife.BindView;
 import okhttp3.Request;
 
 /**
- * 创建日期：2017/12/1.
- * 描述:工作坊添加听课评课
+ * 创建日期：2017/11/14.
+ * 描述:工作坊添加评课议课
  * 作者:xiaoma
  */
 
-public class WSTeachingStudyEditActivity extends BaseActivity {
-    private WSTeachingStudyEditActivity context = this;
+public class WSCDEditActivity extends BaseActivity {
+    private WSCDEditActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     private String workshopId, workSectionId;
@@ -46,7 +46,7 @@ public class WSTeachingStudyEditActivity extends BaseActivity {
     public void initView() {
         workshopId = getIntent().getStringExtra("workshopId");
         workSectionId = getIntent().getStringExtra("workSectionId");
-        toolBar.setTitle_text("添加听课评课");
+        toolBar.setTitle_text("添加教学观摩");
         toolBar.setRight_button_text("提交");
         fragmentManager = getSupportFragmentManager();
         showF1();
@@ -55,13 +55,13 @@ public class WSTeachingStudyEditActivity extends BaseActivity {
     private void showF1() {
         toolBar.setShow_right_button(false);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        WSTSEditFragment f1 = new WSTSEditFragment();
+        WSCDEditFragment f1 = new WSCDEditFragment();
         Bundle bundle = new Bundle();
         bundle.putString("workshopId", workshopId);
         bundle.putString("workSectionId", workSectionId);
         f1.setArguments(bundle);
         transaction.replace(R.id.container, f1);
-        f1.setOnNextListener(new WSTSEditFragment.OnNextListener() {
+        f1.setOnNextListener(new WSCDEditFragment.OnNextListener() {
             @Override
             public void onNext(MWorkshopActivity activity) {
                 context.activity = activity;
@@ -77,11 +77,7 @@ public class WSTeachingStudyEditActivity extends BaseActivity {
     private void showF2() {
         toolBar.setShow_right_button(true);
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-        final WSTSSubmitFragment f2 = new WSTSSubmitFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString("workshopId", workshopId);
-        bundle.putString("activityId", activity.getId());
-        f2.setArguments(bundle);
+        final WSCDSubmitFragment f2 = new WSCDSubmitFragment();
         transaction.add(R.id.container, f2);
         transaction.commitAllowingStateLoss();
         toolBar.setOnRightClickListener(new AppToolBar.OnRightClickListener() {
@@ -89,9 +85,7 @@ public class WSTeachingStudyEditActivity extends BaseActivity {
             public void onRightClick(View view) {
                 String startTime = f2.getStartTime();
                 String endTime = f2.getEndTime();
-                if (!f2.isAddItem()) {
-                    showMaterialDialog("提示", "至少填写一项评分项");
-                } else if (startTime.length() == 0) {
+                if (startTime.length() == 0) {
                     showMaterialDialog("提示", "请选择活动开始时间");
                 } else if (endTime.length() == 0) {
                     showMaterialDialog("提示", "请选择活动结束时间");
@@ -142,4 +136,5 @@ public class WSTeachingStudyEditActivity extends BaseActivity {
             }
         }, map));
     }
+
 }

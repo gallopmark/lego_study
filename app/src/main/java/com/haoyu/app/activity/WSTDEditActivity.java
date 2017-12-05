@@ -43,8 +43,8 @@ import okhttp3.Request;
  * 描述：工作坊添加教学研讨活动
  * 作者:马飞奔 Administrator
  */
-public class WSTeachingDiscussActivity extends BaseActivity implements View.OnClickListener {
-    private WSTeachingDiscussActivity context = this;
+public class WSTDEditActivity extends BaseActivity implements View.OnClickListener {
+    private WSTDEditActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.scrollView)
@@ -337,10 +337,7 @@ public class WSTeachingDiscussActivity extends BaseActivity implements View.OnCl
         String json = OkHttpClientManager.postAsString(context, url, map);
         Gson gson = new GsonBuilder().create();
         BaseResponseResult result = gson.fromJson(json, BaseResponseResult.class);
-        if (result != null && result.getResponseCode() != null && result.getResponseCode().equals("00")) {
-            return true;
-        }
-        return false;
+        return result != null && result.getResponseCode() != null && result.getResponseCode().equals("00");
     }
 
     private boolean submitTime(String startTime, String endTime, String activityId) throws Exception {
@@ -352,10 +349,7 @@ public class WSTeachingDiscussActivity extends BaseActivity implements View.OnCl
         String json = OkHttpClientManager.postAsString(context, url, map);
         Gson gson = new GsonBuilder().create();
         BaseResponseResult result = gson.fromJson(json, BaseResponseResult.class);
-        if (result != null && result.getResponseCode() != null && result.getResponseCode().equals("00")) {
-            return true;
-        }
-        return false;
+        return result != null && result.getResponseCode() != null && result.getResponseCode().equals("00");
     }
 
     private void toastMsg(String msg) {

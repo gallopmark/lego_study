@@ -71,8 +71,8 @@ import okhttp3.Request;
  * 描述:听课评课
  * 作者:马飞奔 Administrator
  */
-public class TeachingStudyActivity extends BaseActivity implements View.OnClickListener {
-    private TeachingStudyActivity context = this;
+public class WSTSInfoActivity extends BaseActivity implements View.OnClickListener {
+    private WSTSInfoActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.scrollView)

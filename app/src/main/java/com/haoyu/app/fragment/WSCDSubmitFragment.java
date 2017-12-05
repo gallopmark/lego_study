@@ -19,7 +19,7 @@ import butterknife.BindView;
  * 作者:xiaoma
  */
 
-public class WSClassDiscussSubmitFragment extends BaseFragment implements View.OnClickListener {
+public class WSCDSubmitFragment extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.ll_startTime)
     LinearLayout ll_startTime;
     @BindView(R.id.tv_start)

@@ -59,7 +59,7 @@ import okhttp3.Request;
  * 作者:xiaoma
  */
 
-public class WSClassDiscussFragment extends BaseFragment implements View.OnClickListener {
+public class WSCDEditFragment extends BaseFragment implements View.OnClickListener {
     private Activity activity;
     @BindView(R.id.scrollView)
     ScrollView scrollView;

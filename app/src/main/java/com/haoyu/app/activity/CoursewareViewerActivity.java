@@ -117,6 +117,7 @@ public class CoursewareViewerActivity extends BaseActivity {
     private boolean running, needUpload;
     private int viewNum, needViewNum, interval;    //已观看次数，要求观看次数，延时访问时间
     private String type;
+    private boolean isDestroy;
 
     @Override
     public int setLayoutResID() {
@@ -321,7 +322,7 @@ public class CoursewareViewerActivity extends BaseActivity {
                 .onLoad(new OnLoadCompleteListener() {
                     @Override
                     public void loadComplete(int nbPages) {
-                        if (!isRead) {
+                        if (!isRead && !isDestroy) {  //如果activity已经销毁则不显示指示框
                             showGestureDialog();
                         }
                     }
@@ -618,6 +619,7 @@ public class CoursewareViewerActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        isDestroy = true;
         FileDownloader.getImpl().pause(downloadListener);
     }
 }

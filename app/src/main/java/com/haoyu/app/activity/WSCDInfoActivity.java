@@ -70,8 +70,8 @@ import okhttp3.Request;
  * 描述:评课议课
  * 作者:Administrator
  */
-public class WSClassDiscussInfoActivity extends BaseActivity implements View.OnClickListener {
-    private WSClassDiscussInfoActivity context = this;
+public class WSCDInfoActivity extends BaseActivity implements View.OnClickListener {
+    private WSCDInfoActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.scrollView)
