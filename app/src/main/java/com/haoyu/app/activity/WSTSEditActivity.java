@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.haoyu.app.base.BaseActivity;
@@ -35,7 +36,6 @@ public class WSTSEditActivity extends BaseActivity {
     private String workshopId, workSectionId;
     private FragmentManager fragmentManager;
     private MWorkshopActivity activity;
-    private String startTime, endTime;
 
     @Override
     public int setLayoutResID() {
@@ -89,16 +89,8 @@ public class WSTSEditActivity extends BaseActivity {
             public void onRightClick(View view) {
                 String startTime = f2.getStartTime();
                 String endTime = f2.getEndTime();
-                if (!f2.isAddItem()) {
-                    showMaterialDialog("提示", "至少填写一项评分项");
-                } else if (startTime.length() == 0) {
-                    showMaterialDialog("提示", "请选择活动开始时间");
-                } else if (endTime.length() == 0) {
-                    showMaterialDialog("提示", "请选择活动结束时间");
-                } else {
-                    context.startTime = startTime;
-                    context.endTime = endTime;
-                    commit();
+                if (!TextUtils.isEmpty(startTime) || !TextUtils.isEmpty(endTime)) {
+                    commit(startTime, endTime);
                 }
             }
         });
@@ -114,13 +106,17 @@ public class WSTSEditActivity extends BaseActivity {
         });
     }
 
-    private void commit() {
+    private void commit(String startTime, String endTime) {
         String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + getUserId()
                 + "/m/activity/wsts/" + activity.getId();
         Map<String, String> map = new HashMap<>();
         map.put("_method", "put");
-        map.put("activity.startTime", startTime);
-        map.put("activity.endTime", endTime);
+        if (!TextUtils.isEmpty(startTime)) {
+            map.put("activity.startTime", startTime);
+        }
+        if (!TextUtils.isEmpty(endTime)) {
+            map.put("activity.endTime", endTime);
+        }
         addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
             @Override
             public void onBefore(Request request) {

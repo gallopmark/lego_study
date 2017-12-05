@@ -74,7 +74,7 @@ public class WSTDEditActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_ws_teaching_discuss;
+        return R.layout.activity_wstdedit;
     }
 
     @Override
