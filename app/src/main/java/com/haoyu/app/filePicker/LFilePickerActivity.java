@@ -312,11 +312,13 @@ public class LFilePickerActivity extends BaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        String tempPath = new File(mCurrentPath).getParent();
-        if (keyCode == KeyEvent.KEYCODE_BACK && tempPath != null && new File(tempPath).exists()) {
-            mCurrentPath = tempPath;
-            updateData();
-            return true;
+        if (keyCode == KeyEvent.KEYCODE_BACK && mCurrentPath != null) {
+            String tempPath = new File(mCurrentPath).getParent();
+            if (tempPath != null && new File(tempPath).exists()) {
+                mCurrentPath = tempPath;
+                updateData();
+                return true;
+            }
         }
         return super.onKeyDown(keyCode, event);
     }

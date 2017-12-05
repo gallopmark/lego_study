@@ -209,9 +209,6 @@
         <!--听课评课-->
         <activity android:name="com.haoyu.app.activity.WSTeachingStudyEditActivity" />
         <!--听课评课上传录像-->
-        <activity
-            android:name="com.haoyu.app.activity.WSTeachingStudySubmitActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
         <!--选择授课人-->
         <activity android:name="com.haoyu.app.activity.TeachingStudyLeacturerActivity" />
         <!--教材版本-->

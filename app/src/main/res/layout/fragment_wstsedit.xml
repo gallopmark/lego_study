@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/spaceColor"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bt_next"
+        android:fillViewport="true"
+        android:overScrollMode="always"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/et_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_8"
+                android:background="@color/white"
+                android:hint="请输入课程主题"
+                android:maxLines="1"
+                android:padding="@dimen/margin_size_12"
+                android:textSize="@dimen/font_size_16">
+
+                <requestFocus />
+            </EditText>
+
+            <EditText
+                android:id="@+id/et_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_8"
+                android:background="@color/white"
+                android:gravity="top|left"
+                android:hint="请输入评课方向"
+                android:maxLines="6"
+                android:minLines="6"
+                android:padding="@dimen/margin_size_12"
+                android:textSize="@dimen/font_size_16" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_8"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_stage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:drawableRight="@drawable/course_dictionary_xiala"
+                    android:padding="@dimen/margin_size_12"
+                    android:text="请选择学段"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/font_size_16" />
+
+                <View
+                    android:layout_width="@dimen/margin_size_1"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/tv_subject"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:drawableRight="@drawable/course_dictionary_xiala"
+                    android:hint="请选择学科"
+                    android:padding="@dimen/margin_size_12"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/font_size_16" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_8"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_size_12"
+                    android:text="教材版本："
+                    android:textSize="@dimen/font_size_16" />
+
+                <EditText
+                    android:id="@+id/et_textBook"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:maxLines="1"
+                    android:textSize="@dimen/font_size_16" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_lecturer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_8"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_size_10"
+                    android:text="授课人："
+                    android:textSize="@dimen/font_size_16" />
+
+                <TextView
+                    android:id="@+id/tv_lecture"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginRight="@dimen/margin_size_16"
+                    android:layout_weight="1"
+                    android:drawablePadding="5dp"
+                    android:drawableRight="@drawable/progress_goto"
+                    android:ellipsize="end"
+                    android:gravity="right|center"
+                    android:text="李明月"
+                    android:textSize="@dimen/font_size_16" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_8"
+                android:background="@color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/margin_size_12"
+                    android:text="评课方式："
+                    android:textSize="@dimen/font_size_16" />
+
+                <CheckBox
+                    android:id="@+id/cb_field"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@null"
+                    android:drawableLeft="@drawable/download_checkbox_selector"
+                    android:drawablePadding="@dimen/margin_size_4"
+                    android:text="现场评课"
+                    android:textColor="@color/blow_gray"
+                    android:textSize="@dimen/font_size_16" />
+
+                <CheckBox
+                    android:id="@+id/cb_record"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_size_20"
+                    android:button="@null"
+                    android:checked="true"
+                    android:drawableLeft="@drawable/download_checkbox_selector"
+                    android:drawablePadding="@dimen/margin_size_4"
+                    android:text="实录评课"
+                    android:textColor="@color/blow_gray"
+                    android:textSize="@dimen/font_size_16" />
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginLeft="@dimen/margin_size_50"
+                android:layout_marginRight="@dimen/margin_size_50"
+                android:layout_marginTop="@dimen/margin_size_16"
+                android:nestedScrollingEnabled="false">
+
+                <FrameLayout
+                    android:id="@+id/fl_addVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ws_addvideo" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center|bottom"
+                        android:layout_marginBottom="@dimen/margin_size_30"
+                        android:text="点击上传课堂录像"
+                        android:textColor="@color/faq_type"
+                        android:textSize="@dimen/font_size_16" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/fl_video"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/iv_video"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_videoProgress"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:background="@color/videoplayer_control"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/tv_videoName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:ellipsize="middle"
+                            android:gravity="center"
+                            android:singleLine="true"
+                            android:textColor="@color/defaultColor"
+                            android:textSize="@dimen/font_size_16"
+                            android:textStyle="bold" />
+
+                        <com.haoyu.app.view.RoundRectProgressBar
+                            android:id="@+id/videoProgressBar"
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/margin_size_4"
+                            android:layout_marginLeft="@dimen/margin_size_30"
+                            android:layout_marginRight="@dimen/margin_size_30"
+                            android:layout_marginTop="@dimen/margin_size_12"
+                            app:progress_background_color="@color/faq_type"
+                            app:progress_color="@color/defaultColor" />
+
+                        <TextView
+                            android:id="@+id/tv_videoProgress"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="@dimen/margin_size_12"
+                            android:gravity="center"
+                            android:textColor="@color/defaultColor"
+                            android:textSize="@dimen/font_size_16"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_videoError"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/videoplayer_control"
+                        android:gravity="center"
+                        android:text="附件上传失败，点击重试！"
+                        android:textColor="@color/defaultColor"
+                        android:textSize="@dimen/font_size_16"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/iv_deleteVideo"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|right"
+                        android:padding="@dimen/margin_size_6"
+                        android:src="@drawable/download_cancel" />
+                </FrameLayout>
+            </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/bt_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/margin_size_16"
+        android:background="@color/orange"
+        android:gravity="center"
+        android:padding="@dimen/margin_size_14"
+        android:text="保存并下一步"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_16" />
+</RelativeLayout>
