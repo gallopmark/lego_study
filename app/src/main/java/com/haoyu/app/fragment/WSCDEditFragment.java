@@ -163,7 +163,7 @@ public class WSCDEditFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public int createView() {
-        return R.layout.fragment_ws_classdiscuss;
+        return R.layout.fragment_wscdedit;
     }
 
     @Override

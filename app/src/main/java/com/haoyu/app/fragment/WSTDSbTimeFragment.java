@@ -19,7 +19,7 @@ import butterknife.BindView;
  * 作者:xiaoma
  */
 
-public class WSTDSbTimeFragment extends BaseFragment implements View.OnClickListener{
+public class WSTDSbTimeFragment extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.ll_startTime)
     LinearLayout ll_startTime;
     @BindView(R.id.tv_start)
@@ -99,7 +99,7 @@ public class WSTDSbTimeFragment extends BaseFragment implements View.OnClickList
             message += nowYear + "年前";
             showMaterialDialog(message);
             return false;
-        } else {
+        } else if (year == nowYear) {
             if (month < nowMonth) {
                 message += nowYear + "年" + nowMonth + "月前";
                 showMaterialDialog(message);
@@ -125,7 +125,7 @@ public class WSTDSbTimeFragment extends BaseFragment implements View.OnClickList
             message += startYear + "年前";
             showMaterialDialog(message);
             return false;
-        } else {
+        } else if (endYear == startYear) {
             if (endMonth < startMonth) {
                 message += startYear + "年" + startMonth + "月前";
                 showMaterialDialog(message);
