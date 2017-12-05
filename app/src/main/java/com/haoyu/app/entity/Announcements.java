@@ -7,13 +7,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AnnouncementListResult {
+public class Announcements {
     @Expose
     @SerializedName("responseCode")
     private String responseCode;
     @Expose
     @SerializedName("responseData")
-    private AnnouncementListResponseData responseData;
+    private ResponseData responseData;
     @Expose
     @SerializedName("responseMsg")
     private String responseMsg;
@@ -25,7 +25,7 @@ public class AnnouncementListResult {
         return this.responseCode;
     }
 
-    public AnnouncementListResponseData getResponseData() {
+    public ResponseData getResponseData() {
         return this.responseData;
     }
 
@@ -41,7 +41,7 @@ public class AnnouncementListResult {
         this.responseCode = responseCode;
     }
 
-    public void setResponseData(AnnouncementListResponseData responseData) {
+    public void setResponseData(ResponseData responseData) {
         this.responseData = responseData;
     }
 
@@ -53,19 +53,19 @@ public class AnnouncementListResult {
         this.success = success;
     }
 
-    public class AnnouncementListResponseData implements Serializable {
+    public class ResponseData implements Serializable {
         @Expose
         @SerializedName("announcements")
-        private List<AnnouncementEntity> announcements = new ArrayList<>();
+        private List<Announcement> announcements = new ArrayList<>();
         @Expose
         @SerializedName("paginator")
         private Paginator paginator;
 
-        public List<AnnouncementEntity> getAnnouncements() {
+        public List<Announcement> getAnnouncements() {
             return announcements;
         }
 
-        public void setAnnouncements(List<AnnouncementEntity> announcements) {
+        public void setAnnouncements(List<Announcement> announcements) {
             this.announcements = announcements;
         }
 

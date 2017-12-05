@@ -3,7 +3,7 @@ package com.haoyu.app.entity;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class AnnouncementEntity {
+public class Announcement {
     @Expose
     @SerializedName("content")
     private String content;

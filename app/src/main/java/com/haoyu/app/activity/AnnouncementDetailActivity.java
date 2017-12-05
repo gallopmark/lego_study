@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
-import com.haoyu.app.entity.AnnouncementEntity;
+import com.haoyu.app.entity.Announcement;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
@@ -65,7 +65,7 @@ public class AnnouncementDetailActivity extends BaseActivity {
     /*获取通知公告详细*/
     public void initData() {
         String url = Constants.OUTRT_NET + "/m/announcement/view/" + noticeId;
-        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<AnnouncementEntity>>() {
+        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<Announcement>>() {
             @Override
             public void onBefore(Request request) {
                 showTipDialog();
@@ -77,7 +77,7 @@ public class AnnouncementDetailActivity extends BaseActivity {
             }
 
             @Override
-            public void onResponse(BaseResponseResult<AnnouncementEntity> response) {
+            public void onResponse(BaseResponseResult<Announcement> response) {
                 hideTipDialog();
                 if (response != null && response.getResponseData() != null) {
                     setResult(RESULT_OK);
@@ -87,7 +87,7 @@ public class AnnouncementDetailActivity extends BaseActivity {
         }));
     }
 
-    private void updateUI(AnnouncementEntity entity) {
+    private void updateUI(Announcement entity) {
         tv_title.setText(entity.getTitle());
 /// 这一步必须要做,否则不会显示.
         createTime.setBounds(0, 0, createTime.getMinimumWidth(), createTime.getMinimumHeight());

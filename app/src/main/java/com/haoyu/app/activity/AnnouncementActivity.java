@@ -8,8 +8,8 @@ import android.widget.TextView;
 import com.haoyu.app.adapter.AnnouncementAdapter;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
-import com.haoyu.app.entity.AnnouncementEntity;
-import com.haoyu.app.entity.AnnouncementListResult;
+import com.haoyu.app.entity.Announcement;
+import com.haoyu.app.entity.Announcements;
 import com.haoyu.app.entity.Paginator;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Constants;
@@ -42,7 +42,7 @@ public class AnnouncementActivity extends BaseActivity implements XRecyclerView.
     XRecyclerView xRecyclerView;
     @BindView(R.id.tv_empty)
     TextView tv_empty;
-    private List<AnnouncementEntity> entityList = new ArrayList<>();
+    private List<Announcement> entityList = new ArrayList<>();
     private AnnouncementAdapter adapter;
     private boolean isRefresh, isLoadMore;
     private String relationId, relationType, type;
@@ -78,7 +78,7 @@ public class AnnouncementActivity extends BaseActivity implements XRecyclerView.
         if (type != null) {
             url += "&type=" + type;
         }
-        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<AnnouncementListResult>() {
+        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<Announcements>() {
             @Override
             public void onBefore(Request request) {
                 if (isRefresh || isLoadMore)
@@ -101,7 +101,7 @@ public class AnnouncementActivity extends BaseActivity implements XRecyclerView.
             }
 
             @Override
-            public void onResponse(AnnouncementListResult response) {
+            public void onResponse(Announcements response) {
                 loadingView.setVisibility(View.GONE);
                 if (response != null && response.getResponseData() != null && response.getResponseData().getAnnouncements() != null && response.getResponseData().getAnnouncements().size() > 0) {
                     UpdateUI(response.getResponseData().getAnnouncements(), response.getResponseData().getPaginator());
@@ -119,7 +119,7 @@ public class AnnouncementActivity extends BaseActivity implements XRecyclerView.
         }));
     }
 
-    private void UpdateUI(List<AnnouncementEntity> announcements, Paginator paginator) {
+    private void UpdateUI(List<Announcement> announcements, Paginator paginator) {
         if (xRecyclerView.getVisibility() != View.VISIBLE)
             xRecyclerView.setVisibility(View.VISIBLE);
         if (isRefresh) {

@@ -10,7 +10,7 @@ import android.widget.EditText;
 
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.base.BaseResponseResult;
-import com.haoyu.app.gdei.student.R;
+import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
