@@ -124,7 +124,7 @@ public class WSCDInfoActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_wsts_classdiscuss;
+        return R.layout.activity_wstscdinfo;
     }
 
     @Override

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/spaceColor">
+
+    <LinearLayout
+        android:id="@+id/top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_size_10"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_size_12"
+            android:text="回复数："
+            android:textSize="@dimen/font_size_16" />
+
+        <EditText
+            android:id="@+id/et_mainCount"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:digits="1234567890"
+            android:gravity="right|center"
+            android:hint="输入主帖数"
+            android:inputType="number"
+            android:paddingRight="@dimen/margin_size_16"
+            android:textColor="@color/faq_title"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/top"
+        android:layout_marginTop="@dimen/margin_size_10"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/margin_size_12"
+            android:text="子回复数："
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/et_childCount"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/transparent"
+            android:digits="1234567890"
+            android:gravity="right|center"
+            android:hint="输入子帖数"
+            android:inputType="number"
+            android:paddingRight="@dimen/margin_size_16"
+            android:textColor="@color/faq_title"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/bt_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="@dimen/margin_size_16"
+        android:background="@color/orange"
+        android:gravity="center"
+        android:padding="@dimen/margin_size_14"
+        android:text="保存并下一步"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_16" />
+</RelativeLayout>

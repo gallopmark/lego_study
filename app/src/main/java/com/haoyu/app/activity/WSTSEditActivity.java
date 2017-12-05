@@ -87,10 +87,16 @@ public class WSTSEditActivity extends BaseActivity {
         toolBar.setOnRightClickListener(new AppToolBar.OnRightClickListener() {
             @Override
             public void onRightClick(View view) {
-                String startTime = f2.getStartTime();
-                String endTime = f2.getEndTime();
-                if (!TextUtils.isEmpty(startTime) || !TextUtils.isEmpty(endTime)) {
-                    commit(startTime, endTime);
+                if (!f2.isAddItem()) {
+                    showMaterialDialog("提示", "至少添加一个评分项");
+                } else {
+                    String startTime = f2.getStartTime();
+                    String endTime = f2.getEndTime();
+                    if (!TextUtils.isEmpty(startTime) || !TextUtils.isEmpty(endTime)) {
+                        commit(startTime, endTime);
+                    } else {
+                        finish();
+                    }
                 }
             }
         });

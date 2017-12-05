@@ -140,7 +140,7 @@ public class WSTSInfoActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_teaching_study;
+        return R.layout.activity_wstsinfo;
     }
 
     @Override
