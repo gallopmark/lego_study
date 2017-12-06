@@ -531,14 +531,14 @@ public class WSTSInfoActivity extends BaseActivity implements View.OnClickListen
             case R.id.ll_right:
                 if (hasSubmitEvaluate) {
                     //查看听课评课明细
-                    intent.setClass(context, TeachingStudyResultDetailActiivty.class);
+                    intent.setClass(context, WSTSInfoResultActivity.class);
                     intent.putExtra("workshopId", workshopId);
                     intent.putExtra("leceId", lcecEntity.getId());
                     startActivity(intent);
                 } else {
                     //填写评课表
                     if (running) {
-                        intent.setClass(context, TeachingStudyFillActivity.class);
+                        intent.setClass(context, WSTSInfoFillActivity.class);
                         intent.putExtra("workshopId", workshopId);
                         intent.putExtra("leceId", lcecEntity.getId());
                         startActivityForResult(intent, 1);

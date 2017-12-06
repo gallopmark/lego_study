@@ -13,6 +13,15 @@ public class MEvaluateSubmission {
     @SerializedName("id")
     private String id;
     @Expose
+    @SerializedName("comment")
+    private String comment;
+    @Expose
+    @SerializedName("creator")
+    private MobileUser creator;
+    @Expose
+    @SerializedName("createTime")
+    private long createTime;
+    @Expose
     @SerializedName("evaluateRelationId")
     private String evaluateRelationId;
     @Expose
@@ -25,6 +34,38 @@ public class MEvaluateSubmission {
 
     public String getId() {
         return this.id;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public MobileUser getCreator() {
+        return creator;
+    }
+
+    public void setCreator(MobileUser creator) {
+        this.creator = creator;
+    }
+
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
+
+    public List<MEvaluateItemSubmissions> getmEvaluateItemSubmissions() {
+        return mEvaluateItemSubmissions;
+    }
+
+    public void setmEvaluateItemSubmissions(List<MEvaluateItemSubmissions> mEvaluateItemSubmissions) {
+        this.mEvaluateItemSubmissions = mEvaluateItemSubmissions;
     }
 
     public void setEvaluateRelationId(String evaluateRelationId) {

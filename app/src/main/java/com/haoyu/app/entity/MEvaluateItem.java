@@ -16,6 +16,12 @@ public class MEvaluateItem {
     @Expose
     @SerializedName("content")
     private String content;
+    @Expose
+    @SerializedName("avgScore")
+    private double avgScore;
+    @Expose
+    @SerializedName("creator")
+    private MobileUser creator;
 
     public String getId() {
         return id;
@@ -31,5 +37,21 @@ public class MEvaluateItem {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public double getAvgScore() {
+        return avgScore;
+    }
+
+    public void setAvgScore(double avgScore) {
+        this.avgScore = avgScore;
+    }
+
+    public MobileUser getCreator() {
+        return creator;
+    }
+
+    public void setCreator(MobileUser creator) {
+        this.creator = creator;
     }
 }
