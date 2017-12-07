@@ -25,7 +25,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.haoyu.app.activity.TeachingStudyLeacturerActivity;
+import com.haoyu.app.activity.SearchUsersActivity;
 import com.haoyu.app.adapter.DictEntryAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.dialog.MaterialDialog;
@@ -241,7 +241,7 @@ public class WSTSEditFragment extends BaseFragment implements View.OnClickListen
                 }
                 break;
             case R.id.ll_lecturer:  /*授课人*/
-                Intent intent = new Intent(context, TeachingStudyLeacturerActivity.class);
+                Intent intent = new Intent(context, SearchUsersActivity.class);
                 startActivityForResult(intent, REQUEST_USER);
                 break;
             case R.id.fl_addVideo:

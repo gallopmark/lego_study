@@ -214,6 +214,10 @@
         <activity
             android:name="com.haoyu.app.activity.WSTSEditActivity"
             android:windowSoftInputMode="stateHidden|adjustResize" />
+        <!--选择授课人-->
+        <activity
+            android:name="com.haoyu.app.activity.SearchUsersActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <!--听课评课详情-->
         <activity
             android:name="com.haoyu.app.activity.WSTSInfoActivity"
@@ -228,9 +232,6 @@
             android:configChanges="screenSize|orientation|keyboardHidden" />
         <!--评价总结及建议列表-->
         <activity android:name="com.haoyu.app.activity.WSTSSuggestActivity" />
-        <!--选择授课人-->
-        <activity android:name="com.haoyu.app.activity.TeachingStudyLeacturerActivity" />
-        <!--教材版本-->
         <!--工作坊修改阶段任务-->
         <activity
             android:name="com.haoyu.app.activity.WorkShopEditTaskActivity"
