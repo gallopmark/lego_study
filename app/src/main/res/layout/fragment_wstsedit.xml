@@ -148,29 +148,38 @@
                     android:text="评课方式："
                     android:textSize="@dimen/font_size_16" />
 
-                <CheckBox
-                    android:id="@+id/cb_field"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:button="@null"
-                    android:drawableLeft="@drawable/download_checkbox_selector"
-                    android:drawablePadding="@dimen/margin_size_4"
-                    android:text="现场评课"
-                    android:textColor="@color/blow_gray"
-                    android:textSize="@dimen/font_size_16" />
+                <RadioGroup
+                    android:id="@+id/radioGroup"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:orientation="horizontal">
 
-                <CheckBox
-                    android:id="@+id/cb_record"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/margin_size_20"
-                    android:button="@null"
-                    android:checked="true"
-                    android:drawableLeft="@drawable/download_checkbox_selector"
-                    android:drawablePadding="@dimen/margin_size_4"
-                    android:text="实录评课"
-                    android:textColor="@color/blow_gray"
-                    android:textSize="@dimen/font_size_16" />
+                    <RadioButton
+                        android:id="@+id/rb_field"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:button="@null"
+                        android:drawableLeft="@drawable/download_checkbox_selector"
+                        android:drawablePadding="@dimen/margin_size_4"
+                        android:text="现场评课"
+                        android:textColor="@color/blow_gray"
+                        android:textSize="@dimen/font_size_16" />
+
+                    <RadioButton
+                        android:id="@+id/rb_record"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/margin_size_20"
+                        android:button="@null"
+                        android:checked="true"
+                        android:drawableLeft="@drawable/download_checkbox_selector"
+                        android:drawablePadding="@dimen/margin_size_4"
+                        android:text="实录评课"
+                        android:textColor="@color/blow_gray"
+                        android:textSize="@dimen/font_size_16" />
+                </RadioGroup>
             </LinearLayout>
 
             <FrameLayout

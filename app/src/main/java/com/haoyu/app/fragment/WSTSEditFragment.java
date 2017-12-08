@@ -14,14 +14,13 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -77,10 +76,8 @@ public class WSTSEditFragment extends BaseFragment implements View.OnClickListen
     LinearLayout ll_lecturer;
     @BindView(R.id.tv_lecture)
     TextView tv_lecturer;//授课人
-    @BindView(R.id.cb_field)
-    CheckBox cb_field;   //现场评课
-    @BindView(R.id.cb_record)
-    CheckBox cb_record;  //实录评课
+    @BindView(R.id.radioGroup)
+    RadioGroup radioGroup;
     /*添加视频附件*/
     @BindView(R.id.fl_addVideo)
     FrameLayout fl_addVideo;
@@ -188,35 +185,21 @@ public class WSTSEditFragment extends BaseFragment implements View.OnClickListen
         tv_stage.setOnClickListener(this);
         tv_subject.setOnClickListener(this);
         ll_lecturer.setOnClickListener(this);
-        CompoundButton.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton cb, boolean isChecked) {
-                switch (cb.getId()) {
-                    case R.id.cb_field:
-                        if (isChecked) {
-                            isNeedFile = false;
-                            cb_record.setChecked(false);
-                        } else {
-                            isNeedFile = true;
-                            cb_record.setChecked(true);
-                        }
+            public void onCheckedChanged(RadioGroup radioGroup, int checkId) {
+                switch (checkId) {
+                    case R.id.rb_field:
+                        isNeedFile = false;
+                        fl_addVideo.setVisibility(View.GONE);
                         break;
-                    case R.id.cb_record:
-                        if (isChecked) {
-                            isNeedFile = true;
-                            cb_field.setChecked(false);
-                            fl_addVideo.setVisibility(View.VISIBLE);
-                        } else {
-                            isNeedFile = false;
-                            cb_field.setChecked(true);
-                            fl_addVideo.setVisibility(View.GONE);
-                        }
+                    case R.id.rb_record:
+                        isNeedFile = true;
+                        fl_addVideo.setVisibility(View.VISIBLE);
                         break;
                 }
             }
-        };
-        cb_field.setOnCheckedChangeListener(onCheckedChangeListener);
-        cb_record.setOnCheckedChangeListener(onCheckedChangeListener);
+        });
         fl_addVideo.setOnClickListener(this);
         iv_deleteVideo.setOnClickListener(this);
         bt_next.setOnClickListener(this);
