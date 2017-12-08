@@ -114,10 +114,7 @@ public class MediaGridActivity extends BaseActivity {
         } else {
             toolBar.setTitle_text(mediaFolder.getName());
             boolean showCamera;
-            if (mediaFolder.getPath() == null)
-                showCamera = true;
-            else
-                showCamera = false;
+            showCamera = mediaFolder.getPath() == null;
             MediaGridAdapter adapter = new MediaGridAdapter(context, mediaFolder.getMediaItems(), showCamera);
             recyclerView.setAdapter(adapter);
             setAdapter(adapter);
@@ -310,18 +307,37 @@ public class MediaGridActivity extends BaseActivity {
             @Override
             public void onClick(View view) {
                 if (!multiMode && isCrop) {
-                    Intent intent = new Intent(context, ImageCropActivity.class);
-                    intent.putExtra("imagePath", mSelects.get(0).getPath());
-                    startActivityForResult(intent, MediaOption.REQUEST_CODE_CROP);
+                    String path = mSelects.get(0).getPath();
+                    if (path != null && new File(path).exists()) {
+                        Intent intent = new Intent(context, ImageCropActivity.class);
+                        intent.putExtra("imagePath", path);
+                        startActivityForResult(intent, MediaOption.REQUEST_CODE_CROP);
+                    } else {
+                        if (selectType == MediaOption.TYPE_VIDEO) {
+                            toast(context, "您选择的视频不存在");
+                        } else {
+                            toast(context, "您选择的图片不存在");
+                        }
+                    }
                 } else {
                     if (MediaPicker.getInstance().getSelectMediaCallBack() != null) {
                         if (multiMode) {
                             MediaPicker.getInstance().getSelectMediaCallBack().onSelected(mSelects);
+                            finish();
                         } else {
-                            MediaPicker.getInstance().getSelectMediaCallBack().onSelected(mSelects.get(0).getPath());
+                            String path = mSelects.get(0).getPath();
+                            if (path != null && new File(path).exists()) {
+                                MediaPicker.getInstance().getSelectMediaCallBack().onSelected(path);
+                                finish();
+                            } else {
+                                if (selectType == MediaOption.TYPE_VIDEO) {
+                                    toast(context, "您选择的视频不存在");
+                                } else {
+                                    toast(context, "您选择的图片不存在");
+                                }
+                            }
                         }
                     }
-                    finish();
                 }
             }
         });

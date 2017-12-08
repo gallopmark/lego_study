@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -43,6 +42,7 @@ import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.NetStatusUtil;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.view.RoundRectProgressBar;
+import com.haoyu.app.view.ScrollEditText;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class WSTSEditFragment extends BaseFragment implements View.OnClickListen
     @BindView(R.id.et_title)
     EditText et_title;
     @BindView(R.id.et_content)
-    EditText et_content;//标题，内容
+    ScrollEditText et_content;//标题，内容
     @BindView(R.id.tv_stage)
     TextView tv_stage;
     @BindView(R.id.tv_subject)
@@ -146,39 +146,7 @@ public class WSTSEditFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void initView(View view) {
         tv_lecturer.setText(getRealName());
-        View.OnTouchListener onTouchListener = new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                final EditText et = (EditText) view;
-                if (canVerticalScroll(et)) {
-                    view.getParent().requestDisallowInterceptTouchEvent(true);
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        view.getParent().requestDisallowInterceptTouchEvent(false);
-                    }
-                }
-                return false;
-            }
-        };
-        et_title.setOnTouchListener(onTouchListener);
-        et_content.setOnTouchListener(onTouchListener);
-        et_textBook.setOnTouchListener(onTouchListener);
     }
-
-    private boolean canVerticalScroll(EditText editText) {
-        //滚动的距离
-        int scrollY = editText.getScrollY();
-        //控件内容的总高度
-        int scrollRange = editText.getLayout().getHeight();
-        //控件实际显示的高度
-        int scrollExtent = editText.getHeight() - editText.getCompoundPaddingTop() - editText.getCompoundPaddingBottom();
-        //控件内容总高度与实际显示高度的差值
-        int scrollDifference = scrollRange - scrollExtent;
-        if (scrollDifference == 0) {
-            return false;
-        }
-        return (scrollY > 0) || (scrollY < scrollDifference - 1);
-    }
-
 
     @Override
     public void setListener() {

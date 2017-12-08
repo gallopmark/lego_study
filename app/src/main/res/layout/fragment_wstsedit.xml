@@ -35,7 +35,7 @@
                 <requestFocus />
             </EditText>
 
-            <EditText
+            <com.haoyu.app.view.ScrollEditText
                 android:id="@+id/et_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,25 +61,20 @@
                     android:layout_weight="1"
                     android:background="@color/white"
                     android:drawableRight="@drawable/course_dictionary_xiala"
+                    android:hint="请选择学段"
                     android:padding="@dimen/margin_size_12"
-                    android:text="请选择学段"
-                    android:textColor="@color/gray"
                     android:textSize="@dimen/font_size_16" />
-
-                <View
-                    android:layout_width="@dimen/margin_size_1"
-                    android:layout_height="match_parent" />
 
                 <TextView
                     android:id="@+id/tv_subject"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_size_1"
                     android:layout_weight="1"
                     android:background="@color/white"
                     android:drawableRight="@drawable/course_dictionary_xiala"
                     android:hint="请选择学科"
                     android:padding="@dimen/margin_size_12"
-                    android:textColor="@color/gray"
                     android:textSize="@dimen/font_size_16" />
             </LinearLayout>
 
@@ -126,11 +121,10 @@
                     android:layout_height="match_parent"
                     android:layout_marginRight="@dimen/margin_size_16"
                     android:layout_weight="1"
-                    android:drawablePadding="5dp"
+                    android:drawablePadding="@dimen/margin_size_6"
                     android:drawableRight="@drawable/progress_goto"
                     android:ellipsize="end"
                     android:gravity="right|center"
-                    android:text="李明月"
                     android:textSize="@dimen/font_size_16" />
             </LinearLayout>
 

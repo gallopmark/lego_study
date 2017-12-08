@@ -35,7 +35,7 @@
                 <requestFocus />
             </EditText>
 
-            <EditText
+            <com.haoyu.app.view.ScrollEditText
                 android:id="@+id/et_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -61,9 +61,8 @@
                     android:layout_weight="1"
                     android:background="@color/white"
                     android:drawableRight="@drawable/course_dictionary_xiala"
+                    android:hint="请选择学段"
                     android:padding="@dimen/margin_size_12"
-                    android:text="请选择学段"
-                    android:textColor="@color/gray"
                     android:textSize="@dimen/font_size_16" />
 
                 <View
@@ -79,7 +78,6 @@
                     android:drawableRight="@drawable/course_dictionary_xiala"
                     android:hint="请选择学科"
                     android:padding="@dimen/margin_size_12"
-                    android:textColor="@color/gray"
                     android:textSize="@dimen/font_size_16" />
             </LinearLayout>
 
