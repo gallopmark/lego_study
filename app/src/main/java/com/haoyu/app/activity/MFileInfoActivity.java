@@ -111,7 +111,7 @@ public class MFileInfoActivity extends BaseActivity {
             toolBar.setTitle_text(title);
         }
         url = fileInfo.getUrl();
-        fileName = fileInfo.getFileName();
+        fileName = Common.getFileName(url);
         fragmentManager = getSupportFragmentManager();
         if (MediaFile.isImageFileType(url)) {
             setPictureFragment();
@@ -169,6 +169,7 @@ public class MFileInfoActivity extends BaseActivity {
     }
 
     private void beginDownload() {
+        showFileContent();
         String path = fileRoot + File.separator + fileName;
         FileDownloader.getImpl().create(url)
                 .addHeader("Referer", Constants.REFERER)
@@ -192,7 +193,7 @@ public class MFileInfoActivity extends BaseActivity {
     private FileDownloadListener downloadListener = new FileDownloadListener() {
         @Override
         protected void pending(BaseDownloadTask task, int soFarBytes, int totalBytes) {
-            showFileContent();
+
         }
 
         @Override
