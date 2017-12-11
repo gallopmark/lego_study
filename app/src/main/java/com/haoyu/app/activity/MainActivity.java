@@ -753,9 +753,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         } else if (event.action.equals(Action.SUBMIT_CHOOSE_COURSE)) {
             mInfoMap.remove(trainId);
             getUserTrainInfo(trainId);
-        } else if (event.action.equals(Action.CREATE_WORKSHOP)) {
-            mInfoMap.remove(trainId);
-            getUserTrainInfo(trainId);
         }
     }
 

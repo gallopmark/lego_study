@@ -244,7 +244,7 @@
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="@dimen/margin_size_6"
                             android:ellipsize="middle"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:textColor="@color/light_font_color"
                             android:textSize="@dimen/font_size_12" />
                     </LinearLayout>
@@ -277,7 +277,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_size_6"
                             android:ellipsize="middle"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:textColor="@color/light_font_color"
                             android:textSize="@dimen/font_size_12" />
                     </LinearLayout>
@@ -310,7 +310,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/margin_size_6"
                             android:ellipsize="middle"
-                            android:maxLines="1"
+                            android:singleLine="true"
                             android:textColor="@color/light_font_color"
                             android:textSize="@dimen/font_size_12" />
                     </LinearLayout>

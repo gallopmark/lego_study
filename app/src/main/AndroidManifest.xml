@@ -195,9 +195,6 @@
         <activity android:name="com.haoyu.app.activity.AnnouncementDetailActivity" />
 
         <!--创建个人工作坊-->
-        <activity
-            android:name="com.haoyu.app.activity.WorkshopCreateActivity"
-            android:windowSoftInputMode="stateHidden|adjustPan" />
         <!--添加研讨-->
         <activity
             android:name="com.haoyu.app.activity.WSTDEditActivity"
