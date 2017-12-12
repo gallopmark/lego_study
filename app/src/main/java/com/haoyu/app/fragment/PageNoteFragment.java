@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import com.haoyu.app.activity.CreateOrAlterNoteActivity;
 import com.haoyu.app.adapter.PageNoteAdapter;
 import com.haoyu.app.base.BaseFragment;
-import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.entity.NoteEntity;
 import com.haoyu.app.entity.NoteListResult;
@@ -90,13 +89,13 @@ public class PageNoteFragment extends BaseFragment implements XRecyclerView.Load
         view.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.MATCH_PARENT));
-        rl_select_node = (RelativeLayout) view.findViewById(R.id.rl_select_node);
-        loadView = (LoadingView) view.findViewById(R.id.loadView);
-        loadFailView = (LoadFailView) view.findViewById(R.id.loadFailView);
+        rl_select_node = view.findViewById(R.id.rl_select_node);
+        loadView = view.findViewById(R.id.loadView);
+        loadFailView = view.findViewById(R.id.loadFailView);
 //        xListView = (XListView) view.findViewById(R.id.xListView);
-        xRecyclerView = (XRecyclerView) view.findViewById(R.id.xRecyclerView);
-        emptyNote = (LinearLayout) view.findViewById(R.id.li_emptyNote);
-        bt_createNote = (Button) view.findViewById(R.id.bt_createNote);
+        xRecyclerView = view.findViewById(R.id.xRecyclerView);
+        emptyNote = view.findViewById(R.id.li_emptyNote);
+        bt_createNote = view.findViewById(R.id.bt_createNote);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);
@@ -262,34 +261,34 @@ public class PageNoteFragment extends BaseFragment implements XRecyclerView.Load
 //        });
     }
 
-    /* 删除某条笔记记录 */
-    private void deletePosition(final int position) {
-        String url = Constants.OUTRT_NET + "notes/" + notes.get(position).getId();
-        OkHttpClientManager.deleteAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
-            public void onError(Request request, Exception exception) {
-              onNetWorkError();
-            }
-
-            public void onResponse(BaseResponseResult response) {
-                if (response == null) {
-                    return;
-                }
-                if (response.getResponseCode() != null && response.getResponseCode().equals("00")) {
-                    notes.remove(position);
-                    adapter.notifyDataSetChanged();
-                    if (notes.size() == 0) {
-                        emptyNote.setVisibility(View.VISIBLE);
-//                                xListView.setVisibility(View.GONE);
-                        xRecyclerView.setVisibility(View.GONE);
-                    }
-                } else {
-                    if (response.getResponseMsg() != null) {
-                        toast(response.getResponseMsg());
-                    }
-                }
-            }
-        }, null);
-    }
+//    /* 删除某条笔记记录 */
+//    private void deletePosition(final int position) {
+//        String url = Constants.OUTRT_NET + "notes/" + notes.get(position).getId();
+//        OkHttpClientManager.deleteAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+//            public void onError(Request request, Exception exception) {
+//              onNetWorkError();
+//            }
+//
+//            public void onResponse(BaseResponseResult response) {
+//                if (response == null) {
+//                    return;
+//                }
+//                if (response.getResponseCode() != null && response.getResponseCode().equals("00")) {
+//                    notes.remove(position);
+//                    adapter.notifyDataSetChanged();
+//                    if (notes.size() == 0) {
+//                        emptyNote.setVisibility(View.VISIBLE);
+////                                xListView.setVisibility(View.GONE);
+//                        xRecyclerView.setVisibility(View.GONE);
+//                    }
+//                } else {
+//                    if (response.getResponseMsg() != null) {
+//                        toast(response.getResponseMsg());
+//                    }
+//                }
+//            }
+//        }, null);
+//    }
 
     @Override
     public void onRetry(View v) {

@@ -92,8 +92,11 @@ public class OkHttpClientManager {
     private String _getAsString(Context context, String url) throws Exception {
         Response response = _getAsyn(context, url);
         String json = response.body().string();
-        if (json.contains("\"responseMsg\":\"no session\"") && login(context)) {
-            return _getAsString(context, url);
+        if (json.contains("\"responseMsg\":\"no session\"")) {
+            login(context);
+            response.body().close();
+            response = _getAsyn(context, url);
+            return response.body().string();
         }
         return json;
     }
@@ -135,8 +138,11 @@ public class OkHttpClientManager {
     private String _postAsString(Context context, String url, Param... params) throws Exception {
         Response response = _post(context, url, params);
         String json = response.body().string();
-        if (json.contains("\"responseMsg\":\"no session\"") && login(context)) {
-            return _postAsString(context, url, params);
+        if (json.contains("\"responseMsg\":\"no session\"")) {
+            login(context);
+            response.body().close();
+            response = _post(context, url, params);
+            return response.body().string();
         }
         return json;
     }
@@ -153,8 +159,11 @@ public class OkHttpClientManager {
     private String _postAsString(Context context, String url, Map<String, String> params) throws Exception {
         Response response = _post(context, url, params);
         String json = response.body().string();
-        if (json.contains("\"responseMsg\":\"no session\"") && login(context)) {
-            return _postAsString(context, url, params);
+        if (json.contains("\"responseMsg\":\"no session\"")) {
+            login(context);
+            response.body().close();
+            response = _post(context, url, params);
+            return response.body().string();
         }
         return json;
     }
@@ -195,8 +204,11 @@ public class OkHttpClientManager {
     private String _postFileAsString(Context context, String url, File file, String fileKey, ProgressListener progressListener) throws Exception {
         Response response = _postFileResponse(context, url, new File[]{file}, new String[]{fileKey}, progressListener);
         String json = response.body().string();
-        if (json.contains("\"responseMsg\":\"no session\"") && login(context)) {
-            return _postFileAsString(context, url, file, fileKey, progressListener);
+        if (json.contains("\"responseMsg\":\"no session\"")) {
+            login(context);
+            response.body().close();
+            response = _postFileResponse(context, url, new File[]{file}, new String[]{fileKey}, progressListener);
+            return response.body().string();
         }
         return json;
     }
@@ -210,8 +222,11 @@ public class OkHttpClientManager {
     private String _postFileAsString(Context context, String url, File file, String fileKey, ProgressListener progressListener, Param... params) throws Exception {
         Response response = _postFileResponse(context, url, new File[]{file}, new String[]{fileKey}, progressListener, params);
         String json = response.body().string();
-        if (json.contains("\"responseMsg\":\"no session\"") && login(context)) {
-            return _postFileAsString(context, url, file, fileKey, progressListener, params);
+        if (json.contains("\"responseMsg\":\"no session\"")) {
+            login(context);
+            response.body().close();
+            response = _postFileResponse(context, url, new File[]{file}, new String[]{fileKey}, progressListener, params);
+            return response.body().string();
         }
         return json;
     }
@@ -219,8 +234,11 @@ public class OkHttpClientManager {
     private String _postFileAsString(Context context, String url, File[] files, String[] fileKeys, ProgressListener progressListener, Param... params) throws Exception {
         Response response = _postFileResponse(context, url, files, fileKeys, progressListener, params);
         String json = response.body().string();
-        if (json.contains("\"responseMsg\":\"no session\"") && login(context)) {
-            return _postFileAsString(context, url, files, fileKeys, progressListener, params);
+        if (json.contains("\"responseMsg\":\"no session\"")) {
+            login(context);
+            response.body().close();
+            response = _postFileResponse(context, url, files, fileKeys, progressListener, params);
+            return response.body().string();
         }
         return json;
     }
@@ -269,31 +287,6 @@ public class OkHttpClientManager {
                                  String fileKey, ProgressListener progressListener, Param... params) {
         Request request = buildMultipartFormRequest(context, url, new File[]{file}, new String[]{fileKey}, progressListener, params);
         return deliveryResult(context, callback, request);
-    }
-
-    /**
-     * 异步Put请求
-     *
-     * @param url
-     * @param callback
-     * @param params
-     */
-    private void _putAsyn(Context context, String url, final ResultCallback callback,
-                          Map<String, String> params) {
-        Param[] paramsArr = map2Params(params);
-        Request request = buildPutRequest(context, url, paramsArr);
-        deliveryResult(context, callback, request);
-    }
-
-    private void _deleteAsyn(Context context, String url, final ResultCallback callback) {
-        final Request request = new Request.Builder().url(url).addHeader("Accept-Encoding", "gzip").delete().build();
-        deliveryResult(context, callback, request);
-    }
-
-    private void _deleteAsyn(Context context, String url, ResultCallback callback, Map<String, String> params) {
-        Param[] paramsArr = map2Params(params);
-        Request request = buildDeleteRequest(url, paramsArr);
-        deliveryResult(context, callback, request);
     }
 
     // *************对外公布的方法************
@@ -350,21 +343,7 @@ public class OkHttpClientManager {
         return getInstance()._postAsyn(context, url, callback, file, fileKey, progressListener, params);
     }
 
-    public static void putAsyn(Context context, String url, final ResultCallback callback, Map<String, String> params) {
-        getInstance()._putAsyn(context, url, callback, params);
-    }
-
-    public static void deleteAsyn(Context context, String url, final ResultCallback callback) {
-        getInstance()._deleteAsyn(context, url, callback);
-    }
-
-    public static void deleteAsyn(Context context, String url, final ResultCallback callback,
-                                  Map<String, String> params) {
-        getInstance()._deleteAsyn(context, url, callback, params);
-    }
-
     // ****************************
-
     private Request buildMultipartFormRequest(Context context, String url, File[] files,
                                               String[] fileKeys, ProgressListener progressListener, Param[] params) {
         params = validateParam(params);
@@ -536,27 +515,27 @@ public class OkHttpClientManager {
         }
         final ResultCallback resCallBack = callback;
         resCallBack.onBefore(request);
-        return Flowable.just(request).map(new Function<Request, String>() {
+        return Flowable.just(request).map(new Function<Request, Object>() {
             @Override
-            public String apply(Request request) throws Exception {
+            public Object apply(Request request) throws Exception {
                 Response response = mOkHttpClient.newCall(request).execute();
                 String json = response.body().string();
-                if (json.contains("\"responseMsg\":\"no session\"") && login(context)) {
-                    return apply(request);
+                Log.e("json", json);
+                if (json.contains("\"responseMsg\":\"no session\"")) {
+                    login(context);
+                    response.body().close();
+                    response = mOkHttpClient.newCall(request).execute();
+                    json = response.body().string();
+                    return onResponse(json, resCallBack);
+                } else {
+                    return onResponse(json, resCallBack);
                 }
-                return json;
             }
-        }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<String>() {
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Object>() {
                     @Override
-                    public void accept(String json) throws Exception {
-                        Log.e("json", json);
-                        if (resCallBack.mType == String.class) {
-                            resCallBack.onResponse(json);
-                        } else {
-                            Object obj = mGson.fromJson(json, resCallBack.mType);
-                            resCallBack.onResponse(obj);
-                        }
+                    public void accept(Object obj) throws Exception {
+                        resCallBack.onResponse(obj);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -564,6 +543,15 @@ public class OkHttpClientManager {
                         resCallBack.onError(request, (Exception) e);
                     }
                 });
+    }
+
+    private Object onResponse(String json, ResultCallback callback) {
+        if (callback.mType == String.class) {
+            return json;
+        } else {
+            Object obj = mGson.fromJson(json, callback.mType);
+            return obj;
+        }
     }
 
     private Request buildPostRequest(Context context, String url, Param[] params) {
@@ -578,34 +566,6 @@ public class OkHttpClientManager {
         }
         RequestBody requestBody = formEncodingBuilder.build();
         return new Request.Builder().url(url).tag(context).addHeader("Accept-Encoding", "gzip").post(requestBody).build();
-    }
-
-    private Request buildPutRequest(Context context, String url, Param[] params) {
-        if (params == null) {
-            params = new Param[0];
-        }
-        FormBody.Builder formEncodingBuilder = new FormBody.Builder();
-        for (Param param : params) {
-            if (param.value != null) {
-                formEncodingBuilder.add(param.key, param.value);
-            }
-        }
-        RequestBody requestBody = formEncodingBuilder.build();
-        return new Request.Builder().url(url).tag(context).addHeader("Accept-Encoding", "gzip").put(requestBody).build();
-    }
-
-    private Request buildDeleteRequest(String url, Param[] params) {
-        if (params == null) {
-            params = new Param[0];
-        }
-        FormBody.Builder formEncodingBuilder = new FormBody.Builder();
-        for (Param param : params) {
-            if (param.value != null) {
-                formEncodingBuilder.add(param.key, param.value);
-            }
-        }
-        RequestBody requestBody = formEncodingBuilder.build();
-        return new Request.Builder().url(url).addHeader("Accept-Encoding", "gzip").delete(requestBody).build();
     }
 
     public static abstract class ResultCallback<T> {
@@ -668,7 +628,7 @@ public class OkHttpClientManager {
         }
     }
 
-    public boolean login(Context context) throws Exception {
+    public void login(Context context) throws Exception {
         final String url = Constants.LOGIN_URL;
         Map<String, String> map = new HashMap<>();
         String username = SharePreferenceHelper.getAccount(context);
@@ -684,8 +644,7 @@ public class OkHttpClientManager {
         String st = response.body().string();
         response.close();
         String logUrl = Constants.OUTRT_NET + "/shiro-cas" + "?ticket=" + st;
-        response = _getResponse(context, logUrl);
-        return response.isSuccessful();
+        _getResponse(context, logUrl);
     }
 
     /**
