@@ -25,7 +25,8 @@ import butterknife.BindView;
 import okhttp3.Request;
 
 /**
- * Created by acer1 on 2017/1/10.
+ * Created by acer1
+ * 2017/1/10.
  * 同行
  */
 public class PeerActivity extends BaseActivity implements XRecyclerView.LoadingListener {
