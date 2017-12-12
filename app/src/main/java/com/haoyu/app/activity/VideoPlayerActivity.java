@@ -1116,7 +1116,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 case TelephonyManager.NETWORK_TYPE_LTE:
                     /** 4G网络 */
                     return 4;
-
             }
         }
         /** 未知网络 */

@@ -309,7 +309,7 @@ public class CorrectmarkAdapter extends BaseArrayRecyclerAdapter<CorrectResult> 
         }
 
         //获取提交批阅的结果
-        OkHttpClientManager.putAsyn(mContext, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+        OkHttpClientManager.postAsyn(mContext, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
             @Override
             public void onBefore(Request request) {
                 super.onBefore(request);
@@ -349,9 +349,9 @@ public class CorrectmarkAdapter extends BaseArrayRecyclerAdapter<CorrectResult> 
         pop.setBackgroundDrawable(new BitmapDrawable());
         view.getBackground().setAlpha(80);
         pop.showAtLocation(v, Gravity.BOTTOM, 0, 0);
-        TextView bt_Confirm = (TextView) view.findViewById(R.id.bt_Confirm);
-        TextView bt_Cancel = (TextView) view.findViewById(R.id.bt_cancel);
-        TextView popWarn = (TextView) view.findViewById(R.id.pop_warn);
+        TextView bt_Confirm = view.findViewById(R.id.bt_Confirm);
+        TextView bt_Cancel = view.findViewById(R.id.bt_cancel);
+        TextView popWarn = view.findViewById(R.id.pop_warn);
         popWarn.setText("确认对作业" + (i + 1) + "的打分吗？\n提交后将不能进行修改!");
         bt_Cancel.setOnClickListener(new View.OnClickListener() {
 
