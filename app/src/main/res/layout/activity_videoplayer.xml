@@ -41,6 +41,15 @@
 
             </LinearLayout>
 
+            <ImageView
+                android:id="@+id/iv_play"
+                android:layout_width="@dimen/margin_size_60"
+                android:layout_height="@dimen/margin_size_60"
+                android:layout_gravity="center"
+                android:padding="@dimen/margin_size_6"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_video_grid"
+                android:visibility="gone" />
             <include layout="@layout/video_centerbox" />
 
             <include layout="@layout/video_top_bottom" />
