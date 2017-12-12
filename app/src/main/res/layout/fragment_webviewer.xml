@@ -8,26 +8,26 @@
         android:id="@+id/fl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:overScrollMode="never" />
+        android:overScrollMode="never">
 
-    <FrameLayout
-        android:id="@+id/fl_failure"
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/margin_size_6"
+            android:layout_gravity="top"
+            android:progressDrawable="@drawable/progress_loading" />
+    </FrameLayout>
+
+    <com.haoyu.app.view.LoadFailView
+        android:id="@+id/loadFailView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_size_16"
-            android:layout_marginRight="@dimen/margin_size_16"
-            android:drawablePadding="@dimen/margin_size_20"
-            android:drawableTop="@drawable/load_failure"
-            android:gravity="center"
-            android:text="网页加载失败，点击空白刷新！"
-            android:textColor="@color/blow_gray"
-            android:textSize="@dimen/font_size_16" />
-    </FrameLayout>
+        android:layout_gravity="center"
+        android:visibility="gone" />
 </FrameLayout>

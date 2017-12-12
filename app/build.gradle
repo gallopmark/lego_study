@@ -8,8 +8,8 @@ android {
         applicationId "com.haoyu.app.lego.student"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 8
-        versionName "2.3.0"
+        versionCode 9
+        versionName "2.3.1"
         vectorDrawables.useSupportLibrary = true
         ndkDirectory
         ndk {
