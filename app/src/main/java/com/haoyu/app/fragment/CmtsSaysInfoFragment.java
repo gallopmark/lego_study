@@ -112,7 +112,7 @@ public class CmtsSaysInfoFragment extends BaseFragment implements View.OnClickLi
 
     @Override
     public int createView() {
-        return R.layout.fragment_cmts_statement;
+        return R.layout.fragment_cmtssaysinfo;
     }
 
     @Override

@@ -46,7 +46,7 @@ public class CmtsMovChildFragment extends BaseFragment implements XRecyclerView.
 
     @Override
     public int createView() {
-        return R.layout.fragment_teachstudy_child;
+        return R.layout.fragment_cmtschild;
     }
 
     @Override

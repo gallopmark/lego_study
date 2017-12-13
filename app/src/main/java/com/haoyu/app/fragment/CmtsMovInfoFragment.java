@@ -141,7 +141,7 @@ public class CmtsMovInfoFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public int createView() {
-        return R.layout.fragment_cmts_movement;
+        return R.layout.fragment_cmtsmovinfo;
     }
 
     @Override

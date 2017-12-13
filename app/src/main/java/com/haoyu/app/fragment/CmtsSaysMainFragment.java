@@ -28,7 +28,7 @@ public class CmtsSaysMainFragment extends BaseFragment {
 
     @Override
     public int createView() {
-        return R.layout.fragment_teachstudy_main;
+        return R.layout.fragment_cmtsmain;
     }
 
     @Override
