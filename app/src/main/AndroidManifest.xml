@@ -262,16 +262,16 @@
         <activity android:name="com.haoyu.app.activity.CmtsMainActivity" />
         <!--创建研说-->
         <activity
-            android:name="com.haoyu.app.activity.CmtsStatementCreateActivity"
+            android:name="com.haoyu.app.activity.CmtsSaysEditActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <!--研说详情-->
-        <activity android:name="com.haoyu.app.activity.CmtsStatementActivity" />
+        <activity android:name="com.haoyu.app.activity.CmtsSaysInfoActivity" />
         <!--研说评论列表-->
         <activity android:name="com.haoyu.app.activity.AppMoreMainReplyActivity" />
         <!--研说评论回复列表-->
         <activity android:name="com.haoyu.app.activity.AppMoreChildReplyActivity" />
         <!--创课详情-->
-        <activity android:name="com.haoyu.app.activity.CmtsLessonActivity" />
+        <activity android:name="com.haoyu.app.activity.CmtsLsonInfoActivity" />
         <!--创课发起-->
         <activity
             android:name="com.haoyu.app.activity.CmtsLessonCreateActivity"
@@ -282,7 +282,7 @@
 
         <!--查看更多建议-->
         <!--社区活动详情页-->
-        <activity android:name="com.haoyu.app.activity.CmtsMovementActivity" />
+        <activity android:name="com.haoyu.app.activity.CmtsMovInfoActivity" />
         <activity android:name="com.haoyu.app.activity.AppMoreCommentActivity" />
         <activity android:name="com.haoyu.app.activity.AppMoreReplyActivity" />
 

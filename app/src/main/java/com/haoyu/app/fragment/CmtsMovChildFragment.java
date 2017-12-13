@@ -5,7 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.CmtsMovementActivity;
+import com.haoyu.app.activity.CmtsMovInfoActivity;
 import com.haoyu.app.adapter.CtmsMovementAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
@@ -159,7 +159,7 @@ public class CmtsMovChildFragment extends BaseFragment implements XRecyclerView.
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
                     TeachingMovementEntity entity = mDatas.get(selected);
-                    Intent intent = new Intent(context, CmtsMovementActivity.class);
+                    Intent intent = new Intent(context, CmtsMovInfoActivity.class);
                     intent.putExtra("entity", entity);
                     startActivity(intent);
                 }

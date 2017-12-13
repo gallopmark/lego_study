@@ -1,7 +1,6 @@
 package com.haoyu.app.activity;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
@@ -19,13 +18,14 @@ import com.haoyu.app.dialog.FileUploadDialog;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.FileUploadDataResult;
 import com.haoyu.app.entity.FileUploadResult;
-import com.haoyu.app.entity.TeachingLessonAttribute;
-import com.haoyu.app.entity.TeachingLessonData;
-import com.haoyu.app.entity.TeachingLessonEntity;
-import com.haoyu.app.filePicker.LFilePicker;
-import com.haoyu.app.fragment.CmtsLsonInfoFragment;
+import com.haoyu.app.entity.MFileInfo;
+import com.haoyu.app.entity.TeachingMovementEntity;
+import com.haoyu.app.fragment.CmtsMovInfoFragment;
 import com.haoyu.app.lego.student.R;
+import com.haoyu.app.pickerlib.MediaOption;
+import com.haoyu.app.pickerlib.MediaPicker;
 import com.haoyu.app.rxBus.MessageEvent;
+import com.haoyu.app.rxBus.RxBus;
 import com.haoyu.app.utils.Action;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
@@ -48,14 +48,13 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
 
-
 /**
- * 创建日期：2017/10/25 on 17:54
- * 描述:
+ * 创建日期：2017/1/12 on 11:44
+ * 描述: 社区活动详情
  * 作者:马飞奔 Administrator
  */
-public class CmtsLessonActivity extends BaseActivity {
-    private CmtsLessonActivity context = this;
+public class CmtsMovInfoActivity extends BaseActivity {
+    private CmtsMovInfoActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.loadingView)
@@ -64,9 +63,10 @@ public class CmtsLessonActivity extends BaseActivity {
     LoadFailView loadFailView;
     @BindView(R.id.tv_empty)
     TextView tv_empty;
-    private TeachingLessonEntity lessonEntity;
-    private String lessonId;
-    private CmtsLsonInfoFragment fragment;
+    private TeachingMovementEntity entity;
+    private String movementId;
+    private CmtsMovInfoFragment fragment;
+    private File uploadFile;
 
     @Override
     public int setLayoutResID() {
@@ -75,20 +75,18 @@ public class CmtsLessonActivity extends BaseActivity {
 
     @Override
     public void initView() {
-        String title = getResources().getString(R.string.gen_class_detail);
-        String empty_text = getResources().getString(R.string.gen_class_emptylist);
+        String title = getResources().getString(R.string.teach_active_detail);
+        String empty_text = getResources().getString(R.string.teach_active_emptylist);
         toolBar.setTitle_text(title);
         toolBar.getIv_rightImage().setImageResource(R.drawable.teaching_research_dot);
         tv_empty.setText(empty_text);
+        entity = (TeachingMovementEntity) getIntent().getSerializableExtra("entity");
+        movementId = entity.getId();
     }
 
-    @Override
     public void initData() {
-        lessonEntity = (TeachingLessonEntity) getIntent().getSerializableExtra("entity");
-        lessonId = lessonEntity.getId();
-        setSupportToolBar();
-        final String url = Constants.OUTRT_NET + "/m/lesson/cmts/view/" + lessonId;
-        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<TeachingLessonData>>() {
+        String url = Constants.OUTRT_NET + "/m/movement/view/" + movementId;
+        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<TeachingMovementEntity>>() {
             @Override
             public void onBefore(Request request) {
                 loadingView.setVisibility(View.VISIBLE);
@@ -101,10 +99,10 @@ public class CmtsLessonActivity extends BaseActivity {
             }
 
             @Override
-            public void onResponse(BaseResponseResult<TeachingLessonData> result) {
-                loadingView.setVisibility(View.VISIBLE);
-                if (result != null && result.getResponseData() != null) {
-                    setSupportFragment(result.getResponseData());
+            public void onResponse(BaseResponseResult<TeachingMovementEntity> singleResult) {
+                loadingView.setVisibility(View.GONE);
+                if (singleResult != null && singleResult.getResponseData() != null) {
+                    updateUI(singleResult.getResponseData());
                 } else {
                     tv_empty.setVisibility(View.VISIBLE);
                 }
@@ -112,10 +110,20 @@ public class CmtsLessonActivity extends BaseActivity {
         }));
     }
 
-    private void setSupportToolBar() {
-        if (lessonEntity.getCreator() != null && lessonEntity.getCreator().getId() != null && lessonEntity.getCreator().getId().equals(getUserId())) {
+    private void updateUI(TeachingMovementEntity entity) {
+        if (entity.getCreator() != null && entity.getCreator().getId() != null && entity.getCreator().getId().equals(getUserId())) {
             toolBar.setShow_right_button(true);
         }
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragment = new CmtsMovInfoFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("entity", entity);
+        fragment.setArguments(bundle);
+        fragmentManager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss();
+    }
+
+    @Override
+    public void setListener() {
         toolBar.setOnTitleClickListener(new AppToolBar.TitleOnClickListener() {
             @Override
             public void onLeftClick(View view) {
@@ -127,31 +135,41 @@ public class CmtsLessonActivity extends BaseActivity {
                 showBottomDialog();
             }
         });
+        loadFailView.setOnRetryListener(new LoadFailView.OnRetryListener() {
+            @Override
+            public void onRetry(View v) {
+                initData();
+            }
+        });
     }
 
+
     private void showBottomDialog() {
-        View view = getLayoutInflater().inflate(R.layout.dialog_teaching_cc, null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_teaching_at, null);
         final AlertDialog dialog = new AlertDialog.Builder(context).create();
-        TextView tv_upload = view.findViewById(R.id.tv_upload);
+        TextView tv_video = view.findViewById(R.id.tv_video);
+        TextView tv_photo = view.findViewById(R.id.tv_photo);
         TextView tv_delete = view.findViewById(R.id.tv_delete);
         TextView tv_cancel = view.findViewById(R.id.tv_cancel);
         View.OnClickListener listener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 switch (view.getId()) {
-                    case R.id.tv_upload:
-                        openFilePicker();
+                    case R.id.tv_video:
+                        picketVideo();
+                        break;
+                    case R.id.tv_photo:
+                        pickerPicture();
                         break;
                     case R.id.tv_delete:
                         showTipsDialog();
-                        break;
-                    case R.id.tv_cancel:
                         break;
                 }
                 dialog.dismiss();
             }
         };
-        tv_upload.setOnClickListener(listener);
+        tv_video.setOnClickListener(listener);
+        tv_photo.setOnClickListener(listener);
         tv_delete.setOnClickListener(listener);
         tv_cancel.setOnClickListener(listener);
         dialog.setCanceledOnTouchOutside(true);
@@ -164,38 +182,40 @@ public class CmtsLessonActivity extends BaseActivity {
         window.setGravity(Gravity.BOTTOM);
     }
 
-    private void openFilePicker() {
-        new LFilePicker()
-                .withActivity(context)
-                .withRequestCode(1)
-                .withMutilyMode(false)
-                .start();
+    private void pickerPicture() {
+        MediaOption option = new MediaOption.Builder().setSelectType(MediaOption.TYPE_IMAGE)
+                .setShowCamera(true)
+                .build();
+        MediaPicker.getInstance().init(option).selectMedia(context, onSelectMediaListener);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1 && resultCode == RESULT_OK) {
-            List<String> list = data.getStringArrayListExtra(RESULT_INFO);
-            if (list != null && list.size() > 0) {
-                String filePath = list.get(0);
-                File file = new File(filePath);
-                uploadFile(file);
-            }
+    private void picketVideo() {
+        MediaOption option = new MediaOption.Builder().setSelectType(MediaOption.TYPE_VIDEO)
+                .setShowCamera(true)
+                .build();
+        MediaPicker.getInstance().init(option).selectMedia(context, onSelectMediaListener);
+    }
+
+
+    private MediaPicker.onSelectMediaCallBack onSelectMediaListener = new MediaPicker.onSelectMediaCallBack() {
+        @Override
+        public void onSelected(String path) {
+            uploadFile = new File(path);
+            upload();
         }
-    }
+    };
 
-    private void uploadFile(final File file) {
-        if (file != null && file.exists()) {
+    private void upload() {
+        if (uploadFile != null && uploadFile.exists()) {
             String url = Constants.OUTRT_NET + "/m/file/uploadTemp";
-            final FileUploadDialog uploadDialog = new FileUploadDialog(context, file.getName(), "正在上传");
+            final FileUploadDialog uploadDialog = new FileUploadDialog(context, uploadFile.getName(), "正在上传");
             uploadDialog.setCancelable(false);
             uploadDialog.setCanceledOnTouchOutside(false);
             uploadDialog.show();
             final Disposable mSubscription = Flowable.just(url).map(new Function<String, FileUploadResult>() {
                 @Override
                 public FileUploadResult apply(String url) throws Exception {
-                    return commitFile(url, uploadDialog, file);
+                    return commitFile(url, uploadDialog);
                 }
             }).map(new Function<FileUploadResult, FileUploadDataResult>() {
                 @Override
@@ -205,20 +225,23 @@ public class CmtsLessonActivity extends BaseActivity {
             }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                     .subscribe(new Consumer<FileUploadDataResult>() {
                         @Override
-                        public void accept(FileUploadDataResult response) throws Exception {
+                        public void accept(FileUploadDataResult uploadResult) throws Exception {
                             uploadDialog.dismiss();
-                            if (response != null && response.getResponseCode() != null &&
-                                    response.getResponseCode().equals("00")) {
+                            if (uploadResult != null && uploadResult.getResponseData() != null
+                                    && uploadResult.getResponseData().getmFileInfos() != null) {
+                                List<MFileInfo> fileInfos = uploadResult.getResponseData().getmFileInfos();
                                 if (fragment != null) {
-                                    fragment.getFiles();
+                                    fragment.setFile_infos(fileInfos);
+                                    toastFullScreen("上传成功", true);
                                 }
                             } else {
-                                showErrorDialog(file);
+                                showErrorDialog();
                             }
                         }
                     }, new Consumer<Throwable>() {
                         @Override
                         public void accept(Throwable throwable) throws Exception {
+                            toastFullScreen("上传失败", false);
                             uploadDialog.dismiss();
                         }
                     });
@@ -234,19 +257,18 @@ public class CmtsLessonActivity extends BaseActivity {
     }
 
     /*上传资源到临时文件*/
-    private FileUploadResult commitFile(String url, final FileUploadDialog dialog, File file) throws Exception {
+    private FileUploadResult commitFile(String url, final FileUploadDialog dialog) throws Exception {
         Gson gson = new GsonBuilder().create();
-        String resultStr = OkHttpClientManager.post(context, url, file, file.getName(), new OkHttpClientManager.ProgressListener() {
+        String resultStr = OkHttpClientManager.post(context, url, uploadFile, uploadFile.getName(), new OkHttpClientManager.ProgressListener() {
             @Override
             public void onProgress(long totalBytes, long remainingBytes, boolean done, File file) {
-                Flowable.just(new long[]{totalBytes, remainingBytes}).observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<long[]>() {
-                            @Override
-                            public void accept(long[] params) throws Exception {
-                                dialog.setUploadProgressBar(params[0], params[1]);
-                                dialog.setUploadText(params[0], params[1]);
-                            }
-                        });
+                Flowable.just(new long[]{totalBytes, remainingBytes}).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<long[]>() {
+                    @Override
+                    public void accept(long[] params) throws Exception {
+                        dialog.setUploadProgressBar(params[0], params[1]);
+                        dialog.setUploadText(params[0], params[1]);
+                    }
+                });
             }
         });
         FileUploadResult mResult = gson.fromJson(resultStr, FileUploadResult.class);
@@ -256,7 +278,7 @@ public class CmtsLessonActivity extends BaseActivity {
     /*拿到上传临时文件返回的结果再次提交到创课表*/
     private FileUploadDataResult commitContent(FileUploadResult mResult) throws Exception {
         if (mResult != null && mResult.getResponseData() != null) {
-            String url = Constants.OUTRT_NET + "/m/lesson/cmts/" + lessonId + "/upload";
+            String url = Constants.OUTRT_NET + "/m/movement/" + movementId + "/upload";
             Gson gson = new GsonBuilder().create();
             Map<String, String> map = new HashMap<>();
             map.put("fileInfos[0].id", mResult.getResponseData().getId());
@@ -270,7 +292,7 @@ public class CmtsLessonActivity extends BaseActivity {
     }
 
     /*上传失败显示dialog*/
-    private void showErrorDialog(final File file) {
+    private void showErrorDialog() {
         MaterialDialog dialog = new MaterialDialog(context);
         dialog.setTitle("上传结果");
         dialog.setMessage("由于网络问题上传资源失败，您可以点击重新上传再次上传");
@@ -280,7 +302,7 @@ public class CmtsLessonActivity extends BaseActivity {
         dialog.setPositiveButton("重新上传", new MaterialDialog.ButtonClickListener() {
             @Override
             public void onClick(View v, AlertDialog dialog) {
-                uploadFile(file);
+                upload();
             }
         });
         dialog.show();
@@ -311,23 +333,24 @@ public class CmtsLessonActivity extends BaseActivity {
         dialog.show();
     }
 
+
     private void showTipsDialog() {
-        MaterialDialog materialDialog = new MaterialDialog(context);
-        materialDialog.setTitle("提示");
-        materialDialog.setMessage("你确定删除吗？");
-        materialDialog.setNegativeButton("确定", new MaterialDialog.ButtonClickListener() {
+        MaterialDialog dialog = new MaterialDialog(context);
+        dialog.setTitle("提示");
+        dialog.setMessage("你确定删除吗？");
+        dialog.setNegativeButton("确定", new MaterialDialog.ButtonClickListener() {
             @Override
             public void onClick(View v, AlertDialog dialog) {
-                deleteCc();
+                delete();
             }
         });
-        materialDialog.setPositiveButton("取消", null);
-        materialDialog.show();
+        dialog.setPositiveButton("取消", null);
+        dialog.show();
     }
 
-    /*删除创课*/
-    private void deleteCc() {
-        String url = Constants.OUTRT_NET + "/m/lesson/cmts/" + lessonId;
+    /*删除活动*/
+    private void delete() {
+        String url = Constants.OUTRT_NET + "/m/movement/" + movementId;
         Map<String, String> map = new HashMap<>();
         map.put("_method", "delete");
         addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
@@ -338,39 +361,25 @@ public class CmtsLessonActivity extends BaseActivity {
 
             @Override
             public void onError(Request request, Exception e) {
-                onNetWorkError(context);
                 hideTipDialog();
+                onNetWorkError(context);
             }
 
             @Override
             public void onResponse(BaseResponseResult response) {
                 hideTipDialog();
                 if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
+                    toastFullScreen("已成功删除，返回首页", true);
                     MessageEvent event = new MessageEvent();
-                    event.action = Action.DELETE_GEN_CLASS;
-                    event.obj = lessonEntity;
+                    event.action = Action.DELETE_MOVEMENT;
+                    event.obj = entity;
+                    RxBus.getDefault().post(event);
                     finish();
                 } else {
-                    toast(context, "删除失败");
+                    toastFullScreen("删除失败", false);
                 }
             }
         }, map));
     }
 
-    private void setSupportFragment(TeachingLessonData responseData) {
-        TeachingLessonEntity mLesson = responseData.getmLesson();
-        if (mLesson == null) {
-            tv_empty.setVisibility(View.VISIBLE);
-            return;
-        }
-        TeachingLessonAttribute attribute = responseData.getmLessonAttribute();
-        fragment = new CmtsLsonInfoFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("entity", lessonEntity);
-        bundle.putSerializable("mLesson", mLesson);
-        bundle.putSerializable("attribute", attribute);
-        fragment.setArguments(bundle);
-        FragmentManager manager = getSupportFragmentManager();
-        manager.beginTransaction().replace(R.id.container, fragment).commitAllowingStateLoss();
-    }
 }

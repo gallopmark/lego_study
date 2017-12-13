@@ -5,7 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.CmtsLessonActivity;
+import com.haoyu.app.activity.CmtsLsonInfoActivity;
 import com.haoyu.app.adapter.CtmsLessonAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
@@ -165,7 +165,7 @@ public class CmtsLsonChildFragment extends BaseFragment implements XRecyclerView
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
                     TeachingLessonEntity entity = mDatas.get(selected);
-                    Intent intent = new Intent(context, CmtsLessonActivity.class);
+                    Intent intent = new Intent(context, CmtsLsonInfoActivity.class);
                     intent.putExtra("entity", entity);
                     startActivity(intent);
                 }

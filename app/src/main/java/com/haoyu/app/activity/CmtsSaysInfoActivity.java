@@ -39,8 +39,8 @@ import okhttp3.Request;
  * 描述: 教研话题详情
  * 作者:马飞奔 Administrator
  */
-public class CmtsStatementActivity extends BaseActivity {
-    private CmtsStatementActivity context = this;
+public class CmtsSaysInfoActivity extends BaseActivity {
+    private CmtsSaysInfoActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.loadingView)

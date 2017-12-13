@@ -61,7 +61,7 @@ public class CmtsMainActivity extends BaseActivity {
             @Override
             public void onRightClick(View view) {
                 if (selected == 1)
-                    startActivity(new Intent(context, CmtsStatementCreateActivity.class));
+                    startActivity(new Intent(context, CmtsSaysEditActivity.class));
                 else if (selected == 2)
                     startActivity(new Intent(context, CmtsLessonCreateActivity.class));
             }

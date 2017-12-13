@@ -5,7 +5,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.CmtsStatementActivity;
+import com.haoyu.app.activity.CmtsSaysInfoActivity;
 import com.haoyu.app.adapter.CtmsStatementAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
@@ -167,7 +167,7 @@ public class CmtsSaysChildFragment extends BaseFragment implements XRecyclerView
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
                     DiscussEntity entity = mDatas.get(selected);
-                    Intent intent = new Intent(context, CmtsStatementActivity.class);
+                    Intent intent = new Intent(context, CmtsSaysInfoActivity.class);
                     intent.putExtra("entity", entity);
                     startActivity(intent);
                 }

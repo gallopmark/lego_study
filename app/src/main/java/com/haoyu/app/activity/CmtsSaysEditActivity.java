@@ -59,8 +59,8 @@ import okhttp3.Request;
  * 描述: 创建研说
  * 作者:马飞奔 Administrator
  */
-public class CmtsStatementCreateActivity extends BaseActivity {
-    private CmtsStatementCreateActivity context = this;
+public class CmtsSaysEditActivity extends BaseActivity {
+    private CmtsSaysEditActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     @BindView(R.id.et_title)
