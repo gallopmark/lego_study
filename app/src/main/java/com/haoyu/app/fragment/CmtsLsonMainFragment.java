@@ -3,6 +3,7 @@ package com.haoyu.app.fragment;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
@@ -11,25 +12,16 @@ import com.haoyu.app.lego.student.R;
 
 import java.math.BigDecimal;
 
-import butterknife.BindString;
-import butterknife.BindView;
-
 /**
  * 创建日期：2017/8/15 on 10:35
  * 描述:教研创课
  * 作者:马飞奔 Administrator
  */
 public class CmtsLsonMainFragment extends BaseFragment {
-    @BindView(R.id.radioGroup)
-    RadioGroup radioGroup;
-    @BindView(R.id.rb_all)
-    RadioButton rb_all;
-    @BindView(R.id.rb_my)
-    RadioButton rb_my;
-    @BindString(R.string.gen_class_all)
-    String text_all;
-    @BindString(R.string.gen_class_my)
-    String text_my;
+    private RadioGroup radioGroup;
+    private RadioButton rb_all;
+    private RadioButton rb_my;
+    private String text_all, text_my;
     private CmtsLsonChildFragment f1, f2;
     private FragmentManager fragmentManager;
     private int checkIndex = 1;
@@ -37,6 +29,15 @@ public class CmtsLsonMainFragment extends BaseFragment {
     @Override
     public int createView() {
         return R.layout.fragment_teachstudy_main;
+    }
+
+    @Override
+    public void initView(View view) {
+        radioGroup = view.findViewById(R.id.radioGroup);
+        rb_all = view.findViewById(R.id.rb_all);
+        rb_my = view.findViewById(R.id.rb_my);
+        text_all = getResources().getString(R.string.gen_class_all);
+        text_my = getResources().getString(R.string.gen_class_my);
     }
 
     @Override

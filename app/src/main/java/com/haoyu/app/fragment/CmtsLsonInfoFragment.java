@@ -76,7 +76,7 @@ import okhttp3.Request;
  * 描述:创课详情fragment
  * 作者:马飞奔 Administrator
  */
-public class CmtsLessonFragment extends BaseFragment implements View.OnClickListener {
+public class CmtsLsonInfoFragment extends BaseFragment implements View.OnClickListener {
     @BindView(R.id.contentView)
     StickyScrollView contentView;
     @BindView(R.id.mRrogressBar)
@@ -342,9 +342,7 @@ public class CmtsLessonFragment extends BaseFragment implements View.OnClickList
     private boolean isEmpty(String text) {
         if (text == null)
             return true;
-        if (text.trim().length() == 0)
-            return true;
-        return false;
+        return text.trim().length() == 0;
     }
 
     private void addView(String title, String content, LinearLayout parent) {

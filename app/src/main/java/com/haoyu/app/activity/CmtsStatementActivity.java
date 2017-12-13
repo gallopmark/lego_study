@@ -15,7 +15,7 @@ import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.DiscussEntity;
 import com.haoyu.app.entity.DiscussResult;
-import com.haoyu.app.fragment.CmtsStatementFragment;
+import com.haoyu.app.fragment.CmtsSaysInfoFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.rxBus.RxBus;
@@ -99,7 +99,7 @@ public class CmtsStatementActivity extends BaseActivity {
         if (entity.getCreator() != null && entity.getCreator().getId() != null && entity.getCreator().getId().equals(getUserId())) {
             toolBar.setShow_right_button(true);
         }
-        CmtsStatementFragment fragment = new CmtsStatementFragment();
+        CmtsSaysInfoFragment fragment = new CmtsSaysInfoFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("entity", entity);
         fragment.setArguments(bundle);

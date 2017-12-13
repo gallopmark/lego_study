@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import butterknife.BindView;
 import okhttp3.Request;
 
 
@@ -39,14 +38,10 @@ import okhttp3.Request;
  * 作者:马飞奔 Administrator
  */
 public class CmtsSaysChildFragment extends BaseFragment implements XRecyclerView.LoadingListener {
-    @BindView(R.id.loadingView)
-    LoadingView loadingView;
-    @BindView(R.id.loadFailView)
-    LoadFailView loadFailView;
-    @BindView(R.id.xRecyclerView)
-    XRecyclerView xRecyclerView;
-    @BindView(R.id.emptyView)
-    TextView emptyView;
+    private LoadingView loadingView;
+    private LoadFailView loadFailView;
+    private XRecyclerView xRecyclerView;
+    private TextView emptyView;
     private List<DiscussEntity> mDatas = new ArrayList<>();
     private CtmsStatementAdapter adapter;
     private boolean isRefresh, isLoadMore;
@@ -62,6 +57,10 @@ public class CmtsSaysChildFragment extends BaseFragment implements XRecyclerView
 
     @Override
     public void initView(View view) {
+        loadingView = view.findViewById(R.id.loadingView);
+        loadFailView = view.findViewById(R.id.loadFailView);
+        xRecyclerView = view.findViewById(R.id.xRecyclerView);
+        emptyView = view.findViewById(R.id.emptyView);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);

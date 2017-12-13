@@ -68,7 +68,7 @@ import okhttp3.Request;
  * 作者:xiaoma
  */
 
-public class CmtsStatementFragment extends BaseFragment implements View.OnClickListener {
+public class CmtsSaysInfoFragment extends BaseFragment implements View.OnClickListener {
     private Activity activity;
     @BindView(R.id.lfv)
     LoadFailView lfv;  //评论区加载失败布局

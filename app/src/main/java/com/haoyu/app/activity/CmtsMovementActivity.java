@@ -20,7 +20,7 @@ import com.haoyu.app.entity.FileUploadDataResult;
 import com.haoyu.app.entity.FileUploadResult;
 import com.haoyu.app.entity.MFileInfo;
 import com.haoyu.app.entity.TeachingMovementEntity;
-import com.haoyu.app.fragment.CmtsMovemenFragment;
+import com.haoyu.app.fragment.CmtsMovInfoFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.pickerlib.MediaOption;
 import com.haoyu.app.pickerlib.MediaPicker;
@@ -65,7 +65,7 @@ public class CmtsMovementActivity extends BaseActivity {
     TextView tv_empty;
     private TeachingMovementEntity entity;
     private String movementId;
-    private CmtsMovemenFragment fragment;
+    private CmtsMovInfoFragment fragment;
     private File uploadFile;
 
     @Override
@@ -115,7 +115,7 @@ public class CmtsMovementActivity extends BaseActivity {
             toolBar.setShow_right_button(true);
         }
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragment = new CmtsMovemenFragment();
+        fragment = new CmtsMovInfoFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("entity", entity);
         fragment.setArguments(bundle);

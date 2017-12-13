@@ -73,7 +73,7 @@ import okhttp3.Request;
  * 作者:xiaoma
  */
 
-public class CmtsMovemenFragment extends BaseFragment implements View.OnClickListener {
+public class CmtsMovInfoFragment extends BaseFragment implements View.OnClickListener {
     private Activity activity;
     @BindView(R.id.scrollView)
     StickyScrollView scrollView;
