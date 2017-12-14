@@ -19,8 +19,9 @@
         android:layout_width="55dp"
         android:layout_height="match_parent"
         android:background="@drawable/app_toolbar_selector"
+        android:gravity="center"
         android:textColor="@color/white"
-        android:textSize="@dimen/font_size_16"
+        android:textSize="@dimen/font_size_17"
         android:visibility="gone" />
 
     <TextView
