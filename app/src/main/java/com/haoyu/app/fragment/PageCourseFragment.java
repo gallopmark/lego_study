@@ -435,11 +435,6 @@ public class PageCourseFragment extends BaseFragment {
             intent.putExtra("activityId", activity.getId());
             intent.putExtra("mTextInfoUserId", mTextInfoUser.getId());
             intent.putExtra("title", activity.getTitle());
-            if (activity.getCompleteState() != null && activity.getCompleteState().equals("complete")) {
-                intent.putExtra("needUpload", false);
-            } else {
-                intent.putExtra("needUpload", true);
-            }
             intent.putExtra("viewNum", mTextInfoUser.getViewNum());
             if (mTextInfoUser.getmTextInfo() != null) {
                 intent.putExtra("interval", mTextInfoUser.getmTextInfo().getInterval());

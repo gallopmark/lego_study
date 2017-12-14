@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.text.Html;
@@ -60,7 +61,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import io.reactivex.Flowable;
@@ -114,10 +114,11 @@ public class CoursewareViewerActivity extends BaseActivity {
     private FragmentManager fragmentManager;
     private OfficeViewerFragment officeFragment;
     /**********************/
-    private boolean running, needUpload;
+    private boolean running;
     private int viewNum, needViewNum, interval;    //已观看次数，要求观看次数，延时访问时间
     private String type;
     private boolean isDestroy;
+    private Handler handler;
 
     @Override
     public int setLayoutResID() {
@@ -127,7 +128,6 @@ public class CoursewareViewerActivity extends BaseActivity {
     @Override
     public void initView() {
         running = getIntent().getBooleanExtra("running", false);
-        needUpload = getIntent().getBooleanExtra("needUpload", false);
         String title = getIntent().getStringExtra("title");
         viewNum = getIntent().getIntExtra("viewNum", 0);
         needViewNum = getIntent().getIntExtra("needViewNum", 0);
@@ -157,6 +157,7 @@ public class CoursewareViewerActivity extends BaseActivity {
             String editor = getIntent().getStringExtra("editor");
             setEditorF(editor);
         }
+        handler = new Handler(getMainLooper());
     }
 
     private void showTips() {
@@ -560,8 +561,13 @@ public class CoursewareViewerActivity extends BaseActivity {
 
     @Override
     public void initData() {
-        if (running && needUpload) {
-            updateAttempt();
+        if (running) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    updateAttempt();
+                }
+            }, interval);
         }
     }
 
@@ -572,9 +578,9 @@ public class CoursewareViewerActivity extends BaseActivity {
         final String activityId = getIntent().getStringExtra("activityId");
         final String mTextInfoUserId = getIntent().getStringExtra("mTextInfoUserId");
         final String url = Constants.OUTRT_NET + "/" + activityId + "/study/m/textInfo/user/updateAttempt";
-        addSubscription(Flowable.timer(interval, TimeUnit.SECONDS).map(new Function<Long, BaseResponseResult>() {
+        addSubscription(Flowable.fromCallable(new Callable<BaseResponseResult>() {
             @Override
-            public BaseResponseResult apply(Long aLong) throws Exception {
+            public BaseResponseResult call() throws Exception {
                 Map<String, String> map = new HashMap<>();
                 map.put("_method", "put");
                 map.put("id", mTextInfoUserId);
@@ -606,6 +612,11 @@ public class CoursewareViewerActivity extends BaseActivity {
                     }
                 }
             }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                throwable.printStackTrace();
+            }
         }));
     }
 
@@ -619,6 +630,7 @@ public class CoursewareViewerActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
         isDestroy = true;
         FileDownloader.getImpl().pause(downloadListener);
     }

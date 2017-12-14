@@ -91,7 +91,7 @@ public class MFileInfoActivity extends BaseActivity {
     private FragmentManager fragmentManager;
 
     private OfficeViewerFragment officeFragment;
-    private boolean isDownload;
+    private boolean isDownload, isDestroy;
     private String fileRoot = Constants.fileDownDir;
     private MFileInfo fileInfo;
     private String url, fileName, filePath;
@@ -298,7 +298,7 @@ public class MFileInfoActivity extends BaseActivity {
                 .onLoad(new OnLoadCompleteListener() {
                     @Override
                     public void loadComplete(int nbPages) {
-                        if (!isRead) {
+                        if (!isRead && !isDestroy) {
                             showGestureDialog();
                         }
                     }
@@ -459,6 +459,7 @@ public class MFileInfoActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        isDestroy = true;
         FileDownloader.getImpl().pause(downloadListener);
     }
 }
