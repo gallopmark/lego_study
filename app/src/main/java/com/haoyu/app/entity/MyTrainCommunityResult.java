@@ -10,11 +10,10 @@ import java.io.Serializable;
  * 描述: 研修社区培训结果
  * 作者:马飞奔 Administrator
  * score	已获社区积分	Int	Y
- state	社区成绩	String	Y
- mCommunityRelation	社区关联对象	Map
-
+ * state	社区成绩	String	Y
+ * mCommunityRelation	社区关联对象	Map
  */
-public class MyTrainCommunityResult implements Serializable{
+public class MyTrainCommunityResult implements Serializable {
     @Expose
     @SerializedName("score")
     private int score;
@@ -47,5 +46,44 @@ public class MyTrainCommunityResult implements Serializable{
 
     public void setmCommunityRelation(CommunityRelation mCommunityRelation) {
         this.mCommunityRelation = mCommunityRelation;
+    }
+
+    public class CommunityRelation {
+        /* score	社区积分	Int	Y
+ studyHours	社区学时	Int	Y
+ timePeriod	工作坊起止时间	TimePeriod	N*/
+        @Expose
+        @SerializedName("score")
+        private int score;
+        @Expose
+        @SerializedName("studyHours")
+        private int studyHours;
+        @Expose
+        @SerializedName("timePeriod")
+        private TimePeriod timePeriod;
+
+        public int getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+            this.score = score;
+        }
+
+        public int getStudyHours() {
+            return studyHours;
+        }
+
+        public void setStudyHours(int studyHours) {
+            this.studyHours = studyHours;
+        }
+
+        public TimePeriod getTimePeriod() {
+            return timePeriod;
+        }
+
+        public void setTimePeriod(TimePeriod timePeriod) {
+            this.timePeriod = timePeriod;
+        }
     }
 }

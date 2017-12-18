@@ -94,17 +94,21 @@ public class VersionUpdateService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        url = intent.getStringExtra("url");
-        versionName = intent.getStringExtra("versionName");
-        fileName = "study_";
-        if (versionName != null) {
-            fileName += versionName + ".apk";
+        if (intent == null) {
+            stopSelf();
         } else {
-            fileName += System.currentTimeMillis() + ".apk";
-        }
-        savePath += (File.separator + fileName);
-        if (!isStarted) {   //如果已经启动下载，则跳过此次下载
-            excute();
+            url = intent.getStringExtra("url");
+            versionName = intent.getStringExtra("versionName");
+            fileName = "study_";
+            if (versionName != null) {
+                fileName += versionName + ".apk";
+            } else {
+                fileName += System.currentTimeMillis() + ".apk";
+            }
+            savePath += (File.separator + fileName);
+            if (!isStarted) {   //如果已经启动下载，则跳过此次下载
+                excute();
+            }
         }
         return super.onStartCommand(intent, flags, startId);
     }

@@ -1,20 +1,17 @@
 package com.haoyu.app.adapter;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.AppMultiImageShowActivity;
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
 import com.haoyu.app.entity.MyTrainWorkShopResult;
-import com.haoyu.app.lego.student.R;
 import com.haoyu.app.imageloader.GlideImgManager;
+import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.ScreenUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,22 +19,21 @@ import java.util.List;
  * 描述: 我的培训工作坊列表适配器
  * 作者:马飞奔 Administrator
  */
-public class MyTrainWorkShopListAdapter extends BaseArrayRecyclerAdapter<MyTrainWorkShopResult> {
+public class MyTrainWSAdapter extends BaseArrayRecyclerAdapter<MyTrainWorkShopResult> {
     private Activity context;
-    private int imageWidth;
-    private int imageHeight;
+    private int width;
+    private int height;
 
-    public MyTrainWorkShopListAdapter(Activity context, List<MyTrainWorkShopResult> mDatas) {
+    public MyTrainWSAdapter(Activity context, List<MyTrainWorkShopResult> mDatas) {
         super(mDatas);
         this.context = context;
-        imageWidth = ScreenUtils.getScreenWidth(context) / 3 - 20;
-        imageHeight = imageWidth / 3 * 2;
+        width = ScreenUtils.getScreenWidth(context) / 3 - 20;
+        height = width / 3 * 2;
     }
 
     @Override
     public void onBindHoder(RecyclerHolder holder, final MyTrainWorkShopResult result, int position) {
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                imageWidth, imageHeight);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
         ImageView img = holder.obtainView(R.id.workshop_img);
         img.setLayoutParams(params);
         TextView workshop_title = holder.obtainView(R.id.workshop_title);
@@ -49,10 +45,11 @@ public class MyTrainWorkShopListAdapter extends BaseArrayRecyclerAdapter<MyTrain
         } else {
             img.setImageResource(R.drawable.app_default);
         }
-        if (result.getmWorkshop() != null)
+        if (result.getmWorkshop() != null) {
             workshop_title.setText(result.getmWorkshop().getTitle());
-        else
-            workshop_title.setText(null);
+        } else {
+            workshop_title.setText("");
+        }
         if (result.getmWorkshop() != null) {
             workshop_time.setText(result.getmWorkshop().getStudyHours() + "学时");
         } else {
@@ -63,20 +60,6 @@ public class MyTrainWorkShopListAdapter extends BaseArrayRecyclerAdapter<MyTrain
         } else {
             tv_score.setText("获得" + result.getPoint() + "/" + "0积分");
         }
-        img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (result.getmWorkshop() != null) {
-                    ArrayList<String> imgList = new ArrayList<>();
-                    imgList.add(result.getmWorkshop().getImageUrl());
-                    Intent intent = new Intent(context, AppMultiImageShowActivity.class);
-                    intent.putStringArrayListExtra("photos", imgList);
-                    intent.putExtra("position", 0);
-                    context.startActivity(intent);
-                    context.overridePendingTransition(R.anim.zoom_in, 0);
-                }
-            }
-        });
         if (position != getItemCount() - 1)
             divider.setVisibility(View.VISIBLE);
         else
@@ -85,6 +68,6 @@ public class MyTrainWorkShopListAdapter extends BaseArrayRecyclerAdapter<MyTrain
 
     @Override
     public int bindView(int viewtype) {
-        return R.layout.mytrain_workshop_list_item;
+        return R.layout.mytrainws_item;
     }
 }
