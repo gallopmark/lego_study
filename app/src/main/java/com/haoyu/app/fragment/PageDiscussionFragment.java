@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.CourseDiscussEditActivity;
 import com.haoyu.app.activity.CourseDiscussDetailActivity;
+import com.haoyu.app.activity.CourseDiscussEditActivity;
 import com.haoyu.app.adapter.PageDiscussionAdapter;
 import com.haoyu.app.base.BaseFragment;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
@@ -66,55 +66,6 @@ public class PageDiscussionFragment extends BaseFragment implements XRecyclerVie
     private String discussionRelationType = "courseStudy";
     private int itemIndex;
 
-    /**
-     * activity与fragment的数据交互
-     *
-     * @param event
-     */
-    @Override
-    public void obBusEvent(MessageEvent event) {
-        String action = event.getAction();
-        if (action.equals(Action.CREATE_COURSE_DISCUSSION) && event.obj != null && event.obj instanceof DiscussEntity) {
-            DiscussEntity entity = (DiscussEntity) event.obj;
-            list.add(0, entity);
-            adapter.notifyDataSetChanged();
-            if (xRecyclerView.getVisibility() == View.GONE) {
-                xRecyclerView.setVisibility(View.VISIBLE);
-            }
-            if (li_emptyDiscussion.getVisibility() == View.VISIBLE) {
-                li_emptyDiscussion.setVisibility(View.GONE);
-            }
-        } else if (action.equals(Action.ALTER_COURSE_DISCUSSION) && event.obj != null && event.obj instanceof DiscussEntity) {
-            DiscussEntity entity = (DiscussEntity) event.obj;
-            list.set(itemIndex, entity);
-            adapter.notifyDataSetChanged();
-        } else if (action.equals(Action.DELETE_COURSE_DISCUSSION)) {
-            list.remove(itemIndex);
-            adapter.notifyDataSetChanged();
-            if (list.size() <= 0) {
-                li_emptyDiscussion.setVisibility(View.VISIBLE);
-                xRecyclerView.setVisibility(View.GONE);
-            }
-        } else if (action.equals(Action.CREATE_MAIN_REPLY)) {
-            if (list.get(itemIndex).getmDiscussionRelations() != null
-                    && list.get(itemIndex).getmDiscussionRelations().size() > 0) {
-                int replyNum = list.get(itemIndex)
-                        .getmDiscussionRelations().get(0)
-                        .getReplyNum();
-                list.get(itemIndex).getmDiscussionRelations().get(0)
-                        .setReplyNum(1 + replyNum);
-                adapter.notifyDataSetChanged();
-            }
-        } else if (action.equals(Action.CREATE_LIKE)) {
-            if (list.get(itemIndex).getmDiscussionRelations() != null
-                    && list.get(itemIndex).getmDiscussionRelations().size() > 0) {
-                int supportNum = list.get(itemIndex).getmDiscussionRelations().get(0).getSupportNum() + 1;
-                list.get(itemIndex).getmDiscussionRelations().get(0).setSupportNum(supportNum);
-                adapter.notifyDataSetChanged();
-            }
-        }
-    }
-
     @Override
     public int createView() {
         return R.layout.fragment_page_discussion;
@@ -136,6 +87,7 @@ public class PageDiscussionFragment extends BaseFragment implements XRecyclerVie
         xRecyclerView.setArrowImageView(R.drawable.refresh_arrow);
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setLoadingListener(this);
+        registRxBus();
     }
 
     @Override
@@ -347,11 +299,54 @@ public class PageDiscussionFragment extends BaseFragment implements XRecyclerVie
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.bt_createDiscussion:
-                Intent intent = new Intent(getActivity(), CourseDiscussEditActivity.class);
+                Intent intent = new Intent(context, CourseDiscussEditActivity.class);
                 intent.putExtra("courseId", courseId);
                 getActivity().startActivity(intent);
                 break;
         }
     }
 
+    @Override
+    public void onEvent(MessageEvent event) {
+        String action = event.getAction();
+        if (action.equals(Action.CREATE_COURSE_DISCUSSION) && event.obj != null && event.obj instanceof DiscussEntity) {
+            DiscussEntity entity = (DiscussEntity) event.obj;
+            list.add(0, entity);
+            adapter.notifyDataSetChanged();
+            if (xRecyclerView.getVisibility() == View.GONE) {
+                xRecyclerView.setVisibility(View.VISIBLE);
+            }
+            if (li_emptyDiscussion.getVisibility() == View.VISIBLE) {
+                li_emptyDiscussion.setVisibility(View.GONE);
+            }
+        } else if (action.equals(Action.ALTER_COURSE_DISCUSSION) && event.obj != null && event.obj instanceof DiscussEntity) {
+            DiscussEntity entity = (DiscussEntity) event.obj;
+            list.set(itemIndex, entity);
+            adapter.notifyDataSetChanged();
+        } else if (action.equals(Action.DELETE_COURSE_DISCUSSION)) {
+            list.remove(itemIndex);
+            adapter.notifyDataSetChanged();
+            if (list.size() <= 0) {
+                li_emptyDiscussion.setVisibility(View.VISIBLE);
+                xRecyclerView.setVisibility(View.GONE);
+            }
+        } else if (action.equals(Action.CREATE_MAIN_REPLY)) {
+            if (list.get(itemIndex).getmDiscussionRelations() != null
+                    && list.get(itemIndex).getmDiscussionRelations().size() > 0) {
+                int replyNum = list.get(itemIndex)
+                        .getmDiscussionRelations().get(0)
+                        .getReplyNum();
+                list.get(itemIndex).getmDiscussionRelations().get(0)
+                        .setReplyNum(1 + replyNum);
+                adapter.notifyDataSetChanged();
+            }
+        } else if (action.equals(Action.CREATE_LIKE)) {
+            if (list.get(itemIndex).getmDiscussionRelations() != null
+                    && list.get(itemIndex).getmDiscussionRelations().size() > 0) {
+                int supportNum = list.get(itemIndex).getmDiscussionRelations().get(0).getSupportNum() + 1;
+                list.get(itemIndex).getmDiscussionRelations().get(0).setSupportNum(supportNum);
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
 }

@@ -130,6 +130,7 @@ public class CmtsSaysInfoFragment extends BaseFragment implements View.OnClickLi
         replyRV.setNestedScrollingEnabled(false);
         replyRV.setLayoutManager(layoutManager);
         replyRV.setAdapter(replyAdapter);
+        registRxBus();
     }
 
     /*显示详情*/
@@ -567,7 +568,7 @@ public class CmtsSaysInfoFragment extends BaseFragment implements View.OnClickLi
     }
 
     @Override
-    public void obBusEvent(MessageEvent event) {
+    public void onEvent(MessageEvent event) {
         if (event.action.equals(Action.CREATE_MAIN_REPLY) && event.obj != null && event.obj instanceof ReplyEntity) {
             replyNum++;
             setReply_text(replyNum);

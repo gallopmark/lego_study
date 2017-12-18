@@ -3,7 +3,6 @@ package com.haoyu.app.base;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,11 +28,12 @@ import io.reactivex.functions.Consumer;
 
 public abstract class BaseFragment extends Fragment {
     public Context context;
-    private PublicTipDialog publicTipDialog;
+    private PublicTipDialog dialog;
     protected Unbinder unbinder;
     public CompositeDisposable rxSubscriptions = new CompositeDisposable();
     private Disposable rxBusable;
     private Toast mToast, fullToast;
+    private SharedPreferences preferences;
 
     public abstract int createView();
 
@@ -43,18 +43,22 @@ public abstract class BaseFragment extends Fragment {
     public void initView(View view) {
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void registRxBus() {
         rxBusable = RxBus.getDefault().toObservable(MessageEvent.class).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<MessageEvent>() {
             @Override
             public void accept(MessageEvent event) throws Exception {
-                obBusEvent(event);
+                onEvent(event);
             }
         });
     }
 
-    public void obBusEvent(MessageEvent event) {
+    public void unRegistRxBus() {
+        if (rxBusable != null && !rxBusable.isDisposed()) {
+            rxBusable.dispose();
+        }
+    }
+
+    public void onEvent(MessageEvent event) {
 
     }
 
@@ -68,8 +72,7 @@ public abstract class BaseFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
-        preferences = context.getSharedPreferences(Constants.Prefs_user,
-                Context.MODE_PRIVATE);
+        preferences = context.getSharedPreferences(Constants.Prefs_user, Context.MODE_PRIVATE);
     }
 
     @Override
@@ -77,14 +80,14 @@ public abstract class BaseFragment extends Fragment {
         View rootView = inflater.inflate(createView(), container, false);
         unbinder = ButterKnife.bind(this, rootView);
         initView(rootView);
+        setListener();
         return rootView;
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initData();
-        setListener();
     }
 
     public void onNetWorkError() {
@@ -102,8 +105,9 @@ public abstract class BaseFragment extends Fragment {
             mToast = new AppToast(context, R.style.AppToast);
             mToast.setDuration(Toast.LENGTH_LONG);
             mToast.setView(v);
-        } else
+        } else {
             mToast.setView(v);
+        }
         mToast.show();
     }
 
@@ -122,8 +126,9 @@ public abstract class BaseFragment extends Fragment {
             fullToast.setDuration(Toast.LENGTH_LONG);
             fullToast.setGravity(Gravity.FILL, 0, 0);
             fullToast.setView(view);
-        } else
+        } else {
             fullToast.setView(view);
+        }
         fullToast.show();
     }
 
@@ -143,13 +148,9 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (rxBusable != null && !rxBusable.isDisposed()) {
-            rxBusable.dispose();
-        }
+        unRegistRxBus();
         rxSubscriptions.dispose();
     }
-
-    SharedPreferences preferences;
 
     public String getUserName() {
         return preferences.getString("userName", "");
@@ -173,13 +174,13 @@ public abstract class BaseFragment extends Fragment {
 
 
     public void showTipDialog() {
-        publicTipDialog = new PublicTipDialog(context);
-        publicTipDialog.show();
+        dialog = new PublicTipDialog(context);
+        dialog.show();
     }
 
     public void hideTipDialog() {
-        if (publicTipDialog != null) {
-            publicTipDialog.dismiss();
+        if (dialog != null) {
+            dialog.dismiss();
         }
     }
 

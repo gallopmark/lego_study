@@ -70,6 +70,7 @@ public class CmtsMovChildFragment extends BaseFragment implements XRecyclerView.
             baseUrl = Constants.OUTRT_NET + "/m/movement?movementRelations[0].relation.id=cmts"
                     + "&movementRelations[0].relation.type=movement&orders=CREATE_TIME.DESC" + "&creator.id=" + getUserId();
         }
+        registRxBus();
     }
 
     @Override
@@ -184,7 +185,7 @@ public class CmtsMovChildFragment extends BaseFragment implements XRecyclerView.
     }
 
     @Override
-    public void obBusEvent(MessageEvent event) {
+    public void onEvent(MessageEvent event) {
         if (event.getAction().equals(Action.DELETE_MOVEMENT)) {   //删除活动
             if (event.obj != null && event.obj instanceof TeachingMovementEntity) {
                 TeachingMovementEntity entity = (TeachingMovementEntity) event.obj;

@@ -77,6 +77,7 @@ public class CmtsSaysChildFragment extends BaseFragment implements XRecyclerView
                     + "&discussionRelations[0].relation.type=discussion&orders=CREATE_TIME.DESC"
                     + "&creator.id=" + getUserId();
         }
+        registRxBus();
     }
 
     @Override
@@ -292,7 +293,7 @@ public class CmtsSaysChildFragment extends BaseFragment implements XRecyclerView
     }
 
     @Override
-    public void obBusEvent(MessageEvent event) {
+    public void onEvent(MessageEvent event) {
         if (event.getAction().equals(Action.CREATE_STUDY_SAYS) && event.obj != null && event.obj instanceof DiscussEntity) {  //创建研说
             if (xRecyclerView.getVisibility() == View.GONE) {
                 xRecyclerView.setVisibility(View.VISIBLE);

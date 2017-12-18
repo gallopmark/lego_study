@@ -75,6 +75,7 @@ public class PageNoticeQuestionFragment extends BaseFragment implements XRecycle
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setLoadingListener(this);
         emptyView.setText(getResources().getString(R.string.empty_follow));
+        registRxBus();
     }
 
     @Override
@@ -310,7 +311,7 @@ public class PageNoticeQuestionFragment extends BaseFragment implements XRecycle
     }
 
     @Override
-    public void obBusEvent(MessageEvent event) {
+    public void onEvent(MessageEvent event) {
         if (event.getAction().equals(Action.COLLECTION) && event.obj != null && event.obj instanceof FAQsEntity) {
             FAQsEntity entity = (FAQsEntity) event.obj;
             if (entity.getFollow() == null) {  //取消收藏

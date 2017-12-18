@@ -179,6 +179,7 @@ public class CmtsLsonInfoFragment extends BaseFragment implements View.OnClickLi
         rv_advise.setLayoutManager(llm_advise);
         adviseAdapter = new AppDiscussionAdapter(context, adviseList, getUserId());
         rv_advise.setAdapter(adviseAdapter);
+        registRxBus();
     }
 
     public void setProgress(int remainDay) {
@@ -859,7 +860,7 @@ public class CmtsLsonInfoFragment extends BaseFragment implements View.OnClickLi
     }
 
     @Override
-    public void obBusEvent(MessageEvent event) {
+    public void onEvent(MessageEvent event) {
         if (event.action.equals(Action.CREATE_MAIN_REPLY) && event.obj != null && event.obj instanceof ReplyEntity) {
             adviseNum++;
             tv_adviseCount.setText("收到" + adviseNum + "条建议");

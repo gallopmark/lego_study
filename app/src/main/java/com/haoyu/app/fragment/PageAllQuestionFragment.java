@@ -89,6 +89,7 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setLoadingListener(this);
         emptyView.setText(getResources().getString(R.string.empty_questions));
+        registRxBus();
     }
 
     @Override
@@ -371,7 +372,7 @@ public class PageAllQuestionFragment extends BaseFragment implements XRecyclerVi
     }
 
     @Override
-    public void obBusEvent(MessageEvent event) {
+    public void onEvent(MessageEvent event) {
         if (event.getAction().equals(Action.CREATE_FAQ_QUESTION) && event.obj != null && event.obj instanceof FAQsEntity) {
             FAQsEntity entity = (FAQsEntity) event.obj;
             if (!xRecyclerView.isLoadingMoreEnabled()) {

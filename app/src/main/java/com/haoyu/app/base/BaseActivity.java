@@ -118,7 +118,6 @@ public abstract class BaseActivity extends FragmentActivity {
         });
     }
 
-
     public void unRegistRxBus() {
         if (rxBusable != null && !rxBusable.isDisposed()) {
             rxBusable.dispose();

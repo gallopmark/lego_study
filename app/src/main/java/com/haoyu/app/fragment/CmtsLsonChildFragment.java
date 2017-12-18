@@ -76,6 +76,7 @@ public class CmtsLsonChildFragment extends BaseFragment implements XRecyclerView
                     + "&discussionRelations[0].relation.type=lesson&orders=CREATE_TIME.DESC"
                     + "&creator.id=" + getUserId();
         }
+        registRxBus();
     }
 
     @Override
@@ -285,7 +286,7 @@ public class CmtsLsonChildFragment extends BaseFragment implements XRecyclerView
     }
 
     @Override
-    public void obBusEvent(MessageEvent event) {
+    public void onEvent(MessageEvent event) {
         if (event.getAction().equals(Action.CREATE_GEN_CLASS) && event.obj != null && event.obj instanceof TeachingLessonEntity) {  //创建创课
             if (xRecyclerView.getVisibility() == View.GONE) {
                 xRecyclerView.setVisibility(View.VISIBLE);

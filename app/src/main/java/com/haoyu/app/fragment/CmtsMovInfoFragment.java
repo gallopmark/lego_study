@@ -165,6 +165,7 @@ public class CmtsMovInfoFragment extends BaseFragment implements View.OnClickLis
         commentRV.setNestedScrollingEnabled(false);
         commentRV.setLayoutManager(manager);
         commentRV.setAdapter(commentAdapter);
+        registRxBus();
     }
 
     /*更新活动相关信息*/
@@ -784,7 +785,7 @@ public class CmtsMovInfoFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Override
-    public void obBusEvent(MessageEvent event) {
+    public void onEvent(MessageEvent event) {
         if (event.action.equals(Action.CREATE_CHILD_COMMENT)) {
             if (event.getBundle() != null && event.getBundle().getSerializable("mainComment") != null
                     && event.getBundle().getSerializable("mainComment") instanceof CommentEntity) {
