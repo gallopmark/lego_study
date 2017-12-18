@@ -69,7 +69,7 @@ public class PageResourcesAdapter extends BaseArrayRecyclerAdapter<ResourcesEnti
                 @Override
                 public void onClick(View v) {
                     if (callBack != null) {
-                        callBack.open(entity);
+                        callBack.open(resourcesName, entity);
                     }
                 }
             });
@@ -82,6 +82,6 @@ public class PageResourcesAdapter extends BaseArrayRecyclerAdapter<ResourcesEnti
     }
 
     public interface OpenResourceCallBack {
-        void open(MFileInfo mFileInfo);
+        void open(String resourcesName, MFileInfo mFileInfo);
     }
 }

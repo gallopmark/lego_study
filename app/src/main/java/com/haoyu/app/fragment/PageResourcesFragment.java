@@ -140,7 +140,8 @@ public class PageResourcesFragment extends BaseFragment implements XRecyclerView
         });
         adapter.setCallBack(new PageResourcesAdapter.OpenResourceCallBack() {
             @Override
-            public void open(MFileInfo mFileInfo) {
+            public void open(String resourcesName, MFileInfo mFileInfo) {
+                mFileInfo.setFileName(resourcesName);
                 Intent intent = new Intent(context, MFileInfoActivity.class);
                 intent.putExtra("fileInfo", mFileInfo);
                 startActivity(intent);
