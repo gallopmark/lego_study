@@ -138,7 +138,6 @@
             android:name="com.haoyu.app.activity.CourseTabActivity"
             android:windowSoftInputMode="" />
         <activity android:name="com.haoyu.app.activity.AppDownloadActivity" />
-        <activity android:name="com.haoyu.app.activity.CourseDetailActivity" />
         <!--课程学习视频-->
         <activity
             android:name="com.haoyu.app.activity.VideoPlayerActivity"
@@ -246,9 +245,7 @@
 
 
         <!--选课中心-->
-        <activity android:name="com.haoyu.app.activity.RegistCouseActivity" />
         <!--已选课程-->
-        <activity android:name="com.haoyu.app.activity.CourseRegistStateActivity" />
         <!--工作坊群-->
         <activity android:name="com.haoyu.app.activity.WorkshopGroupActivity" />
         <!--短息消息-->
