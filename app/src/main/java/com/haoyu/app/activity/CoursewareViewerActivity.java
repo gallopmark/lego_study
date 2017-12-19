@@ -567,7 +567,7 @@ public class CoursewareViewerActivity extends BaseActivity {
                 public void run() {
                     updateAttempt();
                 }
-            }, interval);
+            }, interval * 1000);
         }
     }
 
