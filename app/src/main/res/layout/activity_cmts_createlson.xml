@@ -49,7 +49,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:drawablePadding="@dimen/margin_size_6"
-        android:drawableRight="@drawable/download_more"
+        android:drawableRight="@drawable/go_into"
         android:gravity="left|center"
         android:hint="请输入标题"
         android:maxLength="128"

@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -44,8 +42,6 @@ public class LFilePickerActivity extends BaseActivity {
     Button bt_settings;
     @BindView(R.id.fileContent)
     RelativeLayout fileContent;
-    @BindView(R.id.ll_fileParent)
-    LinearLayout ll_fileParent;
     @BindView(R.id.tv_parentName)
     TextView tv_parentName;
     @BindView(R.id.recylerview)
@@ -91,24 +87,19 @@ public class LFilePickerActivity extends BaseActivity {
 
     private boolean checkSelfPermission() {
         //判断是否6.0以上的手机   不是就不用
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        } else {
-            return true;
-        }
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     //判断授权的方法  授权成功直接调用写入方法  这是监听的回调
     //参数  上下文   授权结果的数组   申请授权的数组
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_READ && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             requestUI();
         } else {
             rl_tips.setVisibility(View.VISIBLE);
-            tv_tips.setText("存储权限已被禁止，请到【设置】——>【应用管理】——>" + getResources().getString(R.string.app_name) +
-                    "——>【权限】选择打开【存储】。");
+            tv_tips.setText("存储权限已被禁止，选择系统文件需要打开存储权限，请重新打开！");
         }
     }
 
@@ -139,7 +130,7 @@ public class LFilePickerActivity extends BaseActivity {
 
     private void setOnClickListener() {
         // 返回目录上一级
-        ll_fileParent.setOnClickListener(new View.OnClickListener() {
+        tv_parentName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String tempPath = new File(mCurrentPath).getParent();

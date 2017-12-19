@@ -24,7 +24,7 @@
                 android:layout_height="@dimen/margin_size_20"
                 android:layout_gravity="center"
                 android:layout_marginRight="16dp"
-                android:background="@drawable/download_checkbox_selector"
+                android:background="@drawable/checkbox"
                 android:button="@color/transparent" />
 
             <ImageView

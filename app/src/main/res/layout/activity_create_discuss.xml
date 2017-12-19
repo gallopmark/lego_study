@@ -26,7 +26,7 @@
             android:layout_marginTop="@dimen/margin_size_16"
             android:background="@color/white"
             android:drawablePadding="@dimen/margin_size_6"
-            android:drawableRight="@drawable/download_more"
+            android:drawableRight="@drawable/go_into"
             android:gravity="left|center"
             android:hint="输入标题36字以内"
             android:maxLength="36"

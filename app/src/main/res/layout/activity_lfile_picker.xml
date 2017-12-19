@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:show_right_button="false"
-        app:title_text="我的文件" />
+        app:title_text="所有文件" />
 
     <RelativeLayout
         android:id="@+id/rl_tips"
@@ -54,67 +54,28 @@
         android:id="@+id/fileContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/spaceColor"
         android:visibility="gone">
 
-        <LinearLayout
-            android:id="@+id/ll_fileParent"
+        <TextView
+            android:id="@+id/tv_parentName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/item_click_selector"
-            android:orientation="horizontal"
-            android:paddingBottom="@dimen/margin_size_10"
-            android:paddingLeft="@dimen/margin_size_12"
-            android:paddingRight="@dimen/margin_size_12"
-            android:paddingTop="@dimen/margin_size_10">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:text="←"
-                android:textColor="@color/blow_gray"
-                android:textSize="@dimen/font_size_20" />
-
-            <ImageView
-                android:layout_width="@dimen/margin_size_40"
-                android:layout_height="@dimen/margin_size_40"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/margin_size_6"
-                android:layout_marginRight="@dimen/margin_size_6"
-                android:scaleType="centerCrop"
-                android:src="@drawable/folder_style_yellow" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_parentName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:textColor="@color/blow_gray"
-                    android:textSize="@dimen/font_size_14" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="上一级"
-                    android:textColor="@color/blow_gray"
-                    android:textSize="@dimen/font_size_12" />
-            </LinearLayout>
-        </LinearLayout>
+            android:background="@color/white"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:padding="@dimen/margin_size_12"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_16" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recylerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/btn_addbook"
-            android:layout_below="@+id/ll_fileParent"
+            android:layout_below="@+id/tv_parentName"
+            android:layout_marginTop="@dimen/margin_size_1"
+            android:background="@color/white"
             android:overScrollMode="never" />
 
         <TextView

@@ -17,7 +17,7 @@
             android:layout_height="@dimen/margin_size_20"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/margin_size_10"
-            android:background="@drawable/download_checkbox_selector"
+            android:background="@drawable/checkbox"
             android:button="@null"
             android:focusable="false"
             android:focusableInTouchMode="false"

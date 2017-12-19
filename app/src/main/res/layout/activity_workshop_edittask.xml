@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:drawablePadding="@dimen/margin_size_5"
-        android:drawableRight="@drawable/download_more"
+        android:drawableRight="@drawable/go_into"
         android:gravity="left|center"
         android:hint="输入阶段标题"
         android:maxLines="1"

@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
@@ -43,7 +43,7 @@ public class FileFilterAdapter extends BaseArrayRecyclerAdapter<File> {
 
     @Override
     public void onBindHoder(RecyclerHolder holder, final File file, final int position) {
-        RelativeLayout layoutRoot = holder.obtainView(R.id.layout_item_root);
+        LinearLayout layoutRoot = holder.obtainView(R.id.layout_item_root);
         ImageView ivType = holder.obtainView(R.id.iv_type);
         TextView tvName = holder.obtainView(R.id.tv_name);
         TextView tvDetail = holder.obtainView(R.id.tv_detail);

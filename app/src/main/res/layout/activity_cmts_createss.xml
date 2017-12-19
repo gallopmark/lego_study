@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:background="@color/white"
         android:drawablePadding="5dp"
-        android:drawableRight="@drawable/download_more"
+        android:drawableRight="@drawable/go_into"
         android:gravity="left|center"
         android:hint="请输入标题"
         android:maxLength="128"
