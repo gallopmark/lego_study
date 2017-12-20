@@ -10,8 +10,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -25,7 +26,6 @@ import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.SharePreferenceHelper;
-import com.haoyu.app.view.AppCheckBox;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -50,10 +50,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     EditText et_userName;
     @BindView(R.id.et_passWord)
     EditText et_passWord;
-    @BindView(R.id.ll_check)
-    LinearLayout ll_check;
-    @BindView(R.id.appCheckBox)
-    AppCheckBox appCheckBox;
+    @BindView(R.id.cb_remember)
+    CheckBox cb_remember;
     @BindView(R.id.bt_login)
     Button bt_login;
     @BindView(R.id.forget_password)
@@ -87,9 +85,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         forget_password.getPaint().setAntiAlias(true);// 抗锯齿
         et_userName.setText(getAccount());
         remember = isRemember();
-        if (remember)
+        if (remember) {
             et_passWord.setText(getPassWord());
-        appCheckBox.setChecked(remember, false);
+        }
+        cb_remember.setChecked(remember);
         et_userName.setSelection(et_userName.getText().length());
         controlKeyboardLayout();
     }
@@ -131,11 +130,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     }
 
     @Override
-    public void initData() {
-
-    }
-
-    @Override
     public void setListener() {
         bt_login.setOnClickListener(context);
         forget_password.setOnClickListener(context);
@@ -153,24 +147,17 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                 return false;
             }
         });
-        appCheckBox.setOnCheckedChangeListener(new AppCheckBox.OnCheckedChangeListener() {
+        cb_remember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(AppCheckBox checkBox, boolean isChecked) {
-                if (isChecked)
-                    remember = true;
-                else
-                    remember = false;
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                remember = isChecked;
             }
         });
-        ll_check.setOnClickListener(context);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.ll_check:
-                appCheckBox.toggle();
-                return;
             case R.id.bt_login:
                 Common.hideSoftInput(context);
                 String userName = et_userName.getText().toString().trim();
