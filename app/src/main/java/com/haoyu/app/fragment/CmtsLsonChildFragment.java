@@ -165,9 +165,9 @@ public class CmtsLsonChildFragment extends BaseFragment implements XRecyclerView
             public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
-                    TeachingLessonEntity entity = mDatas.get(selected);
+                    String lessonId = mDatas.get(selected).getId();
                     Intent intent = new Intent(context, CmtsLsonInfoActivity.class);
-                    intent.putExtra("entity", entity);
+                    intent.putExtra("lessonId", lessonId);
                     startActivity(intent);
                 }
             }

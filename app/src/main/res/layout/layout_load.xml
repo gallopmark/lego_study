@@ -16,4 +16,16 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:drawablePadding="@dimen/margin_size_12"
+        android:drawableTop="@drawable/empty_list"
+        android:gravity="center"
+        android:textColor="@color/blow_gray"
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
 </FrameLayout>
