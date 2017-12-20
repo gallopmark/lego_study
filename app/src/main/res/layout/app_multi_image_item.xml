@@ -7,8 +7,7 @@
     <com.haoyu.app.view.TouchImageView
         android:id="@+id/touchImageView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop" />
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@+id/iv_videoType"

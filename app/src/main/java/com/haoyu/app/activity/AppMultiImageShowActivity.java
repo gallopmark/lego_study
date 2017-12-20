@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.haoyu.app.base.BaseActivity;
-import com.haoyu.app.imageloader.GlideImgManager;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.MediaFile;
@@ -83,7 +83,7 @@ public class AppMultiImageShowActivity extends BaseActivity {
             TouchImageView imageView = view.findViewById(R.id.touchImageView);
             ImageView iv_videoType = view.findViewById(R.id.iv_videoType);
             final String path = imgList.get(position);
-            GlideImgManager.loadImage(context,path,R.drawable.ic_placeholder,R.drawable.ic_placeholder,imageView);
+            Glide.with(context).load(path).placeholder(R.drawable.ic_placeholder).error(R.drawable.ic_placeholder).fitCenter().into(imageView);
             if (path != null && path.length() > 0 && MediaFile.isVideoFileType(path)) {
                 iv_videoType.setVisibility(View.VISIBLE);
             } else {
@@ -109,8 +109,7 @@ public class AppMultiImageShowActivity extends BaseActivity {
         }
 
         @Override
-        public void destroyItem(ViewGroup container, int position,
-                                Object object) {
+        public void destroyItem(ViewGroup container, int position, Object object) {
             container.removeView((View) object);
         }
 
