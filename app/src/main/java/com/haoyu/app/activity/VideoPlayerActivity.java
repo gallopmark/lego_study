@@ -275,7 +275,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         videoPlay.setOnClickListener(mStartBtnListener);
         videoPlay.setImageResource(R.drawable.zanting);
         videoSeekBar.setOnSeekBarChangeListener(mSeekBarListener);
-
     }
 
     @Override
@@ -320,7 +319,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     }
                 }
             }
-
         }
     }
 
@@ -328,7 +326,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onRestart() {
         super.onRestart();
-        if (mVideoView != null && isLocal && !NONE.equals(netType)) {
+        if (isLocal && !NONE.equals(netType)) {
             mVideoView.start();
             hideVideoCenterPause();
             videoPlay.setImageResource(R.drawable.zanting);
@@ -355,6 +353,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         unregisterReceiver(netReceiver);
         updateVideoTime(mVideoView.getCurrentPosition());
         mVideoView.stopPlayback();
+
         videoHandler.removeCallbacksAndMessages(null);
     }
 
@@ -463,7 +462,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         if (window == null) {
             window = new PopupWindow(view, MyUtils.getWidth(context) * 3 / 5, MyUtils.getHeight(context));
         }
+        window.setTouchable(true);
         window.setOutsideTouchable(true);
+        window.setFocusable(true);
         window.setBackgroundDrawable(new BitmapDrawable());
         popClose.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -512,12 +513,10 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     private void videoViewStart() {
         mVideoView.setVideoPath(mVideoPath);
         mVideoView.setBufferingIndicator(loadingView);
-        mVideoView.seekTo(videoPosition);
     }
 
     private void showVideoCenterPause() {
         videoCenterPause.setVisibility(View.VISIBLE);
-
     }
 
     private void hideVideoCenterPause() {
@@ -531,7 +530,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     private void hideWarnControll() {
         warnControl.setVisibility(View.GONE);
     }
-
 
     private PLMediaPlayer.OnCompletionListener mOnCompletionListener = new PLMediaPlayer.OnCompletionListener() {
         @Override
@@ -550,7 +548,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         @Override
         public void onBufferingUpdate(PLMediaPlayer plMediaPlayer, int precent) {
             videoSeekBar.setSecondaryProgress((int) (precent * mVideoView.getDuration()));
-
         }
     };
 
@@ -570,10 +567,11 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             length = mVideoView.getDuration();
             mVideoView.start();
             videoSeekBar.setMax((int) mVideoView.getDuration());
-            if (seekTime > 0) {
+            if (videoPosition > 0) {
+                mVideoView.seekTo(videoPosition);
+            } else if (seekTime > 0) {
                 mVideoView.seekTo(seekTime);
             }
-
         }
     };
 
@@ -621,7 +619,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     hideVideoCenterPause();
                 }
             }
-
         }
     };
     /**
@@ -889,12 +886,10 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-
     // 显示中间按钮
     private void showCenterBox() {
         center_content.setVisibility(View.VISIBLE);
         linear_centercontroll.setVisibility(View.VISIBLE);
-
     }
 
     // 隐藏中间按钮
