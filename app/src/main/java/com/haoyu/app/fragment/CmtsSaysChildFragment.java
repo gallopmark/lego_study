@@ -167,9 +167,9 @@ public class CmtsSaysChildFragment extends BaseFragment implements XRecyclerView
             public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
-                    DiscussEntity entity = mDatas.get(selected);
+                    String relationId = mDatas.get(selected).getId();
                     Intent intent = new Intent(context, CmtsSaysInfoActivity.class);
-                    intent.putExtra("entity", entity);
+                    intent.putExtra("relationId", relationId);
                     startActivity(intent);
                 }
             }
