@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import com.haoyu.app.base.BaseResponseResult;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,9 +13,9 @@ import java.util.List;
  * 描述: 工作坊简介简报列表结果集
  * 作者:马飞奔 Administrator
  */
-public class BriefingsResult extends BaseResponseResult<BriefingsResult.WorkShopBriefResponseData> {
+public class BriefingsResult extends BaseResponseResult<BriefingsResult.MData> {
 
-    public class WorkShopBriefResponseData implements Serializable {
+    public class MData implements Serializable {
         @Expose
         @SerializedName("paginator")
         private Paginator paginator;
@@ -31,6 +32,9 @@ public class BriefingsResult extends BaseResponseResult<BriefingsResult.WorkShop
         }
 
         public List<BriefingEntity> getAnnouncements() {
+            if (announcements == null) {
+                return new ArrayList<>();
+            }
             return announcements;
         }
 

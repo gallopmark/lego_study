@@ -23,15 +23,15 @@ public class BriefingAdapter extends BaseArrayRecyclerAdapter<BriefingEntity> {
 
     @Override
     public void onBindHoder(RecyclerHolder holder, final BriefingEntity entity, final int position) {
-        TextView briefContent = holder.obtainView(R.id.briefContent);
-        TextView briefCreateTime = holder.obtainView(R.id.briefCreateTime);
-        briefContent.setText(entity.getTitle());
-        briefCreateTime.setText(TimeUtil.getSlashDate(entity.getCreateTime()));
+        TextView tv_title = holder.obtainView(R.id.tv_title);
+        TextView tv_time = holder.obtainView(R.id.tv_time);
+        tv_title.setText(entity.getTitle());
+        tv_time.setText(TimeUtil.getSlashDate(entity.getCreateTime()));
     }
 
     @Override
     public int bindView(int viewtype) {
-        return R.layout.workshop_brief_item;
+        return R.layout.brief_item;
     }
 
 }
