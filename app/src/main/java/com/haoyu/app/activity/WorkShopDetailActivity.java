@@ -106,8 +106,8 @@ public class WorkShopDetailActivity extends BaseActivity implements PullToLoadMo
     RecyclerView recyclerView;  //简报列表
     private List<BriefingEntity> mDatas = new ArrayList<>();
     private BriefingAdapter adapter;
-    @BindView(R.id.tv_empty)
-    TextView tv_empty;  //空简报内容
+    @BindView(R.id.tv_emptyBrief)
+    TextView tv_emptyBrief;  //空简报内容
     @BindView(R.id.bt_more)
     Button bt_more;  //工作坊简介(研修简报)展开内容或者收起内容
     private String workshopId;
@@ -333,7 +333,7 @@ public class WorkShopDetailActivity extends BaseActivity implements PullToLoadMo
             @Override
             public void onBefore(Request request) {
                 bt_more.setVisibility(View.GONE);
-                tv_empty.setVisibility(View.GONE);
+                tv_emptyBrief.setVisibility(View.GONE);
             }
 
             @Override
@@ -347,7 +347,7 @@ public class WorkShopDetailActivity extends BaseActivity implements PullToLoadMo
                     updateBriefList(response.getResponseData().getAnnouncements(), response.getResponseData().getPaginator());
                 } else {
                     bt_more.setVisibility(View.GONE);
-                    tv_empty.setVisibility(View.VISIBLE);
+                    tv_emptyBrief.setVisibility(View.VISIBLE);
                 }
             }
         }));
@@ -359,7 +359,7 @@ public class WorkShopDetailActivity extends BaseActivity implements PullToLoadMo
         adapter.notifyDataSetChanged();
         if (paginator != null && paginator.getHasNextPage()) {
             bt_more.setVisibility(View.VISIBLE);
-            tv_empty.setVisibility(View.GONE);
+            tv_emptyBrief.setVisibility(View.GONE);
         }
         adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
             @Override

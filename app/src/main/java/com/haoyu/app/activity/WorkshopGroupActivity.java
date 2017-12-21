@@ -148,7 +148,7 @@ public class WorkshopGroupActivity extends BaseActivity implements XRecyclerView
                 @Override
                 public void onResponse(BaseResponseResult<MyTrainMobileEntity> response) {
                     hideTipDialog();
-                    Intent intent = new Intent(context, WorkshopHomeActivity.class);
+                    Intent intent = new Intent(context, WSHomePageActivity.class);
                     intent.putExtra("workshopId", entity.getId());
                     intent.putExtra("workshopTitle", entity.getTitle());
                     if (response != null && response.getResponseData() != null && response.getResponseData().getmTrainingTime() != null

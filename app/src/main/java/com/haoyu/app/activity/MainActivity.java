@@ -482,7 +482,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 if (entity != null) {
                     String workshopId = entity.getId();
                     String workshopTitle = entity.getTitle();
-                    Intent intent = new Intent(context, WorkshopHomeActivity.class);
+                    Intent intent = new Intent(context, WSHomePageActivity.class);
                     if (trainingTime != null && trainingTime.getState() != null && trainingTime.getState().equals("进行中"))
                         intent.putExtra("training", true);
                     else if (trainingTime != null && trainingTime.getMinutes() > 0)

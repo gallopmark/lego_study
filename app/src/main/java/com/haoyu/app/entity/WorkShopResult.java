@@ -2,6 +2,7 @@ package com.haoyu.app.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.haoyu.app.base.BaseResponseResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,57 +12,13 @@ import java.util.List;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class WorkShopSingleResult {
-    @Expose
-    @SerializedName("responseCode")
-    private String responseCode;
-    @Expose
-    @SerializedName("responseData")
-    private WorkShopSingleResponseData responseData;
-    @Expose
-    @SerializedName("responseMsg")
-    private String responseMsg;
-    @Expose
-    @SerializedName("success")
-    private Boolean success;
+public class WorkShopResult extends BaseResponseResult<WorkShopResult.MData> {
 
-    public String getResponseCode() {
-        return responseCode;
-    }
-
-    public void setResponseCode(String responseCode) {
-        this.responseCode = responseCode;
-    }
-
-    public WorkShopSingleResponseData getResponseData() {
-        return responseData;
-    }
-
-    public void setResponseData(WorkShopSingleResponseData responseData) {
-        this.responseData = responseData;
-    }
-
-    public String getResponseMsg() {
-        return responseMsg;
-    }
-
-    public void setResponseMsg(String responseMsg) {
-        this.responseMsg = responseMsg;
-    }
-
-    public Boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-    public class WorkShopSingleResponseData {
+    public class MData {
         /**
          * mWorkshop	工作坊	MWorkshop	Y
-         mWorkshopUser	工作坊用户	MWorkshopUser	Y
-         mWorkshopSections	阶段列表	List	Y
+         * mWorkshopUser	工作坊用户	MWorkshopUser	Y
+         * mWorkshopSections	阶段列表	List	Y
          */
         @Expose
         @SerializedName("mWorkshop")
@@ -90,6 +47,9 @@ public class WorkShopSingleResult {
         }
 
         public List<MWorkshopSection> getmWorkshopSections() {
+            if (mWorkshopSections == null) {
+                return new ArrayList<>();
+            }
             return mWorkshopSections;
         }
 

@@ -1,9 +1,9 @@
-package com.haoyu.app.fragment;
+package com.haoyu.app.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.Bundle;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,22 +19,11 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.haoyu.app.activity.AppSurveyHomeActivity;
-import com.haoyu.app.activity.AppTestHomeActivity;
-import com.haoyu.app.activity.AppTestResultActivity;
-import com.haoyu.app.activity.FreeChatActiviy;
-import com.haoyu.app.activity.TeachingDiscussionActivity;
-import com.haoyu.app.activity.WSTSInfoActivity;
-import com.haoyu.app.activity.VideoPlayerActivity;
-import com.haoyu.app.activity.WSCDEditActivity;
-import com.haoyu.app.activity.WSCDInfoActivity;
-import com.haoyu.app.activity.WSTDEditActivity;
-import com.haoyu.app.activity.WSTSEditActivity;
-import com.haoyu.app.activity.WorkShopEditTaskActivity;
-import com.haoyu.app.activity.WorkshopQuestionActivity;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.haoyu.app.adapter.WorkShopSectionAdapter;
 import com.haoyu.app.adapter.WorkShopTaskAdapter;
-import com.haoyu.app.base.BaseFragment;
+import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.dialog.CommentDialog;
 import com.haoyu.app.dialog.DatePickerDialog;
@@ -47,16 +36,22 @@ import com.haoyu.app.entity.MWorkshopActivity;
 import com.haoyu.app.entity.MWorkshopSection;
 import com.haoyu.app.entity.TimePeriod;
 import com.haoyu.app.entity.VideoMobileEntity;
+import com.haoyu.app.entity.WSActivities;
 import com.haoyu.app.entity.WorkShopMobileEntity;
 import com.haoyu.app.entity.WorkShopMobileUser;
+import com.haoyu.app.entity.WorkShopResult;
 import com.haoyu.app.entity.WorkshopPhaseResult;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.NetStatusUtil;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.ScreenUtils;
+import com.haoyu.app.view.AppToolBar;
 import com.haoyu.app.view.ColorArcProgressBar;
+import com.haoyu.app.view.LoadFailView;
+import com.haoyu.app.view.LoadingView;
 import com.haoyu.app.view.StickyScrollView;
+import com.haoyu.app.view.SupportPopupWindow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,17 +59,31 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
 
-/**
- * 创建日期：2017/11/13.
- * 描述:
- * 作者:xiaoma
- */
 
-public class WSHomeFragment extends BaseFragment implements View.OnClickListener {
-    @BindView(R.id.contentView)
-    StickyScrollView contentView;
+/**
+ * 创建日期：2016/12/26 on 16:29
+ * 描述:工作坊首页
+ * 作者:马飞奔 Administrator
+ */
+public class WSHomePageActivity extends BaseActivity implements View.OnClickListener {
+    private WSHomePageActivity context;
+    @BindView(R.id.toolBar)
+    AppToolBar toolBar;
+    @BindView(R.id.loadingView)
+    LoadingView loadingView;
+    @BindView(R.id.loadFailView)
+    LoadFailView loadFailView;
+    @BindView(R.id.tv_empty)
+    TextView tv_empty;
+    @BindView(R.id.ssv_content)
+    StickyScrollView ssv_content;
     @BindView(R.id.capBar1)
     ColorArcProgressBar capBar1;
     @BindView(R.id.capBar2)
@@ -92,8 +101,8 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
     private List<MWorkshopSection> mWorkshopSections = new ArrayList<>();
     private WorkShopSectionAdapter sectionAdapter;
     private WorkShopTaskAdapter taskAdapter;
-    @BindView(R.id.tv_empty)
-    TextView tv_empty;//没有数据时显示
+    @BindView(R.id.tv_emptyTask)
+    TextView tv_emptyTask;//没有阶段任务
     @BindView(R.id.tv_bottom)
     TextView tv_bottom;
     private boolean training;
@@ -103,39 +112,104 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
     private int REQUEST_SECTION = 10, REQUEST_ACTIVITY = 11;
 
     @Override
-    public int createView() {
-        return R.layout.fragment_workshophome;
+    public int setLayoutResID() {
+        return R.layout.activity_wshomepage;
     }
 
     @Override
-    public void initView(View view) {
+    public void initView() {
+        context = this;
+        setToolBar();
+        training = getIntent().getBooleanExtra("training", false);
+        workshopId = getIntent().getStringExtra("workshopId");
+        String workshopTitle = getIntent().getStringExtra("workshopTitle");
+        toolBar.setTitle_text(workshopTitle);
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         sectionAdapter = new WorkShopSectionAdapter(context, mWorkshopSections);
         taskAdapter = new WorkShopTaskAdapter(context, mWorkshopSections);
-        Bundle bundle = getArguments();
-        training = bundle.getBoolean("training");
-        WorkShopMobileEntity mWorkshop = (WorkShopMobileEntity) bundle.getSerializable("mWorkshop");
-        if (mWorkshop != null) {
-            workshopId = mWorkshop.getId();
+    }
+
+    private void setToolBar() {
+        toolBar.setOnTitleClickListener(new AppToolBar.TitleOnClickListener() {
+            @Override
+            public void onLeftClick(View view) {
+                finish();
+            }
+
+            @Override
+            public void onRightClick(View view) {
+                showPopupWindow();
+            }
+        });
+    }
+
+    public void initData() {
+        loadingView.setVisibility(View.VISIBLE);
+        String url = Constants.OUTRT_NET + "/m/workshop/" + workshopId;
+        addSubscription(Flowable.just(url).map(new Function<String, WorkShopResult>() {
+            @Override
+            public WorkShopResult apply(String url) throws Exception {
+                return getResponse(url);
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<WorkShopResult>() {
+            @Override
+            public void accept(WorkShopResult response) throws Exception {
+                loadingView.setVisibility(View.GONE);
+                updateUI(response);
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                loadingView.setVisibility(View.GONE);
+                loadFailView.setVisibility(View.VISIBLE);
+            }
+        }));
+    }
+
+    private WorkShopResult getResponse(String url) throws Exception {
+        String responseStr = OkHttpClientManager.getAsString(context, url);
+        Gson gson = new GsonBuilder().create();
+        WorkShopResult response = new GsonBuilder().create().fromJson(responseStr, WorkShopResult.class);
+        if (response != null && response.getResponseData() != null && response.getResponseData().getmWorkshopSections().size() > 0) {
+            for (int i = 0; i < response.getResponseData().getmWorkshopSections().size(); i++) {
+                String atUrl = Constants.OUTRT_NET + "/m/activity/wsts/" + response.getResponseData().getmWorkshopSections().get(i).getId();
+                String atStr = OkHttpClientManager.getAsString(context, atUrl);
+                WSActivities result = gson.fromJson(atStr, WSActivities.class);
+                if (result != null && result.getResponseData().size() > 0) {
+                    response.getResponseData().getmWorkshopSections().get(i).setActivities(result.getResponseData());
+                }
+            }
         }
-        WorkShopMobileUser mWorkshopUser = (WorkShopMobileUser) bundle.getSerializable("mWorkshopUser");
-        if (mWorkshopUser != null) {
-            role = mWorkshopUser.getRole();
-            if (role != null && role.equals("master")) {
-                canEdit = true;
-                recyclerView.setAdapter(sectionAdapter);
+        return response;
+    }
+
+    private void updateUI(WorkShopResult response) {
+        if (response != null && response.getResponseData() != null) {
+            ssv_content.setVisibility(View.VISIBLE);
+            toolBar.setShow_right_button(true);
+            WorkShopMobileEntity mWorkshop = response.getResponseData().getmWorkshop();
+            WorkShopMobileUser mWorkshopUser = response.getResponseData().getmWorkshopUser();
+            List<MWorkshopSection> mWorkshopSections = response.getResponseData().getmWorkshopSections();
+            if (mWorkshopUser != null && mWorkshopUser.getRole() != null) {
+                role = mWorkshopUser.getRole();
+                if (role.equals("master")) {
+                    canEdit = true;
+                    recyclerView.setAdapter(sectionAdapter);
+                } else {
+                    recyclerView.setAdapter(taskAdapter);
+                }
             } else {
                 recyclerView.setAdapter(taskAdapter);
             }
+            updateUI(mWorkshop, mWorkshopUser);
+            updateUI(mWorkshopSections);
         } else {
-            recyclerView.setAdapter(taskAdapter);
+            tv_empty.setText("暂无工作坊信息~");
+            tv_empty.setVisibility(View.VISIBLE);
         }
-        List<MWorkshopSection> mWorkshopSections = (List<MWorkshopSection>) bundle.getSerializable("mWorkshopSections");
-        updateUI(mWorkshop, mWorkshopUser);
-        updateUI(mWorkshopSections);
     }
 
     private void updateUI(WorkShopMobileEntity mWorkshop, WorkShopMobileUser mWorkshopUser) {
@@ -228,15 +302,21 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
             }
         } else {
             recyclerView.setVisibility(View.GONE);
-            tv_empty.setVisibility(View.VISIBLE);
+            tv_emptyTask.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void setListener() {
-        ll_question.setOnClickListener(this);
-        ll_exchange.setOnClickListener(this);
-        tv_bottom.setOnClickListener(this);
+        loadFailView.setOnRetryListener(new LoadFailView.OnRetryListener() {
+            @Override
+            public void onRetry(View v) {
+                initData();
+            }
+        });
+        ll_question.setOnClickListener(context);
+        ll_exchange.setOnClickListener(context);
+        tv_bottom.setOnClickListener(context);
         setAdapter(taskAdapter);
         setAdapter(sectionAdapter);
     }
@@ -297,9 +377,9 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
                 String title = task_title.getText().toString().trim();
                 String time = tv_researchTime.getText().toString().trim();
                 if (title.length() == 0) {
-                    toast("请输入阶段标题");
+                    toast(context, "请输入阶段标题");
                 } else if (time.length() == 0) {
-                    toast("请选择研修时间");
+                    toast(context, "请选择研修时间");
                 } else {
                     addStage(title, startTime, endTime, sortNum);
                     task_title.setText(null);
@@ -397,7 +477,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
             @Override
             public void onError(Request request, Exception e) {
                 hideTipDialog();
-                onNetWorkError();
+                onNetWorkError(context);
             }
 
             @Override
@@ -408,7 +488,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
                     sectionAdapter.setPressIndex(mainIndex, position);
                     sectionAdapter.notifyItemChanged(mainIndex);
                 } else {
-                    toast("删除失败，请稍后再试");
+                    toast(context, "删除失败，请稍后再试");
                 }
             }
         }, map));
@@ -456,7 +536,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
             @Override
             public void onError(Request request, Exception e) {
                 hideTipDialog();
-                toast("删除失败，请稍后再试");
+                toast(context, "删除失败，请稍后再试");
             }
 
             @Override
@@ -471,7 +551,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
                         recyclerView.setVisibility(View.GONE);
                     }
                 } else {
-                    toast("删除失败，请稍后再试");
+                    toast(context, "删除失败，请稍后再试");
                 }
             }
         }, map));
@@ -491,7 +571,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
             @Override
             public void onError(Request request, Exception e) {
                 hideTipDialog();
-                onNetWorkError();
+                onNetWorkError(context);
             }
 
             @Override
@@ -518,13 +598,13 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
                 && response.getResponseData().getmActivityResult().getmActivity() != null) {
             CourseSectionActivity activity = response.getResponseData().getmActivityResult().getmActivity();
             if (activity.getType() != null && activity.getType().equals("lesson_plan")) {   //集体备课
-                toast("系统暂不支持浏览，请到网站完成。");
+                toast(context, "系统暂不支持浏览，请到网站完成。");
             } else if (activity.getType() != null && activity.getType().equals("discussion")) {  //教学研讨
                 openDiscussion(response, activity);
             } else if (activity.getType() != null && activity.getType().equals("survey")) {  //问卷调查
                 openSurvey(response, activity);
             } else if (activity.getType() != null && activity.getType().equals("debate")) {  //在线辩论
-                toast("系统暂不支持浏览，请到网站完成。");
+                toast(context, "系统暂不支持浏览，请到网站完成。");
             } else if (activity.getType() != null && activity.getType().equals("test")) {  //教学测验
                 openTest(response, activity);
             } else if (activity.getType() != null && activity.getType().equals("video")) {  //视频
@@ -535,14 +615,14 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
                         showNetDialog(response, activity);
                     }
                 } else {
-                    toast("当前网络不稳定，请检查网络设置！");
+                    toast(context, "当前网络不稳定，请检查网络设置！");
                 }
             } else if (activity.getType() != null && activity.getType().equals("lcec")) {
                 openLcec(response, activity);
             } else if (activity.getType() != null && activity.getType().equals("discuss_class")) { //评课议课
                 openDiscuss_class(response, activity);
             } else {
-                toast("系统暂不支持浏览，请到网站完成。");
+                toast(context, "系统暂不支持浏览，请到网站完成。");
             }
         }
     }
@@ -568,7 +648,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
             @Override
             public void onError(Request request, Exception e) {
                 hideTipDialog();
-                onNetWorkError();
+                onNetWorkError(context);
             }
 
             @Override
@@ -623,7 +703,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
                 intent.putExtra("videoUrl", video.getAttchFiles().get(0).getUrl());
                 startActivity(intent);
             } else {
-                toast("系统暂不支持浏览，请到网站完成。");
+                toast(context, "系统暂不支持浏览，请到网站完成。");
             }
 
         }
@@ -646,7 +726,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
             intent.putExtra("mlcec", response.getResponseData().getmLcec());
             startActivity(intent);
         } else {
-            toast("系统暂不支持浏览，请到网站完成。");
+            toast(context, "系统暂不支持浏览，请到网站完成。");
         }
     }
 
@@ -675,7 +755,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
             }
             startActivity(intent);
         } else
-            toast("系统暂不支持浏览，请到网站完成。");
+            toast(context, "系统暂不支持浏览，请到网站完成。");
     }
 
     /*打开问卷调查*/
@@ -744,7 +824,7 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
             intent.putExtra("discussClass", response.getResponseData().getmVideoDC());
             startActivity(intent);
         } else {
-            toast("系统暂不支持浏览，请到网站完成。");
+            toast(context, "系统暂不支持浏览，请到网站完成。");
         }
     }
 
@@ -771,10 +851,10 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
     private void smoothToBottom() {
         if (mWorkshopSections.size() > 0) {
             sectionAdapter.setAddTask(true);
-            contentView.postDelayed(new Runnable() {
+            ssv_content.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    contentView.fullScroll(ScrollView.FOCUS_DOWN);
+                    ssv_content.fullScroll(ScrollView.FOCUS_DOWN);
                     tv_bottom.setVisibility(View.GONE);
                 }
             }, 10);
@@ -785,4 +865,44 @@ public class WSHomeFragment extends BaseFragment implements View.OnClickListener
             startActivityForResult(intent, REQUEST_SECTION);
         }
     }
+
+    private void showPopupWindow() {
+        final View popupView = getLayoutInflater().inflate(R.layout.popwindow_workshop_menu, null);
+        final SupportPopupWindow pw = new SupportPopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.MATCH_PARENT, true);
+        View ll_notice = popupView.findViewById(R.id.ll_notice);
+        View ll_introduct = popupView.findViewById(R.id.ll_introduct);
+        ll_notice.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pw.dismiss();
+                Intent intent = new Intent(context, AnnouncementActivity.class);
+                intent.putExtra("relationId", workshopId);
+                intent.putExtra("relationType", "workshop");
+                intent.putExtra("type", "workshop_announcement");
+                startActivity(intent);
+            }
+        });
+        ll_introduct.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pw.dismiss();
+                Intent intent = new Intent(context, WorkShopDetailActivity.class);
+                intent.putExtra("workshopId", workshopId);
+                startActivity(intent);
+            }
+        });
+        popupView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                pw.dismiss();
+            }
+        });
+        pw.setTouchable(true);
+        pw.setBackgroundDrawable(new BitmapDrawable());
+        pw.setOutsideTouchable(true);
+        View view = toolBar.getIv_rightImage();
+        pw.showAsDropDown(view, 0, -10);
+    }
+
 }
