@@ -167,9 +167,9 @@ public class CmtsSaysChildFragment extends BaseFragment implements XRecyclerView
             public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
-                    String relationId = mDatas.get(selected).getId();
+                    String discussionId = mDatas.get(selected).getId();
                     Intent intent = new Intent(context, CmtsSaysInfoActivity.class);
-                    intent.putExtra("relationId", relationId);
+                    intent.putExtra("discussionId", discussionId);
                     startActivity(intent);
                 }
             }
@@ -211,7 +211,7 @@ public class CmtsSaysChildFragment extends BaseFragment implements XRecyclerView
             @Override
             public void onResponse(AttitudeMobileResult response) {
                 if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
-                    if (mDatas.get(position).getmDiscussionRelations() != null && mDatas.get(position).getmDiscussionRelations().size() > 0) {
+                    if (mDatas.get(position).getmDiscussionRelations().size() > 0) {
                         int supportNum = mDatas.get(position).getmDiscussionRelations().get(0).getSupportNum() + 1;
                         mDatas.get(position).getmDiscussionRelations().get(0).setSupportNum(supportNum);
                     }
@@ -240,8 +240,7 @@ public class CmtsSaysChildFragment extends BaseFragment implements XRecyclerView
 
     private void createComment(String content, final int position) {
         DiscussEntity entity = mDatas.get(position);
-        if (entity.getmDiscussionRelations() != null
-                && entity.getmDiscussionRelations().size() > 0) {
+        if (entity.getmDiscussionRelations().size() > 0) {
             Map<String, String> map = new HashMap<>();
             map.put("content", content);
             map.put("discussionUser.discussionRelation.id", entity
@@ -263,8 +262,7 @@ public class CmtsSaysChildFragment extends BaseFragment implements XRecyclerView
                 public void onResponse(ReplyResult response) {
                     hideTipDialog();
                     if (response != null && response.getResponseData() != null) {
-                        if (mDatas.get(position).getmDiscussionRelations() != null
-                                && mDatas.get(position).getmDiscussionRelations().size() > 0) {
+                        if (mDatas.get(position).getmDiscussionRelations().size() > 0) {
                             int replyNum = mDatas.get(position).getmDiscussionRelations().get(0).getReplyNum() + 1;
                             mDatas.get(position).getmDiscussionRelations().get(0).setReplyNum(replyNum);
                             adapter.notifyDataSetChanged();

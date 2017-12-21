@@ -55,8 +55,6 @@ import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
 
-import static com.haoyu.app.lego.student.R.id.tv_discussion_text;
-
 
 /**
  * 课程学习讨论详情页面
@@ -134,8 +132,7 @@ public class CourseDiscussDetailActivity extends BaseActivity implements
             tv_userName.setText("匿名用户");
         }
         tv_createDate.setText("发表于" + TimeUtil.converTime(discussEntity.getCreateTime()));
-        if (discussEntity.getmDiscussionRelations() != null
-                && discussEntity.getmDiscussionRelations().size() > 0) {
+        if (discussEntity.getmDiscussionRelations().size() > 0) {
             discussRelationId = discussEntity.getmDiscussionRelations().get(0).getId();
             replyNum = discussEntity.getmDiscussionRelations().get(0).getReplyNum();
             tv_commentCount.setText(text_comment + "(" + replyNum + ")");

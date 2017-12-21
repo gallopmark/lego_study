@@ -62,7 +62,7 @@ public class CtmsStatementAdapter extends BaseArrayRecyclerAdapter<DiscussEntity
             tv_content.setText(spanned);
         } else
             tv_content.setText(null);
-        if (entity.getmDiscussionRelations() != null && entity.getmDiscussionRelations().size() > 0) {
+        if (entity.getmDiscussionRelations().size() > 0) {
             tv_support.setText(String.valueOf(entity.getmDiscussionRelations().get(0).getSupportNum()));
             tv_commnet.setText(String.valueOf(entity.getmDiscussionRelations().get(0).getReplyNum()));
         } else {

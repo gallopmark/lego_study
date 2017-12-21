@@ -113,7 +113,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
     @BindView(R.id.bottomView)
     TextView bottomView;  //底部评论布局
     private DiscussEntity discussEntity;
-    private String relationId, uuid;  //研说id,研说关系Id
+    private String discussionId, relationId;  //研说id,研说关系Id
     private int supportNum, replyNum;  //点赞数,评论数
     private int page = 1;
     private int childPosition, replyPosition;
@@ -130,7 +130,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
         String empty_text = getResources().getString(R.string.study_says_emptylist);
         toolBar.setTitle_text(title);
         tv_empty.setText(empty_text);
-        relationId = getIntent().getStringExtra("relationId");
+        discussionId = getIntent().getStringExtra("discussionId");
         replyAdapter = new AppDiscussionAdapter(context, replyList, getUserId());
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -141,7 +141,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
     }
 
     public void initData() {
-        String url = Constants.OUTRT_NET + "/m/discussion/cmts/view/" + relationId;
+        String url = Constants.OUTRT_NET + "/m/discussion/cmts/view/" + discussionId;
         addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<DiscussResult>() {
             @Override
             public void onBefore(Request request) {
@@ -174,8 +174,8 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
         if (discussEntity.getCreator() != null && discussEntity.getCreator().getId() != null && discussEntity.getCreator().getId().equals(getUserId())) {
             toolBar.setShow_right_button(true);
         }
-        if (discussEntity.getmDiscussionRelations() != null && discussEntity.getmDiscussionRelations().size() > 0) {
-            uuid = discussEntity.getmDiscussionRelations().get(0).getId();
+        if (discussEntity.getmDiscussionRelations().size() > 0) {
+            relationId = discussEntity.getmDiscussionRelations().get(0).getId();
         }
         showData(discussEntity);
     }
@@ -188,7 +188,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
             tv_userName.setText(entity.getCreator().getRealName());
         }
         tv_createTime.setText("发布于" + TimeUtil.getSlashDate(entity.getCreateTime()));
-        if (entity.getmDiscussionRelations() != null && entity.getmDiscussionRelations().size() > 0) {
+        if (entity.getmDiscussionRelations().size() > 0) {
             supportNum = entity.getmDiscussionRelations().get(0).getSupportNum();
             tv_viewNum.setText(String.valueOf(entity.getmDiscussionRelations().get(0).getBrowseNum()));
             bt_support.setText("赞(" + supportNum + ")");
@@ -214,7 +214,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
 
     private void getReply() {
         tv_more_reply.setVisibility(View.GONE);
-        String url = Constants.OUTRT_NET + "/m/discussion/post?discussionUser.discussionRelation.id=" + uuid
+        String url = Constants.OUTRT_NET + "/m/discussion/post?discussionUser.discussionRelation.id=" + relationId
                 + "&page=" + page + "&orders=CREATE_TIME.ASC" + "&limit=5";
         addSubscription(Flowable.just(url).map(new Function<String, ReplyListResult>() {
             @Override
@@ -256,7 +256,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
                 null && result.getResponseData().getmDiscussionPosts() != null) {
             for (int i = 0; i < result.getResponseData().getmDiscussionPosts().size(); i++) {
                 String mainPostId = result.getResponseData().getmDiscussionPosts().get(i).getId();
-                String url = Constants.OUTRT_NET + "/m/discussion/post?discussionUser.discussionRelation.id=" + uuid + "&mainPostId=" + mainPostId
+                String url = Constants.OUTRT_NET + "/m/discussion/post?discussionUser.discussionRelation.id=" + relationId + "&mainPostId=" + mainPostId
                         + "&orders=CREATE_TIME.ASC";
                 try {
                     ReplyListResult mResult = getMainReply(url);
@@ -356,7 +356,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
                 replyPosition = position;
                 Intent intent = new Intent(context, AppMoreChildReplyActivity.class);
                 intent.putExtra("entity", entity);
-                intent.putExtra("relationId", uuid);
+                intent.putExtra("relationId", relationId);
                 startActivity(intent);
             }
         });
@@ -396,7 +396,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
         Map<String, String> map = new HashMap<>();
         map.put("content", content);
         map.put("mainPostId", replyList.get(position).getId());
-        map.put("discussionUser.discussionRelation.id", uuid);
+        map.put("discussionUser.discussionRelation.id", relationId);
         String url = Constants.OUTRT_NET + "/m/discussion/post";
         addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<ReplyResult>() {
             @Override
@@ -433,7 +433,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
     private void sendMainReply(String content) {
         Map<String, String> map = new HashMap<>();
         map.put("content", content);
-        map.put("discussionUser.discussionRelation.id", uuid);
+        map.put("discussionUser.discussionRelation.id", relationId);
         String url = Constants.OUTRT_NET + "/m/discussion/post";
         addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<ReplyResult>() {
             @Override
@@ -463,8 +463,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
                     }
                     MessageEvent event = new MessageEvent();
                     event.action = Action.CREATE_MAIN_REPLY;
-                    if (discussEntity.getmDiscussionRelations() != null
-                            && discussEntity.getmDiscussionRelations().size() > 0) {
+                    if (discussEntity.getmDiscussionRelations().size() > 0) {
                         int replyNum = discussEntity.getmDiscussionRelations().get(0).getReplyNum() + 1;
                         discussEntity.getmDiscussionRelations().get(0).setReplyNum(replyNum);
                     }
@@ -573,7 +572,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
             case R.id.tv_more_reply:
                 Intent intent = new Intent(context, AppMoreMainReplyActivity.class);
                 intent.putExtra("type", "comment");
-                intent.putExtra("relationId", uuid);
+                intent.putExtra("relationId", relationId);
                 startActivity(intent);
                 break;
         }
@@ -584,7 +583,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
         String url = Constants.OUTRT_NET + "/m/attitude";
         Map<String, String> map = new HashMap<>();
         map.put("attitude", "support");
-        map.put("relation.id", relationId);
+        map.put("relation.id", discussionId);
         map.put("relation.type", "discussion");
         addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<AttitudeMobileResult>() {
             @Override
@@ -610,7 +609,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
                     goodView.show(bt_support);
                     MessageEvent event = new MessageEvent();
                     event.action = Action.SUPPORT_STUDY_SAYS;
-                    if (discussEntity.getmDiscussionRelations() != null && discussEntity.getmDiscussionRelations().size() > 0) {
+                    if (discussEntity.getmDiscussionRelations().size() > 0) {
                         discussEntity.getmDiscussionRelations().get(0).setSupportNum(supportNum);
                     }
                     event.obj = discussEntity;

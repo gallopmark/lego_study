@@ -120,6 +120,9 @@ public class DiscussEntity implements Serializable {
     }
 
     public List<DiscussionRelation> getmDiscussionRelations() {
+        if (mDiscussionRelations == null) {
+            return new ArrayList<>();
+        }
         return mDiscussionRelations;
     }
 
