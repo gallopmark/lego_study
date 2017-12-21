@@ -159,9 +159,9 @@ public class CmtsMovChildFragment extends BaseFragment implements XRecyclerView.
             public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                 int selected = position - 1;
                 if (selected >= 0 && selected < mDatas.size()) {
-                    TeachingMovementEntity entity = mDatas.get(selected);
+                    String movementId = mDatas.get(selected).getId();
                     Intent intent = new Intent(context, CmtsMovInfoActivity.class);
-                    intent.putExtra("entity", entity);
+                    intent.putExtra("movementId", movementId);
                     startActivity(intent);
                 }
             }
