@@ -240,6 +240,9 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
     private void updateUI(TeachingLessonEntity mLesson, TeachingLessonAttribute attribute) {
         ssv_content.setVisibility(View.VISIBLE);
         lessonEntity = mLesson;
+        if (lessonEntity.getCreator() != null && lessonEntity.getCreator().getId() != null && lessonEntity.getCreator().getId().equals(getUserId())) {
+            toolBar.setShow_right_button(true);
+        }
         if (lessonEntity.getmDiscussionRelations() != null && lessonEntity.getmDiscussionRelations().size() > 0) {
             relationId = lessonEntity.getmDiscussionRelations().get(0).getId();
         }
@@ -1211,8 +1214,6 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
             }
             adviseNum--;
             setAdvise(adviseNum);
-        } else if (event.action.equals("fileUpload")) {
-            getFiles();
         }
     }
 }
