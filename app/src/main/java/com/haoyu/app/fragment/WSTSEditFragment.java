@@ -194,6 +194,7 @@ public class WSTSEditFragment extends BaseFragment implements View.OnClickListen
             case R.id.ll_lecturer:  /*授课人*/
                 Intent intent = new Intent(context, SearchUsersActivity.class);
                 startActivityForResult(intent, REQUEST_USER);
+                context.overridePendingTransition(0, 0);//用于屏蔽 activity 默认的转场动画效果
                 break;
             case R.id.fl_addVideo:
                 picketVideo();

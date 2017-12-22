@@ -2,14 +2,14 @@ package com.haoyu.app.activity;
 
 import android.content.Intent;
 import android.support.v7.widget.GridLayoutManager;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.haoyu.app.adapter.GridUserAdapter;
+import com.haoyu.app.adapter.PeerAdapter;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
@@ -20,7 +20,6 @@ import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
-import com.haoyu.app.view.AppToolBar;
 import com.haoyu.app.xrecyclerview.XRecyclerView;
 
 import java.util.ArrayList;
@@ -35,26 +34,22 @@ import okhttp3.Request;
  * 作者:xiaoma
  */
 
-public class SearchUsersActivity extends BaseActivity implements XRecyclerView.LoadingListener {
+public class SearchUsersActivity extends BaseActivity implements XRecyclerView.LoadingListener, View.OnClickListener {
     private SearchUsersActivity context;
-    @BindView(R.id.toolBar)
-    AppToolBar toolBar;
+    @BindView(R.id.tv_cancel)
+    TextView tv_cancel;
     @BindView(R.id.et_name)
     EditText et_name;
-    @BindView(R.id.iv_search)
-    ImageView iv_search;
-    @BindView(R.id.tv_current)
-    TextView tv_current;
-    @BindView(R.id.tv_user)
-    TextView tv_user;
-    @BindView(R.id.rl_result)
-    RelativeLayout rl_result;
+    @BindView(R.id.tv_clear)
+    TextView tv_clear;
+    @BindView(R.id.tv_search)
+    TextView tv_search;
     @BindView(R.id.xRecyclerView)
     XRecyclerView xRecyclerView;
     @BindView(R.id.tv_empty)
     TextView tv_empty;
     private List<MobileUser> mDatas = new ArrayList<>();
-    private GridUserAdapter adapter;
+    private PeerAdapter adapter;
     private boolean isRefresh, isLoadMore;
     private String userName;
     private int page = 1, limit = 30;
@@ -67,40 +62,38 @@ public class SearchUsersActivity extends BaseActivity implements XRecyclerView.L
     @Override
     public void initView() {
         context = this;
-        setToolBar();
-        toolBar.setTitle_text("选择授课人");
-        tv_current.setText("当前授课人：");
-        tv_user.setText(getRealName());
-        GridLayoutManager layoutManager = new GridLayoutManager(context, 3);
+        GridLayoutManager layoutManager = new GridLayoutManager(context, 4);
         layoutManager.setOrientation(GridLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);
-        adapter = new GridUserAdapter(context, mDatas);
+        adapter = new PeerAdapter(context, mDatas);
         xRecyclerView.setAdapter(adapter);
         xRecyclerView.setPullRefreshEnabled(false);
         xRecyclerView.setLoadingListener(context);
     }
 
-    private void setToolBar() {
-        toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
-            @Override
-            public void onLeftClick(View view) {
-                finish();
-            }
-        });
-    }
-
     @Override
     public void setListener() {
-        iv_search.setOnClickListener(new View.OnClickListener() {
+        tv_cancel.setOnClickListener(context);
+        tv_search.setOnClickListener(context);
+        tv_clear.setOnClickListener(context);
+        et_name.addTextChangedListener(new TextWatcher() {
             @Override
-            public void onClick(View view) {
-                init();
-                userName = et_name.getText().toString().trim();
-                if (TextUtils.isEmpty(userName)) {
-                    showMaterialDialog("提示", "请输入姓名");
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (TextUtils.isEmpty(charSequence)) {
+                    tv_clear.setVisibility(View.GONE);
                 } else {
-                    searchUsers();
+                    tv_clear.setVisibility(View.VISIBLE);
                 }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
             }
         });
         adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
@@ -116,6 +109,27 @@ public class SearchUsersActivity extends BaseActivity implements XRecyclerView.L
                 }
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.tv_cancel:
+                finish();
+                break;
+            case R.id.tv_clear:
+                et_name.setText(null);
+                break;
+            case R.id.tv_search:
+                init();
+                userName = et_name.getText().toString().trim();
+                if (TextUtils.isEmpty(userName)) {
+                    showMaterialDialog("提示", "请输入姓名");
+                } else {
+                    searchUsers();
+                }
+                break;
+        }
     }
 
     private void init() {
@@ -160,9 +174,6 @@ public class SearchUsersActivity extends BaseActivity implements XRecyclerView.L
     }
 
     private void updateUI(List<MobileUser> users, Paginator paginator) {
-        if (rl_result.getVisibility() != View.VISIBLE) {
-            rl_result.setVisibility(View.VISIBLE);
-        }
         if (isRefresh) {
             mDatas.clear();
         } else if (isLoadMore) {
@@ -188,5 +199,11 @@ public class SearchUsersActivity extends BaseActivity implements XRecyclerView.L
         isLoadMore = true;
         page += 1;
         searchUsers();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, 0);//用于屏蔽 activity 默认的转场动画效果
     }
 }
