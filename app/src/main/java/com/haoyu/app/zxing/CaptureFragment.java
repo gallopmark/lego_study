@@ -60,6 +60,7 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
         viewfinderView = view.findViewById(R.id.viewfinder_view);
         surfaceView = view.findViewById(R.id.preview_view);
         surfaceHolder = surfaceView.getHolder();
+        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         return view;
     }
 
@@ -70,7 +71,6 @@ public class CaptureFragment extends Fragment implements SurfaceHolder.Callback 
             initCamera(surfaceHolder);
         } else {
             surfaceHolder.addCallback(this);
-            surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         }
         decodeFormats = null;
         characterSet = null;
