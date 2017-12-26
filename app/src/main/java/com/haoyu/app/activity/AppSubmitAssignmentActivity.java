@@ -6,23 +6,27 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-
+import android.widget.TextView;
 
 import com.google.gson.Gson;
-import com.haoyu.app.adapter.FileSubmitAdapter;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
+import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
 import com.haoyu.app.dialog.FileUploadDialog;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.FileUploadResult;
-import com.haoyu.app.entity.MFileInfo;
+import com.haoyu.app.filePicker.FileUtils;
 import com.haoyu.app.filePicker.LFilePicker;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.rxBus.RxBus;
+import com.haoyu.app.swipe.OnActivityTouchListener;
+import com.haoyu.app.swipe.RecyclerTouchListener;
 import com.haoyu.app.utils.Action;
+import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.view.AppToolBar;
@@ -40,27 +44,30 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+
+
 /**
  * Created by acer1 on 2017/2/13.
  * 学员提交作业
  */
-public class AppSubmitAssignmentActivity extends BaseActivity implements View.OnClickListener {
+public class AppSubmitAssignmentActivity extends BaseActivity implements RecyclerTouchListener.RecyclerTouchListenerHelper, View.OnClickListener {
     private AppSubmitAssignmentActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
     private String aid;
     private String auid;
     private String uid;
-    private FileSubmitAdapter adapter;
+    private FileAdapter adapter;
     //要上传的文件对象
-    private List<MFileInfo> filePathList = new ArrayList<>();
-    private List<String> pathList = new ArrayList<>();
-    @BindView(R.id.fileList)
+    private List<File> files = new ArrayList<>();
+    @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
     @BindView(R.id.iv_add)
     ImageView iv_add;
     private String[] types;
     private String fileType;
+    private RecyclerTouchListener onTouchListener;
+    private OnActivityTouchListener touchListener;
 
     @Override
     public int setLayoutResID() {
@@ -74,73 +81,55 @@ public class AppSubmitAssignmentActivity extends BaseActivity implements View.On
         uid = getIntent().getStringExtra("uid");
         fileType = getIntent().getStringExtra("fileType");
         types = fileType.split(",");
-        adapter = new FileSubmitAdapter(filePathList);
+        adapter = new FileAdapter(files);
         LinearLayoutManager manager = new LinearLayoutManager(context);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(adapter);
+        onTouchListener = new RecyclerTouchListener(context, recyclerView);
+        recyclerView.addOnItemTouchListener(onTouchListener);
     }
 
     @Override
     public void setListener() {
         iv_add.setOnClickListener(context);
-
-        adapter.setDisposeCallBack(new FileSubmitAdapter.onDisposeCallBack() {
-            @Override
-            public void onDelete(int position) {
-                filePathList.remove(position);
-                pathList.remove(position);
-                adapter.notifyDataSetChanged();
-            }
-        });
-
-        toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
+        toolBar.setOnTitleClickListener(new AppToolBar.TitleOnClickListener() {
             @Override
             public void onLeftClick(View view) {
                 finish();
             }
-        });
-        toolBar.setOnRightClickListener(new AppToolBar.OnRightClickListener() {
+
             @Override
             public void onRightClick(View view) {
-                if (filePathList.size() > 0) {
+                if (files.size() > 0) {
                     commitAssignment();
                 } else {
-                    toast(context, "请选择上传的文件");
+                    toast(context, "请选择提交的作业");
                 }
-
             }
         });
-
+        onTouchListener.setSwipeOptionViews(R.id.tv_delete).setSwipeable(R.id.ll_rowFG, R.id.tv_delete, new RecyclerTouchListener.OnSwipeOptionsClickListener() {
+            @Override
+            public void onSwipeOptionClicked(int viewID, int position) {
+                files.remove(position);
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void addFilePath(List<String> filePaths) {
         for (int i = 0; i < filePaths.size(); i++) {
             String filePath = filePaths.get(i);
-            boolean flag = false;
-            for (int j = 0; j < types.length; j++) {
-                if (filePath.endsWith(types[j])) {
-                    flag = true;
-                    break;
-                }
-            }
-            if (flag && !pathList.contains(filePath)) {
-                MFileInfo entity = new MFileInfo();
-                File file = new File(filePath);
-                entity.setFileSize(file.length());
-                entity.setFileName(file.getName());
-                entity.setUrl(filePath);
-                pathList.add(filePath);
-                filePathList.add(entity);
-                adapter.notifyDataSetChanged();
+            if (new File(filePath).exists()) {
+                files.add(new File(filePath));
             }
         }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-
             case R.id.iv_add:
                 openFilePicker();
                 break;
@@ -221,9 +210,9 @@ public class AppSubmitAssignmentActivity extends BaseActivity implements View.On
         String url1 = Constants.OUTRT_NET + "/m/file/uploadTemp";
         String url2 = Constants.OUTRT_NET + "/" + aid + "/study/unique_uid_" + uid + "/m/assignment/user/" + auid;
         Gson gson = new Gson();
-        for (int i = 0; i < pathList.size(); i++) {
+        for (int i = 0; i < files.size(); i++) {
             try {
-                File file = new File(pathList.get(i));
+                File file = files.get(i);
                 String strREsult = OkHttpClientManager.post(context, url1, file, file.getName(), new OkHttpClientManager.ProgressListener() {
                     @Override
                     public void onProgress(final long totalBytes, final long remainingBytes, boolean done, final File file) {
@@ -266,6 +255,7 @@ public class AppSubmitAssignmentActivity extends BaseActivity implements View.On
         dialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
             @Override
             public void onClick(View v, AlertDialog dialog) {
+                dialog.dismiss();
                 disposable.dispose();
             }
         });
@@ -281,4 +271,40 @@ public class AppSubmitAssignmentActivity extends BaseActivity implements View.On
         dialog.show();
     }
 
+    @Override
+    public void setOnActivityTouchListener(OnActivityTouchListener listener) {
+        touchListener = listener;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (touchListener != null) touchListener.getTouchCoordinates(ev);
+        // 必不可少，否则所有的组件都不会有TouchEvent了
+        if (getWindow().superDispatchTouchEvent(ev)) {
+            return true;
+        }
+        return onTouchEvent(ev);
+    }
+
+    private class FileAdapter extends BaseArrayRecyclerAdapter<File> {
+
+        public FileAdapter(List<File> mDatas) {
+            super(mDatas);
+        }
+
+        @Override
+        public int bindView(int viewtype) {
+            return R.layout.file_item;
+        }
+
+        @Override
+        public void onBindHoder(RecyclerHolder holder, File file, int position) {
+            ImageView iv_fileType = holder.obtainView(R.id.iv_fileType);
+            TextView tv_mFileName = holder.obtainView(R.id.tv_mFileName);
+            TextView tv_mFileSize = holder.obtainView(R.id.tv_mFileSize);
+            Common.setFileType(file.getAbsolutePath(), iv_fileType);
+            tv_mFileName.setText(file.getName());
+            tv_mFileSize.setText(FileUtils.getReadableFileSize(file.length()));
+        }
+    }
 }

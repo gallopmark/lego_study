@@ -18,7 +18,7 @@ import java.util.List;
  * title	标题	String	Y
  * timePeriod	开放时间	Object	Y
  */
-public class MWorkshopSection implements Serializable {
+public class MWorkshopSection implements Serializable, MultiItemEntity {
     @Expose
     @SerializedName("id")
     private String id;
@@ -30,6 +30,8 @@ public class MWorkshopSection implements Serializable {
     private TimePeriod timePeriod;
     /*活动列表*/
     private List<MWorkshopActivity> activities = new ArrayList<>();
+    private int position;
+    private MWSActivityCrease crease;
 
     public String getId() {
         return id;
@@ -65,6 +67,22 @@ public class MWorkshopSection implements Serializable {
         this.activities = activities;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
+    public MWSActivityCrease getCrease() {
+        return crease;
+    }
+
+    public void setCrease(MWSActivityCrease crease) {
+        this.crease = crease;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -74,10 +92,11 @@ public class MWorkshopSection implements Serializable {
             return false;
         }
         MWorkshopSection section = (MWorkshopSection) obj;
-        if (this.id.equals(section.id)) {
-            return true;
-        } else {
-            return false;
-        }
+        return this.id.equals(section.id);
+    }
+
+    @Override
+    public int getItemType() {
+        return 1;
     }
 }

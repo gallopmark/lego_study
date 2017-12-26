@@ -32,7 +32,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.haoyu.app.adapter.DiscussFileAdapter2;
+import com.haoyu.app.adapter.MFileInfoAdapter;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.basehelper.BaseRecyclerAdapter;
 import com.haoyu.app.entity.MFileInfo;
@@ -440,9 +440,9 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
             LinearLayoutManager manager = new LinearLayoutManager(context);
             manager.setOrientation(LinearLayoutManager.VERTICAL);
             recyclerView.setLayoutManager(manager);
-            DiscussFileAdapter2 discussFileAdapter = new DiscussFileAdapter2(context, mFileInfoList);
-            recyclerView.setAdapter(discussFileAdapter);
-            discussFileAdapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
+            MFileInfoAdapter adapter = new MFileInfoAdapter(mFileInfoList);
+            recyclerView.setAdapter(adapter);
+            adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
                     MFileInfo mFileInfo = mFileInfoList.get(position);

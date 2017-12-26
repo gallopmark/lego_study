@@ -2,11 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/ll_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
@@ -15,94 +13,84 @@
         android:paddingLeft="@dimen/margin_size_10">
 
         <LinearLayout
-            android:id="@+id/layout_line"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
             <View
-                android:id="@+id/topLine"
                 android:layout_width="@dimen/margin_size_2"
-                android:layout_height="@dimen/margin_size_9"
+                android:layout_height="@dimen/margin_size_10"
                 android:layout_gravity="center"
                 android:background="@color/spaceColor" />
 
             <TextView
                 android:id="@+id/tv_position"
-                android:layout_width="@dimen/margin_size_28"
-                android:layout_height="@dimen/margin_size_28"
-                android:layout_gravity="center"
+                android:layout_width="@dimen/margin_size_26"
+                android:layout_height="@dimen/margin_size_26"
                 android:background="@drawable/test_select_check"
                 android:ellipsize="end"
                 android:gravity="center"
                 android:maxLength="2"
                 android:text="01"
                 android:textColor="@color/white"
-                android:textSize="@dimen/font_size_14" />
+                android:textSize="@dimen/font_size_13" />
 
-            <LinearLayout
+            <View
                 android:layout_width="@dimen/margin_size_2"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@color/spaceColor" />
         </LinearLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="-14dp"
-            android:orientation="vertical">
+            android:layout_marginLeft="@dimen/margin_minus_14"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:orientation="horizontal">
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/tv_title"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="22dp"
+                    android:layout_marginLeft="@dimen/margin_size_22"
                     android:layout_marginRight="@dimen/margin_size_12"
+                    android:layout_marginTop="@dimen/margin_size_10"
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:maxLines="1"
-                    android:text="导入新课的创新构思和运用"
-                    android:textSize="@dimen/font_size_18"
+                    android:textSize="@dimen/font_size_17"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/iv_isExpand"
+                <TextView
+                    android:id="@+id/tv_time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="@dimen/margin_size_10"
-                    android:scaleType="center"
-                    android:src="@drawable/progress_goto" />
+                    android:layout_marginBottom="@dimen/margin_size_12"
+                    android:layout_marginLeft="@dimen/margin_size_22"
+                    android:layout_marginTop="@dimen/margin_size_6"
+                    android:background="@drawable/shape_workshop_research_time"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/font_size_15" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_researchTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:layout_marginLeft="22dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/shape_workshop_research_time"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="研修时间：2016年12月-2017年2月"
-                android:textColor="@color/white"
-                android:textSize="@dimen/font_size_14" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never" />
+            <ImageView
+                android:id="@+id/iv_expand"
+                android:layout_width="@dimen/margin_size_14"
+                android:layout_height="@dimen/margin_size_14"
+                android:layout_gravity="center"
+                android:layout_marginRight="@dimen/margin_size_10"
+                android:src="@drawable/go_into" />
         </LinearLayout>
     </LinearLayout>
-
 </LinearLayout>

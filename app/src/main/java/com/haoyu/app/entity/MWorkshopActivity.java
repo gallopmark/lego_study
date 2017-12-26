@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class MWorkshopActivity implements Serializable {
+public class MWorkshopActivity implements Serializable, MultiItemEntity {
     /**
      * id	活动ID	String	Y
      * title	活动标题	String	Y
@@ -43,10 +43,38 @@ public class MWorkshopActivity implements Serializable {
     @Expose
     @SerializedName("inCurrentDate")
     private boolean inCurrentDate;
+
     //当前位置
     @Expose
     @SerializedName("position")
     private int position;
+
+    private boolean visible;
+    private MWorkshopSection tag;
+
+    public TimePeriod getTimePeriod() {
+        return timePeriod;
+    }
+
+    public void setTimePeriod(TimePeriod timePeriod) {
+        this.timePeriod = timePeriod;
+    }
+
+    public boolean isInCurrentDate() {
+        return inCurrentDate;
+    }
+
+    public void setInCurrentDate(boolean inCurrentDate) {
+        this.inCurrentDate = inCurrentDate;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
+    }
 
     public String getId() {
         return id;
@@ -80,27 +108,36 @@ public class MWorkshopActivity implements Serializable {
         this.completeState = completeState;
     }
 
-    public TimePeriod getTimePeriod() {
-        return timePeriod;
+    public boolean isVisible() {
+        return visible;
     }
 
-    public void setTimePeriod(TimePeriod timePeriod) {
-        this.timePeriod = timePeriod;
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
-    public boolean isInCurrentDate() {
-        return inCurrentDate;
+    public MWorkshopSection getTag() {
+        return tag;
     }
 
-    public void setInCurrentDate(boolean inCurrentDate) {
-        this.inCurrentDate = inCurrentDate;
+    public void setTag(MWorkshopSection tag) {
+        this.tag = tag;
     }
 
-    public int getPosition() {
-        return position;
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (!(obj instanceof MWorkshopActivity)) {
+            return false;
+        }
+        MWorkshopActivity section = (MWorkshopActivity) obj;
+        return this.id.equals(section.id);
     }
 
-    public void setPosition(int position) {
-        this.position = position;
+    @Override
+    public int getItemType() {
+        return 2;
     }
 }

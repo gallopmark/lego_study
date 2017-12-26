@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <com.haoyu.app.view.AppToolBar
@@ -11,14 +12,16 @@
         android:layout_height="wrap_content"
         app:left_button_image="@drawable/app_back"
         app:right_button_text="提交"
-        app:title_text="提交作业" />
-
+        app:right_button_textColor="@color/white"
+        app:show_right_button="true"
+        app:title_text="我的作业" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/fileList"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/toolBar" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolBar"
+        android:overScrollMode="never" />
 
     <ImageView
         android:id="@+id/iv_add"
@@ -26,8 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:padding="16dp"
-        android:src="@drawable/assignment_upload"
-        />
+        android:layout_margin="@dimen/margin_size_16"
+        android:src="@drawable/assignment_upload" />
 
 </RelativeLayout>

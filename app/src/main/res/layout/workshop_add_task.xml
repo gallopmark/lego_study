@@ -21,8 +21,8 @@
 
         <TextView
             android:id="@+id/tv_position"
-            android:layout_width="@dimen/margin_size_28"
-            android:layout_height="@dimen/margin_size_28"
+            android:layout_width="@dimen/margin_size_26"
+            android:layout_height="@dimen/margin_size_26"
             android:background="@drawable/test_select_check"
             android:ellipsize="end"
             android:gravity="center"
@@ -83,12 +83,11 @@
             android:gravity="right"
             android:orientation="horizontal">
 
-
             <TextView
                 android:id="@+id/task_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/title_cancel"
+                android:background="@color/faq_title"
                 android:paddingBottom="@dimen/margin_size_6"
                 android:paddingLeft="@dimen/margin_size_16"
                 android:paddingRight="@dimen/margin_size_16"
@@ -102,7 +101,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_size_16"
-                android:background="@drawable/title_selected"
+                android:background="@color/defaultColor"
                 android:paddingBottom="@dimen/margin_size_6"
                 android:paddingLeft="@dimen/margin_size_16"
                 android:paddingRight="@dimen/margin_size_16"
