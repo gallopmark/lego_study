@@ -5,17 +5,36 @@
     android:background="@color/white"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/bt_delete"
+    <LinearLayout
+        android:id="@+id/ll_rowBG"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
-        android:background="@color/red"
-        android:paddingLeft="@dimen/margin_size_20"
-        android:paddingRight="@dimen/margin_size_20"
-        android:text="删除"
-        android:textColor="@color/white"
-        android:textSize="@dimen/font_size_16" />
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bt_alert"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/faq_title"
+            android:paddingLeft="@dimen/margin_size_20"
+            android:paddingRight="@dimen/margin_size_20"
+            android:text="编辑"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/bt_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/red"
+            android:paddingLeft="@dimen/margin_size_20"
+            android:paddingRight="@dimen/margin_size_20"
+            android:text="删除"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/ll_rowFG"

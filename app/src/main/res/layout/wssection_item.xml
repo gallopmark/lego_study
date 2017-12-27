@@ -1,12 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:background="@color/white">
 
     <LinearLayout
+        android:id="@+id/ll_rowBG"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bt_alert"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/faq_title"
+            android:paddingLeft="@dimen/margin_size_20"
+            android:paddingRight="@dimen/margin_size_20"
+            android:text="编辑"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+
+        <Button
+            android:id="@+id/bt_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@color/red"
+            android:paddingLeft="@dimen/margin_size_20"
+            android:paddingRight="@dimen/margin_size_20"
+            android:text="删除"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_rowFG"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@color/white"
         android:descendantFocusability="blocksDescendants"
         android:orientation="horizontal"
@@ -42,7 +73,6 @@
                 android:background="@color/spaceColor" />
         </LinearLayout>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -66,7 +96,7 @@
                     android:layout_marginTop="@dimen/margin_size_10"
                     android:layout_weight="1"
                     android:ellipsize="end"
-                    android:maxLines="1"
+                    android:singleLine="true"
                     android:textSize="@dimen/font_size_17"
                     android:textStyle="bold" />
 
@@ -79,7 +109,7 @@
                     android:layout_marginTop="@dimen/margin_size_6"
                     android:background="@drawable/shape_workshop_research_time"
                     android:ellipsize="end"
-                    android:maxLines="1"
+                    android:singleLine="true"
                     android:textColor="@color/white"
                     android:textSize="@dimen/font_size_15" />
             </LinearLayout>
@@ -93,4 +123,4 @@
                 android:src="@drawable/go_into" />
         </LinearLayout>
     </LinearLayout>
-</LinearLayout>
+</RelativeLayout>

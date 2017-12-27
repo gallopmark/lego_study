@@ -229,10 +229,6 @@
         <!--评价总结及建议列表-->
         <activity android:name="com.haoyu.app.activity.WSTSSuggestActivity" />
         <!--工作坊修改阶段任务-->
-        <activity
-            android:name="com.haoyu.app.activity.WorkShopEditTaskActivity"
-            android:theme="@android:style/Theme.Holo.Light"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
         <!--我的工作坊-->
         <activity android:name="com.haoyu.app.activity.WSHomePageActivity" />
         <!--工作坊简介-->

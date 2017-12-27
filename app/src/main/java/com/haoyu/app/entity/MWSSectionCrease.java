@@ -8,6 +8,16 @@ package com.haoyu.app.entity;
 
 public class MWSSectionCrease implements MultiItemEntity {
 
+    private MWorkshopSection tag;
+
+    public MWorkshopSection getTag() {
+        return tag;
+    }
+
+    public void setTag(MWorkshopSection tag) {
+        this.tag = tag;
+    }
+
     @Override
     public int getItemType() {
         return 4;

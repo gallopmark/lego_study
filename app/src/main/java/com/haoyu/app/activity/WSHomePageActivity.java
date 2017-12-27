@@ -7,14 +7,21 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
+import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -25,7 +32,6 @@ import com.haoyu.app.adapter.WSTaskAdapter;
 import com.haoyu.app.adapter.WSTaskEditAdapter;
 import com.haoyu.app.base.BaseActivity;
 import com.haoyu.app.base.BaseResponseResult;
-import com.haoyu.app.dialog.CommentDialog;
 import com.haoyu.app.dialog.DatePickerDialog;
 import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.entity.AppActivityViewEntity;
@@ -47,10 +53,12 @@ import com.haoyu.app.entity.WorkshopPhaseResult;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.swipe.OnActivityTouchListener;
 import com.haoyu.app.swipe.RecyclerTouchListener;
+import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.NetStatusUtil;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.ScreenUtils;
+import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
 import com.haoyu.app.view.ColorArcProgressBar;
 import com.haoyu.app.view.LoadFailView;
@@ -58,9 +66,12 @@ import com.haoyu.app.view.LoadingView;
 import com.haoyu.app.view.StickyScrollView;
 import com.haoyu.app.view.SupportPopupWindow;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -113,7 +124,7 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
     private boolean training;
     private String workshopId, role;
     private boolean canEdit;
-    private int stageIndex;
+    private int activityIndex;
     private final int REQUEST_STAGE = 1, REQUEST_ACTIVITY = 2;
     private OnActivityTouchListener touchListener;
 
@@ -367,108 +378,173 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
 
     private void setTaskEditAdapter(final WSTaskEditAdapter mAdapter) {
         RecyclerTouchListener onTouchListener = new RecyclerTouchListener(context, recyclerView);
-        recyclerView.addOnItemTouchListener(onTouchListener);
-        onTouchListener.setClickable(new RecyclerTouchListener.OnRowClickListener() {
+        onTouchListener.setIgnoredViewTypes(3, 4).setClickable(new RecyclerTouchListener.OnRowClickListener() {
             @Override
             public void onRowClicked(int position) {
-                mAdapter.setSelected(position);
-                MWorkshopActivity activity = (MWorkshopActivity) mDatas.get(position);
-                getActivityInfo(activity.getId());
+                int itemType = mDatas.get(position).getItemType();
+                if (itemType == 1) {
+                    mAdapter.collapse(position);
+                } else {
+                    mAdapter.setSelected(position);
+                    MWorkshopActivity activity = (MWorkshopActivity) mDatas.get(position);
+                    getActivityInfo(activity.getId());
+                }
             }
 
             @Override
             public void onIndependentViewClicked(int independentViewID, int position) {
 
             }
-        }).setIgnoredViewTypes(1, 3, 4).setSwipeOptionViews(R.id.bt_delete).setSwipeable(R.id.ll_rowFG, R.id.bt_delete, new RecyclerTouchListener.OnSwipeOptionsClickListener() {
-            @Override
-            public void onSwipeOptionClicked(int viewID, final int position) {
-                MaterialDialog dialog = new MaterialDialog(context);
-                dialog.setTitle("温馨提示");
-                dialog.setMessage("确定删除此任务吗？");
-                dialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
+        }).setSwipeOptionViews(R.id.bt_alert, R.id.bt_delete)
+                .setSwipeable(R.id.ll_rowFG, R.id.ll_rowBG, new RecyclerTouchListener.OnSwipeOptionsClickListener() {
                     @Override
-                    public void onClick(View v, AlertDialog dialog) {
-                        deleteActivity(position);
+                    public void onSwipeOptionClicked(int viewID, final int position) {
+                        int itemType = mDatas.get(position).getItemType();
+                        if (viewID == R.id.bt_alert) {
+                            if (itemType == 1) {
+                                MWorkshopSection section = (MWorkshopSection) mDatas.remove(position);
+                                MWSSectionCrease crease = new MWSSectionCrease();
+                                crease.setTag(section);
+                                mAdapter.addItem(position, crease);
+                            }
+                        } else {
+                            if (itemType == 1) {
+                                MWorkshopSection section = (MWorkshopSection) mDatas.get(position);
+                                final String taskId = section.getId();
+                                MaterialDialog dialog = new MaterialDialog(context);
+                                dialog.setTitle("温馨提示");
+                                dialog.setMessage("确定删除此阶段吗？");
+                                dialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
+                                    @Override
+                                    public void onClick(View v, AlertDialog dialog) {
+                                        deleteTask(taskId, position);
+                                    }
+                                });
+                                dialog.setNegativeButton("取消", null);
+                                dialog.show();
+                            } else {
+                                MaterialDialog dialog = new MaterialDialog(context);
+                                dialog.setTitle("温馨提示");
+                                dialog.setMessage("确定删除此任务吗？");
+                                dialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
+                                    @Override
+                                    public void onClick(View v, AlertDialog dialog) {
+                                        deleteActivity(position);
+                                    }
+                                });
+                                dialog.setNegativeButton("取消", null);
+                                dialog.show();
+                            }
+                        }
                     }
                 });
-                dialog.setNegativeButton("取消", null);
-                dialog.show();
-            }
-        });
-        mAdapter.setOnSectionLongClickListener(new WSTaskEditAdapter.OnSectionLongClickListener() {
+        recyclerView.addOnItemTouchListener(onTouchListener);
+        RecyclerTouchListener independentListener = new RecyclerTouchListener(context, recyclerView);
+        independentListener.setIgnoredViewTypes(1, 2, 4).setIndependentViews(R.id.tv_discuss, R.id.tv_cc, R.id.tv_ts).setClickable(new RecyclerTouchListener.OnRowClickListener() {
             @Override
-            public void onLongClickListener(String taskId, int position, MWorkshopSection entity) {
-                showTaskEditDialog(taskId, position, entity);
+            public void onRowClicked(int position) {
+
+            }
+
+            @Override
+            public void onIndependentViewClicked(int independentViewID, int position) {
+                MWSActivityCrease crease = (MWSActivityCrease) mDatas.get(position);
+                MWorkshopSection section = crease.getTag();
+                String sectionId = section.getId();
+                Intent intent = new Intent();
+                intent.putExtra("workshopId", workshopId);
+                intent.putExtra("workSectionId", sectionId);
+                activityIndex = mDatas.indexOf(section);
+                if (independentViewID == R.id.tv_discuss) {
+                    intent.setClass(context, WSTDEditActivity.class);
+                } else if (independentViewID == R.id.tv_cc) {
+                    intent.setClass(context, WSCDEditActivity.class);
+                } else {
+                    intent.setClass(context, WSTSEditActivity.class);
+                }
+                startActivityForResult(intent, REQUEST_ACTIVITY);
             }
         });
-        mAdapter.setAddTaskListener(new WSTaskEditAdapter.OnAddTaskListener() {
+        recyclerView.addOnItemTouchListener(independentListener);
+        mAdapter.setOnEditTaskListener(new WSTaskEditAdapter.OnEditTaskListener() {
             private String startTime, endTime;
 
             @Override
-            public void inputTitle(final TextView task_title) {
-                CommentDialog dialog = new CommentDialog(context, "输出阶段标题", "完成");
-                dialog.setSendCommentListener(new CommentDialog.OnSendCommentListener() {
-                    @Override
-                    public void sendComment(String content) {
-                        task_title.setText(content);
-                    }
-                });
-                dialog.show();
+            public void inputTitle(final TextView tv_title) {
+                showInputDialog(tv_title);
             }
 
             @Override
-            public void inputTime(final TextView tv_researchTime) {
-                DatePickerDialog pickerDialog = new DatePickerDialog(context, true);
-                pickerDialog.setDatePickerListener(new DatePickerDialog.OnDatePickerListener() {
+            public void inputTime(final TextView tv_time) {
+                DatePickerDialog dialog = new DatePickerDialog(context, true);
+                dialog.setDatePickerListener(new DatePickerDialog.OnDatePickerListener() {
                     @Override
                     public void datePicker(int startYear, int startMonth, int startDay, int endYear, int endMonth, int endDay) {
                         startTime = startYear + "-" + (startMonth < 10 ? "0" + startMonth : startMonth);
                         endTime = endYear + "-" + (endMonth < 10 ? "0" + endMonth : endMonth);
                         String mStartTime = startYear + "年" + (startMonth < 10 ? "0" + startMonth : startMonth) + "月";
                         String mEndTime = endYear + "年" + (endMonth < 10 ? "0" + endMonth : endMonth) + "月";
-                        tv_researchTime.setText(mStartTime + "\u3000-\u3000" + mEndTime);
+                        tv_time.setText("研修时间：" + mStartTime + "-" + mEndTime);
                     }
                 });
-                pickerDialog.show();
+                dialog.show();
             }
 
             @Override
-            public void addTask(TextView task_title, TextView tv_researchTime, int sortNum) {
-                String title = task_title.getText().toString().trim();
-                String time = tv_researchTime.getText().toString().trim();
-                if (title.length() == 0) {
-                    toast(context, "请输入阶段标题");
-                } else if (time.length() == 0) {
-                    toast(context, "请选择研修时间");
-                } else {
+            public void addTask(TextView tv_title, TextView tv_time, int sortNum) {
+                String title = tv_title.getText().toString().trim();
+                String time = tv_time.getText().toString().trim();
+                if (checkText(title, time)) {
                     removeFromBottom();
                     addStage(title, startTime, endTime, sortNum);
-                    task_title.setText(null);
-                    tv_researchTime.setText(null);
+                    tv_title.setText(null);
+                    tv_time.setText(null);
                 }
             }
 
             @Override
-            public void cancel() {
+            public void alertTask(TextView tv_title, TextView tv_time, MWorkshopSection tag, int position) {
+                String title = tv_title.getText().toString().trim();
+                String time = tv_time.getText().toString().trim();
+                if (checkText(title, time)) {
+                    if (TextUtils.isEmpty(startTime) || TextUtils.isEmpty(endTime)) {
+                        if (tag.getTimePeriod() != null) {
+                            startTime = getDateHR(tag.getTimePeriod().getStartTime());
+                            endTime = getDateHR(tag.getTimePeriod().getEndTime());
+                        }
+                    }
+                    alterTask(tag, title, startTime, endTime, position);
+                }
+            }
+
+            private boolean checkText(String title, String time) {
+                if (TextUtils.isEmpty(title)) {
+                    toast(context, "请输入阶段标题");
+                    return false;
+                } else if (TextUtils.isEmpty(time)) {
+                    toast(context, "请选择研修时间");
+                    return false;
+                }
+                return true;
+            }
+
+            private String getDateHR(long timestamp) {
+                String DATE_H_R = "yyyy-MM-dd";
+                Date date = new Date();
+                date.setTime(timestamp);
+                String dateHR = new SimpleDateFormat(DATE_H_R, Locale.getDefault()).format(date);
+                return dateHR;
+            }
+
+            @Override
+            public void cancelAdd() {
                 removeFromBottom();
             }
-        });
-        mAdapter.setOnTaskEditListener(new WSTaskEditAdapter.OnTaskEditListener() {
+
             @Override
-            public void onTaskEdit(int type, String sectionId, int position) {
-                stageIndex = position;
-                Intent intent = new Intent();
-                intent.putExtra("workshopId", workshopId);
-                intent.putExtra("workSectionId", sectionId);
-                if (type == 1) {
-                    intent.setClass(context, WSTDEditActivity.class);
-                } else if (type == 2) {
-                    intent.setClass(context, WSCDEditActivity.class);
-                } else {
-                    intent.setClass(context, WSTSEditActivity.class);
-                }
-                startActivityForResult(intent, REQUEST_ACTIVITY);
+            public void cancelAlert(MWorkshopSection section, int position) {
+                mDatas.remove(position);
+                mAdapter.addItem(position, section);
             }
         });
     }
@@ -731,62 +807,60 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
         }, map));
     }
 
-    private void showTaskEditDialog(final String taskId, final int position, final MWorkshopSection entity) {
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_edit_workshop_task, null);
-        TextView tv_addTask = view.findViewById(R.id.tv_addTask);
-        TextView tv_alterTask = view.findViewById(R.id.tv_alterTask);
-        TextView tv_deleteTask = view.findViewById(R.id.tv_deleteTask);
-        TextView tv_cancel = view.findViewById(R.id.tv_cancel);
+    private void showInputDialog(final TextView task_title) {
         final AlertDialog dialog = new AlertDialog.Builder(context).create();
-        View.OnClickListener listener = new View.OnClickListener() {
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_comment, null);
+        dialog.setView(view);
+        dialog.show();
+        Window window = dialog.getWindow();
+        window.setContentView(R.layout.dialog_comment);
+        final EditText et_imput = dialog.findViewById(R.id.et_content);
+        final Button bt_send = dialog.findViewById(R.id.bt_send);
+        et_imput.setHint("输出阶段标题");
+        et_imput.requestFocus();
+        et_imput.setFocusable(true);
+        final String content = task_title.getText().toString();
+        et_imput.setText(task_title.getText().toString());
+        et_imput.setSelection(content.length());//将光标移至文字末尾
+        bt_send.setText("完成");
+        bt_send.setEnabled(false);
+        et_imput.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.toString().trim().length() > 0) {
+                    if (s.toString().trim().equals(content)) {
+                        bt_send.setEnabled(false);
+                    } else {
+                        bt_send.setEnabled(true);
+                    }
+                } else {
+                    bt_send.setEnabled(false);
+                }
+            }
+        });
+        bt_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (view.getId()) {
-                    case R.id.tv_addTask:
-                        smoothToBottom();
-                        break;
-                    case R.id.tv_alterTask:
-                        stageIndex = position;
-                        Intent intent = new Intent(context, WorkShopEditTaskActivity.class);
-                        intent.putExtra("title", entity.getTitle());
-                        if (entity.getTimePeriod() != null) {
-                            intent.putExtra("startTime", entity.getTimePeriod().getStartTime());
-                            intent.putExtra("endTime", entity.getTimePeriod().getEndTime());
-                        }
-                        intent.putExtra("workShopId", workshopId);
-                        intent.putExtra("relationId", taskId);
-                        startActivityForResult(intent, REQUEST_STAGE);
-                        break;
-                    case R.id.tv_deleteTask:
-                        MaterialDialog mDialog = new MaterialDialog(context);
-                        mDialog.setTitle("温馨提示");
-                        mDialog.setMessage("确定删除此阶段吗？");
-                        mDialog.setPositiveButton("确定", new MaterialDialog.ButtonClickListener() {
-                            @Override
-                            public void onClick(View v, AlertDialog dialog) {
-                                deleteTask(taskId, position);
-                            }
-                        });
-                        mDialog.setNegativeButton("取消", null);
-                        mDialog.show();
-                        break;
-                    case R.id.tv_cancel:
-                        break;
-                }
+                Common.hideSoftInput(context, et_imput);
+                String content = et_imput.getText().toString();
+                task_title.setText(content);
                 dialog.dismiss();
             }
-        };
-        tv_addTask.setOnClickListener(listener);
-        tv_alterTask.setOnClickListener(listener);
-        tv_deleteTask.setOnClickListener(listener);
-        tv_cancel.setOnClickListener(listener);
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.setCancelable(true);
-        dialog.show();
-        dialog.getWindow().setLayout(ScreenUtils.getScreenWidth(context), LinearLayout.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setWindowAnimations(R.style.dialog_anim);
-        dialog.getWindow().setContentView(view);
-        dialog.getWindow().setGravity(Gravity.BOTTOM);
+        });
+        window.setLayout(ScreenUtils.getScreenWidth(context), WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setWindowAnimations(R.style.dialog_anim);
+        window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        window.setGravity(Gravity.BOTTOM);
     }
 
     //添加新阶段
@@ -831,6 +905,47 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
         }, map));
     }
 
+    /*修改阶段*/
+    private void alterTask(final MWorkshopSection section, final String title, final String startTime, final String endTime, final int position) {
+        String taskId = section.getId();
+        String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + getUserId() + "/m/workshop_section/" + taskId;
+        Map<String, String> map = new HashMap<>();
+        map.put("_method", "put");
+        map.put("title", title);
+        map.put("startTime", startTime);
+        map.put("endTime", endTime);
+        addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+            @Override
+            public void onBefore(Request request) {
+                showTipDialog();
+            }
+
+            @Override
+            public void onError(Request request, Exception e) {
+                e.printStackTrace();
+                hideTipDialog();
+                onNetWorkError(context);
+            }
+
+            @Override
+            public void onResponse(BaseResponseResult response) {
+                hideTipDialog();
+                if (response != null && response.getResponseCode() != null && response.getResponseCode().equals("00")) {
+                    mDatas.remove(position);
+                    section.setTitle(title);
+                    TimePeriod timePeriod = new TimePeriod();
+                    timePeriod.setStartTime(TimeUtil.dateToLong(startTime, "yyyy-MM"));
+                    timePeriod.setEndTime(TimeUtil.dateToLong(endTime, "yyyy-MM"));
+                    section.setTimePeriod(timePeriod);
+                    taskEditAdapter.addItem(position, section);
+                } else {
+                    toastFullScreen("修改失败", false);
+                }
+            }
+        }, map));
+    }
+
+    /*删除阶段*/
     private void deleteTask(String id, final int position) {
         String url = Constants.OUTRT_NET + "/master_" + workshopId + "/unique_uid_" + getUserId() + "/m/workshop_section/" + id;
         Map<String, String> map = new HashMap<>();
@@ -867,24 +982,9 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_STAGE:
-                if (resultCode == RESULT_OK && data != null) {
-                    String title = data.getStringExtra("title");
-                    TimePeriod timePeriod = (TimePeriod) data.getSerializableExtra("timePeriod");
-                    MWorkshopSection section = (MWorkshopSection) mDatas.get(stageIndex);
-                    section.setTitle(title);
-                    section.setTimePeriod(timePeriod);
-                    mDatas.set(stageIndex, section);
-                    taskEditAdapter.notifyItemChanged(stageIndex);
-                }
-                break;
-            case REQUEST_ACTIVITY:
-                if (resultCode == RESULT_OK && data != null) {
-                    MWorkshopActivity activity = (MWorkshopActivity) data.getSerializableExtra("activity");
-                    taskEditAdapter.addActivity(stageIndex, activity);
-                }
-                break;
+        if (requestCode == REQUEST_ACTIVITY && resultCode == RESULT_OK && data != null) {
+            MWorkshopActivity activity = (MWorkshopActivity) data.getSerializableExtra("activity");
+            taskEditAdapter.addActivity(activityIndex, activity);
         }
     }
 
