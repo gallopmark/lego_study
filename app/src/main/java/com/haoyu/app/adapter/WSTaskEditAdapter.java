@@ -3,6 +3,7 @@ package com.haoyu.app.adapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -117,29 +118,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
         return true;
     }
 
-    public void setSelected(int position) {
-        selected = position;
-        notifyDataSetChanged();
-    }
-
-    public void collapse(int position) {
-        MWorkshopSection section = (MWorkshopSection) mDatas.get(position);
-        if (collapses.get(position) != null && collapses.get(position)) {
-            for (int i = 0; i < section.getActivities().size(); i++) {
-                section.getActivities().get(i).setVisible(false);
-            }
-            section.getCrease().setVisible(true);
-            collapses.put(position, false);
-        } else {
-            for (int i = 0; i < section.getActivities().size(); i++) {
-                section.getActivities().get(i).setVisible(true);
-            }
-            section.getCrease().setVisible(false);
-            collapses.put(position, true);
-        }
-        notifyDataSetChanged();
-    }
-
     public void setOnEditTaskListener(OnEditTaskListener addTaskListener) {
         this.addTaskListener = addTaskListener;
     }
@@ -180,7 +158,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
         TextView tv_position = holder.obtainView(R.id.tv_position);
         final TextView tv_title = holder.obtainView(R.id.tv_title);
         TextView tv_time = holder.obtainView(R.id.tv_time);
-        final ImageView iv_expand = holder.obtainView(R.id.iv_expand);
+        final AppCompatImageView iv_expand = holder.obtainView(R.id.iv_expand);
         final MWorkshopSection section = (MWorkshopSection) entity;
         int stageIndex = section.getPosition() + 1;
         if (stageIndex < 10) {
@@ -202,13 +180,13 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 section.getActivities().get(i).setVisible(true);
             }
             section.getCrease().setVisible(true);
-            iv_expand.setImageResource(R.drawable.go_down);
+            iv_expand.setImageResource(R.drawable.ic_expand_more_black_24dp);
         } else {
             for (int i = 0; i < section.getActivities().size(); i++) {
                 section.getActivities().get(i).setVisible(false);
             }
             section.getCrease().setVisible(false);
-            iv_expand.setImageResource(R.drawable.go_into);
+            iv_expand.setImageResource(R.drawable.ic_arrow_right_black_24dp);
         }
     }
 
@@ -216,6 +194,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
         ImageView ic_type = holder.obtainView(R.id.ic_type);
         TextView tv_typeName = holder.obtainView(R.id.tv_typeName);
         TextView tv_title = holder.obtainView(R.id.tv_title);
+        LinearLayout ll_alert = holder.obtainView(R.id.ll_alert);
         MWorkshopActivity activity = (MWorkshopActivity) entity;
         RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
         if (activity.isVisible()) {
@@ -232,6 +211,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.ws_discuss_default);
             }
             tv_typeName.setText("教学研讨");
+            ll_alert.setVisibility(View.VISIBLE);
         } else if (type != null && type.equals("survey")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.ws_questionnaire_press);
@@ -239,6 +219,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.ws_questionnaire_default);
             }
             tv_typeName.setText("调查问卷");
+            ll_alert.setVisibility(View.GONE);
         } else if (type != null && type.equals("debate")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.ws_bianlun_press);
@@ -246,6 +227,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.ws_bianlun_default);
             }
             tv_typeName.setText("在线辩论");
+            ll_alert.setVisibility(View.GONE);
         } else if (type != null && type.equals("lcec")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.ws_tingke_press);
@@ -253,6 +235,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.ws_tingke_default);
             }
             tv_typeName.setText("听课评课");
+            ll_alert.setVisibility(View.VISIBLE);
         } else if (type != null && type.equals("lesson_plan")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.ws_beike_press);
@@ -260,6 +243,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.ws_beike_default);
             }
             tv_typeName.setText("集体备课");
+            ll_alert.setVisibility(View.GONE);
         } else if (type != null && type.equals("test")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.progress_test_press);
@@ -267,6 +251,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.progress_test_default);
             }
             tv_typeName.setText("在线测验");
+            ll_alert.setVisibility(View.GONE);
         } else if (type != null && type.equals("video")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.progress_video_press);
@@ -274,6 +259,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.progress_video_default);
             }
             tv_typeName.setText("教学观摩");
+            ll_alert.setVisibility(View.GONE);
         } else if (type != null && type.equals("discuss_class")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.progress_video_press);
@@ -281,6 +267,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.progress_video_default);
             }
             tv_typeName.setText("教学观摩");
+            ll_alert.setVisibility(View.VISIBLE);
         } else {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.course_word_selected);
@@ -288,6 +275,7 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.course_word_default);
             }
             tv_typeName.setText("类型未知");
+            ll_alert.setVisibility(View.GONE);
         }
         if (selected == position) {
             tv_typeName.setTextColor(ContextCompat.getColor(context, R.color.defaultColor));
@@ -422,5 +410,29 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
         void cancelAdd();
 
         void cancelAlert(MWorkshopSection section, int position);
+    }
+
+
+    public void setSelected(int position) {
+        selected = position;
+        notifyDataSetChanged();
+    }
+
+    public void collapse(int position) {
+        MWorkshopSection section = (MWorkshopSection) mDatas.get(position);
+        if (collapses.get(position) != null && collapses.get(position)) {
+            for (int i = 0; i < section.getActivities().size(); i++) {
+                section.getActivities().get(i).setVisible(false);
+            }
+            section.getCrease().setVisible(true);
+            collapses.put(position, false);
+        } else {
+            for (int i = 0; i < section.getActivities().size(); i++) {
+                section.getActivities().get(i).setVisible(true);
+            }
+            section.getCrease().setVisible(false);
+            collapses.put(position, true);
+        }
+        notifyDataSetChanged();
     }
 }

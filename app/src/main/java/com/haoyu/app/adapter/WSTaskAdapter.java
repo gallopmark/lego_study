@@ -3,8 +3,8 @@ package com.haoyu.app.adapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.ArrayMap;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,15 +28,10 @@ public class WSTaskAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity> {
     private Context context;
     private ArrayMap<Integer, Boolean> collapses = new ArrayMap<>();
     private int selected = -1;
-    private OnActivityClickListener onActivityClickListener;
 
     public WSTaskAdapter(Context context, List<MultiItemEntity> mDatas) {
         super(mDatas);
         this.context = context;
-    }
-
-    public void setOnActivityClickListener(OnActivityClickListener onActivityClickListener) {
-        this.onActivityClickListener = onActivityClickListener;
     }
 
     public void addItemEntities(List<MultiItemEntity> list) {
@@ -81,7 +76,7 @@ public class WSTaskAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity> {
         TextView tv_position = holder.obtainView(R.id.tv_position);
         final TextView tv_title = holder.obtainView(R.id.tv_title);
         TextView tv_time = holder.obtainView(R.id.tv_time);
-        final ImageView iv_expand = holder.obtainView(R.id.iv_expand);
+        final AppCompatImageView iv_expand = holder.obtainView(R.id.iv_expand);
         final MWorkshopSection section = (MWorkshopSection) entity;
         int stageIndex = section.getPosition() + 1;
         if (stageIndex < 10) {
@@ -102,32 +97,13 @@ public class WSTaskAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity> {
             for (int i = 0; i < section.getActivities().size(); i++) {
                 section.getActivities().get(i).setVisible(true);
             }
-            iv_expand.setImageResource(R.drawable.go_down);
+            iv_expand.setImageResource(R.drawable.ic_expand_more_black_24dp);
         } else {
             for (int i = 0; i < section.getActivities().size(); i++) {
                 section.getActivities().get(i).setVisible(false);
             }
-            iv_expand.setImageResource(R.drawable.go_into);
+            iv_expand.setImageResource(R.drawable.ic_arrow_right_black_24dp);
         }
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (collapses.get(position) != null && collapses.get(position)) {
-                    for (int i = 0; i < section.getActivities().size(); i++) {
-                        section.getActivities().get(i).setVisible(false);
-                    }
-                    collapses.put(position, false);
-                    iv_expand.setImageResource(R.drawable.go_down);
-                } else {
-                    for (int i = 0; i < section.getActivities().size(); i++) {
-                        section.getActivities().get(i).setVisible(true);
-                    }
-                    collapses.put(position, true);
-                    iv_expand.setImageResource(R.drawable.go_into);
-                }
-                notifyDataSetChanged();
-            }
-        });
     }
 
     private void setViewType_2(RecyclerHolder holder, MultiItemEntity entity, final int position) {
@@ -220,23 +196,26 @@ public class WSTaskAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity> {
             tv_title.setText("无标题");
         }
         tv_title.setText(activity.getTitle());
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setSelected(position);
-                if (onActivityClickListener != null) {
-                    onActivityClickListener.onActivityClick(activity.getId());
-                }
-            }
-        });
     }
 
-    private void setSelected(int position) {
+    public void setSelected(int position) {
         selected = position;
         notifyDataSetChanged();
     }
 
-    public interface OnActivityClickListener {
-        void onActivityClick(String activityId);
+    public void collapse(int position) {
+        MWorkshopSection section = (MWorkshopSection) mDatas.get(position);
+        if (collapses.get(position) != null && collapses.get(position)) {
+            for (int i = 0; i < section.getActivities().size(); i++) {
+                section.getActivities().get(i).setVisible(false);
+            }
+            collapses.put(position, false);
+        } else {
+            for (int i = 0; i < section.getActivities().size(); i++) {
+                section.getActivities().get(i).setVisible(true);
+            }
+            collapses.put(position, true);
+        }
+        notifyDataSetChanged();
     }
 }

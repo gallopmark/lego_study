@@ -367,13 +367,27 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
         tv_bottom.setOnClickListener(context);
     }
 
-    private void setTaskAdapter(WSTaskAdapter mAdapter) {
-        mAdapter.setOnActivityClickListener(new WSTaskAdapter.OnActivityClickListener() {
+    private void setTaskAdapter(final WSTaskAdapter mAdapter) {
+        RecyclerTouchListener onTouchListener = new RecyclerTouchListener(context, recyclerView);
+        onTouchListener.setClickable(new RecyclerTouchListener.OnRowClickListener() {
             @Override
-            public void onActivityClick(String activityId) {
-                getActivityInfo(activityId);
+            public void onRowClicked(int position) {
+                int itemType = mDatas.get(position).getItemType();
+                if(itemType == 1){
+                    mAdapter.collapse(position);
+                } else {
+                    mAdapter.setSelected(position);
+                    MWorkshopActivity activity = (MWorkshopActivity) mDatas.get(position);
+                    getActivityInfo(activity.getId());
+                }
+            }
+
+            @Override
+            public void onIndependentViewClicked(int independentViewID, int position) {
+
             }
         });
+        recyclerView.addOnItemTouchListener(onTouchListener);
     }
 
     private void setTaskEditAdapter(final WSTaskEditAdapter mAdapter) {
@@ -395,12 +409,12 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
             public void onIndependentViewClicked(int independentViewID, int position) {
 
             }
-        }).setSwipeOptionViews(R.id.bt_alert, R.id.bt_delete)
+        }).setSwipeOptionViews(R.id.ll_alert, R.id.ll_delete)
                 .setSwipeable(R.id.ll_rowFG, R.id.ll_rowBG, new RecyclerTouchListener.OnSwipeOptionsClickListener() {
                     @Override
                     public void onSwipeOptionClicked(int viewID, final int position) {
                         int itemType = mDatas.get(position).getItemType();
-                        if (viewID == R.id.bt_alert) {
+                        if (viewID == R.id.ll_alert) {
                             if (itemType == 1) {
                                 MWorkshopSection section = (MWorkshopSection) mDatas.remove(position);
                                 MWSSectionCrease crease = new MWSSectionCrease();

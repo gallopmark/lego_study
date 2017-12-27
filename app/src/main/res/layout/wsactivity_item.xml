@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
@@ -12,28 +13,52 @@
         android:layout_alignParentRight="true"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/bt_alert"
+        <LinearLayout
+            android:id="@+id/ll_alert"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@color/faq_title"
-            android:paddingLeft="@dimen/margin_size_20"
-            android:paddingRight="@dimen/margin_size_20"
-            android:text="编辑"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_size_16"
-            android:visibility="gone" />
+            android:paddingLeft="@dimen/margin_size_6"
+            android:paddingRight="@dimen/margin_size_6"
+            android:visibility="gone">
 
-        <Button
-            android:id="@+id/bt_delete"
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_edit_white_20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="编辑"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_delete"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:background="@color/red"
-            android:paddingLeft="@dimen/margin_size_20"
-            android:paddingRight="@dimen/margin_size_20"
-            android:text="删除"
-            android:textColor="@color/white"
-            android:textSize="@dimen/font_size_16" />
+            android:background="@color/red_text"
+            android:paddingLeft="@dimen/margin_size_6"
+            android:paddingRight="@dimen/margin_size_6">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/ic_delete_white_20dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:text="删除"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
