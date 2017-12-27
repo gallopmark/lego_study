@@ -194,7 +194,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
         ImageView ic_type = holder.obtainView(R.id.ic_type);
         TextView tv_typeName = holder.obtainView(R.id.tv_typeName);
         TextView tv_title = holder.obtainView(R.id.tv_title);
-        LinearLayout ll_alert = holder.obtainView(R.id.ll_alert);
         MWorkshopActivity activity = (MWorkshopActivity) entity;
         RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) holder.itemView.getLayoutParams();
         if (activity.isVisible()) {
@@ -211,7 +210,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.ws_discuss_default);
             }
             tv_typeName.setText("教学研讨");
-            ll_alert.setVisibility(View.VISIBLE);
         } else if (type != null && type.equals("survey")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.ws_questionnaire_press);
@@ -219,7 +217,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.ws_questionnaire_default);
             }
             tv_typeName.setText("调查问卷");
-            ll_alert.setVisibility(View.GONE);
         } else if (type != null && type.equals("debate")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.ws_bianlun_press);
@@ -227,7 +224,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.ws_bianlun_default);
             }
             tv_typeName.setText("在线辩论");
-            ll_alert.setVisibility(View.GONE);
         } else if (type != null && type.equals("lcec")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.ws_tingke_press);
@@ -235,7 +231,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.ws_tingke_default);
             }
             tv_typeName.setText("听课评课");
-            ll_alert.setVisibility(View.VISIBLE);
         } else if (type != null && type.equals("lesson_plan")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.ws_beike_press);
@@ -243,7 +238,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.ws_beike_default);
             }
             tv_typeName.setText("集体备课");
-            ll_alert.setVisibility(View.GONE);
         } else if (type != null && type.equals("test")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.progress_test_press);
@@ -251,7 +245,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.progress_test_default);
             }
             tv_typeName.setText("在线测验");
-            ll_alert.setVisibility(View.GONE);
         } else if (type != null && type.equals("video")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.progress_video_press);
@@ -259,7 +252,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.progress_video_default);
             }
             tv_typeName.setText("教学观摩");
-            ll_alert.setVisibility(View.GONE);
         } else if (type != null && type.equals("discuss_class")) {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.progress_video_press);
@@ -267,7 +259,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.progress_video_default);
             }
             tv_typeName.setText("教学观摩");
-            ll_alert.setVisibility(View.VISIBLE);
         } else {
             if (selected == position) {
                 ic_type.setImageResource(R.drawable.course_word_selected);
@@ -275,7 +266,6 @@ public class WSTaskEditAdapter extends BaseArrayRecyclerAdapter<MultiItemEntity>
                 ic_type.setImageResource(R.drawable.course_word_default);
             }
             tv_typeName.setText("类型未知");
-            ll_alert.setVisibility(View.GONE);
         }
         if (selected == position) {
             tv_typeName.setTextColor(ContextCompat.getColor(context, R.color.defaultColor));
