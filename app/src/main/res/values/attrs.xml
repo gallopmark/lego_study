@@ -39,8 +39,8 @@
         <attr name="front_color1" format="color" />
         <attr name="front_color2" format="color" />
         <attr name="front_color3" format="color" />
-        <attr name="start_engle" format="integer" />
-        <attr name="total_engle" format="integer" />
+        <attr name="start_angle" format="integer" />
+        <attr name="total_angle" format="integer" />
         <attr name="back_width" format="dimension" />
         <attr name="front_width" format="dimension" />
         <attr name="is_need_title" format="boolean" />
