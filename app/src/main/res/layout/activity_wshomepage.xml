@@ -61,9 +61,6 @@
                             app:front_color2="@color/course_progress"
                             app:front_color3="@color/course_progress"
                             app:front_width="@dimen/margin_size_8"
-                            app:is_need_content="false"
-                            app:is_need_title="false"
-                            app:is_need_unit="false"
                             app:total_engle="360" />
 
                         <TextView
@@ -100,12 +97,12 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             app:backArcColor="@color/pressedColor"
-                            app:back_width="5dp"
+                            app:back_width="@dimen/margin_size_4"
                             app:diameter="110dp"
                             app:front_color1="@color/course_progress"
                             app:front_color2="@color/course_progress"
                             app:front_color3="@color/course_progress"
-                            app:front_width="10dp"
+                            app:front_width="@dimen/margin_size_8"
                             app:is_need_content="false"
                             app:is_need_title="false"
                             app:is_need_unit="false"

@@ -26,9 +26,9 @@ import com.haoyu.app.lego.student.R;
  */
 public class ColorArcProgressBar extends View {
 
-    private int diameter = 500; //直径
-    private float centerX; //圆心X坐标
-    private float centerY; //圆心Y坐标
+    private float diameter = 500;  //直径
+    private float centerX;  //圆心X坐标
+    private float centerY;  //圆心Y坐标
 
     private Paint allArcPaint;
     private Paint progressPaint;
@@ -44,28 +44,27 @@ public class ColorArcProgressBar extends View {
     private SweepGradient sweepGradient;
     private Matrix rotateMatrix;
 
-    private float startAngle = -90;
-    private float sweepAngle = 360;
+    private float startAngle = 135;
+    private float sweepAngle = 270;
     private float currentAngle = 0;
     private float lastAngle;
     private int[] colors = new int[]{Color.GREEN, Color.YELLOW, Color.RED, Color.RED};
-    private float maxValues = 100;
+    private float maxValues = 60;
     private float curValues = 0;
     private float bgArcWidth = dipToPx(2);
     private float progressWidth = dipToPx(10);
     private float textSize = dipToPx(60);
     private float hintSize = dipToPx(15);
-    private float curSpeedSize = dipToPx(25);
+    private float curSpeedSize = dipToPx(13);
     private int aniSpeed = 1000;
     private float longdegree = dipToPx(13);
     private float shortdegree = dipToPx(5);
     private final int DEGREE_PROGRESS_DISTANCE = dipToPx(8);
 
-    private String hintColor = "#575757";
-    private String contentColor = "#3CCDB1";
+    private String hintColor = "#676767";
     private String longDegreeColor = "#111111";
     private String shortDegreeColor = "#111111";
-    private int bgArcColor; //圆圈背景色（画笔颜色）
+    private int bgArcColor;
     private String titleString;
     private String hintString;
 
@@ -107,11 +106,10 @@ public class ColorArcProgressBar extends View {
         int color2 = a.getColor(R.styleable.ColorArcProgressBar_front_color2, color1);
         int color3 = a.getColor(R.styleable.ColorArcProgressBar_front_color3, color1);
         colors = new int[]{color1, color2, color3, color3};
-        int backDefault = ContextCompat.getColor(context, R.color.pressedColor);
-        startAngle = a.getInteger(R.styleable.ColorArcProgressBar_start_engle, -90);
+        diameter = a.getDimension(R.styleable.ColorArcProgressBar_diameter, getScreenWidth() / 2);
         sweepAngle = a.getInteger(R.styleable.ColorArcProgressBar_total_engle, 270);
         bgArcWidth = a.getDimension(R.styleable.ColorArcProgressBar_back_width, dipToPx(2));
-        bgArcColor = a.getColor(R.styleable.ColorArcProgressBar_backArcColor, backDefault);
+        bgArcColor = a.getColor(R.styleable.ColorArcProgressBar_backArcColor, ContextCompat.getColor(context, R.color.spaceColor));
         progressWidth = a.getDimension(R.styleable.ColorArcProgressBar_front_width, dipToPx(10));
         isNeedTitle = a.getBoolean(R.styleable.ColorArcProgressBar_is_need_title, false);
         isNeedContent = a.getBoolean(R.styleable.ColorArcProgressBar_is_need_content, false);
@@ -120,8 +118,7 @@ public class ColorArcProgressBar extends View {
         hintString = a.getString(R.styleable.ColorArcProgressBar_string_unit);
         titleString = a.getString(R.styleable.ColorArcProgressBar_string_title);
         curValues = a.getFloat(R.styleable.ColorArcProgressBar_current_value, 0);
-        maxValues = a.getFloat(R.styleable.ColorArcProgressBar_max_value, 100);
-        diameter = (int) a.getDimension(R.styleable.ColorArcProgressBar_diameter, getScreenWidth() / 3);
+        maxValues = a.getFloat(R.styleable.ColorArcProgressBar_max_value, 60);
         setCurrentValues(curValues);
         setMaxValues(maxValues);
         a.recycle();
@@ -136,23 +133,22 @@ public class ColorArcProgressBar extends View {
     }
 
     private void initView() {
-
-//        diameter = getScreenWidth() / 3;
-//弧形的矩阵区域
+        //弧形的矩阵区域
         bgRect = new RectF();
         bgRect.top = longdegree + progressWidth / 2 + DEGREE_PROGRESS_DISTANCE;
         bgRect.left = longdegree + progressWidth / 2 + DEGREE_PROGRESS_DISTANCE;
         bgRect.right = diameter + (longdegree + progressWidth / 2 + DEGREE_PROGRESS_DISTANCE);
         bgRect.bottom = diameter + (longdegree + progressWidth / 2 + DEGREE_PROGRESS_DISTANCE);
 
-//圆心
+        //圆心
         centerX = (2 * longdegree + progressWidth + diameter + 2 * DEGREE_PROGRESS_DISTANCE) / 2;
         centerY = (2 * longdegree + progressWidth + diameter + 2 * DEGREE_PROGRESS_DISTANCE) / 2;
-//外部刻度线
+
+        //外部刻度线
         degreePaint = new Paint();
         degreePaint.setColor(Color.parseColor(longDegreeColor));
 
-//整个弧形
+        //整个弧形
         allArcPaint = new Paint();
         allArcPaint.setAntiAlias(true);
         allArcPaint.setStyle(Paint.Style.STROKE);
@@ -160,7 +156,7 @@ public class ColorArcProgressBar extends View {
         allArcPaint.setColor(bgArcColor);
         allArcPaint.setStrokeCap(Paint.Cap.ROUND);
 
-//当前进度的弧形
+        //当前进度的弧形
         progressPaint = new Paint();
         progressPaint.setAntiAlias(true);
         progressPaint.setStyle(Paint.Style.STROKE);
@@ -168,19 +164,19 @@ public class ColorArcProgressBar extends View {
         progressPaint.setStrokeWidth(progressWidth);
         progressPaint.setColor(Color.GREEN);
 
-//内容显示文字
+        //内容显示文字
         vTextPaint = new Paint();
         vTextPaint.setTextSize(textSize);
-        vTextPaint.setColor(Color.parseColor(contentColor));
+        vTextPaint.setColor(Color.BLACK);
         vTextPaint.setTextAlign(Paint.Align.CENTER);
 
-//显示单位文字
+        //显示单位文字
         hintPaint = new Paint();
         hintPaint.setTextSize(hintSize);
         hintPaint.setColor(Color.parseColor(hintColor));
         hintPaint.setTextAlign(Paint.Align.CENTER);
 
-//显示标题文字
+        //显示标题文字
         curSpeedPaint = new Paint();
         curSpeedPaint.setTextSize(curSpeedSize);
         curSpeedPaint.setColor(Color.parseColor(hintColor));
@@ -194,11 +190,11 @@ public class ColorArcProgressBar extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-//抗锯齿
+        //抗锯齿
         canvas.setDrawFilter(mDrawFilter);
 
         if (isNeedDial) {
-//画刻度线
+            //画刻度线
             for (int i = 0; i < 40; i++) {
                 if (i > 15 && i < 25) {
                     canvas.rotate(9, centerX, centerY);
@@ -220,15 +216,15 @@ public class ColorArcProgressBar extends View {
             }
         }
 
-//整个弧
+        //整个弧
         canvas.drawArc(bgRect, startAngle, sweepAngle, false, allArcPaint);
 
-//设置渐变色
+        //设置渐变色
         rotateMatrix.setRotate(130, centerX, centerY);
         sweepGradient.setLocalMatrix(rotateMatrix);
         progressPaint.setShader(sweepGradient);
 
-//当前进度
+        //当前进度
         canvas.drawArc(bgRect, startAngle, currentAngle, false, progressPaint);
 
         if (isNeedContent) {
@@ -332,8 +328,9 @@ public class ColorArcProgressBar extends View {
      *
      * @param title
      */
-    private void setTitle(String title) {
+    public void setTitle(String title) {
         this.titleString = title;
+        invalidate();
     }
 
     /**
@@ -341,8 +338,9 @@ public class ColorArcProgressBar extends View {
      *
      * @param isNeedTitle
      */
-    private void setIsNeedTitle(boolean isNeedTitle) {
+    public void setIsNeedTitle(boolean isNeedTitle) {
         this.isNeedTitle = isNeedTitle;
+        invalidate();
     }
 
     /**
@@ -350,8 +348,9 @@ public class ColorArcProgressBar extends View {
      *
      * @param isNeedUnit
      */
-    private void setIsNeedUnit(boolean isNeedUnit) {
+    public void setIsNeedUnit(boolean isNeedUnit) {
         this.isNeedUnit = isNeedUnit;
+        invalidate();
     }
 
     /**
@@ -359,8 +358,9 @@ public class ColorArcProgressBar extends View {
      *
      * @param isNeedDial
      */
-    private void setIsNeedDial(boolean isNeedDial) {
+    public void setIsNeedDial(boolean isNeedDial) {
         this.isNeedDial = isNeedDial;
+        invalidate();
     }
 
     /**
@@ -377,7 +377,7 @@ public class ColorArcProgressBar extends View {
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                currentAngle = (Float) animation.getAnimatedValue();
+                currentAngle = (float) animation.getAnimatedValue();
                 curValues = currentAngle / k;
             }
         });
