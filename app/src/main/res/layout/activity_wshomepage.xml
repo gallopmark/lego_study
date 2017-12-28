@@ -45,7 +45,9 @@
                     <FrameLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
 
                         <com.haoyu.app.view.ColorArcProgressBar
                             android:id="@+id/capBar1"
@@ -73,6 +75,18 @@
                             android:textColor="@color/white"
                             android:textSize="@dimen/font_size_20"
                             android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tv_state"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="right"
+                            android:layout_marginTop="@dimen/margin_size_8"
+                            android:background="@drawable/progress_state"
+                            android:gravity="center"
+                            android:textColor="@color/defaultColor"
+                            android:textSize="@dimen/font_size_16"
+                            android:visibility="gone" />
                     </FrameLayout>
 
                     <FrameLayout

@@ -104,6 +104,8 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
     ColorArcProgressBar capBar1;
     @BindView(R.id.capBar2)
     ColorArcProgressBar capBar2;
+    @BindView(R.id.tv_state)
+    TextView tv_state;
     @BindView(R.id.tv_day)
     TextView tv_day;
     @BindView(R.id.tv_score)
@@ -125,7 +127,7 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
     private String workshopId, role;
     private boolean canEdit;
     private int activityIndex;
-    private final int REQUEST_STAGE = 1, REQUEST_ACTIVITY = 2;
+    private final int REQUEST_ACTIVITY = 1;
     private OnActivityTouchListener touchListener;
 
     @Override
@@ -225,24 +227,29 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
     }
 
     private void updateUI(WorkShopMobileEntity mWorkshop, WorkShopMobileUser mWorkshopUser) {
-        if (mWorkshop != null && mWorkshop.getmTimePeriod() != null && mWorkshop.getmTimePeriod().getMinutes() > 0) {
+        if (mWorkshop != null && mWorkshop.getmTimePeriod() != null) {
             TimePeriod timePeriod = mWorkshop.getmTimePeriod();
-            tv_day.setVisibility(View.VISIBLE);
             int remainDay = (int) (timePeriod.getMinutes() / 60 / 24);
             long startTime = timePeriod.getStartTime();
             long endTime = timePeriod.getEndTime();
             int allDay = getAllDay(startTime, endTime);
             int expandDay = allDay - remainDay;
-            tv_day.setText(String.valueOf(expandDay));
             setTimePeriod(expandDay, allDay);
+            if (timePeriod.getMinutes() > 0) {
+                tv_state.setVisibility(View.GONE);
+            } else {
+                tv_state.setVisibility(View.VISIBLE);
+                if (TextUtils.isEmpty(timePeriod.getState())) {
+                    tv_state.setText("已结束");
+                } else {
+                    tv_state.setText(timePeriod.getState());
+                }
+            }
         } else {
             tv_day.setTextSize(14);
-            if (mWorkshop.getmTimePeriod() != null && mWorkshop.getmTimePeriod().getState() != null) {
-                tv_day.setText("工作坊研修\n" + mWorkshop.getmTimePeriod().getState());
-            } else {
-                tv_day.setTextSize(14);
-                tv_day.setText("工作坊研修\n已结束");
-            }
+            tv_day.setText("工作坊研修\n进行中");
+            capBar1.setMaxValues(100);
+            capBar1.setCurrentValues(0);
         }
         int qualityPoint = 0, point = 0;
         if (mWorkshop != null) {
