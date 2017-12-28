@@ -80,8 +80,8 @@
                 android:layout_centerInParent="true"
                 app:CircleColor="@color/spaceColor"
                 app:CircleProgressColor="@color/defaultColor"
-                app:CircleWidth="@dimen/margin_size_3"
-                app:paintWidth="@dimen/margin_size_3" />
+                app:CircleArcWidth="@dimen/margin_size_3"
+                app:CircleProgressWidth="@dimen/margin_size_3" />
 
             <ImageView
                 android:id="@+id/iv_state"

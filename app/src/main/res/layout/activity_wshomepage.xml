@@ -61,7 +61,7 @@
                             app:front_color2="@color/course_progress"
                             app:front_color3="@color/course_progress"
                             app:front_width="@dimen/margin_size_8"
-                            app:total_engle="360" />
+                            app:total_angle="360" />
 
                         <TextView
                             android:id="@+id/tv_day"
@@ -106,7 +106,7 @@
                             app:is_need_content="false"
                             app:is_need_title="false"
                             app:is_need_unit="false"
-                            app:total_engle="360" />
+                            app:total_angle="360" />
 
                         <TextView
                             android:id="@+id/tv_score"

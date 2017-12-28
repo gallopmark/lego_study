@@ -55,7 +55,7 @@
                     app:is_need_title="false"
                     app:is_need_unit="false"
                     app:max_value="150"
-                    app:total_engle="360" />
+                    app:total_angle="360" />
 
                 <RelativeLayout
                     android:id="@+id/relativeLayout"
