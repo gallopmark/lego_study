@@ -167,7 +167,7 @@ public class PageNoticeQuestionFragment extends BaseFragment implements XRecycle
                 Intent intent = new Intent();
                 intent.setClass(context, AppQuestionEditActivity.class);
                 intent.putExtra("isAnswer", true);
-                intent.putExtra("questionId", entity.getId());
+                intent.putExtra("entity", entity);
                 startActivity(intent);
             }
         });
