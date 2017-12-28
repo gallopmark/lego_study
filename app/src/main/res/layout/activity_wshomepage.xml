@@ -40,84 +40,72 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:background="@color/defaultColor"
-                    android:orientation="horizontal">
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/margin_size_20"
+                    android:paddingTop="@dimen/margin_size_20">
 
-                    <FrameLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_weight="1"
-                        android:orientation="horizontal">
+                    <RelativeLayout
+                        android:id="@+id/rl_cpb1"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp">
 
-                        <com.haoyu.app.view.ColorArcProgressBar
-                            android:id="@+id/capBar1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            app:backArcColor="@color/pressedColor"
-                            app:back_width="@dimen/margin_size_4"
-                            app:diameter="110dp"
-                            app:front_color1="@color/course_progress"
-                            app:front_color2="@color/course_progress"
-                            app:front_color3="@color/course_progress"
-                            app:front_width="@dimen/margin_size_8"
-                            app:total_angle="360" />
+                        <com.haoyu.app.view.CircleProgressBar
+                            android:id="@+id/cpb1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:CircleArcWidth="@dimen/margin_size_4"
+                            app:CircleColor="@color/pressedColor"
+                            app:CircleProgressColor="@color/course_progress"
+                            app:CircleProgressWidth="@dimen/margin_size_8" />
 
                         <TextView
                             android:id="@+id/tv_day"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
+                            android:layout_centerInParent="true"
                             android:gravity="center"
                             android:textColor="@color/white"
                             android:textSize="@dimen/font_size_20"
                             android:textStyle="bold" />
+                    </RelativeLayout>
 
-                        <TextView
-                            android:id="@+id/tv_state"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
-                            android:layout_marginTop="@dimen/margin_size_8"
-                            android:background="@drawable/progress_state"
-                            android:gravity="center"
-                            android:textColor="@color/defaultColor"
-                            android:textSize="@dimen/font_size_16"
-                            android:visibility="gone" />
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/tv_state"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1">
+                        android:layout_gravity="top"
+                        android:background="@drawable/progress_state"
+                        android:gravity="center"
+                        android:textColor="@color/defaultColor"
+                        android:textSize="@dimen/font_size_16"
+                        android:visibility="invisible" />
 
-                        <com.haoyu.app.view.ColorArcProgressBar
-                            android:id="@+id/capBar2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            app:backArcColor="@color/pressedColor"
-                            app:back_width="@dimen/margin_size_4"
-                            app:diameter="110dp"
-                            app:front_color1="@color/course_progress"
-                            app:front_color2="@color/course_progress"
-                            app:front_color3="@color/course_progress"
-                            app:front_width="@dimen/margin_size_8"
-                            app:is_need_content="false"
-                            app:is_need_title="false"
-                            app:is_need_unit="false"
-                            app:total_angle="360" />
+                    <RelativeLayout
+                        android:id="@+id/rl_cpb2"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginLeft="@dimen/margin_size_20">
+
+                        <com.haoyu.app.view.CircleProgressBar
+                            android:id="@+id/cpb2"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:CircleArcWidth="@dimen/margin_size_4"
+                            app:CircleColor="@color/pressedColor"
+                            app:CircleProgressColor="@color/course_progress"
+                            app:CircleProgressWidth="@dimen/margin_size_8" />
 
                         <TextView
                             android:id="@+id/tv_score"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
+                            android:layout_centerInParent="true"
                             android:gravity="center"
                             android:textColor="@color/white"
                             android:textSize="@dimen/font_size_20"
                             android:textStyle="bold" />
-                    </FrameLayout>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout

@@ -23,6 +23,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -60,7 +61,7 @@ import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.utils.TimeUtil;
 import com.haoyu.app.view.AppToolBar;
-import com.haoyu.app.view.ColorArcProgressBar;
+import com.haoyu.app.view.CircleProgressBar;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
 import com.haoyu.app.view.StickyScrollView;
@@ -100,10 +101,14 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
     TextView tv_empty;
     @BindView(R.id.ssv_content)
     StickyScrollView ssv_content;
-    @BindView(R.id.capBar1)
-    ColorArcProgressBar capBar1;
-    @BindView(R.id.capBar2)
-    ColorArcProgressBar capBar2;
+    @BindView(R.id.rl_cpb1)
+    RelativeLayout rl_cpb1;
+    @BindView(R.id.rl_cpb2)
+    RelativeLayout rl_cpb2;
+    @BindView(R.id.cpb1)
+    CircleProgressBar cpb1;
+    @BindView(R.id.cpb2)
+    CircleProgressBar cpb2;
     @BindView(R.id.tv_state)
     TextView tv_state;
     @BindView(R.id.tv_day)
@@ -143,12 +148,28 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
         workshopId = getIntent().getStringExtra("workshopId");
         String workshopTitle = getIntent().getStringExtra("workshopTitle");
         toolBar.setTitle_text(workshopTitle);
+        setProgressLayout();
         ((SimpleItemAnimator) recyclerView.getItemAnimator()).setSupportsChangeAnimations(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);
         taskAdapter = new WSTaskAdapter(context, mDatas);
         taskEditAdapter = new WSTaskEditAdapter(context, mDatas);
+    }
+
+    private void setProgressLayout() {
+        int width = ScreenUtils.getScreenWidth(context) / 3;
+        LinearLayout.LayoutParams cpb1Params = (LinearLayout.LayoutParams) rl_cpb1.getLayoutParams();
+        cpb1Params.width = width;
+        cpb1Params.height = width;
+        rl_cpb1.setLayoutParams(cpb1Params);
+        LinearLayout.LayoutParams cpb2Params = (LinearLayout.LayoutParams) rl_cpb2.getLayoutParams();
+        cpb2Params.width = width;
+        cpb2Params.height = width;
+        rl_cpb2.setLayoutParams(cpb2Params);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) tv_state.getLayoutParams();
+        params.leftMargin = -width / 8;
+        tv_state.setLayoutParams(params);
     }
 
     private void setToolBar() {
@@ -236,7 +257,7 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
             int expandDay = allDay - remainDay;
             setTimePeriod(expandDay, allDay);
             if (timePeriod.getMinutes() > 0) {
-                tv_state.setVisibility(View.GONE);
+                tv_state.setVisibility(View.INVISIBLE);
             } else {
                 tv_state.setVisibility(View.VISIBLE);
                 if (TextUtils.isEmpty(timePeriod.getState())) {
@@ -246,10 +267,11 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
                 }
             }
         } else {
+            tv_state.setVisibility(View.INVISIBLE);
             tv_day.setTextSize(14);
             tv_day.setText("工作坊研修\n进行中");
-            capBar1.setMaxValues(100);
-            capBar1.setCurrentValues(0);
+            cpb1.setMaxProgress(100);
+            cpb1.setProgress(0);
         }
         int qualityPoint = 0, point = 0;
         if (mWorkshop != null) {
@@ -262,8 +284,8 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
     }
 
     private void setTimePeriod(int expandDay, int allDay) {
-        capBar1.setMaxValues(allDay);
-        capBar1.setCurrentValues(expandDay);
+        cpb1.setMaxProgress(allDay);
+        cpb1.setProgress(expandDay, true);
         String text = expandDay + "\n已开展\n共" + allDay + "天";
         SpannableString ssb = new SpannableString(text);
         int start = 0;
@@ -281,8 +303,8 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
     }
 
     private void setPoint(int point, int qualityPoint) {
-        capBar2.setMaxValues(qualityPoint);
-        capBar2.setCurrentValues(point);
+        cpb2.setMaxProgress(qualityPoint);
+        cpb2.setProgress(point, true);
         String text = point + "\n研修积分\n（达标积分" + qualityPoint + "）";
         SpannableString ssb = new SpannableString(text);
         int start = 0;

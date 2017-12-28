@@ -226,6 +226,12 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
                 finish();
             }
         });
+        loadFailView.setOnRetryListener(new LoadFailView.OnRetryListener() {
+            @Override
+            public void onRetry(View v) {
+                initData();
+            }
+        });
         commentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
