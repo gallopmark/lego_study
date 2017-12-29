@@ -2,6 +2,8 @@ package com.haoyu.app.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -18,6 +20,7 @@ import com.haoyu.app.utils.Common;
 import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.FileCacheUtils;
 import com.haoyu.app.utils.OkHttpClientManager;
+import com.haoyu.app.utils.PixelFormat;
 import com.haoyu.app.utils.SharePreferenceHelper;
 import com.haoyu.app.view.AppToolBar;
 
@@ -53,14 +56,19 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     TextView tv_cacheDownloadSize;  //离线文件大小
     @BindView(R.id.tv_feedback)
     TextView tv_feedback; // 意见反馈
-    @BindView(R.id.tv_version)
-    TextView tv_version;//版本检测
+    @BindView(R.id.ll_version)
+    LinearLayout ll_version;//版本检测
+    @BindView(R.id.ic_update)
+    AppCompatImageView ic_update;
+    @BindView(R.id.tv_versionTips)
+    TextView tv_versionTips;
     @BindView(R.id.tv_about_us)
     TextView tv_about_us; // 关于我们
     @BindView(R.id.bt_logout)
     Button bt_logout; // 退出登录
     private File fileCache, courseWare, videoCache, compressorCache;
     private long cacheSize, offLineSize;
+    private VersionEntity versionEntity;
 
     @Override
     public int setLayoutResID() {
@@ -89,6 +97,49 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
     }
 
     @Override
+    public void initData() {
+        addSubscription(OkHttpClientManager.getAsyn(context, Constants.updateUrl, new OkHttpClientManager.ResultCallback<VersionEntity>() {
+            @Override
+            public void onBefore(Request request) {
+                showTipDialog();
+            }
+
+            @Override
+            public void onError(Request request, Exception e) {
+                hideTipDialog();
+                onNetWorkError(context);
+            }
+
+            @Override
+            public void onResponse(VersionEntity entity) {
+                hideTipDialog();
+                versionEntity = entity;
+                if (versionEntity.getVersionCode() > Common.getVersionCode(context)) {
+                    setVersionTips(true);
+                } else {
+                    setVersionTips(false);
+                }
+            }
+        }));
+    }
+
+    private void setVersionTips(boolean newVersion) {
+        if (newVersion) {
+            ll_version.setEnabled(true);
+            ic_update.setVisibility(View.VISIBLE);
+            tv_versionTips.setTextColor(ContextCompat.getColor(context, R.color.defaultColor));
+            tv_versionTips.setText("新版本" + versionEntity.getVersionName());
+            int drawablePadding = PixelFormat.dp2px(context, 12);
+            tv_versionTips.setCompoundDrawablePadding(drawablePadding);
+        } else {
+            ll_version.setEnabled(false);
+            ic_update.setVisibility(View.GONE);
+            tv_versionTips.setText("已是最新版本");
+            tv_versionTips.setCompoundDrawables(null, null, null, null);
+        }
+    }
+
+    @Override
     public void setListener() {
         toolBar.setOnLeftClickListener(new AppToolBar.OnLeftClickListener() {
             @Override
@@ -101,7 +152,7 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         tv_feedback.setOnClickListener(context);
         tv_about_us.setOnClickListener(context);
         bt_logout.setOnClickListener(context);
-        tv_version.setOnClickListener(context);
+        ll_version.setOnClickListener(context);
     }
 
     @Override
@@ -133,8 +184,12 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
                 helper.saveSharePreference(map);
                 startActivity(new Intent(context, LoginActivity.class));
                 break;
-            case R.id.tv_version:
-                getVersion();
+            case R.id.ll_version:
+                if (versionEntity == null) {
+                    initData();
+                } else {
+                    updateTips(versionEntity);
+                }
                 break;
         }
     }
@@ -216,24 +271,6 @@ public class SettingActivity extends BaseActivity implements OnClickListener {
         });
         dialog.setNegativeButton("取消", null);
         dialog.show();
-    }
-
-    private void getVersion() {
-        addSubscription(OkHttpClientManager.getAsyn(context, Constants.updateUrl, new OkHttpClientManager.ResultCallback<VersionEntity>() {
-            @Override
-            public void onError(Request request, Exception e) {
-
-            }
-
-            @Override
-            public void onResponse(VersionEntity entity) {
-                if (entity.getVersionCode() > Common.getVersionCode(context)) {
-                    updateTips(entity);
-                } else {
-                    toast(context, "已经是最新版本啦");
-                }
-            }
-        }));
     }
 
     private void updateTips(final VersionEntity entity) {

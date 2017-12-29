@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background"
+    android:background="@color/spaceColor"
     android:orientation="vertical">
 
     <com.haoyu.app.view.AppToolBar
@@ -51,15 +51,11 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_size_1"
-        android:background="@color/spaceColor" />
-
     <LinearLayout
         android:id="@+id/ll_clear_the_download"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_size_1"
         android:background="@drawable/item_click_selector"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/margin_size_14"
@@ -91,16 +87,12 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_size_1"
-        android:background="@color/spaceColor" />
-
     <TextView
         android:id="@+id/tv_feedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_size_1"
         android:background="@drawable/item_click_selector"
         android:drawableLeft="@drawable/feedback"
         android:drawablePadding="@dimen/margin_size_12"
@@ -113,37 +105,60 @@
         android:textColor="@color/blow_gray"
         android:textSize="@dimen/font_size_18" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_size_1"
-        android:background="@color/spaceColor" />
-
-    <TextView
-        android:id="@+id/tv_version"
+    <LinearLayout
+        android:id="@+id/ll_version"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_size_1"
         android:background="@drawable/item_click_selector"
-        android:drawableLeft="@drawable/version_download"
-        android:drawablePadding="@dimen/margin_size_12"
-        android:drawableRight="@drawable/go_into"
-        android:paddingBottom="@dimen/margin_size_14"
+        android:orientation="horizontal"
         android:paddingLeft="@dimen/margin_size_16"
-        android:paddingRight="@dimen/margin_size_16"
-        android:paddingTop="@dimen/margin_size_14"
-        android:text="版本检测"
-        android:textColor="@color/blow_gray"
-        android:textSize="@dimen/font_size_18" />
+        android:paddingRight="@dimen/margin_size_16">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_size_1"
-        android:background="@color/spaceColor" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawableLeft="@drawable/version_download"
+            android:drawablePadding="@dimen/margin_size_12"
+            android:paddingBottom="@dimen/margin_size_14"
+            android:paddingTop="@dimen/margin_size_14"
+            android:text="检测版本"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_18" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="right">
+
+            <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/ic_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                app:srcCompat="@drawable/ic_update_24dp" />
+
+            <TextView
+                android:id="@+id/tv_versionTips"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
+                android:drawableRight="@drawable/go_into"
+                android:gravity="center|right"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+    </LinearLayout>
+
     <TextView
         android:id="@+id/tv_about_us"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="@dimen/margin_size_1"
         android:background="@drawable/item_click_selector"
         android:drawableLeft="@drawable/about_us"
         android:drawablePadding="@dimen/margin_size_12"
