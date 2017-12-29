@@ -2,7 +2,9 @@ package com.haoyu.app.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.haoyu.app.base.BaseResponseResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,61 +12,31 @@ import java.util.List;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class CommentListResult {
-    @Expose
-    @SerializedName("responseCode")
-    private String responseCode;
-    @Expose
-    @SerializedName("responseData")
-    private CommnetListData responseData;
-    @Expose
-    @SerializedName("responseMsg")
-    private String responseMsg;
-    @Expose
-    @SerializedName("success")
-    private Boolean success;
+public class CommentListResult extends BaseResponseResult<CommentListResult.MData> {
 
-    public String getResponseCode() {
-        return responseCode;
-    }
-
-    public void setResponseCode(String responseCode) {
-        this.responseCode = responseCode;
-    }
-
-    public CommnetListData getResponseData() {
-        return responseData;
-    }
-
-    public void setResponseData(CommnetListData responseData) {
-        this.responseData = responseData;
-    }
-
-    public String getResponseMsg() {
-        return responseMsg;
-    }
-
-    public void setResponseMsg(String responseMsg) {
-        this.responseMsg = responseMsg;
-    }
-
-    public Boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-    public class CommnetListData{
+    public class MData {
         @Expose
         @SerializedName("mComments")
         private List<CommentEntity> mComments;
         @Expose
         @SerializedName("paginator")
         private Paginator paginator;
+        @Expose
+        @SerializedName("id")
+        private String id;
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
 
         public List<CommentEntity> getmComments() {
+            if (mComments == null) {
+                return new ArrayList<>();
+            }
             return mComments;
         }
 

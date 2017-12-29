@@ -15,7 +15,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/margin_size_12"
         android:paddingTop="@dimen/margin_size_12">
@@ -139,38 +140,32 @@
                         android:textSize="@dimen/font_size_16" />
                 </LinearLayout>
             </LinearLayout>
+
+            <com.haoyu.app.xrecyclerview.XRecyclerView
+                android:id="@+id/xRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_size_10"
+                android:background="@drawable/comment_reply"
+                android:overScrollMode="never"
+                android:paddingBottom="@dimen/margin_size_10"
+                android:paddingLeft="@dimen/margin_size_10"
+                android:paddingRight="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_14"
+                android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/rl_container"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <com.haoyu.app.xrecyclerview.XRecyclerView
-            android:id="@+id/xRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/comment_reply"
-            android:overScrollMode="never"
-            android:paddingBottom="@dimen/margin_size_10"
-            android:paddingLeft="@dimen/margin_size_10"
-            android:paddingRight="@dimen/margin_size_10"
-            android:paddingTop="@dimen/margin_size_14"
-            android:visibility="gone" />
-    </RelativeLayout>
 
     <TextView
         android:id="@+id/tv_comment"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_size_45"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="@dimen/margin_size_10"
         android:background="@drawable/edit_border_gray"
         android:gravity="center|left"
         android:hint="点击输入评论内容"
-        android:paddingLeft="@dimen/margin_size_10"
+        android:padding="@dimen/margin_size_10"
         android:textSize="@dimen/font_size_16"
         android:visibility="gone" />
 </LinearLayout>
