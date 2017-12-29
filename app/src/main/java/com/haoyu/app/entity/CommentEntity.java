@@ -88,12 +88,16 @@ public class CommentEntity implements Serializable {
     }
 
     public List<CommentEntity> getChildList() {
+        if (childList == null) {
+            return new ArrayList<>();
+        }
         return childList;
     }
 
     public void setChildList(List<CommentEntity> childList) {
         this.childList = childList;
     }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

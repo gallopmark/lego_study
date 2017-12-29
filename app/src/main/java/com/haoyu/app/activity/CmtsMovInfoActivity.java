@@ -448,8 +448,8 @@ public class CmtsMovInfoActivity extends BaseActivity implements View.OnClickLis
     /*通过主评论id获取子评论*/
     private CommentListResult getChildComment(CommentListResult result, List<CommentEntity> list) {
         for (int i = 0; i < list.size(); i++) {
-            String mainPostId = list.get(i).getId();
-            String url = mainUrl + "&mainPostId=" + mainPostId;
+            String mainId = list.get(i).getId();
+            String url = mainUrl + "&mainId=" + mainId;
             try {
                 CommentListResult mResult = getComment(url);
                 if (mResult != null && mResult.getResponseData() != null) {
