@@ -131,6 +131,8 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
         mainNum = getIntent().getIntExtra("mainNum", 0);
         subNum = getIntent().getIntExtra("subNum", 0);
         discussEntity = (AppActivityViewEntity.DiscussionUserMobileEntity) getIntent().getSerializableExtra("discussUser");
+        if (discussEntity != null && discussEntity.getmDiscussion() != null && discussEntity.getmDiscussion().getmDiscussionRelations().size() > 0)
+            discussionRelationId = discussEntity.getmDiscussion().getmDiscussionRelations().get(0).getId();
         if (discussType != null && discussType.equals("course")) {
             baseUrl = Constants.OUTRT_NET + "/" + activityId + "/study/m/discussion/post";
             postUrl = Constants.OUTRT_NET + "/" + activityId + "/unique_uid_" + getUserId() + "/m/discussion/post";
@@ -141,8 +143,6 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
         mainUrl = baseUrl + "?discussionUser.discussionRelation.id=" + discussionRelationId + "&orders=CREATE_TIME.ASC";
         setSupportToolbar();
         showTips();
-        if (discussEntity != null && discussEntity.getmDiscussion() != null && discussEntity.getmDiscussion().getmDiscussionRelations() != null && discussEntity.getmDiscussion().getmDiscussionRelations().size() > 0)
-            discussionRelationId = discussEntity.getmDiscussion().getmDiscussionRelations().get(0).getId();
         if (discussEntity != null && discussEntity.getmDiscussion() != null)
             showData(discussEntity.getmDiscussion());
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
