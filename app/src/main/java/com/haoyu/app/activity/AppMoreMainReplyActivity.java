@@ -70,7 +70,7 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_app_more_main_reply;
+        return R.layout.activity_appmainreply;
     }
 
     @Override

@@ -49,6 +49,6 @@ public class AppDiscussionReplyAdapter extends BaseArrayRecyclerAdapter<ReplyEnt
 
     @Override
     public int bindView(int viewtype) {
-        return R.layout.app_more_reply_item;
+        return R.layout.childreply_item;
     }
 }

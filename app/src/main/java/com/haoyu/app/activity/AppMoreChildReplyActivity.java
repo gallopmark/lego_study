@@ -59,6 +59,7 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
     private int page = 1;
     private String orders = "CREATE_TIME.ASC";
     private boolean canEdit, isLoadMore;
+    private int childPostNum;
 
     @Override
     public int setLayoutResID() {
@@ -67,6 +68,7 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
 
     @Override
     public void initView() {
+        toolBar.setTitle_text("评论详情");
         mainEntity = (ReplyEntity) getIntent().getSerializableExtra("entity");
         discussType = getIntent().getStringExtra("discussType");
         activityId = getIntent().getStringExtra("activityId");
@@ -95,8 +97,6 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
         xRecyclerView.setLoadingListener(context);
     }
 
-    private int childPostNum;
-
     private void showData() {
         ImageView ic_user = findViewById(R.id.ic_user);
         TextView tv_userName = findViewById(R.id.tv_userName);
@@ -115,7 +115,7 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
         if (mainEntity.getCreator() != null && mainEntity.getCreator().getRealName() != null) {
             tv_userName.setText(mainEntity.getCreator().getRealName());
         } else {
-            tv_userName.setText("匿名用户");
+            tv_userName.setText("");
         }
         if (mainEntity.getCreator() != null && mainEntity.getCreator().getId() != null
                 && mainEntity.getCreator().getId().equals(getUserId())) {
@@ -127,7 +127,7 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
         tv_createDate.setText(TimeUtil.converTime(mainEntity.getCreateTime()));
         tv_like.setText(String.valueOf(mainEntity.getSupportNum()));
         childPostNum = mainEntity.getChildPostCount();
-        tv_count.setText(String.valueOf(mainEntity.getChildPostCount()));
+        showCount();
         ll_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,6 +152,10 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
                     showMaterialDialog("提示", "活动已结束，无法参与研讨");
             }
         });
+    }
+
+    private void showCount() {
+        tv_count.setText(String.valueOf(childPostNum));
     }
 
     private void deletePost() {
@@ -241,6 +245,12 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
             @Override
             public void onError(Request request, Exception e) {
                 hideTipDialog();
+                if (isLoadMore) {
+                    page -= 1;
+                    xRecyclerView.loadMoreComplete(false);
+                } else {
+                    onNetWorkError(context);
+                }
             }
 
             @Override
@@ -251,6 +261,10 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
                 }
                 if (response != null && response.getResponseData() != null) {
                     updateUI(response.getResponseData().getmDiscussionPosts(), response.getResponseData().getPaginator());
+                } else {
+                    if (isLoadMore) {
+                        xRecyclerView.loadMoreComplete(true);
+                    }
                 }
             }
         }));
@@ -332,10 +346,13 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
                             entity.getCreator().setRealName(getRealName());
                     }
                     childPostNum++;
-                    tv_count.setText(String.valueOf(childPostNum));
-                    mDatas.add(entity);
-                    adapter.notifyDataSetChanged();
-                    toastFullScreen("回复成功", true);
+                    showCount();
+                    if (!xRecyclerView.isLoadingMoreEnabled()) {
+                        mDatas.add(entity);
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        toastFullScreen("回复成功", true);
+                    }
                     MessageEvent event = new MessageEvent();
                     event.action = Action.CREATE_CHILD_REPLY;
                     event.obj = entity;
