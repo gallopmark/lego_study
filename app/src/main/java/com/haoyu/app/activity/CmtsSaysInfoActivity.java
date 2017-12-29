@@ -727,7 +727,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
      * 删除研说
      */
     private void deleteSay() {
-        String url = Constants.OUTRT_NET + "/m/discussion/cmts/" + relationId;
+        String url = Constants.OUTRT_NET + "/m/discussion/cmts/" + discussionId;
         Map<String, String> map = new HashMap<>();
         map.put("_method", "delete");
         addSubscription(OkHttpClientManager.postAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {

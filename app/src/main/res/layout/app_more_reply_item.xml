@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tv_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/tv_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:lineSpacingExtra="1.5dp"
-        android:textSize="@dimen/font_size_16" />
-</LinearLayout>
+    android:lineSpacingExtra="1.5dp"
+    android:paddingBottom="@dimen/margin_size_2"
+    android:paddingTop="@dimen/margin_size_2"
+    android:textSize="@dimen/font_size_16" />

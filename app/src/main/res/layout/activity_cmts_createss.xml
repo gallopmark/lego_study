@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         app:left_button_image="@drawable/app_back"
         app:right_button_text="发起"
+        app:show_right_button="true"
         app:title_text="@string/study_says" />
 
     <View

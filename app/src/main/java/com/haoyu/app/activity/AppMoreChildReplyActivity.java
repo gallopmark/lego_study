@@ -4,6 +4,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.adapter.AppDiscussionReplyAdapter;
@@ -45,22 +46,23 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
     private AppMoreChildReplyActivity context = this;
     @BindView(R.id.toolBar)
     AppToolBar toolBar;
-    private View headView;
+    @BindView(R.id.tv_count)
+    TextView tv_count;
     @BindView(R.id.xRecyclerView)
     XRecyclerView xRecyclerView;
-    @BindView(R.id.commentView)
-    View commentView;    //点评布局
-    private List<ReplyEntity> replyList = new ArrayList<>();
-    private AppDiscussionReplyAdapter replyAdapter;
+    @BindView(R.id.tv_comment)
+    TextView tv_comment;    //点评布局
+    private List<ReplyEntity> mDatas = new ArrayList<>();
+    private AppDiscussionReplyAdapter adapter;
     private ReplyEntity mainEntity;
     private String discussType, activityId, workshopId, relationId, mainId, baseUrl, postUrl;
     private int page = 1;
     private String orders = "CREATE_TIME.ASC";
-    private boolean canEdit, isRefresh, isLoadMore;
+    private boolean canEdit, isLoadMore;
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_app_more_child_reply;
+        return R.layout.activity_appchildreply;
     }
 
     @Override
@@ -83,31 +85,27 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
             canEdit = true;
             baseUrl = postUrl = Constants.OUTRT_NET + "/m/discussion/post";
         }
-        headView = getLayoutInflater().inflate(R.layout.dis_reply_list_item, null);
-        showData(headView);
-        xRecyclerView.addHeaderView(headView);
+        showData();
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         xRecyclerView.setLayoutManager(layoutManager);
-        xRecyclerView.setArrowImageView(R.drawable.refresh_arrow);
-        replyAdapter = new AppDiscussionReplyAdapter(context, replyList);
-        xRecyclerView.setAdapter(replyAdapter);
+        adapter = new AppDiscussionReplyAdapter(context, mDatas);
+        xRecyclerView.setAdapter(adapter);
+        xRecyclerView.setPullRefreshEnabled(false);
         xRecyclerView.setLoadingListener(context);
     }
 
-    private TextView tv_comment;
     private int childPostNum;
 
-    private void showData(View headView) {
-        ImageView ic_user = getView(headView, R.id.ic_user);
-        TextView tv_userName = getView(headView, R.id.tv_userName);
-        TextView tv_content = getView(headView, R.id.tv_content);
-        TextView tv_createDate = getView(headView, R.id.tv_createDate);
-        View bodyDelete = getView(headView, R.id.bodyDelete);
-        View bodyLike = getView(headView, R.id.bodyLike);
-        final TextView tv_like = getView(headView, R.id.tv_like);
-        View bodyCommnet = getView(headView, R.id.bodyComment);
-        tv_comment = getView(headView, R.id.tv_comment);
+    private void showData() {
+        ImageView ic_user = findViewById(R.id.ic_user);
+        TextView tv_userName = findViewById(R.id.tv_userName);
+        TextView tv_content = findViewById(R.id.tv_content);
+        TextView tv_createDate = findViewById(R.id.tv_createDate);
+        LinearLayout ll_delete = findViewById(R.id.ll_delete);
+        LinearLayout ll_like = findViewById(R.id.ll_like);
+        final TextView tv_like = findViewById(R.id.tv_like);
+        LinearLayout ll_comment = findViewById(R.id.ll_comment);
         if (mainEntity.getCreator() != null && mainEntity.getCreator().getAvatar() != null) {
             GlideImgManager.loadCircleImage(context, mainEntity.getCreator().getAvatar(),
                     R.drawable.user_default, R.drawable.user_default, ic_user);
@@ -121,16 +119,16 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
         }
         if (mainEntity.getCreator() != null && mainEntity.getCreator().getId() != null
                 && mainEntity.getCreator().getId().equals(getUserId())) {
-            bodyDelete.setVisibility(View.VISIBLE);
+            ll_delete.setVisibility(View.VISIBLE);
         } else {
-            bodyDelete.setVisibility(View.GONE);
+            ll_delete.setVisibility(View.GONE);
         }
         tv_content.setText(mainEntity.getContent());
         tv_createDate.setText(TimeUtil.converTime(mainEntity.getCreateTime()));
         tv_like.setText(String.valueOf(mainEntity.getSupportNum()));
         childPostNum = mainEntity.getChildPostCount();
-        tv_comment.setText(String.valueOf(mainEntity.getChildPostCount()));
-        bodyDelete.setOnClickListener(new View.OnClickListener() {
+        tv_count.setText(String.valueOf(mainEntity.getChildPostCount()));
+        ll_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (canEdit)
@@ -139,13 +137,13 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
                     showMaterialDialog("提示", "活动已结束，无法参与研讨");
             }
         });
-        bodyLike.setOnClickListener(new View.OnClickListener() {
+        ll_like.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createLike(tv_like);
             }
         });
-        bodyCommnet.setOnClickListener(new View.OnClickListener() {
+        ll_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (canEdit)
@@ -235,7 +233,7 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
         addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<ReplyListResult>() {
             @Override
             public void onBefore(Request request) {
-                if (!isRefresh && !isLoadMore) {
+                if (!isLoadMore) {
                     showTipDialog();
                 }
             }
@@ -248,23 +246,25 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
             @Override
             public void onResponse(ReplyListResult response) {
                 hideTipDialog();
-                if (response != null && response.getResponseData() != null
-                        && response.getResponseData().getmDiscussionPosts() != null) {
+                if (tv_comment.getVisibility() != View.VISIBLE) {
+                    tv_comment.setVisibility(View.VISIBLE);
+                }
+                if (response != null && response.getResponseData() != null) {
                     updateUI(response.getResponseData().getmDiscussionPosts(), response.getResponseData().getPaginator());
                 }
             }
         }));
     }
 
-    private void updateUI(List<ReplyEntity> mDatas, Paginator paginator) {
-        if (isRefresh) {
-            replyList.clear();
-            xRecyclerView.refreshComplete(true);
-        } else if (isLoadMore) {
+    private void updateUI(List<ReplyEntity> list, Paginator paginator) {
+        if (xRecyclerView.getVisibility() != View.VISIBLE) {
+            xRecyclerView.setVisibility(View.VISIBLE);
+        }
+        if (isLoadMore) {
             xRecyclerView.loadMoreComplete(true);
         }
-        replyList.addAll(mDatas);
-        replyAdapter.notifyDataSetChanged();
+        this.mDatas.addAll(list);
+        adapter.notifyDataSetChanged();
         if (paginator != null && paginator.getHasNextPage()) {
             xRecyclerView.setLoadingMoreEnabled(true);
         } else {
@@ -280,7 +280,7 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
                 finish();
             }
         });
-        commentView.setOnClickListener(new View.OnClickListener() {
+        tv_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (canEdit)
@@ -332,9 +332,9 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
                             entity.getCreator().setRealName(getRealName());
                     }
                     childPostNum++;
-                    tv_comment.setText(String.valueOf(childPostNum));
-                    replyList.add(entity);
-                    replyAdapter.notifyDataSetChanged();
+                    tv_count.setText(String.valueOf(childPostNum));
+                    mDatas.add(entity);
+                    adapter.notifyDataSetChanged();
                     toastFullScreen("回复成功", true);
                     MessageEvent event = new MessageEvent();
                     event.action = Action.CREATE_CHILD_REPLY;
@@ -349,15 +349,10 @@ public class AppMoreChildReplyActivity extends BaseActivity implements XRecycler
 
     @Override
     public void onRefresh() {
-        isRefresh = true;
-        isLoadMore = false;
-        page = 1;
-        initData();
     }
 
     @Override
     public void onLoadMore() {
-        isRefresh = false;
         isLoadMore = true;
         page += 1;
         initData();
