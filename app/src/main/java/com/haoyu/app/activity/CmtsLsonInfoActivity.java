@@ -168,6 +168,7 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
     private List<ReplyEntity> adviseList = new ArrayList<>();
     private AppDiscussionAdapter adviseAdapter;
     private int childPosition, replyPosition;
+    private String replyUrl;
 
     @Override
     public int setLayoutResID() {
@@ -192,6 +193,7 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
         adviseAdapter = new AppDiscussionAdapter(context, adviseList, getUserId());
         rv_advise.setAdapter(adviseAdapter);
         registRxBus();
+        replyUrl = Constants.OUTRT_NET + "/m/discussion/post?discussionUser.discussionRelation.id=" + relationId + "&orders=CREATE_TIME.ASC";
     }
 
     private void setToolBar() {
@@ -528,17 +530,19 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void getAdvise() {
-        String url = Constants.OUTRT_NET + "/m/discussion/post?discussionUser.discussionRelation.id=" + relationId
-                + "&orders=CREATE_TIME.ASC" + "&limit=5";
+        String url = replyUrl + "&page=1" + "&limit=5";
         addSubscription(Flowable.just(url).map(new Function<String, ReplyListResult>() {
             @Override
             public ReplyListResult apply(String url) throws Exception {
-                return getMainReply(url);
+                return getReply(url);
             }
         }).map(new Function<ReplyListResult, ReplyListResult>() {
             @Override
             public ReplyListResult apply(ReplyListResult result) throws Exception {
-                return getChildReply(result);
+                if (result != null && result.getResponseData() != null && result.getResponseData().getmDiscussionPosts().size() > 0) {
+                    return getChildReply(result, result.getResponseData().getmDiscussionPosts());
+                }
+                return result;
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ReplyListResult>() {
@@ -559,28 +563,25 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
     }
 
     /*获取主回复*/
-    private ReplyListResult getMainReply(String url) throws Exception {
-        String listStr = OkHttpClientManager.getAsString(context, url);
+    private ReplyListResult getReply(String url) throws Exception {
+        String json = OkHttpClientManager.getAsString(context, url);
         Gson gson = new GsonBuilder().create();
-        return gson.fromJson(listStr, ReplyListResult.class);
+        return gson.fromJson(json, ReplyListResult.class);
     }
 
     /*通过主回复id获取子回复*/
-    private ReplyListResult getChildReply(ReplyListResult result) {
-        if (result != null && result.getResponseData() !=
-                null && result.getResponseData().getmDiscussionPosts() != null) {
-            for (int i = 0; i < result.getResponseData().getmDiscussionPosts().size(); i++) {
-                String mainPostId = result.getResponseData().getmDiscussionPosts().get(i).getId();
-                String url = Constants.OUTRT_NET + "/m/discussion/post?discussionUser.discussionRelation.id=" + relationId + "&mainPostId=" + mainPostId
-                        + "&orders=CREATE_TIME.ASC";
-                try {
-                    ReplyListResult mResult = getMainReply(url);
-                    if (mResult.getResponseData() != null) {
-                        result.getResponseData().getmDiscussionPosts().get(i).setChildReplyEntityList(mResult.getResponseData().getmDiscussionPosts());
-                    }
-                } catch (Exception e) {
-                    continue;
+    private ReplyListResult getChildReply(ReplyListResult result, List<ReplyEntity> list) {
+        for (int i = 0; i < list.size(); i++) {
+            String mainPostId = list.get(i).getId();
+            String url = replyUrl + "&mainPostId=" + mainPostId;
+            try {
+                ReplyListResult mResult = getReply(url);
+                if (mResult != null && mResult.getResponseData() != null) {
+                    List<ReplyEntity> childList = mResult.getResponseData().getmDiscussionPosts();
+                    result.getResponseData().getmDiscussionPosts().get(i).setChildReplyEntityList(childList);
                 }
+            } catch (Exception e) {
+                continue;
             }
         }
         return result;

@@ -40,7 +40,7 @@
             android:visibility="gone" />
 
         <TextView
-            android:id="@+id/commentView"
+            android:id="@+id/tv_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

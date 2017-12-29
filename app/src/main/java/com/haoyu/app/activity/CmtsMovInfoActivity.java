@@ -147,9 +147,9 @@ public class CmtsMovInfoActivity extends BaseActivity implements View.OnClickLis
     private String movementId;
     private int viewNum, participateNum, limit;  //活动参与数,限额数
     private int replyPosition, childPosition;
-    private int page = 1;
     private boolean register;
     private String registerId;
+    private String mainUrl;
 
     @Override
     public int setLayoutResID() {
@@ -178,6 +178,7 @@ public class CmtsMovInfoActivity extends BaseActivity implements View.OnClickLis
         commentRV.setLayoutManager(manager);
         commentRV.setAdapter(commentAdapter);
         registRxBus();
+        mainUrl = Constants.OUTRT_NET + "/m/comment?relation.id=" + movementId + "&relation.type=movement&orders=CREATE_TIME.DESC";
     }
 
     public void initData() {
@@ -408,54 +409,58 @@ public class CmtsMovInfoActivity extends BaseActivity implements View.OnClickLis
 
     private void getComment() {
         tv_more_reply.setVisibility(View.GONE);
-        String url = Constants.OUTRT_NET + "/m/comment?relation.id=" + movementId
-                + "&relation.type=movement&page=" + page + "&limit=5" + "&orders=CREATE_TIME.DESC";
+        String url = mainUrl + "&limit=5";
         addSubscription(Flowable.just(url).map(new Function<String, CommentListResult>() {
             @Override
             public CommentListResult apply(String url) throws Exception {
-                return get(url);
+                return getComment(url);
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<CommentListResult>() {
-                    @Override
-                    public void accept(CommentListResult commentListResult) throws Exception {
-                        if (commentListResult != null && commentListResult.getResponseData() != null &&
-                                commentListResult.getResponseData().getmComments() != null) {
-                            updateListUI(commentListResult.getResponseData().getmComments(), commentListResult.getResponseData().getPaginator());
-                        }
-                    }
-                }, new Consumer<Throwable>() {
-                    @Override
-                    public void accept(Throwable throwable) throws Exception {
-                        loadFailView.setVisibility(View.VISIBLE);
-                    }
-                }));
-    }
-
-    private CommentListResult get(String url) throws Exception {
-        Gson gson = new GsonBuilder().create();
-        String listStr = OkHttpClientManager.getAsString(context, url);
-        CommentListResult commentListResult = gson.fromJson(listStr, CommentListResult.class);
-        if (commentListResult != null && commentListResult.getResponseData() != null &&
-                commentListResult.getResponseData().getmComments() != null
-                && commentListResult.getResponseData().getmComments().size() > 0) {
-            for (int i = 0; i < commentListResult.getResponseData().getmComments().size(); i++) {
-                String mainPostId = commentListResult.getResponseData().getmComments().get(i).getId();
-                url = Constants.OUTRT_NET + "/m/comment?relation.id=" + movementId + "&relation.type=movement"
-                        + "&mainId=" + mainPostId + "&orders=CREATE_TIME.ASC";
-                try {
-                    String Jsonarr = OkHttpClientManager.getAsString(context, url);
-                    CommentListResult childReplyListResult = gson.fromJson(Jsonarr, CommentListResult.class);
-                    if (childReplyListResult.getResponseData() != null) {
-                        commentListResult.getResponseData().getmComments().get(i).
-                                setChildList(childReplyListResult.getResponseData().getmComments());
-                    }
-                } catch (Exception e) {
-                    continue;
+        }).map(new Function<CommentListResult, CommentListResult>() {
+            @Override
+            public CommentListResult apply(CommentListResult result) throws Exception {
+                if (result != null && result.getResponseData() != null && result.getResponseData().getmComments().size() > 0) {
+                    return getChildComment(result, result.getResponseData().getmComments());
+                }
+                return result;
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<CommentListResult>() {
+            @Override
+            public void accept(CommentListResult response) throws Exception {
+                if (response != null && response.getResponseData() != null) {
+                    updateListUI(response.getResponseData().getmComments(), response.getResponseData().getPaginator());
                 }
             }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                loadFailView.setVisibility(View.VISIBLE);
+            }
+        }));
+    }
+
+    /*获取主评论列表*/
+    private CommentListResult getComment(String url) throws Exception {
+        String json = OkHttpClientManager.getAsString(context, url);
+        Gson gson = new GsonBuilder().create();
+        return gson.fromJson(json, CommentListResult.class);
+    }
+
+    /*通过主评论id获取子评论*/
+    private CommentListResult getChildComment(CommentListResult result, List<CommentEntity> list) {
+        for (int i = 0; i < list.size(); i++) {
+            String mainPostId = list.get(i).getId();
+            String url = mainUrl + "&mainPostId=" + mainPostId;
+            try {
+                CommentListResult mResult = getComment(url);
+                if (mResult != null && mResult.getResponseData() != null) {
+                    List<CommentEntity> childList = mResult.getResponseData().getmComments();
+                    result.getResponseData().getmComments().get(i).setChildList(childList);
+                }
+            } catch (Exception e) {
+                continue;
+            }
         }
-        return commentListResult;
+        return result;
     }
 
     /*更新评论列表*/

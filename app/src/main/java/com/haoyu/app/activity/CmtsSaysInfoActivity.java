@@ -112,10 +112,10 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
     private AppDiscussionAdapter replyAdapter;
     @BindView(R.id.bottomView)
     TextView bottomView;  //底部评论布局
+    private String replyUrl;
     private DiscussEntity discussEntity;
     private String discussionId, relationId;  //研说id,研说关系Id
     private int supportNum, replyNum;  //点赞数,评论数
-    private int page = 1;
     private int childPosition, replyPosition;
 
     @Override
@@ -138,6 +138,7 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
         replyRV.setLayoutManager(layoutManager);
         replyRV.setAdapter(replyAdapter);
         registRxBus();
+        replyUrl = Constants.OUTRT_NET + "/m/discussion/post?discussionUser.discussionRelation.id=" + relationId + "&orders=CREATE_TIME.ASC";
     }
 
     public void initData() {
@@ -214,17 +215,19 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
 
     private void getReply() {
         tv_more_reply.setVisibility(View.GONE);
-        String url = Constants.OUTRT_NET + "/m/discussion/post?discussionUser.discussionRelation.id=" + relationId
-                + "&page=" + page + "&orders=CREATE_TIME.ASC" + "&limit=5";
+        String url = replyUrl + "&page=1" + "&limit=5";
         addSubscription(Flowable.just(url).map(new Function<String, ReplyListResult>() {
             @Override
             public ReplyListResult apply(String url) throws Exception {
-                return getMainReply(url);
+                return getReply(url);
             }
         }).map(new Function<ReplyListResult, ReplyListResult>() {
             @Override
             public ReplyListResult apply(ReplyListResult result) throws Exception {
-                return getChildReply(result);
+                if (result != null && result.getResponseData() != null && result.getResponseData().getmDiscussionPosts().size() > 0) {
+                    return getChildReply(result, result.getResponseData().getmDiscussionPosts());
+                }
+                return result;
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<ReplyListResult>() {
@@ -244,28 +247,25 @@ public class CmtsSaysInfoActivity extends BaseActivity implements View.OnClickLi
     }
 
     /*获取主回复*/
-    private ReplyListResult getMainReply(String url) throws Exception {
-        String listStr = OkHttpClientManager.getAsString(context, url);
+    private ReplyListResult getReply(String url) throws Exception {
+        String json = OkHttpClientManager.getAsString(context, url);
         Gson gson = new GsonBuilder().create();
-        return gson.fromJson(listStr, ReplyListResult.class);
+        return gson.fromJson(json, ReplyListResult.class);
     }
 
     /*通过主回复id获取子回复*/
-    private ReplyListResult getChildReply(ReplyListResult result) {
-        if (result != null && result.getResponseData() !=
-                null && result.getResponseData().getmDiscussionPosts() != null) {
-            for (int i = 0; i < result.getResponseData().getmDiscussionPosts().size(); i++) {
-                String mainPostId = result.getResponseData().getmDiscussionPosts().get(i).getId();
-                String url = Constants.OUTRT_NET + "/m/discussion/post?discussionUser.discussionRelation.id=" + relationId + "&mainPostId=" + mainPostId
-                        + "&orders=CREATE_TIME.ASC";
-                try {
-                    ReplyListResult mResult = getMainReply(url);
-                    if (mResult.getResponseData() != null) {
-                        result.getResponseData().getmDiscussionPosts().get(i).setChildReplyEntityList(mResult.getResponseData().getmDiscussionPosts());
-                    }
-                } catch (Exception e) {
-                    continue;
+    private ReplyListResult getChildReply(ReplyListResult result, List<ReplyEntity> list) {
+        for (int i = 0; i < list.size(); i++) {
+            String mainPostId = list.get(i).getId();
+            String url = replyUrl + "&mainPostId=" + mainPostId;
+            try {
+                ReplyListResult mResult = getReply(url);
+                if (mResult != null && mResult.getResponseData() != null) {
+                    List<ReplyEntity> childList = mResult.getResponseData().getmDiscussionPosts();
+                    result.getResponseData().getmDiscussionPosts().get(i).setChildReplyEntityList(childList);
                 }
+            } catch (Exception e) {
+                continue;
             }
         }
         return result;

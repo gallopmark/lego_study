@@ -61,9 +61,9 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
     LoadFailView loadFailView;
     @BindView(R.id.xRecyclerView)
     XRecyclerView xRecyclerView;
-    @BindView(R.id.commentView)
-    TextView commentView;    //点评布局
-    private String discussType, activityId, workshopId, relationId, baseUrl, postUrl;
+    @BindView(R.id.tv_comment)
+    TextView tv_comment;    //点评布局
+    private String discussType, activityId, workshopId, relationId, baseUrl, postUrl, mainUrl;
     private int page = 1;
     private String orders = "CREATE_TIME.ASC";
     private boolean canEdit, isRefresh, isLoadMore;
@@ -89,10 +89,10 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
         xRecyclerView.setLoadingListener(context);
         if (type.equals("comment")) {
             toolBar.setTitle_text("评论详情");
-            commentView.setHint("输入评论内容");
+            tv_comment.setHint("输入评论内容");
         } else if (type.equals("advise")) {
             toolBar.setTitle_text("所有建议");
-            commentView.setHint("提一些建议，帮助完善创课");
+            tv_comment.setHint("提一些建议，帮助完善创课");
         }
         if (discussType != null && discussType.equals("course")) {
             canEdit = getIntent().getBooleanExtra("canEdit", false);
@@ -106,6 +106,7 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
             canEdit = true;
             baseUrl = postUrl = Constants.OUTRT_NET + "/m/discussion/post";
         }
+        mainUrl = baseUrl + "?discussionUser.discussionRelation.id=" + relationId + "&orders=" + orders;
         registRxBus();
     }
 
@@ -114,7 +115,7 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
             loadingView.setVisibility(View.GONE);
         else
             loadingView.setVisibility(View.VISIBLE);
-        final String url = baseUrl + "?discussionUser.discussionRelation.id=" + relationId + "&page=" + page + "&orders=" + orders;
+        final String url = mainUrl + "&page=" + page;
         addSubscription(Flowable.just(url).map(new Function<String, ReplyListResult>() {
             @Override
             public ReplyListResult apply(String url) throws Exception {
@@ -124,7 +125,7 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
             @Override
             public ReplyListResult apply(ReplyListResult result) throws Exception {
                 if (result != null && result.getResponseData() != null && result.getResponseData().getmDiscussionPosts().size() > 0) {
-                    return getChildReply(url, result, result.getResponseData().getmDiscussionPosts());
+                    return getChildReply(result, result.getResponseData().getmDiscussionPosts());
                 }
                 return result;
             }
@@ -149,12 +150,12 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
     }
 
     /*通过主回复id获取子回复*/
-    private ReplyListResult getChildReply(String url, ReplyListResult result, List<ReplyEntity> list) {
+    private ReplyListResult getChildReply(ReplyListResult result, List<ReplyEntity> list) {
         for (int i = 0; i < list.size(); i++) {
             String mainPostId = list.get(i).getId();
-            String _url = url + "&mainPostId=" + mainPostId;
+            String url = mainUrl + "&mainPostId=" + mainPostId;
             try {
-                ReplyListResult mResult = getReply(_url);
+                ReplyListResult mResult = getReply(url);
                 if (mResult != null && mResult.getResponseData() != null) {
                     List<ReplyEntity> childList = mResult.getResponseData().getmDiscussionPosts();
                     result.getResponseData().getmDiscussionPosts().get(i).setChildReplyEntityList(childList);
@@ -171,11 +172,9 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
         loadingView.setVisibility(View.GONE);
         if (xRecyclerView.getVisibility() != View.VISIBLE)
             xRecyclerView.setVisibility(View.VISIBLE);
-        if (commentView.getVisibility() != View.VISIBLE)
-            commentView.setVisibility(View.VISIBLE);
-        if (response != null && response.getResponseData() != null
-                && response.getResponseData().getmDiscussionPosts() != null
-                && response.getResponseData().getmDiscussionPosts().size() > 0) {
+        if (tv_comment.getVisibility() != View.VISIBLE)
+            tv_comment.setVisibility(View.VISIBLE);
+        if (response != null && response.getResponseData() != null && response.getResponseData().getmDiscussionPosts().size() > 0) {
             updateUI(response.getResponseData().getmDiscussionPosts(), response.getResponseData().getPaginator());
         } else {
             xRecyclerView.setLoadingMoreEnabled(false);
@@ -232,7 +231,7 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
                 initData();
             }
         });
-        commentView.setOnClickListener(new View.OnClickListener() {
+        tv_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (canEdit)
@@ -365,7 +364,7 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
         if (sendChild) {
             hint = "输入回复内容";
         } else {
-            hint = commentView.getHint().toString();
+            hint = tv_comment.getHint().toString();
         }
         CommentDialog dialog = new CommentDialog(context, hint);
         dialog.show();

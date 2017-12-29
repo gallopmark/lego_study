@@ -106,7 +106,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
     TextView tv_bottomView;
     private boolean running;   //是否在培训时间内、活动是否进行中
     private TimePeriod timePeriod;
-    private String discussType, activityId, workshopId, discussionRelationId, baseUrl, postUrl;
+    private String discussType, activityId, workshopId, discussionRelationId, baseUrl, postUrl, mainUrl;
     private int needMainNum, needSubNum, mainNum, subNum;  //要求完成主回复，子回复；已完成主回复，子回复。
     private AppActivityViewEntity.DiscussionUserMobileEntity discussEntity;
     private int discussNum;//总回复数
@@ -138,6 +138,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
             baseUrl = Constants.OUTRT_NET + "/student_" + workshopId + "/m/discussion/post";
             postUrl = Constants.OUTRT_NET + "/student_" + workshopId + "/unique_uid_" + getUserId() + "/m/discussion/post";
         }
+        mainUrl = baseUrl + "?discussionUser.discussionRelation.id=" + discussionRelationId + "&orders=CREATE_TIME.ASC";
         setSupportToolbar();
         showTips();
         if (discussEntity != null && discussEntity.getmDiscussion() != null && discussEntity.getmDiscussion().getmDiscussionRelations() != null && discussEntity.getmDiscussion().getmDiscussionRelations().size() > 0)
@@ -265,7 +266,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
 
     @Override
     public void initData() {
-        final String url = baseUrl + "?discussionUser.discussionRelation.id=" + discussionRelationId + "&orders=CREATE_TIME.ASC&limit=5";
+        String url = mainUrl + "&page=1" + "&limit=5";
         tv_more_reply.setVisibility(View.GONE);
         showTipDialog();
         addSubscription(Flowable.just(url).map(new Function<String, ReplyListResult>() {
@@ -277,7 +278,7 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
             @Override
             public ReplyListResult apply(ReplyListResult result) throws Exception {
                 if (result != null && result.getResponseData() != null && result.getResponseData().getmDiscussionPosts().size() > 0) {
-                    return getChildReply(url, result, result.getResponseData().getmDiscussionPosts());
+                    return getChildReply(result, result.getResponseData().getmDiscussionPosts());
                 }
                 return result;
             }
@@ -305,12 +306,12 @@ public class TeachingDiscussionActivity extends BaseActivity implements View.OnC
     }
 
     /*通过主回复id获取子回复*/
-    private ReplyListResult getChildReply(String url, ReplyListResult result, List<ReplyEntity> list) {
+    private ReplyListResult getChildReply(ReplyListResult result, List<ReplyEntity> list) {
         for (int i = 0; i < list.size(); i++) {
             String mainPostId = list.get(i).getId();
-            String _url = url + "&mainPostId=" + mainPostId;
+            String url = mainUrl + "&mainPostId=" + mainPostId;
             try {
-                ReplyListResult mResult = getReply(_url);
+                ReplyListResult mResult = getReply(url);
                 if (mResult != null && mResult.getResponseData() != null) {
                     List<ReplyEntity> childList = mResult.getResponseData().getmDiscussionPosts();
                     result.getResponseData().getmDiscussionPosts().get(i).setChildReplyEntityList(childList);

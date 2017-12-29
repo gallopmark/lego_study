@@ -60,16 +60,16 @@ public class AppMoreCommentActivity extends BaseActivity implements XRecyclerVie
     LoadFailView loadFailView;
     @BindView(R.id.xRecyclerView)
     XRecyclerView xRecyclerView;
-    @BindView(R.id.commentView)
-    View commentView;
+    @BindView(R.id.tv_comment)
+    TextView tv_comment;
     private String relationId, relationType;
     private int page = 1;
-    private String orders = "CREATE_TIME.ASC";
-    private boolean isRefresh, isLoadMore, needDialog = true;
+    private String mainUrl, orders = "CREATE_TIME.ASC";
+    private boolean isRefresh, isLoadMore;
 
     @Override
     public int setLayoutResID() {
-        return R.layout.activity_app_more_comment;
+        return R.layout.activity_appmainreply;
     }
 
     @Override
@@ -83,23 +83,27 @@ public class AppMoreCommentActivity extends BaseActivity implements XRecyclerVie
         commentAdapter = new AppCommentAdapter(context, commentList, getUserId());
         xRecyclerView.setAdapter(commentAdapter);
         xRecyclerView.setLoadingListener(context);
+        mainUrl = Constants.OUTRT_NET + "/m/comment?relation.id=" + relationId + "&relation.type=" + relationType + "&orders=" + orders;
     }
 
     public void initData() {
-        String url = Constants.OUTRT_NET + "/m/comment?relation.id=" +
-                relationId + "&relation.type=" + relationType + "&page=" + page + "&orders=" + orders;
-        if (needDialog) {
+        final String url = mainUrl + "&page=" + page;
+        if (isRefresh || isLoadMore)
+            loadingView.setVisibility(View.GONE);
+        else
             loadingView.setVisibility(View.VISIBLE);
-        }
         addSubscription(Flowable.just(url).map(new Function<String, CommentListResult>() {
             @Override
             public CommentListResult apply(String url) throws Exception {
-                return getMainComment(url);
+                return getComment(url);
             }
         }).map(new Function<CommentListResult, CommentListResult>() {
             @Override
             public CommentListResult apply(CommentListResult result) throws Exception {
-                return getChildComment(result);
+                if (result != null && result.getResponseData() != null && result.getResponseData().getmComments().size() > 0) {
+                    return getChildComment(result, result.getResponseData().getmComments());
+                }
+                return result;
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<CommentListResult>() {
             @Override
@@ -115,29 +119,25 @@ public class AppMoreCommentActivity extends BaseActivity implements XRecyclerVie
     }
 
     /*获取主评论列表*/
-    private CommentListResult getMainComment(String url) throws Exception {
-        String listStr = OkHttpClientManager.getAsString(context, url);
+    private CommentListResult getComment(String url) throws Exception {
+        String json = OkHttpClientManager.getAsString(context, url);
         Gson gson = new GsonBuilder().create();
-        return gson.fromJson(listStr, CommentListResult.class);
+        return gson.fromJson(json, CommentListResult.class);
     }
 
     /*通过主评论id获取子评论*/
-    private CommentListResult getChildComment(CommentListResult result) {
-        if (result != null && result.getResponseData() != null &&
-                result.getResponseData().getmComments() != null
-                && result.getResponseData().getmComments().size() > 0) {
-            for (int i = 0; i < result.getResponseData().getmComments().size(); i++) {
-                String mainPostId = result.getResponseData().getmComments().get(i).getId();
-                String url = Constants.OUTRT_NET + "/m/comment?relation.id=" + relationId + "&relation.type=" + relationType
-                        + "&mainId=" + mainPostId + "&orders=" + orders;
-                try {
-                    CommentListResult mResult = getMainComment(url);
-                    if (mResult.getResponseData() != null) {
-                        result.getResponseData().getmComments().get(i).setChildList(mResult.getResponseData().getmComments());
-                    }
-                } catch (Exception e) {
-                    continue;
+    private CommentListResult getChildComment(CommentListResult result, List<CommentEntity> list) {
+        for (int i = 0; i < list.size(); i++) {
+            String mainPostId = list.get(i).getId();
+            String url = mainUrl + "&mainPostId=" + mainPostId;
+            try {
+                CommentListResult mResult = getComment(url);
+                if (mResult != null && mResult.getResponseData() != null) {
+                    List<CommentEntity> childList = mResult.getResponseData().getmComments();
+                    result.getResponseData().getmComments().get(i).setChildList(childList);
                 }
+            } catch (Exception e) {
+                continue;
             }
         }
         return result;
@@ -146,11 +146,11 @@ public class AppMoreCommentActivity extends BaseActivity implements XRecyclerVie
     /*加载完成，更新页面*/
     private void onResponse(CommentListResult response) {
         loadingView.setVisibility(View.GONE);
-        xRecyclerView.setVisibility(View.VISIBLE);
-        commentView.setVisibility(View.VISIBLE);
-        if (response != null && response.getResponseData() != null
-                && response.getResponseData().getmComments() != null
-                && response.getResponseData().getmComments().size() > 0) {
+        if (xRecyclerView.getVisibility() != View.VISIBLE)
+            xRecyclerView.setVisibility(View.VISIBLE);
+        if (tv_comment.getVisibility() != View.VISIBLE)
+            tv_comment.setVisibility(View.VISIBLE);
+        if (response != null && response.getResponseData() != null && response.getResponseData().getmComments().size() > 0) {
             updateUI(response.getResponseData().getmComments(), response.getResponseData().getPaginator());
         } else {
             xRecyclerView.setLoadingMoreEnabled(false);
@@ -198,7 +198,7 @@ public class AppMoreCommentActivity extends BaseActivity implements XRecyclerVie
                 finish();
             }
         });
-        commentView.setOnClickListener(new View.OnClickListener() {
+        tv_comment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showCommentDialog(false);
@@ -323,7 +323,6 @@ public class AppMoreCommentActivity extends BaseActivity implements XRecyclerVie
     public void onRefresh() {
         isRefresh = true;
         isLoadMore = false;
-        needDialog = false;
         page = 1;
         initData();
     }
@@ -332,7 +331,6 @@ public class AppMoreCommentActivity extends BaseActivity implements XRecyclerVie
     public void onLoadMore() {
         isRefresh = false;
         isLoadMore = true;
-        needDialog = false;
         page += 1;
         initData();
     }
