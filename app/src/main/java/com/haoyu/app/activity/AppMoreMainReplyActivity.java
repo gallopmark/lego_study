@@ -118,12 +118,15 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
         addSubscription(Flowable.just(url).map(new Function<String, ReplyListResult>() {
             @Override
             public ReplyListResult apply(String url) throws Exception {
-                return getMainReply(url);
+                return getReply(url);
             }
         }).map(new Function<ReplyListResult, ReplyListResult>() {
             @Override
             public ReplyListResult apply(ReplyListResult result) throws Exception {
-                return getChildReply(url, result);
+                if (result != null && result.getResponseData() != null && result.getResponseData().getmDiscussionPosts().size() > 0) {
+                    return getChildReply(url, result, result.getResponseData().getmDiscussionPosts());
+                }
+                return result;
             }
         }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<ReplyListResult>() {
             @Override
@@ -139,32 +142,29 @@ public class AppMoreMainReplyActivity extends BaseActivity implements XRecyclerV
     }
 
     /*获取主回复*/
-    private ReplyListResult getMainReply(String url) throws Exception {
-        String listStr = OkHttpClientManager.getAsString(context, url);
+    private ReplyListResult getReply(String url) throws Exception {
+        String json = OkHttpClientManager.getAsString(context, url);
         Gson gson = new GsonBuilder().create();
-        return gson.fromJson(listStr, ReplyListResult.class);
+        return gson.fromJson(json, ReplyListResult.class);
     }
 
     /*通过主回复id获取子回复*/
-    private ReplyListResult getChildReply(String url, ReplyListResult result) {
-        if (result != null && result.getResponseData() !=
-                null && result.getResponseData().getmDiscussionPosts() != null) {
-            for (int i = 0; i < result.getResponseData().getmDiscussionPosts().size(); i++) {
-                String mainPostId = result.getResponseData().getmDiscussionPosts().get(i).getId();
-                String _url = url + "&mainPostId=" + mainPostId;
-                try {
-                    ReplyListResult mResult = getMainReply(_url);
-                    if (mResult.getResponseData() != null) {
-                        result.getResponseData().getmDiscussionPosts().get(i).setChildReplyEntityList(mResult.getResponseData().getmDiscussionPosts());
-                    }
-                } catch (Exception e) {
-                    continue;
+    private ReplyListResult getChildReply(String url, ReplyListResult result, List<ReplyEntity> list) {
+        for (int i = 0; i < list.size(); i++) {
+            String mainPostId = list.get(i).getId();
+            String _url = url + "&mainPostId=" + mainPostId;
+            try {
+                ReplyListResult mResult = getReply(_url);
+                if (mResult != null && mResult.getResponseData() != null) {
+                    List<ReplyEntity> childList = mResult.getResponseData().getmDiscussionPosts();
+                    result.getResponseData().getmDiscussionPosts().get(i).setChildReplyEntityList(childList);
                 }
+            } catch (Exception e) {
+                continue;
             }
         }
         return result;
     }
-
 
     /*加载完成，更新页面*/
     private void onResponse(ReplyListResult response) {

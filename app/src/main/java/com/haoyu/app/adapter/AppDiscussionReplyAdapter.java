@@ -3,6 +3,7 @@ package com.haoyu.app.adapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.widget.TextView;
 
@@ -14,47 +15,36 @@ import java.util.List;
 
 /**
  * 创建日期：2017/3/1 on 16:31
- * 描述:讨论子回复是配资
+ * 描述:讨论子回复适配器
  * 作者:马飞奔 Administrator
  */
 public class AppDiscussionReplyAdapter extends BaseArrayRecyclerAdapter<ReplyEntity> {
-    private Context mContext;
+    private Context context;
 
     public AppDiscussionReplyAdapter(Context context, List<ReplyEntity> mDatas) {
         super(mDatas);
-        this.mContext = context;
+        this.context = context;
     }
 
     @Override
     public void onBindHoder(RecyclerHolder holder, ReplyEntity entity, int position) {
         TextView tv = holder.obtainView(R.id.tv_content);
-        tv.setText(null);
+        String content = "";
+        int end;
         if (entity.getCreator() != null && entity.getCreator().getRealName() != null) {
-            SpannableString ss = new SpannableString(entity.getCreator().getRealName() + ": ");
-            ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext,
-                    R.color.defaultColor)), 0, ss.length(),
-                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv.append(ss);
+            content += entity.getCreator().getRealName() + "：";
         } else {
-            SpannableString ss = new SpannableString("" + ": ");
-            ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext,
-                    R.color.defaultColor)), 0, ss.length(),
-                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv.append(ss);
+            content += "：";
         }
-        if (entity.getContent() != null) {
-            SpannableString ss = new SpannableString(entity.getContent());
-            ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext,
-                    R.color.black)), 0, ss.length(),
-                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv.append(ss);
+        end = content.length();
+        if (!TextUtils.isEmpty(entity.getContent())) {
+            content += entity.getContent();
         } else {
-            SpannableString ss = new SpannableString("");
-            ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(mContext,
-                    R.color.black)), 0, ss.length(),
-                    SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
-            tv.append(ss);
+            content += "";
         }
+        SpannableString ss = new SpannableString(content);
+        ss.setSpan(new ForegroundColorSpan(ContextCompat.getColor(context, R.color.defaultColor)), 0, end, SpannableString.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tv.setText(ss);
     }
 
     @Override

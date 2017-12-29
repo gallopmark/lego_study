@@ -2,79 +2,39 @@ package com.haoyu.app.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.haoyu.app.base.BaseResponseResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReplyListResult {
-	@Expose
-	@SerializedName("responseCode")
-	private String responseCode;
-	@Expose
-	@SerializedName("responseData")
-	private MainReplyListData responseData;
-	@Expose
-	@SerializedName("responseMsg")
-	private String responseMsg;
-	@Expose
-	@SerializedName("success")
-	private Boolean success;
+public class ReplyListResult extends BaseResponseResult<ReplyListResult.MData> {
 
-	public String getResponseCode() {
-		return responseCode;
-	}
+    public class MData implements Serializable {
+        @Expose
+        @SerializedName("mDiscussionPosts")
+        private List<ReplyEntity> mDiscussionPosts = new ArrayList<>();
+        @SerializedName("paginator")
+        @Expose
+        private Paginator paginator;
 
-	public void setResponseCode(String responseCode) {
-		this.responseCode = responseCode;
-	}
+        public List<ReplyEntity> getmDiscussionPosts() {
+            if (mDiscussionPosts == null) {
+                return new ArrayList<>();
+            }
+            return mDiscussionPosts;
+        }
 
-	public MainReplyListData getResponseData() {
-		return responseData;
-	}
+        public void setmDiscussionPosts(List<ReplyEntity> mDiscussionPosts) {
+            this.mDiscussionPosts = mDiscussionPosts;
+        }
 
-	public void setResponseData(MainReplyListData responseData) {
-		this.responseData = responseData;
-	}
+        public Paginator getPaginator() {
+            return paginator;
+        }
 
-	public String getResponseMsg() {
-		return responseMsg;
-	}
-
-	public void setResponseMsg(String responseMsg) {
-		this.responseMsg = responseMsg;
-	}
-
-	public Boolean getSuccess() {
-		return success;
-	}
-
-	public void setSuccess(Boolean success) {
-		this.success = success;
-	}
-
-	public class MainReplyListData implements Serializable{
-		@Expose
-		@SerializedName("mDiscussionPosts")
-		private List<ReplyEntity> mDiscussionPosts = new ArrayList<>();
-		@SerializedName("paginator")
-		@Expose
-		private Paginator paginator;
-
-		public List<ReplyEntity> getmDiscussionPosts() {
-			return mDiscussionPosts;
-		}
-
-		public void setmDiscussionPosts(List<ReplyEntity> mDiscussionPosts) {
-			this.mDiscussionPosts = mDiscussionPosts;
-		}
-
-		public Paginator getPaginator() {
-			return paginator;
-		}
-
-		public void setPaginator(Paginator paginator) {
-			this.paginator = paginator;
-		}
-	}
+        public void setPaginator(Paginator paginator) {
+            this.paginator = paginator;
+        }
+    }
 }
