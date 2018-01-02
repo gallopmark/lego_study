@@ -66,16 +66,12 @@ public class AppCaptureActivity extends BaseActivity {
     }
 
     private boolean hasCameraPermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            return false;
-        } else {
-            return true;
-        }
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == CAMERA_OK && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == CAMERA_OK && grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             requestCamera();
         } else {
             ll_noCamera.setVisibility(View.VISIBLE);
