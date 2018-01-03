@@ -237,7 +237,7 @@ public class AppDownloadActivity extends BaseActivity implements View.OnClickLis
             public void onItemClick(DownloadFileInfo fileInfo) {
                 String path = fileInfo.getFilePath();
                 if (path != null && new File(path).exists()) {
-                    Intent intent = new Intent(context, VideoPlayerLibActivity.class);
+                    Intent intent = new Intent(context, IJKPlayerActivity.class);
                     intent.putExtra("videoUrl", path);
                     startActivity(intent);
                 }

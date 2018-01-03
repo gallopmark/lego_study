@@ -138,7 +138,7 @@ public class MFileInfoActivity extends BaseActivity {
     }
 
     private void playVideo() {
-        Intent intent = new Intent(context, VideoPlayerLibActivity.class);
+        Intent intent = new Intent(context, IJKPlayerActivity.class);
         intent.putExtra("videoUrl", url);
         intent.putExtra("videoTitle", fileInfo.getFileName());
         startActivity(intent);

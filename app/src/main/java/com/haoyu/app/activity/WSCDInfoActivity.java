@@ -35,7 +35,7 @@ import com.haoyu.app.entity.CommentListResult;
 import com.haoyu.app.entity.MFileInfo;
 import com.haoyu.app.entity.MobileUser;
 import com.haoyu.app.entity.TimePeriod;
-import com.haoyu.app.fragment.VideoPlayerFragment;
+import com.haoyu.app.fragment.IJKPlayerFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.utils.Action;
@@ -113,7 +113,7 @@ public class WSCDInfoActivity extends BaseActivity implements View.OnClickListen
     private TimePeriod timePeriod;
     private AppActivityViewEntity.ClassDiscussEntity mVideoDC;
     private int smallHeight;
-    private VideoPlayerFragment videoFragment;
+    private IJKPlayerFragment videoFragment;
     private int discussNum;//总回复数
     private AppCommentAdapter adapter;
     private List<CommentEntity> mComments = new ArrayList<>();
@@ -201,14 +201,14 @@ public class WSCDInfoActivity extends BaseActivity implements View.OnClickListen
             smallHeight = ScreenUtils.getScreenHeight(context) / 5 * 2;
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, smallHeight);
             fl_video.setLayoutParams(params);
-            videoFragment = new VideoPlayerFragment();
+            videoFragment = new IJKPlayerFragment();
             Bundle bundle = new Bundle();
             bundle.putString("videoUrl", fileInfo.getUrl());
             bundle.putString("videoTitle", activityTitle);
             videoFragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.fl_video, videoFragment).commit();
-            videoFragment.setOnRequestedOrientation(new VideoPlayerFragment.OnRequestedOrientation() {
+            videoFragment.setOnRequestedOrientation(new IJKPlayerFragment.OnRequestedOrientation() {
                 @Override
                 public void onRequested(int orientation) {
                     setRequestedOrientation(orientation);

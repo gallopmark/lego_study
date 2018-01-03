@@ -38,7 +38,7 @@ import com.haoyu.app.entity.CommentListResult;
 import com.haoyu.app.entity.MFileInfo;
 import com.haoyu.app.entity.MobileUser;
 import com.haoyu.app.entity.TimePeriod;
-import com.haoyu.app.fragment.VideoPlayerFragment;
+import com.haoyu.app.fragment.IJKPlayerFragment;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.rxBus.MessageEvent;
 import com.haoyu.app.utils.Action;
@@ -95,7 +95,7 @@ public class WSTSInfoActivity extends BaseActivity implements View.OnClickListen
     @BindView(R.id.fl_video)
     FrameLayout fl_video;  //视频文件
     private int smallHeight;
-    private VideoPlayerFragment videoFragment;
+    private IJKPlayerFragment videoFragment;
 
     @BindView(R.id.ll_videoOutSide)
     LinearLayout ll_videoOutSide;
@@ -237,14 +237,14 @@ public class WSTSInfoActivity extends BaseActivity implements View.OnClickListen
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) fl_video.getLayoutParams();
             params.height = smallHeight;
             fl_video.setLayoutParams(params);
-            videoFragment = new VideoPlayerFragment();
+            videoFragment = new IJKPlayerFragment();
             Bundle bundle = new Bundle();
             bundle.putString("videoUrl", video.getUrl());
             bundle.putString("videoTitle", lcecEntity.getTitle());
             videoFragment.setArguments(bundle);
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.fl_video, videoFragment).commit();
-            videoFragment.setOnRequestedOrientation(new VideoPlayerFragment.OnRequestedOrientation() {
+            videoFragment.setOnRequestedOrientation(new IJKPlayerFragment.OnRequestedOrientation() {
                 @Override
                 public void onRequested(int orientation) {
                     setRequestedOrientation(orientation);
