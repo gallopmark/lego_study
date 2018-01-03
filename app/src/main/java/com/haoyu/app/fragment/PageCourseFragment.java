@@ -1,7 +1,6 @@
 package com.haoyu.app.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -37,7 +36,6 @@ import com.haoyu.app.entity.MultiItemEntity;
 import com.haoyu.app.entity.VideoMobileEntity;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Constants;
-import com.haoyu.app.utils.NetStatusUtil;
 import com.haoyu.app.utils.OkHttpClientManager;
 import com.haoyu.app.view.LoadFailView;
 import com.haoyu.app.view.LoadingView;
@@ -319,15 +317,7 @@ public class PageCourseFragment extends BaseFragment {
                 && response.getResponseData().getmActivityResult().getmActivity() != null) {
             CourseSectionActivity activity = response.getResponseData().getmActivityResult().getmActivity();
             if (activity.getType() != null && activity.getType().equals("video")) {   //视频类型
-                if (NetStatusUtil.isConnected(context)) {
-                    if (NetStatusUtil.isWifi(context))
-                        playVideo(response, activity);
-                    else {
-                        showNetDialog(response, activity);
-                    }
-                } else {
-                    toast("当前网络不稳定，请检查网络设置！");
-                }
+                playVideo(response, activity);
             } else if (activity.getType() != null && activity.getType().equals("html")) {  //课件类型
                 openHtml(response, activity);
             } else if (activity.getType() != null && activity.getType().equals("discussion")) {  //课程研讨
@@ -344,21 +334,6 @@ public class PageCourseFragment extends BaseFragment {
         } else {
             toast("系统暂不支持浏览，请到网站完成。");
         }
-    }
-
-    private void showNetDialog(final AppActivityViewResult response, final CourseSectionActivity activity) {
-        MaterialDialog mainDialog = new MaterialDialog(context);
-        mainDialog.setTitle("网络提醒");
-        mainDialog.setMessage("使用2G/3G/4G网络观看视频会消耗较多流量。确定要开启吗？");
-        mainDialog.setNegativeButton("开启", new MaterialDialog.ButtonClickListener() {
-            @Override
-            public void onClick(View v, AlertDialog dialog) {
-                playVideo(response, activity);
-                dialog.dismiss();
-            }
-        });
-        mainDialog.setPositiveButton("取消", null);
-        mainDialog.show();
     }
 
     /*播放视频*/
