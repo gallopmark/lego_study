@@ -66,8 +66,8 @@
 
         <android.support.v7.widget.AppCompatImageView
             android:id="@+id/video_play"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/margin_size_40"
+            android:layout_height="@dimen/margin_size_40"
             android:layout_margin="10dp"
             app:srcCompat="@drawable/ic_play_arrow_24dp" />
 
