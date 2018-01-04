@@ -53,13 +53,6 @@
 
             <include layout="@layout/video_top_bottom" />
 
-            <ImageView
-                android:id="@+id/video_centerpause"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:src="@drawable/btn_retry_play"
-                android:visibility="gone" />
 
         </FrameLayout>
     </RelativeLayout>
