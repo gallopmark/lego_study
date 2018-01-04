@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     android:orientation="vertical">
 
     <com.haoyu.app.view.TouchImageView
@@ -9,10 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <ImageView
+    <android.support.v7.widget.AppCompatImageView
         android:id="@+id/iv_videoType"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_centerInParent="true"
-        android:src="@drawable/ic_video_grid" />
-</RelativeLayout>
+        android:layout_width="@dimen/margin_size_60"
+        android:layout_height="@dimen/margin_size_60"
+        android:layout_gravity="center"
+        app:srcCompat="@drawable/ic_play_grid_24dp" />
+</FrameLayout>

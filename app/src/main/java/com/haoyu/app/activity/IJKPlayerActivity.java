@@ -48,7 +48,7 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
     @BindView(R.id.fl_video)
     FrameLayout fl_video;
     @BindView(R.id.iv_play)
-    ImageView iv_play;
+    AppCompatImageView iv_play;
     @BindView(R.id.ijkVideoView)
     IjkVideoView videoView;
 

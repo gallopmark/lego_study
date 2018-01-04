@@ -39,15 +39,13 @@
 
             </LinearLayout>
 
-            <ImageView
+            <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/iv_play"
                 android:layout_width="@dimen/margin_size_60"
                 android:layout_height="@dimen/margin_size_60"
                 android:layout_gravity="center"
-                android:padding="@dimen/margin_size_6"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_video_grid"
-                android:visibility="gone" />
+                app:srcCompat="@drawable/ic_play_grid_24dp" />
 
             <include layout="@layout/video_centerbox" />
 

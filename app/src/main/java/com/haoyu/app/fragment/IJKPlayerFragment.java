@@ -24,7 +24,6 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -48,7 +47,7 @@ import tv.danmaku.ijk.media.player.widget.IjkVideoView;
 public class IJKPlayerFragment extends BaseFragment implements View.OnClickListener {
     private Activity activity;
     private FrameLayout fl_video;
-    private ImageView iv_play;
+    private AppCompatImageView iv_play;
     private IjkVideoView videoView;
 
     private TextView tv_loading;   //提示即将播放
