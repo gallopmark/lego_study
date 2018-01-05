@@ -132,7 +132,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
     private final int VIDEO_FORWARD = 2;// 滑动屏幕快进
     private final int VIDEO_SEEKBARFORWARD = 3;// 拖动进度条快进
     private final int VIDEO_HIDECONTROLLBAR = 4;// 隐藏控制栏
-    public final int UPDATE_SEEKBAR = 0;
     public final int VIDEO_WARN_MESSAGE = 5;//网络消息提
     private NetReceiver netReceiver;
     private GestureDetector gestureDetector;
@@ -490,15 +489,13 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                     showToastTips(message);
                     videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
-                case IMediaPlayer.MEDIA_ERROR_UNSUPPORTED:
-                    message = "不支持该格式视频";
+                case -10000:
+                    message = "该视频暂时无法播放,请稍后重试";
                     showToastTips(message);
-                    //videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
                 default:
                     message = "该视频暂时无法播放,请稍后重试";
                     showToastTips(message);
-                    videoHandler.sendEmptyMessageDelayed(VIDEO_WARN_MESSAGE, 2000);
                     break;
             }
             return false;
@@ -584,6 +581,7 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
         public boolean onInfo(IMediaPlayer iMediaPlayer, int what, int i1) {
             switch (what) {
                 case IMediaPlayer.MEDIA_INFO_BUFFERING_START:
+
                     hideCenterBox();
                     iv_play.setVisibility(View.GONE);
                     break;
@@ -596,7 +594,6 @@ public class VideoPlayerActivity extends BaseActivity implements View.OnClickLis
                 case IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START:
                     mVideoView.start();
                     break;
-
             }
             return false;
         }
