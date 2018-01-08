@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
 import android.view.GestureDetector;
@@ -489,7 +490,7 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
 
     private void start() {
         iv_play.setVisibility(View.GONE);
-        tv_loading.setVisibility(View.GONE);
+        tv_loading.setVisibility(View.GONE);//测试专家一
         videoView.start();
         iv_playState.setImageResource(R.drawable.ic_pause_24dp);
     }
@@ -502,22 +503,20 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
     }
 
     private void completed() {
-        lastDuration = 0;
         iv_play.setVisibility(View.VISIBLE);
-        tv_loading.setText("播放完毕");
-        tv_loading.setVisibility(View.VISIBLE);
+        tv_loading.setVisibility(View.GONE);
     }
 
     private void error(int errorCode) {
-        if (errorCode == IMediaPlayer.MEDIA_ERROR_IO) {
-            toast(context, "当前网络不稳定，请检查您的网络设置");
-        }
-        if (!NetStatusUtil.isConnected(context)) {
-            videoView.pause();
+        if (errorCode == -10000) {
+            tv_loading.setText("无法播放此视频~");
+            tv_loading.setTextColor(ContextCompat.getColor(context, R.color.redcolor));
+            tv_loading.setVisibility(View.VISIBLE);
+        } else if (errorCode == IMediaPlayer.MEDIA_ERROR_IO) {
+            toast(context, "当前网络不顺畅，请检查您的网络设置");
+            tv_loading.setVisibility(View.GONE);
         } else {
-            if (!NetStatusUtil.isWifi(context)) {
-                videoView.pause();
-            }
+            tv_loading.setVisibility(View.GONE);
         }
     }
 

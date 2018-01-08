@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.Html;
 import android.text.Spanned;
@@ -73,7 +74,7 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
     private int dp_120, dp_160, dp_25, dp_30, dp_40;
     private AudioManager mAudioManager;
     private boolean progress_turn, attrbute_turn, isLocked;  //isLocked是否锁住屏幕
-    private long currentDuration = -1, lastDuration = -1;  //当前播放位置
+    private long currentDuration = -1;  //当前播放位置
     /*** 视频窗口的宽和高*/
     private int playerWidth, playerHeight;
     private int maxVolume, currentVolume = -1;
@@ -485,9 +486,6 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
             @Override
             public void onPrepared(IMediaPlayer iMediaPlayer) {
                 prepared();
-                if (lastDuration > 0) {
-                    videoView.seekTo((int) lastDuration);
-                }
                 start();
                 long duration = iMediaPlayer.getDuration();
                 seekbar.setMax((int) duration);
@@ -505,7 +503,6 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
         videoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(IMediaPlayer iMediaPlayer, int errorCode, int i1) {
-                lastDuration = iMediaPlayer.getCurrentPosition();
                 error(errorCode);
                 return false;
             }
@@ -532,7 +529,7 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
 
     private void start() {
         iv_play.setVisibility(View.GONE);
-        tv_loading.setVisibility(View.GONE);
+        tv_loading.setVisibility(View.GONE);//测试专家一
         videoView.start();
         iv_playState.setImageResource(R.drawable.ic_pause_24dp);
     }
@@ -545,22 +542,20 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void completed() {
-        lastDuration = 0;
         iv_play.setVisibility(View.VISIBLE);
-        tv_loading.setText("播放完毕");
-        tv_loading.setVisibility(View.VISIBLE);
+        tv_loading.setVisibility(View.GONE);
     }
 
     private void error(int errorCode) {
-        if (errorCode == IMediaPlayer.MEDIA_ERROR_IO) {
-            toast("当前网络不稳定，请检查您的网络设置");
-        }
-        if (!NetStatusUtil.isConnected(context)) {
-            videoView.pause();
+        if (errorCode == -10000) {
+            tv_loading.setText("无法播放此视频~");
+            tv_loading.setTextColor(ContextCompat.getColor(context, R.color.redcolor));
+            tv_loading.setVisibility(View.VISIBLE);
+        } else if (errorCode == IMediaPlayer.MEDIA_ERROR_IO) {
+            toast("当前网络不顺畅，请检查您的网络设置");
+            tv_loading.setVisibility(View.GONE);
         } else {
-            if (!NetStatusUtil.isWifi(context)) {
-                videoView.pause();
-            }
+            tv_loading.setVisibility(View.GONE);
         }
     }
 
