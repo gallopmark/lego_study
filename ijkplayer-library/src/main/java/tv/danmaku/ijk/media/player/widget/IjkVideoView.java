@@ -43,11 +43,9 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import tv.danmaku.ijk.media.player.TextureMediaPlayer;
 
 public class IjkVideoView extends FrameLayout implements MediaController.MediaPlayerControl {
-    private String TAG = "IjkVideoView";
     // settable by the client
     private Uri mUri;
     private Map<String, String> mHeaders;
-
     // all possible internal states
     public static final int STATE_ERROR = -1;
     public static final int STATE_IDLE = 0;
@@ -90,15 +88,12 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     private long mSeekWhenPrepared;  // recording the seek position while preparing
     private boolean mCanPause = true;
     private boolean isDebug = true;
-
     /** Subtitle rendering widget overlaid on top of the video. */
     // private RenderingWidget mSubtitleWidget;
-
     /**
      * Listener for changes to subtitle data, used to redraw when needed.
      */
     // private RenderingWidget.OnChangedListener mSubtitlesChangedListener;
-
     private Context mAppContext;
     private IRenderView mRenderView;
     private int mVideoSarNum;
@@ -141,10 +136,8 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     private void initVideoView(Context context) {
         mAppContext = context.getApplicationContext();
-
         initBackground();
         initRenders();
-
         mVideoWidth = 0;
         mVideoHeight = 0;
         // REMOVED: getHolder().addCallback(mSHCallback);
@@ -167,17 +160,14 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
             mRenderView = null;
             removeView(renderUIView);
         }
-
         if (renderView == null)
             return;
-
         mRenderView = renderView;
         renderView.setAspectRatio(mCurrentAspectRatio);
         if (mVideoWidth > 0 && mVideoHeight > 0)
             renderView.setVideoSize(mVideoWidth, mVideoHeight);
         if (mVideoSarNum > 0 && mVideoSarDen > 0)
             renderView.setVideoSampleAspectRatio(mVideoSarNum, mVideoSarDen);
-
         View renderUIView = mRenderView.getView();
         LayoutParams lp = new LayoutParams(
                 LayoutParams.WRAP_CONTENT,
@@ -185,7 +175,6 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 Gravity.CENTER);
         renderUIView.setLayoutParams(lp);
         addView(renderUIView);
-
         mRenderView.addRenderCallback(mSHCallback);
         mRenderView.setVideoRotation(mVideoRotationDegree);
     }
@@ -344,7 +333,6 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
                 mMediaPlayer = new TextureMediaPlayer(mMediaPlayer);
             }
             // a context for the subtitle renderers
-            final Context context = getContext();
             // REMOVED: SubtitleController
             // REMOVED: mAudioSession
             mMediaPlayer.setOnPreparedListener(mPreparedListener);
@@ -637,12 +625,10 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     private void bindSurfaceHolder(IMediaPlayer mp, IRenderView.ISurfaceHolder holder) {
         if (mp == null)
             return;
-
         if (holder == null) {
             mp.setDisplay(null);
             return;
         }
-
         holder.bindToMediaPlayer(mp);
     }
 
@@ -811,7 +797,6 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         if (isInPlaybackState()) {
             return (int) mMediaPlayer.getDuration();
         }
-
         return -1;
     }
 
@@ -881,11 +866,9 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     // REMOVED: measureAndLayoutSubtitleWidget();
     // REMOVED: setSubtitleWidget();
     // REMOVED: getSubtitleLooper();
-
     //-------------------------
     // Extend: Aspect Ratio
     //-------------------------
-
     private static final int[] s_allAspectRatio = {
             IRenderView.AR_ASPECT_FIT_PARENT,
             IRenderView.AR_ASPECT_FILL_PARENT,
@@ -899,7 +882,6 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     public int toggleAspectRatio() {
         mCurrentAspectRatioIndex++;
         mCurrentAspectRatioIndex %= s_allAspectRatio.length;
-
         mCurrentAspectRatio = s_allAspectRatio[mCurrentAspectRatioIndex];
         if (mRenderView != null)
             mRenderView.setAspectRatio(mCurrentAspectRatio);
@@ -919,7 +901,6 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
 
     private void initRenders() {
         mAllRenders.clear();
-
         if (enableSurfaceView)
             mAllRenders.add(RENDER_SURFACE_VIEW);
         if (enableTextureView && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH)
@@ -936,7 +917,6 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
     public int toggleRender() {
         mCurrentRenderIndex++;
         mCurrentRenderIndex %= mAllRenders.size();
-
         mCurrentRender = mAllRenders.get(mCurrentRenderIndex);
         setRender(mCurrentRender);
         return mCurrentRender;
