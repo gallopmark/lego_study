@@ -782,6 +782,9 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
             }
         }
         mTargetState = STATE_PAUSED;
+        if (indicator != null) {
+            indicator.setVisibility(View.GONE);
+        }
     }
 
     public void suspend() {
@@ -922,12 +925,9 @@ public class IjkVideoView extends FrameLayout implements MediaController.MediaPl
         return mCurrentRender;
     }
 
-
     //-------------------------
     // Extend: Background
     //-------------------------
-
-
     private void initBackground() {
         if (enableBackgroundPlay) {
 //            MediaPlayerService.intentToStart(getContext());
