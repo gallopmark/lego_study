@@ -7,6 +7,7 @@
     <color name="common_pressed">#20000000</color>  <!--白色背景按下去的颜色-->
     <color name="windowbackground">#66000000</color>
     <color name="transdefaultColor">#e611B1D5</color>
+    <color name="translightdefault">#ccACEFFA</color>
     <color name="course_progress">#FEE42D</color>
     <color name="message_user">#FC8F26</color>
     <color name="faq_type">#B0B0B0</color>
@@ -208,7 +209,7 @@
     <color name="tab_teachcc">#88BF1D</color>
     <color name="tab_teachat">#478EF8</color>
 
-    <color name="seekbar_background">#99ffffff</color>
+    <color name="seekbar_background">#96ffffff</color>
     <color name="seekbar_secondaryProgress">#9951B64E</color>
     <color name="seekbar_progress">#9911B1D5</color>
     <color name="videoplayer_control">#80000000</color>

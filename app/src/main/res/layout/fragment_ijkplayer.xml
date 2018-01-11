@@ -254,10 +254,9 @@
                 android:layout_weight="1"
                 android:maxHeight="@dimen/margin_size_4"
                 android:minHeight="@dimen/margin_size_4"
-                android:paddingBottom="@dimen/margin_size_4"
-                android:paddingTop="@dimen/margin_size_4"
-                android:progressDrawable="@drawable/horizontal_seekbar"
-                android:thumb="@drawable/mn_player_thumb"
+                android:progressDrawable="@drawable/seekbar_progressdrawable"
+                android:splitTrack="true"
+                android:thumb="@drawable/seekbar_thumb"
                 android:thumbOffset="0dp" />
 
             <TextView

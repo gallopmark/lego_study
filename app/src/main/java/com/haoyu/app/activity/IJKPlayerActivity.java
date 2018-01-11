@@ -146,14 +146,14 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public int setLayoutResID() {
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         return R.layout.activity_ijkplayer;
     }
 
     @Override
     public void initView() {
         context = this;
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         String videoType = getIntent().getStringExtra("videoType");
         if (videoType != null && videoType.equals("course")) {
             isVideoUser = true;

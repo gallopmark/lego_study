@@ -276,19 +276,17 @@
 
             <SeekBar
                 android:id="@+id/seekbar"
-                style="?android:attr/progressBarStyleHorizontal"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/margin_size_8"
                 android:layout_marginRight="@dimen/margin_size_8"
                 android:layout_weight="1"
-                android:maxHeight="@dimen/margin_size_6"
-                android:minHeight="@dimen/margin_size_6"
-                android:paddingBottom="@dimen/margin_size_4"
-                android:paddingTop="@dimen/margin_size_4"
-                android:progressDrawable="@drawable/horizontal_seekbar"
-                android:thumb="@drawable/mn_player_thumb"
+                android:maxHeight="@dimen/margin_size_4"
+                android:minHeight="@dimen/margin_size_4"
+                android:splitTrack="false"
+                android:progressDrawable="@drawable/seekbar_progressdrawable"
+                android:thumb="@drawable/seekbar_thumb"
                 android:thumbOffset="0dp" />
 
             <TextView
