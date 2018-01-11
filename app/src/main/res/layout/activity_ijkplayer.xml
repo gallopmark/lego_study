@@ -12,22 +12,22 @@
         android:layout_height="match_parent"
         android:layout_gravity="center" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <ImageView
         android:id="@+id/iv_play"
         android:layout_width="@dimen/margin_size_60"
         android:layout_height="@dimen/margin_size_60"
         android:layout_gravity="center"
-        android:scaleType="centerCrop"
-        app:srcCompat="@drawable/ic_play_grid_24dp" />
+        android:padding="@dimen/margin_size_6"
+        android:src="@drawable/ic_video_grid" />
 
     <com.haoyu.app.view.CircularProgressView
         android:id="@+id/indicator"
-        android:layout_width="@dimen/margin_size_40"
-        android:layout_height="@dimen/margin_size_40"
+        android:layout_width="@dimen/margin_size_30"
+        android:layout_height="@dimen/margin_size_30"
         android:layout_gravity="center"
         android:visibility="gone"
         app:angleAnimationDurationMillis="@integer/circular_default_angleAnimationDurationMillis"
-        app:border_Width="@dimen/margin_size_4"
+        app:border_Width="@dimen/margin_size_3"
         app:colorSequence="@array/circular_default_color_sequence"
         app:sweepAnimationDurationMillis="@integer/circular_default_sweepAnimationDuration" />
 
@@ -40,6 +40,92 @@
         android:textColor="@color/transdefaultColor"
         android:textSize="@dimen/font_size_16"
         android:visibility="gone" />
+    <!-- 网络提示-->
+    <LinearLayout
+        android:id="@+id/ll_netG"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@color/translucence"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_netTips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_12"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_size_20"
+                android:background="@drawable/ic_video_cancel_play"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_10"
+                android:paddingLeft="@dimen/margin_size_20"
+                android:paddingRight="@dimen/margin_size_20"
+                android:paddingTop="@dimen/margin_size_10"
+                android:text="取消"
+                android:textColor="@color/spaceColor"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:id="@+id/tv_continue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_video_coniute_play"
+                android:gravity="center"
+                android:paddingBottom="@dimen/margin_size_10"
+                android:paddingLeft="@dimen/margin_size_20"
+                android:paddingRight="@dimen/margin_size_20"
+                android:paddingTop="@dimen/margin_size_10"
+                android:text="继续"
+                android:textColor="@color/defaultColor"
+                android:textSize="@dimen/font_size_16" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_netUseless"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:background="@color/translucence"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/margin_size_16"
+        android:paddingRight="@dimen/margin_size_16"
+        android:visibility="gone">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:layout_width="@dimen/margin_size_80"
+            android:layout_height="@dimen/margin_size_80"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/ic_wifi_white_24dp" />
+
+        <TextView
+            android:id="@+id/tv_netUseless"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:lineSpacingMultiplier="1.4"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
 
     <android.support.v7.widget.AppCompatImageView
         android:id="@+id/iv_isLocked"
@@ -61,29 +147,44 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/videoplayer_control"
-            android:paddingBottom="@dimen/margin_size_8"
-            android:paddingLeft="@dimen/margin_size_16"
-            android:paddingRight="@dimen/margin_size_16"
-            android:paddingTop="@dimen/margin_size_8">
+            android:background="@color/videoplayer_control">
 
             <ImageView
                 android:id="@+id/iv_back"
                 android:layout_width="@dimen/margin_size_40"
                 android:layout_height="@dimen/margin_size_40"
                 android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_size_8"
                 android:padding="@dimen/margin_size_6"
                 android:scaleType="centerCrop"
                 android:src="@drawable/fanhui" />
 
             <TextView
                 android:id="@+id/tv_videoName"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/margin_size_8"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:padding="@dimen/title_padding"
+                android:singleLine="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/title_textsize" />
+
+            <TextView
+                android:id="@+id/tv_guide"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:drawableLeft="@drawable/zhangjie"
+                android:drawablePadding="@dimen/margin_size_8"
+                android:gravity="center"
+                android:paddingLeft="@dimen/margin_size_12"
+                android:paddingRight="@dimen/margin_size_12"
+                android:text="课前导读"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_size_16"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout

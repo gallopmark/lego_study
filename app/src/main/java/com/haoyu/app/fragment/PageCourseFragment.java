@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SimpleItemAnimator;
 import android.text.Layout;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,9 +17,9 @@ import com.haoyu.app.activity.AppSurveyHomeActivity;
 import com.haoyu.app.activity.AppTestHomeActivity;
 import com.haoyu.app.activity.AppTestResultActivity;
 import com.haoyu.app.activity.CoursewareViewerActivity;
+import com.haoyu.app.activity.IJKPlayerActivity;
 import com.haoyu.app.activity.TeachingDiscussionActivity;
 import com.haoyu.app.activity.TestAssignmentActivity;
-import com.haoyu.app.activity.VideoPlayerActivity;
 import com.haoyu.app.adapter.CourseActivityAdapter;
 import com.haoyu.app.adapter.CourseStudyAdapter;
 import com.haoyu.app.base.BaseFragment;
@@ -341,55 +342,39 @@ public class PageCourseFragment extends BaseFragment {
         if (response.getResponseData() != null && response.getResponseData().getmVideoUser() != null) {  //教学视频
             AppActivityViewEntity.VideoUserMobileEntity videoEntity = response.getResponseData().getmVideoUser();
             VideoMobileEntity video = videoEntity.getmVideo();
-            Intent intent = new Intent(context, VideoPlayerActivity.class);
-            if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().getState() != null && activity.getmTimePeriod().getState().equals("进行中"))
-                intent.putExtra("running", true);
-            else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().getMinutes() > 0)
-                intent.putExtra("running", true);
-            else
-                intent.putExtra("running", false);
-            intent.putExtra("lastViewTime", videoEntity.getLastViewTime());
             if (video != null) {
-                intent.putExtra("interval", video.getInterval());
-                intent.putExtra("attach", video);
-            }
-            intent.putExtra("type", "course");
-            intent.putExtra("courseId", courseId);
-            intent.putExtra("activityId", activity.getId());
-            intent.putExtra("activityTitle", activity.getTitle());
-            intent.putExtra("summary", videoEntity.getmVideo().getSummary());
-            intent.putExtra("videoId", videoEntity.getId());
-            if (video != null && video.getUrls() != null && video.getUrls().length() > 0) {
-                DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(video.getUrls());
-                if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
-                    intent.putExtra("videoUrl", fileInfo.getFilePath());
-                    intent.putExtra("fileName", fileInfo.getFileName());
-                } else
-                    intent.putExtra("videoUrl", video.getUrls());
-                startActivity(intent);
-            } else if (video != null && video.getVideoFiles() != null && video.getVideoFiles().size() > 0) {
-                String url = video.getVideoFiles().get(0).getUrl();
-                DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
-                if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
-                    intent.putExtra("videoUrl", fileInfo.getFilePath());
-                    intent.putExtra("fileName", fileInfo.getFileName());
+                Intent intent = new Intent(context, IJKPlayerActivity.class);
+                intent.putExtra("videoType", "course");
+                if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().getState() != null && activity.getmTimePeriod().getState().equals("进行中"))
+                    intent.putExtra("running", true);
+                else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().getMinutes() > 0)
+                    intent.putExtra("running", true);
+                else
+                    intent.putExtra("running", false);
+                intent.putExtra("activityId", activity.getId());
+                intent.putExtra("videoTitle", activity.getTitle());
+                intent.putExtra("videoId", videoEntity.getId());
+                intent.putExtra("video", video);
+                if (!TextUtils.isEmpty(video.getUrls())) {
+                    DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(video.getUrls());
+                    if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
+                        intent.putExtra("videoUrl", fileInfo.getFilePath());
+                    } else {
+                        intent.putExtra("videoUrl", video.getUrls());
+                    }
+                    startActivityForResult(intent, STUDY_CODE);
+                } else if (video.getVideoFiles().size() > 0) {
+                    String url = video.getVideoFiles().get(0).getUrl();
+                    DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
+                    if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
+                        intent.putExtra("videoUrl", fileInfo.getFilePath());
+                    } else {
+                        intent.putExtra("videoUrl", url);
+                    }
+                    startActivityForResult(intent, STUDY_CODE);
                 } else {
-                    intent.putExtra("videoUrl", url);
-                    intent.putExtra("fileName", video.getVideoFiles().get(0).getFileName());
+                    toast("系统暂不支持浏览，请到网站完成。");
                 }
-                startActivity(intent);
-            } else if (video != null && video.getAttchFiles() != null && video.getAttchFiles().size() > 0) {
-                //教学观摩
-                String url = video.getAttchFiles().get(0).getUrl();
-                DownloadFileInfo fileInfo = FileDownloader.getDownloadFile(url);
-                if (fileInfo != null && fileInfo.getFilePath() != null && new File(fileInfo.getFilePath()).exists()) {
-                    intent.putExtra("videoUrl", fileInfo.getFilePath());
-                    intent.putExtra("fileName", fileInfo.getFileName());
-                } else {
-                    intent.putExtra("videoUrl", video.getAttchFiles().get(0).getUrl());
-                    intent.putExtra("fileName", video.getAttchFiles().get(0).getFileName());
-                }
-                startActivity(intent);
             } else {
                 toast("系统暂不支持浏览，请到网站完成。");
             }

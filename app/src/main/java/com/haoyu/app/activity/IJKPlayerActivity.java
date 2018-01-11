@@ -3,38 +3,59 @@ package com.haoyu.app.activity;
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageView;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.GestureDetector;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.haoyu.app.base.BaseActivity;
-import com.haoyu.app.dialog.MaterialDialog;
+import com.haoyu.app.base.BaseResponseResult;
+import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
+import com.haoyu.app.basehelper.BaseRecyclerAdapter;
+import com.haoyu.app.entity.AppActivityViewResult;
+import com.haoyu.app.entity.CourseSectionActivity;
+import com.haoyu.app.entity.MFileInfo;
+import com.haoyu.app.entity.VideoMobileEntity;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.Common;
+import com.haoyu.app.utils.Constants;
 import com.haoyu.app.utils.NetStatusUtil;
+import com.haoyu.app.utils.OkHttpClientManager;
+import com.haoyu.app.utils.ScreenUtils;
 import com.haoyu.app.view.RoundRectProgressBar;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import butterknife.BindView;
+import okhttp3.Request;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.widget.IjkVideoView;
 
@@ -49,7 +70,12 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
     @BindView(R.id.fl_video)
     FrameLayout fl_video;
     @BindView(R.id.iv_play)
-    AppCompatImageView iv_play;
+    ImageView iv_play;
+    @BindView(R.id.ll_netG)
+    LinearLayout ll_netG;    //网络为移动网络时提醒
+    @BindView(R.id.ll_netUseless)
+    LinearLayout ll_netUseless;   //网络不可用时提醒
+
     @BindView(R.id.ijkVideoView)
     IjkVideoView videoView;
 
@@ -59,13 +85,16 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
     View indicator;  //加载进度条
 
     @BindView(R.id.iv_isLocked)
-    AppCompatImageView iv_isLocked;
+    AppCompatImageView iv_isLocked;  //控制器加锁解锁
+
     @BindView(R.id.fl_controller)
     FrameLayout fl_controller;
     @BindView(R.id.iv_back)
     ImageView iv_back;
     @BindView(R.id.tv_videoName)
     TextView tv_videoName;
+    @BindView(R.id.tv_guide)
+    TextView tv_guide;
     @BindView(R.id.ll_attribute)
     LinearLayout ll_attribute;
     @BindView(R.id.iv_attribute)
@@ -89,7 +118,8 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
     private String videoUrl;
     private AudioManager mAudioManager;
     private boolean progress_turn, attrbute_turn, isLocked;  //isLocked是否锁住屏幕
-    private long currentDuration = -1, lastDuration = -1;  //当前播放位置
+    private int currentDuration = -1;  //当前播放位置
+    private long lastDuration = -1; //最后播放位置（即播放出错时的位置）
     /*** 视频窗口的宽和高*/
     private int playerWidth, playerHeight;
     private int maxVolume, currentVolume = -1;
@@ -100,9 +130,19 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
 
     private boolean isHttp;  //是否是本地文件
     private NetWorkReceiver receiver;
-    private MaterialDialog dialog;
-    private boolean openPlayer, isPrepared;
-    private boolean openWithMobile = false;
+    private boolean openPlayer, isPrepared, isCompleted;
+
+    private boolean isVideoUser, running;   //是否是工作坊音视频，是否在工作坊培训时间内
+    private long interval;
+    private final int CODE_UPDATE_VIEWTIME = 4;
+    private String statusUrl, updateUrl, infoUrl;
+    private final int STATE_IDLE = 330;
+    private final int STATE_ERROR = 331;
+    private final int STATE_PREPARED = 332;
+    private final int STATE_PLAYING = 333;
+    private final int STATE_PAUSED = 334;
+    private final int STATE_COMPLETED = 335;
+    private int mCurrentState = STATE_IDLE;
 
     @Override
     public int setLayoutResID() {
@@ -114,6 +154,45 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
         context = this;
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        String videoType = getIntent().getStringExtra("videoType");
+        if (videoType != null && videoType.equals("course")) {
+            isVideoUser = true;
+            running = getIntent().getBooleanExtra("running", false);
+            String activityId = getIntent().getStringExtra("activityId");
+            String videoId = getIntent().getStringExtra("videoId");
+            statusUrl = Constants.OUTRT_NET + "/" + activityId + "/study/m/video/user/" + videoId + "/updateVideoStatus";
+            updateUrl = Constants.OUTRT_NET + "/" + activityId + "/study/m/video/user/" + videoId + "/updateViewTime";
+            infoUrl = Constants.OUTRT_NET + "/" + activityId + "/study/m/activity/ncts/" + activityId + "/view";
+            VideoMobileEntity video = (VideoMobileEntity) getIntent().getSerializableExtra("video");
+            /*间隔多少毫秒提交视频观看时间，默认30秒*/
+            if (video.getInterval() > 0) {
+                interval = video.getInterval() * 1000;
+            } else {
+                interval = 30 * 1000;
+            }
+            if (video.getSummary() != null || video.getAttchFiles().size() > 0) {
+                setVideo(video);
+            }
+        } else if (videoType != null && videoType.equals("workshop")) {
+            isVideoUser = true;
+            running = getIntent().getBooleanExtra("running", false);
+            String workshopId = getIntent().getStringExtra("workshopId");
+            String activityId = getIntent().getStringExtra("activityId");
+            String videoId = getIntent().getStringExtra("videoId");
+            statusUrl = Constants.OUTRT_NET + "/student_" + workshopId + "/m/video/user/" + videoId + "/updateVideoStatus";
+            updateUrl = Constants.OUTRT_NET + "/student_" + workshopId + "/m/video/user/" + videoId + "/updateViewTime";
+            infoUrl = Constants.OUTRT_NET + "/student_" + workshopId + "/m/activity/wsts/" + activityId + "/view";
+            VideoMobileEntity video = (VideoMobileEntity) getIntent().getSerializableExtra("video");
+            /*间隔多少毫秒提交视频观看时间，默认30秒*/
+            if (video.getInterval() > 0) {
+                interval = video.getInterval() * 1000;
+            } else {
+                interval = 30 * 1000;
+            }
+            if (video.getSummary() != null || video.getAttchFiles().size() > 0) {
+                setVideo(video);
+            }
+        }
         videoUrl = getIntent().getStringExtra("videoUrl");
         String videoTitle = getIntent().getStringExtra("videoTitle");
         if (TextUtils.isEmpty(videoUrl)) {
@@ -136,6 +215,90 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
             IntentFilter filter = new IntentFilter();
             filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
             registerReceiver(receiver, filter);
+        }
+    }
+
+    private void setVideo(final VideoMobileEntity video) {
+        tv_guide.setVisibility(View.VISIBLE);
+        tv_guide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                handler.removeMessages(CODE_ENDGESTURE);
+                showRightTopDialog(video);
+            }
+        });
+    }
+
+    private void showRightTopDialog(final VideoMobileEntity video) {
+        final AlertDialog dialog = new AlertDialog.Builder(context, R.style.dialogFullScreen).create();
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_video_summary, null);
+        ImageView iv_close = view.findViewById(R.id.iv_close);
+        TextView tv_summary = view.findViewById(R.id.tv_summary);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        if (TextUtils.isEmpty(video.getSummary())) {
+            tv_summary.setVisibility(View.GONE);
+        } else {
+            tv_summary.setVisibility(View.VISIBLE);
+            tv_summary.setText(video.getSummary());
+        }
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(layoutManager);
+        MFileInfoAdapter adapter = new MFileInfoAdapter(video.getAttchFiles());
+        recyclerView.setAdapter(adapter);
+        adapter.setOnItemClickListener(new BaseRecyclerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseRecyclerAdapter adapter, BaseRecyclerAdapter.RecyclerHolder holder, View view, int position) {
+                Intent intent = new Intent(context, MFileInfoActivity.class);
+                MFileInfo fileInfo = video.getAttchFiles().get(position);
+                intent.putExtra("fileInfo", fileInfo);
+                startActivity(intent);
+            }
+        });
+        iv_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                handler.sendEmptyMessageDelayed(CODE_ENDGESTURE, 5000);
+            }
+        });
+        int width = ScreenUtils.getScreenWidth(context) * 3 / 5;
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(width, RelativeLayout.LayoutParams.MATCH_PARENT);
+        dialog.setContentView(view, params);
+        Window window = dialog.getWindow();
+        window.setGravity(Gravity.RIGHT | Gravity.TOP);
+    }
+
+    private class MFileInfoAdapter extends BaseArrayRecyclerAdapter<MFileInfo> {
+
+        public MFileInfoAdapter(List<MFileInfo> mDatas) {
+            super(mDatas);
+        }
+
+        @Override
+        public int bindView(int viewtype) {
+            return R.layout.fileinfo_item;
+        }
+
+        @Override
+        public void onBindHoder(RecyclerHolder holder, MFileInfo fileInfo, int position) {
+            ImageView iv_fileType = holder.obtainView(R.id.iv_fileType);
+            TextView tv_mFileName = holder.obtainView(R.id.tv_mFileName);
+            TextView tv_mFileSize = holder.obtainView(R.id.tv_mFileSize);
+            View divider = holder.obtainView(R.id.divider);
+            Common.setFileType(fileInfo.getUrl(), iv_fileType);
+            tv_mFileName.setText(fileInfo.getFileName());
+            tv_mFileSize.setText(Common.FormetFileSize(fileInfo.getFileSize()));
+            tv_mFileName.setTextColor(ContextCompat.getColor(context, R.color.white));
+            tv_mFileSize.setTextColor(ContextCompat.getColor(context, R.color.white));
+            divider.setVisibility(View.GONE);
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.transparent));
         }
     }
 
@@ -169,7 +332,6 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     fl_controller.setVisibility(View.VISIBLE);
                 }
-                handler.sendEmptyMessage(CODE_PROGRESS);
                 return false;
             }
 
@@ -231,10 +393,10 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
         if (!progress_turn) {
             progress_turn = true;
         }
-        long position = videoView.getCurrentPosition();
-        long duration = videoView.getDuration();
-        long deltaMax = Math.min(100 * 1000, duration - position);
-        long delta = (long) (deltaMax * percent);
+        int position = videoView.getCurrentPosition();
+        int duration = videoView.getDuration();
+        int deltaMax = Math.min(100 * 1000, duration - position);
+        int delta = (int) (deltaMax * percent);
         currentDuration = delta + position;
         if (currentDuration > duration) {
             currentDuration = duration;
@@ -242,7 +404,7 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
             currentDuration = 0;
             delta = -position;
         }
-        int showDelta = (int) delta / 1000;
+        int showDelta = delta / 1000;
         if (showDelta > 0) {
             iv_direction.setImageResource(R.drawable.ic_fast_forward_24dp);
         } else {
@@ -328,7 +490,7 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
         if (progress_turn) {
             ll_progress.setVisibility(View.GONE);
             progress_turn = false;
-            videoView.seekTo((int) currentDuration);
+            videoView.seekTo(currentDuration);
         }
         handler.removeMessages(CODE_ENDGESTURE);
         handler.sendEmptyMessageDelayed(CODE_ENDGESTURE, 5000);
@@ -336,8 +498,10 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
 
     @Override
     public void initData() {
+        if (isVideoUser && running) {
+            updateVideoStatus();
+        }
         if (NetStatusUtil.isWifi(context)) {   //如果是wifi网络环境直接播放视频
-            openPlayer = true;
             playVideo();
         }
     }
@@ -352,7 +516,7 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser && !videoView.isPlaying()) {
-                    start();
+                    statusChange(STATE_PLAYING);
                 }
             }
 
@@ -376,24 +540,27 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
                 break;
             case R.id.iv_play:
                 if (isHttp && NetStatusUtil.isConnected(context) && !NetStatusUtil.isWifi(context)) {
-                    netStateTips();
+                    netWorkTips();
                 } else {
                     if (!openPlayer) {
-                        openPlayer = true;
                         playVideo();
                     } else {
-                        start();
+                        statusChange(STATE_PLAYING);
                     }
                 }
                 break;
             case R.id.iv_playState:
                 if (videoView.isPlaying()) {
-                    pause();
+                    statusChange(STATE_PAUSED);
                 } else {
                     if (isHttp && NetStatusUtil.isConnected(context) && !NetStatusUtil.isWifi(context)) {
-                        netStateTips();
+                        netWorkTips();
                     } else {
-                        start();
+                        if (!openPlayer) {
+                            playVideo();
+                        } else {
+                            statusChange(STATE_PLAYING);
+                        }
                     }
                 }
                 break;
@@ -412,111 +579,125 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    private void netStateTips() {
-        if (!openWithMobile) {
-            MaterialDialog dialog = new MaterialDialog(context);
-            dialog.setTitle("网络提醒");
-            dialog.setMessage("使用2G/3G/4G网络观看视频会消耗较多流量。确定要开启吗？");
-            dialog.setNegativeButton("开启", new MaterialDialog.ButtonClickListener() {
-                @Override
-                public void onClick(View v, AlertDialog dialog) {
-                    openWithMobile = true;
-                    if (!openPlayer) {
-                        openPlayer = true;
-                        playVideo();
-                    } else {
-                        start();
-                    }
-                }
-            });
-            dialog.setPositiveButton("取消", null);
-            dialog.show();
-        } else {
-            start();
-            toast(context, "当前网络为非Wi-FI环境，请注意您的流量使用情况");
-        }
-    }
-
     private void playVideo() {
-        idle();
+        statusChange(STATE_IDLE);
         videoView.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(IMediaPlayer iMediaPlayer) {
-                prepared();
+                statusChange(STATE_PREPARED);
                 if (lastDuration > 0) {
-                    videoView.seekTo((int) lastDuration);
+                    iMediaPlayer.seekTo(lastDuration);
+                    lastDuration = -1;
                 }
-                start();
-                long duration = iMediaPlayer.getDuration();
-                seekbar.setMax((int) duration);
+                statusChange(STATE_PLAYING);
+                handler.sendEmptyMessage(CODE_PROGRESS);
+                int duration = (int) iMediaPlayer.getDuration();
+                seekbar.setMax(duration);
                 tv_videoSize.setText(generateTime(duration));
             }
         });
         videoView.setOnBufferingUpdateListener(new IMediaPlayer.OnBufferingUpdateListener() {
             @Override
             public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int precent) {
-                long duration = iMediaPlayer.getDuration();
-                long secondary = precent * duration / 100;
-                seekbar.setSecondaryProgress((int) secondary);
+                int duration = videoView.getDuration();
+                int secondary = precent * duration / 100;
+                seekbar.setSecondaryProgress(secondary);
             }
         });
         videoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(IMediaPlayer iMediaPlayer, int errorCode, int i1) {
-                lastDuration = iMediaPlayer.getCurrentPosition();
-                error(errorCode);
+                if (lastDuration < 0) {
+                    lastDuration = iMediaPlayer.getCurrentPosition();
+                }
+                statusChange(STATE_ERROR);
                 return false;
             }
         });
         videoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(IMediaPlayer iMediaPlayer) {
-                completed();
+                statusChange(STATE_COMPLETED);
             }
         });
     }
 
+    private void statusChange(int newStatus) {
+        mCurrentState = newStatus;
+        if (mCurrentState == STATE_IDLE) {
+            idle();
+        } else if (mCurrentState == STATE_PREPARED) {
+            prepared();
+        } else if (mCurrentState == STATE_PLAYING) {
+            start();
+        } else if (mCurrentState == STATE_PAUSED) {
+            pause();
+        } else if (mCurrentState == STATE_COMPLETED) {
+            completed();
+        } else if (mCurrentState == STATE_ERROR) {
+            error();
+        }
+    }
+
     private void idle() {
+        openPlayer = true;
+        isCompleted = false;
         iv_play.setVisibility(View.GONE);
         tv_loading.setText("即将播放...");
         tv_loading.setVisibility(View.VISIBLE);
+        fl_controller.setEnabled(true);
         videoView.setVideoPath(videoUrl);
     }
 
     private void prepared() {
+        mCurrentState = STATE_PREPARED;
         isPrepared = true;
         tv_loading.setVisibility(View.GONE);
+        iv_play.setVisibility(View.GONE);
+        ll_netUseless.setVisibility(View.GONE);
     }
 
     private void start() {
+        mCurrentState = STATE_PLAYING;
         iv_play.setVisibility(View.GONE);
-        tv_loading.setVisibility(View.GONE);//测试专家一
+        tv_loading.setVisibility(View.GONE);
         videoView.start();
         iv_playState.setImageResource(R.drawable.ic_pause_24dp);
+        if (isVideoUser && running) {
+            handler.removeMessages(CODE_UPDATE_VIEWTIME);
+            handler.sendEmptyMessageDelayed(CODE_UPDATE_VIEWTIME, interval);
+        }
     }
 
     private void pause() {
+        mCurrentState = STATE_PAUSED;
         tv_loading.setVisibility(View.GONE);
         iv_play.setVisibility(View.VISIBLE);
         videoView.pause();
         iv_playState.setImageResource(R.drawable.ic_play_arrow_24dp);
+        if (isVideoUser && running) {
+            handler.removeMessages(CODE_UPDATE_VIEWTIME);
+        }
     }
 
     private void completed() {
+        mCurrentState = STATE_COMPLETED;
+        isCompleted = true;
         iv_play.setVisibility(View.VISIBLE);
+        iv_playState.setImageResource(R.drawable.ic_play_arrow_24dp);
         tv_loading.setVisibility(View.GONE);
+        if (isVideoUser && running) {
+            handler.removeMessages(CODE_UPDATE_VIEWTIME);
+        }
     }
 
-    private void error(int errorCode) {
-        if (errorCode == -10000) {
-            tv_loading.setText("无法播放此视频~");
-            tv_loading.setTextColor(ContextCompat.getColor(context, R.color.redcolor));
-            tv_loading.setVisibility(View.VISIBLE);
-        } else if (errorCode == IMediaPlayer.MEDIA_ERROR_IO) {
-            toast(context, "当前网络不顺畅，请检查您的网络设置");
-            tv_loading.setVisibility(View.GONE);
+    private void error() {
+        mCurrentState = STATE_ERROR;
+        release();
+        if (!NetStatusUtil.isConnected(context)) {
+            netUseless();
         } else {
-            tv_loading.setVisibility(View.GONE);
+            toast(context, "视频播放出现了点问题~");
         }
     }
 
@@ -526,6 +707,35 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
         int minutes = (totalSeconds / 60) % 60;
         int hours = totalSeconds / 3600;
         return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes, seconds) : String.format("%02d:%02d", minutes, seconds);
+    }
+
+    private void release() {
+        iv_play.setVisibility(View.VISIBLE);
+        iv_playState.setImageResource(R.drawable.ic_play_arrow_24dp);
+        tv_loading.setVisibility(View.GONE);
+        openPlayer = false;
+        isPrepared = false;
+        iv_isLocked.setVisibility(View.GONE);
+        fl_controller.setVisibility(View.GONE);
+        fl_controller.setEnabled(false);
+        videoView.stopPlayback();
+    }
+
+    private void netUseless() {
+        iv_play.setVisibility(View.GONE);
+        ll_netUseless.setVisibility(View.VISIBLE);
+        TextView tv_netUseless = ll_netUseless.findViewById(R.id.tv_netUseless);
+        tv_netUseless.setText("网络连接不可用\n点击屏幕打开网络设置");
+        ll_netUseless.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)); //直接进入手机中的wifi网络设置界面
+                } catch (Exception e) {
+                    toast(context, "无法打开网络设置界面，请手动打开");
+                }
+            }
+        });
     }
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
@@ -542,15 +752,18 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
                 case CODE_ENDGESTURE:
                     iv_isLocked.setVisibility(View.GONE);
                     fl_controller.setVisibility(View.GONE);
-                    removeMessages(CODE_PROGRESS);
+                    break;
+                case CODE_UPDATE_VIEWTIME:
+                    updateViewTime();
+                    sendEmptyMessageDelayed(CODE_UPDATE_VIEWTIME, interval);
                     break;
             }
         }
     };
 
     private void setProgress() {
-        long position = videoView.getCurrentPosition();
-        seekbar.setProgress((int) position);
+        int position = videoView.getCurrentPosition();
+        seekbar.setProgress(position);
         tv_current.setText(generateTime(position));
     }
 
@@ -559,52 +772,115 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-                if (info != null && info.getType() == ConnectivityManager.TYPE_MOBILE) {
-                    typeChange();
-                }
-            }
-        }
-
-    }
-
-    private void typeChange() {
-        if (!openWithMobile) {
-            pause();
-            netWorkTips();
-        } else {
-            if (NetStatusUtil.isConnected(context)) {
-                if (!NetStatusUtil.isWifi(context)) {
-                    start();
-                    toast(context, "当前网络为非Wi-FI环境，请注意您的流量使用情况");
+                if (NetStatusUtil.isConnected(context)) {
+                    if (ll_netUseless.getVisibility() != View.GONE) {
+                        ll_netUseless.setVisibility(View.GONE);
+                    }
+                    if (mCurrentState == STATE_ERROR || mCurrentState == STATE_COMPLETED) {
+                        if (iv_play.getVisibility() != View.VISIBLE) {
+                            iv_play.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    if (openPlayer && !NetStatusUtil.isWifi(context)) {
+                        //如果播放过程中网络状态进入移动网络，则记录当前播放位置（为下次播放seek）停止播放并回收资源
+                        if (lastDuration < 0) {
+                            lastDuration = videoView.getCurrentPosition();
+                        }
+                        release();
+                        netWorkTips();
+                    }
                 }
             }
         }
     }
 
     private void netWorkTips() {
-        if (dialog != null) {
-            dialog.dismiss();
-        }
-        dialog = new MaterialDialog(context);
-        dialog.setTitle("网络提醒");
-        dialog.setMessage("使用2G/3G/4G网络观看视频会消耗较多流量。确定要开启吗？");
-        dialog.setNegativeButton("开启", new MaterialDialog.ButtonClickListener() {
-            @Override
-            public void onClick(View v, AlertDialog dialog) {
-                openWithMobile = true;
-                if (!openPlayer) {
-                    openPlayer = true;
-                    playVideo();
-                } else {
-                    start();
+        if (ll_netG.getVisibility() != View.VISIBLE) {
+            iv_play.setVisibility(View.GONE);
+            ll_netG.setVisibility(View.VISIBLE);
+            TextView tv_netTips = ll_netG.findViewById(R.id.tv_netTips);
+            tv_netTips.setText("您正在使用移动网络播放视频\n可能产生较高流量费用");
+            TextView tv_cancel = ll_netG.findViewById(R.id.tv_cancel);
+            TextView tv_continue = ll_netG.findViewById(R.id.tv_continue);
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()) {
+                        case R.id.tv_cancel:
+                            iv_play.setVisibility(View.VISIBLE);
+                            ll_netG.setVisibility(View.GONE);
+                            break;
+                        case R.id.tv_continue:
+                            ll_netG.setVisibility(View.GONE);
+                            if (!openPlayer) {
+                                playVideo();
+                            } else {
+                                statusChange(STATE_PLAYING);
+                            }
+                            break;
+                    }
                 }
-                dialog.dismiss();
+            };
+            tv_cancel.setOnClickListener(listener);
+            tv_continue.setOnClickListener(listener);
+        }
+    }
+
+    /*更新当前播放视频缓存 */
+    private void updateVideoStatus() {
+        addSubscription(OkHttpClientManager.getAsyn(context, statusUrl, new OkHttpClientManager.ResultCallback<String>() {
+            @Override
+            public void onError(Request request, Exception e) {
+
             }
-        });
-        dialog.setPositiveButton("取消", null);
-        dialog.show();
+
+            @Override
+            public void onResponse(String response) {
+
+            }
+        }));
+    }
+
+    /*更新视频播放时间*/
+    private void updateViewTime() {
+        int lastUpdateTime = videoView.getCurrentPosition();
+        Map<String, String> map = new HashMap<>();
+        map.put("lastUpdateTime", String.valueOf(lastUpdateTime));
+        map.put("isLimit", "true");
+        map.put("_method", "PUT");
+        addSubscription(OkHttpClientManager.postAsyn(context, updateUrl, new OkHttpClientManager.ResultCallback<BaseResponseResult>() {
+            @Override
+            public void onError(Request request, Exception e) {
+
+            }
+
+            @Override
+            public void onResponse(BaseResponseResult response) {
+                getActivityInfo();
+            }
+        }, map));
+    }
+
+    /*获取活动信息（课程视频学习完成状态）*/
+    private void getActivityInfo() {
+        addSubscription(OkHttpClientManager.getAsyn(context, infoUrl, new OkHttpClientManager.ResultCallback<AppActivityViewResult>() {
+            @Override
+            public void onError(Request request, Exception e) {
+                onNetWorkError(context);
+            }
+
+            @Override
+            public void onResponse(AppActivityViewResult response) {
+                if (response != null && response.getResponseData() != null
+                        && response.getResponseData().getmActivityResult() != null
+                        && response.getResponseData().getmActivityResult().getmActivity() != null) {
+                    CourseSectionActivity activity = response.getResponseData().getmActivityResult().getmActivity();
+                    Intent intent = new Intent();
+                    intent.putExtra("activity", activity);
+                    setResult(RESULT_OK, intent);
+                }
+            }
+        }));
     }
 
     @Override
@@ -613,14 +889,18 @@ public class IJKPlayerActivity extends BaseActivity implements View.OnClickListe
         if (NetStatusUtil.isConnected(context) && !NetStatusUtil.isWifi(context)) {
             netWorkTips();
         } else {
-            start();
+            if (openPlayer && !isCompleted) {
+                statusChange(STATE_PLAYING);
+            }
         }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        pause();
+        if (openPlayer) {
+            statusChange(STATE_PAUSED);
+        }
     }
 
     @Override

@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package tv.danmaku.ijk.media.player.widget;
 
 import android.view.View;
 
 import java.lang.ref.WeakReference;
-
 
 public final class MeasureHelper {
     private WeakReference<View> mWeakView;
@@ -71,10 +69,9 @@ public final class MeasureHelper {
         //        + MeasureSpec.toString(heightMeasureSpec) + ")");
         if (mVideoRotationDegree == 90 || mVideoRotationDegree == 270) {
             int tempSpec = widthMeasureSpec;
-            widthMeasureSpec  = heightMeasureSpec;
+            widthMeasureSpec = heightMeasureSpec;
             heightMeasureSpec = tempSpec;
         }
-
         int width = View.getDefaultSize(mVideoWidth, widthMeasureSpec);
         int height = View.getDefaultSize(mVideoHeight, heightMeasureSpec);
         if (mCurrentAspectRatio == IRenderView.AR_MATCH_PARENT) {
@@ -85,7 +82,6 @@ public final class MeasureHelper {
             int widthSpecSize = View.MeasureSpec.getSize(widthMeasureSpec);
             int heightSpecMode = View.MeasureSpec.getMode(heightMeasureSpec);
             int heightSpecSize = View.MeasureSpec.getSize(heightMeasureSpec);
-
             if (widthSpecMode == View.MeasureSpec.AT_MOST && heightSpecMode == View.MeasureSpec.AT_MOST) {
                 float specAspectRatio = (float) widthSpecSize / (float) heightSpecSize;
                 float displayAspectRatio;
@@ -110,7 +106,6 @@ public final class MeasureHelper {
                         break;
                 }
                 boolean shouldBeWider = displayAspectRatio > specAspectRatio;
-
                 switch (mCurrentAspectRatio) {
                     case IRenderView.AR_ASPECT_FIT_PARENT:
                     case IRenderView.AR_16_9_FIT_PARENT:
@@ -153,7 +148,6 @@ public final class MeasureHelper {
                 // the size is fixed
                 width = widthSpecSize;
                 height = heightSpecSize;
-
                 // for compatibility, we adjust size based on aspect ratio
                 if (mVideoWidth * height < width * mVideoHeight) {
                     //Log.i("@@@", "image too wide, correcting");
@@ -213,32 +207,4 @@ public final class MeasureHelper {
         mCurrentAspectRatio = aspectRatio;
     }
 
-//    @NonNull
-//    public static String getAspectRatioText(Context context, int aspectRatio) {
-//        String text;
-//        switch (aspectRatio) {
-//            case IRenderView.AR_ASPECT_FIT_PARENT:
-//                text = context.getString(R.string.VideoView_ar_aspect_fit_parent);
-//                break;
-//            case IRenderView.AR_ASPECT_FILL_PARENT:
-//                text = context.getString(R.string.VideoView_ar_aspect_fill_parent);
-//                break;
-//            case IRenderView.AR_ASPECT_WRAP_CONTENT:
-//                text = context.getString(R.string.VideoView_ar_aspect_wrap_content);
-//                break;
-//            case IRenderView.AR_MATCH_PARENT:
-//                text = context.getString(R.string.VideoView_ar_match_parent);
-//                break;
-//            case IRenderView.AR_16_9_FIT_PARENT:
-//                text = context.getString(R.string.VideoView_ar_16_9_fit_parent);
-//                break;
-//            case IRenderView.AR_4_3_FIT_PARENT:
-//                text = context.getString(R.string.VideoView_ar_4_3_fit_parent);
-//                break;
-//            default:
-//                text = context.getString(R.string.N_A);
-//                break;
-//        }
-//        return text;
-//    }
 }

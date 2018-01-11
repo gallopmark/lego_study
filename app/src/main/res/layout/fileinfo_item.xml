@@ -16,8 +16,7 @@
             android:id="@+id/iv_fileType"
             android:layout_width="@dimen/margin_size_40"
             android:layout_height="@dimen/margin_size_40"
-            android:layout_gravity="center"
-            android:src="@drawable/resources_video" />
+            android:layout_gravity="center" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -30,9 +29,8 @@
                 android:id="@+id/tv_mFileName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="教育系统突发事件"
+                android:ellipsize="middle"
+                android:singleLine="true"
                 android:textSize="@dimen/font_size_16" />
 
             <TextView
@@ -40,7 +38,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_size_4"
-                android:text="20M"
                 android:textColor="@color/gray"
                 android:textSize="@dimen/font_size_15" />
         </LinearLayout>

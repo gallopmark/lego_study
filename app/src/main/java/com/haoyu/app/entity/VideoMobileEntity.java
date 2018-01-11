@@ -36,10 +36,10 @@ public class VideoMobileEntity implements Serializable {
     private String urls;
     @Expose
     @SerializedName("videoFiles")
-    private List<MFileInfo> videoFiles = new ArrayList<>();
+    private List<MFileInfo> videoFiles;
     @Expose
     @SerializedName("attchFiles")
-    private List<MFileInfo> attchFiles = new ArrayList<>();
+    private List<MFileInfo> attchFiles;
 
     public String getId() {
         return id;
@@ -98,6 +98,9 @@ public class VideoMobileEntity implements Serializable {
     }
 
     public List<MFileInfo> getVideoFiles() {
+        if (videoFiles == null) {
+            return new ArrayList<>();
+        }
         return videoFiles;
     }
 
@@ -106,6 +109,9 @@ public class VideoMobileEntity implements Serializable {
     }
 
     public List<MFileInfo> getAttchFiles() {
+        if (attchFiles == null) {
+            return new ArrayList<>();
+        }
         return attchFiles;
     }
 

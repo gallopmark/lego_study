@@ -1,7 +1,6 @@
 package com.haoyu.app.fragment;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,13 +8,12 @@ import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.media.AudioManager;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v4.content.ContextCompat;
+import android.provider.Settings;
 import android.support.v7.widget.AppCompatImageView;
 import android.text.Html;
 import android.text.Spanned;
@@ -25,12 +23,12 @@ import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.haoyu.app.base.BaseFragment;
-import com.haoyu.app.dialog.MaterialDialog;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.NetStatusUtil;
 import com.haoyu.app.utils.PixelFormat;
@@ -48,7 +46,10 @@ import tv.danmaku.ijk.media.player.widget.IjkVideoView;
 public class IJKPlayerFragment extends BaseFragment implements View.OnClickListener {
     private Activity activity;
     private FrameLayout fl_video;
-    private AppCompatImageView iv_play;
+    private ImageView iv_play;
+    private LinearLayout ll_netG;    //网络为移动网络时提醒
+    private LinearLayout ll_netUseless;   //网络不可用时提醒
+    private AppCompatImageView iv_netWifi;
     private IjkVideoView videoView;
 
     private TextView tv_loading;   //提示即将播放
@@ -71,10 +72,11 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
 
     private String videoUrl, videoTitle;
     private boolean isFullScreen;
-    private int dp_120, dp_160, dp_25, dp_30, dp_40;
+    private int dp_120, dp_160, dp_25, dp_30, dp_40, dp_80;
     private AudioManager mAudioManager;
     private boolean progress_turn, attrbute_turn, isLocked;  //isLocked是否锁住屏幕
-    private long currentDuration = -1;  //当前播放位置
+    private int currentDuration = -1;  //当前播放位置
+    private long lastDuration = -1; //最后播放位置（即播放出错时的位置）
     /*** 视频窗口的宽和高*/
     private int playerWidth, playerHeight;
     private int maxVolume, currentVolume = -1;
@@ -84,11 +86,17 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
     private final int CODE_PROGRESS = 3;
 
     private NetWorkReceiver receiver;
-    private MaterialDialog dialog;
-    private boolean openPlayer, isPrepared;
-    private boolean openWithMobile = false;
+    private boolean openPlayer, isPrepared, isCompleted;
 
     private OnRequestedOrientation onRequestedOrientation;
+
+    private final int STATE_IDLE = 330;
+    private final int STATE_ERROR = 331;
+    private final int STATE_PREPARED = 332;
+    private final int STATE_PLAYING = 333;
+    private final int STATE_PAUSED = 334;
+    private final int STATE_COMPLETED = 335;
+    private int mCurrentState = STATE_IDLE;
 
     @Override
     public void onAttach(Context context) {
@@ -99,6 +107,7 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
         dp_25 = PixelFormat.dp2px(activity, 25);
         dp_30 = PixelFormat.dp2px(activity, 30);
         dp_40 = PixelFormat.dp2px(activity, 40);
+        dp_80 = PixelFormat.dp2px(activity, 80);
     }
 
     @Override
@@ -133,6 +142,9 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
     private void findViewById(View view) {
         fl_video = view.findViewById(R.id.fl_video);
         iv_play = view.findViewById(R.id.iv_play);
+        ll_netG = view.findViewById(R.id.ll_netG);
+        ll_netUseless = view.findViewById(R.id.ll_netUseless);
+        iv_netWifi = view.findViewById(R.id.iv_netWifi);
         videoView = view.findViewById(R.id.videoView);
         tv_loading = view.findViewById(R.id.tv_loading);
         indicator = view.findViewById(R.id.indicator);
@@ -156,20 +168,24 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
         FrameLayout.LayoutParams indiParams = (FrameLayout.LayoutParams) indicator.getLayoutParams();
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) ll_attribute.getLayoutParams();
         LinearLayout.LayoutParams ivParams = (LinearLayout.LayoutParams) iv_attribute.getLayoutParams();
+        LinearLayout.LayoutParams wifiParams = (LinearLayout.LayoutParams) iv_netWifi.getLayoutParams();
         if (isFullScreen) {     //全屏
             params.width = dp_160;
             ivParams.width = ivParams.height = dp_30;
             indiParams.width = indiParams.height = dp_40;
+            wifiParams.width = wifiParams.height = dp_80;
             tv_videoTitle.setVisibility(View.VISIBLE);
         } else {
             params.width = dp_120;
             ivParams.width = ivParams.height = dp_25;
             indiParams.width = indiParams.height = dp_30;
+            wifiParams.width = wifiParams.height = dp_40;
             tv_videoTitle.setVisibility(View.GONE);
         }
         indicator.setLayoutParams(indiParams);
         ll_attribute.setLayoutParams(params);
         iv_attribute.setLayoutParams(ivParams);
+        iv_netWifi.setLayoutParams(wifiParams);
     }
 
     private void setVideoController() {
@@ -274,10 +290,10 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
         if (!progress_turn) {
             progress_turn = true;
         }
-        long position = videoView.getCurrentPosition();
-        long duration = videoView.getDuration();
-        long deltaMax = Math.min(100 * 1000, duration - position);
-        long delta = (long) (deltaMax * percent);
+        int position = videoView.getCurrentPosition();
+        int duration = videoView.getDuration();
+        int deltaMax = Math.min(100 * 1000, duration - position);
+        int delta = (int) (deltaMax * percent);
         currentDuration = delta + position;
         if (currentDuration > duration) {
             currentDuration = duration;
@@ -285,7 +301,7 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
             currentDuration = 0;
             delta = -position;
         }
-        int showDelta = (int) delta / 1000;
+        int showDelta = delta / 1000;
         if (showDelta > 0) {
             iv_direction.setImageResource(R.drawable.ic_fast_forward_24dp);
         } else {
@@ -371,7 +387,7 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
         if (progress_turn) {
             ll_progress.setVisibility(View.GONE);
             progress_turn = false;
-            videoView.seekTo((int) currentDuration);
+            videoView.seekTo(currentDuration);
         }
         handler.removeMessages(CODE_ENDGESTURE);
         handler.sendEmptyMessageDelayed(CODE_ENDGESTURE, 5000);
@@ -387,7 +403,7 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (fromUser && !videoView.isPlaying()) {
-                    start();
+                    statusChange(STATE_PLAYING);
                 }
             }
 
@@ -408,24 +424,27 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
         switch (view.getId()) {
             case R.id.iv_play:
                 if (NetStatusUtil.isConnected(context) && !NetStatusUtil.isWifi(context)) {
-                    netStateTips();
+                    netWorkTips();
                 } else {
                     if (!openPlayer) {
-                        openPlayer = true;
                         playVideo();
                     } else {
-                        start();
+                        statusChange(STATE_PLAYING);
                     }
                 }
                 break;
             case R.id.iv_playState:
                 if (videoView.isPlaying()) {
-                    pause();
+                    statusChange(STATE_PAUSED);
                 } else {
                     if (NetStatusUtil.isConnected(context) && !NetStatusUtil.isWifi(context)) {
-                        netStateTips();
+                        netWorkTips();
                     } else {
-                        start();
+                        if (!openPlayer) {
+                            playVideo();
+                        } else {
+                            statusChange(STATE_PLAYING);
+                        }
                     }
                 }
                 break;
@@ -455,81 +474,86 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
         }
     }
 
-    private void netStateTips() {
-        if (!openWithMobile) {
-            MaterialDialog dialog = new MaterialDialog(context);
-            dialog.setTitle("网络提醒");
-            dialog.setMessage("使用2G/3G/4G网络观看视频会消耗较多流量。确定要开启吗？");
-            dialog.setNegativeButton("开启", new MaterialDialog.ButtonClickListener() {
-                @Override
-                public void onClick(View v, AlertDialog dialog) {
-                    openWithMobile = true;
-                    if (!openPlayer) {
-                        openPlayer = true;
-                        playVideo();
-                    } else {
-                        start();
-                    }
-                }
-            });
-            dialog.setPositiveButton("取消", null);
-            dialog.show();
-        } else {
-            start();
-            toast("当前网络为非Wi-FI环境，请注意您的流量使用情况");
-        }
-    }
-
     private void playVideo() {
-        idle();
+        statusChange(STATE_IDLE);
         videoView.setOnPreparedListener(new IMediaPlayer.OnPreparedListener() {
             @Override
             public void onPrepared(IMediaPlayer iMediaPlayer) {
-                prepared();
-                start();
-                long duration = iMediaPlayer.getDuration();
-                seekbar.setMax((int) duration);
+                statusChange(STATE_PREPARED);
+                if (lastDuration > 0) {
+                    iMediaPlayer.seekTo(lastDuration);
+                    lastDuration = -1;
+                }
+                statusChange(STATE_PLAYING);
+                handler.sendEmptyMessage(CODE_PROGRESS);
+                int duration = (int) iMediaPlayer.getDuration();
+                seekbar.setMax(duration);
                 tv_videoSize.setText(generateTime(duration));
             }
         });
         videoView.setOnBufferingUpdateListener(new IMediaPlayer.OnBufferingUpdateListener() {
             @Override
             public void onBufferingUpdate(IMediaPlayer iMediaPlayer, int precent) {
-                long duration = iMediaPlayer.getDuration();
-                long secondary = precent * duration / 100;
-                seekbar.setSecondaryProgress((int) secondary);
+                int duration = videoView.getDuration();
+                int secondary = precent * duration / 100;
+                seekbar.setSecondaryProgress(secondary);
             }
         });
         videoView.setOnErrorListener(new IMediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(IMediaPlayer iMediaPlayer, int errorCode, int i1) {
-                error(errorCode);
+                if (lastDuration < 0) {
+                    lastDuration = iMediaPlayer.getCurrentPosition();
+                }
+                statusChange(STATE_ERROR);
                 return false;
             }
         });
         videoView.setOnCompletionListener(new IMediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(IMediaPlayer iMediaPlayer) {
-                completed();
+                statusChange(STATE_COMPLETED);
             }
         });
     }
 
+    private void statusChange(int newStatus) {
+        mCurrentState = newStatus;
+        if (mCurrentState == STATE_IDLE) {
+            idle();
+        } else if (mCurrentState == STATE_PREPARED) {
+            prepared();
+        } else if (mCurrentState == STATE_PLAYING) {
+            start();
+        } else if (mCurrentState == STATE_PAUSED) {
+            pause();
+        } else if (mCurrentState == STATE_COMPLETED) {
+            completed();
+        } else if (mCurrentState == STATE_ERROR) {
+            error();
+        }
+    }
+
     private void idle() {
+        openPlayer = true;
+        isCompleted = false;
         iv_play.setVisibility(View.GONE);
         tv_loading.setText("即将播放...");
         tv_loading.setVisibility(View.VISIBLE);
+        fl_controller.setEnabled(true);
         videoView.setVideoPath(videoUrl);
     }
 
     private void prepared() {
         isPrepared = true;
         tv_loading.setVisibility(View.GONE);
+        iv_play.setVisibility(View.GONE);
+        ll_netUseless.setVisibility(View.GONE);
     }
 
     private void start() {
         iv_play.setVisibility(View.GONE);
-        tv_loading.setVisibility(View.GONE);//测试专家一
+        tv_loading.setVisibility(View.GONE);
         videoView.start();
         iv_playState.setImageResource(R.drawable.ic_pause_24dp);
     }
@@ -542,20 +566,18 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
     }
 
     private void completed() {
+        isCompleted = true;
         iv_play.setVisibility(View.VISIBLE);
+        iv_playState.setImageResource(R.drawable.ic_play_arrow_24dp);
         tv_loading.setVisibility(View.GONE);
     }
 
-    private void error(int errorCode) {
-        if (errorCode == -10000) {
-            tv_loading.setText("无法播放此视频~");
-            tv_loading.setTextColor(ContextCompat.getColor(context, R.color.redcolor));
-            tv_loading.setVisibility(View.VISIBLE);
-        } else if (errorCode == IMediaPlayer.MEDIA_ERROR_IO) {
-            toast("当前网络不顺畅，请检查您的网络设置");
-            tv_loading.setVisibility(View.GONE);
+    private void error() {
+        release();
+        if (!NetStatusUtil.isConnected(context)) {
+            netUseless();
         } else {
-            tv_loading.setVisibility(View.GONE);
+            toast("视频播放出现了点问题~");
         }
     }
 
@@ -565,6 +587,35 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
         int minutes = (totalSeconds / 60) % 60;
         int hours = totalSeconds / 3600;
         return hours > 0 ? String.format("%02d:%02d:%02d", hours, minutes, seconds) : String.format("%02d:%02d", minutes, seconds);
+    }
+
+    private void release() {
+        iv_play.setVisibility(View.VISIBLE);
+        iv_playState.setImageResource(R.drawable.ic_play_arrow_24dp);
+        tv_loading.setVisibility(View.GONE);
+        openPlayer = false;
+        isPrepared = false;
+        iv_isLocked.setVisibility(View.GONE);
+        fl_controller.setVisibility(View.GONE);
+        fl_controller.setEnabled(false);
+        videoView.stopPlayback();
+    }
+
+    private void netUseless() {
+        iv_play.setVisibility(View.GONE);
+        ll_netUseless.setVisibility(View.VISIBLE);
+        TextView tv_netUseless = ll_netUseless.findViewById(R.id.tv_netUseless);
+        tv_netUseless.setText("网络连接不可用\n点击屏幕打开网络设置");
+        ll_netUseless.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS)); //直接进入手机中的wifi网络设置界面
+                } catch (Exception e) {
+                    toast("无法打开网络设置界面，请手动打开");
+                }
+            }
+        });
     }
 
     private Handler handler = new Handler(Looper.getMainLooper()) {
@@ -587,8 +638,8 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
     };
 
     private void setProgress() {
-        long position = videoView.getCurrentPosition();
-        seekbar.setProgress((int) position);
+        int position = videoView.getCurrentPosition();
+        seekbar.setProgress(position);
         tv_current.setText(generateTime(position));
     }
 
@@ -597,27 +648,57 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals(ConnectivityManager.CONNECTIVITY_ACTION)) {
-                ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo info = connectivityManager.getActiveNetworkInfo();
-                if (info != null && info.getType() == ConnectivityManager.TYPE_MOBILE) {
-                    typeChange();
+                if (NetStatusUtil.isConnected(context)) {
+                    if (ll_netUseless.getVisibility() != View.GONE) {
+                        ll_netUseless.setVisibility(View.GONE);
+                    }
+                    if (mCurrentState == STATE_ERROR || mCurrentState == STATE_COMPLETED) {
+                        if (iv_play.getVisibility() != View.VISIBLE) {
+                            iv_play.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    if (openPlayer && !NetStatusUtil.isWifi(context)) {
+                        //如果播放过程中网络状态进入移动网络，则记录当前播放位置（为下次播放seek）停止播放并回收资源
+                        if (lastDuration < 0) {
+                            lastDuration = videoView.getCurrentPosition();
+                        }
+                        release();
+                        netWorkTips();
+                    }
                 }
             }
         }
-
     }
 
-    private void typeChange() {
-        if (!openWithMobile) {
-            pause();
-            netWorkTips();
-        } else {
-            if (NetStatusUtil.isConnected(context)) {
-                if (!NetStatusUtil.isWifi(context)) {
-                    start();
-                    toast("当前网络为非Wi-FI环境，请注意您的流量使用情况");
+    private void netWorkTips() {
+        if (ll_netG.getVisibility() != View.VISIBLE) {
+            iv_play.setVisibility(View.GONE);
+            ll_netG.setVisibility(View.VISIBLE);
+            TextView tv_netTips = ll_netG.findViewById(R.id.tv_netTips);
+            tv_netTips.setText("您正在使用移动网络播放视频\n可能产生较高流量费用");
+            TextView tv_cancel = ll_netG.findViewById(R.id.tv_cancel);
+            TextView tv_continue = ll_netG.findViewById(R.id.tv_continue);
+            View.OnClickListener listener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    switch (v.getId()) {
+                        case R.id.tv_cancel:
+                            iv_play.setVisibility(View.VISIBLE);
+                            ll_netG.setVisibility(View.GONE);
+                            break;
+                        case R.id.tv_continue:
+                            ll_netG.setVisibility(View.GONE);
+                            if (!openPlayer) {
+                                playVideo();
+                            } else {
+                                statusChange(STATE_PLAYING);
+                            }
+                            break;
+                    }
                 }
-            }
+            };
+            tv_cancel.setOnClickListener(listener);
+            tv_continue.setOnClickListener(listener);
         }
     }
 
@@ -642,39 +723,19 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
             if (NetStatusUtil.isConnected(context) && !NetStatusUtil.isWifi(context)) {
                 netWorkTips();
             } else {
-                start();
-            }
-        }
-    }
-
-    private void netWorkTips() {
-        if (dialog != null) {
-            dialog.dismiss();
-        }
-        dialog = new MaterialDialog(context);
-        dialog.setTitle("网络提醒");
-        dialog.setMessage("使用2G/3G/4G网络观看视频会消耗较多流量。确定要开启吗？");
-        dialog.setNegativeButton("开启", new MaterialDialog.ButtonClickListener() {
-            @Override
-            public void onClick(View v, AlertDialog dialog) {
-                openWithMobile = true;
-                if (!openPlayer) {
-                    openPlayer = true;
-                    playVideo();
-                } else {
-                    start();
+                if (!isCompleted) {
+                    statusChange(STATE_PLAYING);
                 }
-                dialog.dismiss();
             }
-        });
-        dialog.setPositiveButton("取消", null);
-        dialog.show();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        pause();
+        if (openPlayer) {
+            statusChange(STATE_PAUSED);
+        }
     }
 
     @Override

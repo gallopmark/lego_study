@@ -646,33 +646,32 @@ public class WSHomePageActivity extends BaseActivity implements View.OnClickList
         if (response.getResponseData() != null && response.getResponseData().getmVideoUser() != null) {  //教学视频
             AppActivityViewEntity.VideoUserMobileEntity videoEntity = response.getResponseData().getmVideoUser();
             VideoMobileEntity video = videoEntity.getmVideo();
-            Intent intent = new Intent(context, VideoPlayerActivity.class);
-            if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().getState() != null && activity.getmTimePeriod().getState().equals("进行中"))
-                intent.putExtra("running", true);
-            else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().getMinutes() > 0)
-                intent.putExtra("running", true);
-            else
-                intent.putExtra("running", false);
-            intent.putExtra("summary", videoEntity.getmVideo().getSummary());
-            intent.putExtra("attach", video);
-            intent.putExtra("activityId", activity.getId());
-            intent.putExtra("activityTitle", activity.getTitle());
-            intent.putExtra("type", "workshop");
-            intent.putExtra("videoId", videoEntity.getId());
-            if (video != null && video.getUrls() != null && video.getUrls().length() > 0) {
-                intent.putExtra("videoUrl", video.getUrls());
-                startActivity(intent);
-            } else if (video != null && video.getVideoFiles() != null && video.getVideoFiles().size() > 0) {
-                intent.putExtra("videoUrl", video.getVideoFiles().get(0).getUrl());
-                startActivity(intent);
-            } else if (video != null && video.getAttchFiles() != null && video.getAttchFiles().size() > 0) {
-                //教学观摩
-                intent.putExtra("videoUrl", video.getAttchFiles().get(0).getUrl());
-                startActivity(intent);
-            } else {
-                toast(context, "系统暂不支持浏览，请到网站完成。");
+            if (video != null) {
+                Intent intent = new Intent(context, IJKPlayerActivity.class);
+                intent.putExtra("videoType", "workshop");
+                if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().getState() != null && activity.getmTimePeriod().getState().equals("进行中"))
+                    intent.putExtra("running", true);
+                else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().getMinutes() > 0)
+                    intent.putExtra("running", true);
+                else
+                    intent.putExtra("running", false);
+                intent.putExtra("workshopId", workshopId);
+                intent.putExtra("activityId", activity.getId());
+                intent.putExtra("videoTitle", activity.getTitle());
+                intent.putExtra("videoId", videoEntity.getId());
+                intent.putExtra("video", video);
+                if (!TextUtils.isEmpty(video.getUrls())) {
+                    intent.putExtra("videoUrl", video.getUrls());
+                    startActivity(intent);
+                } else if (video.getVideoFiles().size() > 0) {
+                    intent.putExtra("videoUrl", video.getVideoFiles().get(0).getUrl());
+                    startActivity(intent);
+                } else {
+                    toast(context, "系统暂不支持浏览，请到网站完成。");
+                }
             }
-
+        } else {
+            toast(context, "系统暂不支持浏览，请到网站完成。");
         }
     }
 
