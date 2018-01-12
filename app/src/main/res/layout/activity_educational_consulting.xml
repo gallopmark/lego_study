@@ -24,23 +24,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:drawablePadding="10dp"
+            android:layout_marginTop="@dimen/margin_size_20"
+            android:drawablePadding="@dimen/margin_size_12"
             android:drawableTop="@drawable/education_consult"
             android:gravity="center_horizontal"
             android:text="服务热线"
-            android:textSize="25sp" />
+            android:textSize="@dimen/font_size_25" />
 
         <TextView
-            android:id="@+id/phone_number"
+            android:id="@+id/tv_phone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/margin_size_12"
             android:gravity="center_horizontal"
-            android:text="400-998-9352"
+            android:text="@string/educational_consulting_phone"
             android:textColor="@color/defaultColor"
-            android:textSize="30sp" />
+            android:textSize="@dimen/font_size_30" />
 
         <TextView
             android:layout_width="match_parent"
