@@ -17,8 +17,8 @@ import com.haoyu.app.view.AppToolBar
  * 作者:xiaoma
  */
 class EducationConsultActivity : BaseActivity() {
-    lateinit var context: EducationConsultActivity
-    lateinit var tv_phone: TextView
+    private lateinit var context: EducationConsultActivity
+    private lateinit var tvPhone: TextView
     override fun setLayoutResID(): Int {
         return R.layout.activity_educational_consulting
     }
@@ -28,8 +28,8 @@ class EducationConsultActivity : BaseActivity() {
         val toolBar = findViewById<AppToolBar>(R.id.toolBar)
         toolBar.setTitle_text("教务咨询")
         toolBar.setOnLeftClickListener { finish() }
-        tv_phone = findViewById(R.id.tv_phone)
-        tv_phone.setOnClickListener({
+        tvPhone = findViewById(R.id.tv_phone)
+        tvPhone.setOnClickListener({
             if (hasPhone()) {
                 openPhone()
             } else {    //申请拨打电话权限
@@ -49,7 +49,7 @@ class EducationConsultActivity : BaseActivity() {
     /*拨打电话*/
     private fun openPhone() {
         try {
-            val phone = tv_phone.text.toString().replace("-", "")
+            val phone = tvPhone.text.toString().replace("-", "")
             val intent = Intent()
             intent.action = Intent.ACTION_CALL
             intent.data = Uri.parse("tel:" + phone)
@@ -61,7 +61,7 @@ class EducationConsultActivity : BaseActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == 1 && grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+        if (requestCode == 1 && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             openPhone()
         }
     }

@@ -7,42 +7,15 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="@dimen/margin_size_1"
         android:background="@color/spaceColor" />
 
     <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <LinearLayout
-            android:id="@+id/li_emptyResources"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:orientation="vertical"
-            android:visibility="invisible">
-
-            <TextView
-                android:id="@+id/emptyResources"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:background="@drawable/empty_resources" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
-                android:paddingLeft="10dp"
-                android:text="暂无资源"
-                android:textColor="@color/gray_text"
-                android:textSize="18sp" />
-        </LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <com.haoyu.app.view.LoadingView
-            android:id="@+id/loadView"
+            android:id="@+id/loadingView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -55,10 +28,24 @@
             android:layout_centerInParent="true"
             android:visibility="gone" />
 
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:drawablePadding="@dimen/margin_size_16"
+            android:drawableTop="@drawable/empty_resources"
+            android:gravity="center"
+            android:text="暂无资源"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
+
         <com.haoyu.app.xrecyclerview.XRecyclerView
             android:id="@+id/xRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/title" />
+            android:overScrollMode="never" />
     </RelativeLayout>
 </LinearLayout>

@@ -125,6 +125,9 @@ public class CourseMobileEntity implements Serializable {
     }
 
     public List<CourseSectionEntity> getmSections() {
+        if (mSections == null) {
+            return new ArrayList<>();
+        }
         return mSections;
     }
 

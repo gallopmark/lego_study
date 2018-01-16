@@ -25,7 +25,7 @@ class PeerActivity : BaseActivity(), XRecyclerView.LoadingListener {
     private lateinit var loadingView: LoadingView
     private lateinit var loadFailView: LoadFailView
     private lateinit var xRecyclerView: XRecyclerView
-    private lateinit var tv_empty: TextView
+    private lateinit var tvEmpty: TextView
     private lateinit var adapter: PeerAdapter
     private val mDatas = ArrayList<MobileUser>()
     private var isRefresh: Boolean = false
@@ -41,7 +41,7 @@ class PeerActivity : BaseActivity(), XRecyclerView.LoadingListener {
         loadingView = findViewById(R.id.loadingView)
         loadFailView = findViewById(R.id.loadFailView)
         xRecyclerView = findViewById(R.id.xRecyclerView)
-        tv_empty = findViewById(R.id.tv_empty)
+        tvEmpty = findViewById(R.id.tv_empty)
         val layoutManager = GridLayoutManager(this, 4)
         layoutManager.orientation = GridLayoutManager.VERTICAL
         xRecyclerView.layoutManager = layoutManager
@@ -69,13 +69,13 @@ class PeerActivity : BaseActivity(), XRecyclerView.LoadingListener {
 
             override fun onError(request: Request, e: Exception) {
                 loadingView.visibility = View.GONE
-                if (isRefresh) {
-                    xRecyclerView.refreshComplete(false)
-                } else if (isLoadMore) {
-                    page -= 1
-                    xRecyclerView.loadMoreComplete(false)
-                } else {
-                    loadFailView.visibility = View.VISIBLE
+                when {
+                    isRefresh -> xRecyclerView.refreshComplete(false)
+                    isLoadMore -> {
+                        page -= 1
+                        xRecyclerView.loadMoreComplete(false)
+                    }
+                    else -> loadFailView.visibility = View.VISIBLE
                 }
             }
 
@@ -85,12 +85,10 @@ class PeerActivity : BaseActivity(), XRecyclerView.LoadingListener {
                         && response.responseData.mUsers != null && response.responseData.mUsers.size > 0) {
                     updateUI(response.responseData.mUsers, response.responseData.paginator)
                 } else {
-                    if (isRefresh)
-                        xRecyclerView.refreshComplete(true)
-                    else if (isLoadMore)
-                        xRecyclerView.loadMoreComplete(true)
-                    else {
-                        tv_empty.visibility = View.VISIBLE
+                    when {
+                        isRefresh -> xRecyclerView.refreshComplete(true)
+                        isLoadMore -> xRecyclerView.loadMoreComplete(true)
+                        else -> tvEmpty.visibility = View.VISIBLE
                     }
                 }
             }
@@ -100,11 +98,14 @@ class PeerActivity : BaseActivity(), XRecyclerView.LoadingListener {
     private fun updateUI(mUsers: List<MobileUser>, paginator: Paginator?) {
         if (xRecyclerView.visibility != View.VISIBLE)
             xRecyclerView.visibility = View.VISIBLE
-        if (isRefresh) {
-            mDatas.clear()
-            xRecyclerView.refreshComplete(true)
-        } else if (isLoadMore) {
-            xRecyclerView.loadMoreComplete(true)
+        when {
+            isRefresh -> {
+                mDatas.clear()
+                xRecyclerView.refreshComplete(true)
+            }
+            isLoadMore -> {
+                xRecyclerView.loadMoreComplete(true)
+            }
         }
         mDatas.addAll(mUsers)
         adapter.notifyDataSetChanged()

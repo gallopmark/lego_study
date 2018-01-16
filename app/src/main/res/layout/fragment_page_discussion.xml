@@ -1,71 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical">
+    android:background="@color/white">
 
     <View
-        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_height="@dimen/margin_size_2"
         android:background="@color/spaceColor" />
 
     <com.haoyu.app.view.LoadingView
-        android:id="@+id/loadView"
+        android:id="@+id/loadingView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:visibility="gone" />
 
     <com.haoyu.app.view.LoadFailView
         android:id="@+id/loadFailView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:visibility="gone" />
 
-    <LinearLayout
-        android:id="@+id/li_emptyDiscussion"
+    <TextView
+        android:id="@+id/tv_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:orientation="vertical"
-        android:visibility="invisible">
-
-        <TextView
-            android:id="@+id/empty_discussion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:background="@drawable/discussion_empty" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dip"
-            android:textSize="15sp"
-            android:text="暂无讨论"
-            android:textColor="@color/gray_text" />
-    </LinearLayout>
+        android:layout_gravity="center"
+        android:drawablePadding="@dimen/margin_size_16"
+        android:drawableTop="@drawable/discussion_empty"
+        android:gravity="center"
+        android:text="暂无讨论"
+        android:textColor="@color/gray_text"
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
 
     <com.haoyu.app.xrecyclerview.XRecyclerView
         android:id="@+id/xRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_size_2"
         android:overScrollMode="never"
-        android:layout_below="@+id/title"
         android:visibility="gone" />
 
     <Button
-        android:id="@+id/bt_createDiscussion"
-        android:layout_margin="@dimen/margin_size_12"
+        android:id="@+id/bt_create"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_gravity="right|bottom"
+        android:layout_margin="@dimen/margin_size_12"
         android:background="@drawable/discussion_fabiao" />
 
-</RelativeLayout>
+</FrameLayout>

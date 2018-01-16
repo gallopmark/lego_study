@@ -20,7 +20,7 @@ import java.util.*
  */
 class FeedbackActivity : BaseActivity() {
     lateinit var context: FeedbackActivity
-    lateinit var et_problem_detail: EditText
+    lateinit var editText: EditText
     override fun setLayoutResID(): Int {
         return R.layout.activity_feekback
     }
@@ -28,14 +28,14 @@ class FeedbackActivity : BaseActivity() {
     override fun initView() {
         context = this
         setToolBar()
-        et_problem_detail = findViewById(R.id.et_problem_detail)
-        val bt_submit = findViewById<Button>(R.id.bt_submit)
-        bt_submit.setOnClickListener({
-            val et_text = et_problem_detail.text.toString().trim()
-            if (TextUtils.isEmpty(et_text)) {
+        editText = findViewById(R.id.et_problem_detail)
+        val btSubmit = findViewById<Button>(R.id.bt_submit)
+        btSubmit.setOnClickListener({
+            val text = editText.text.toString().trim()
+            if (TextUtils.isEmpty(text)) {
                 showMaterialDialog("提示", "请输入问题描述！")
             } else {
-                commit(et_text)
+                commit(text)
             }
         })
     }
@@ -63,6 +63,7 @@ class FeedbackActivity : BaseActivity() {
             override fun onResponse(response: BaseResponseResult<*>?) {
                 hideTipDialog()
                 if (response?.getResponseCode() != null && response.getResponseCode() == "00") {
+                    editText.text = null
                     showTipsDialog()
                 }
             }
@@ -73,7 +74,7 @@ class FeedbackActivity : BaseActivity() {
         val dialog = MaterialDialog(context)
         dialog.setTitle("反馈结果")
         dialog.setMessage("感谢您提交的反馈信息！\n您的意见将有助于改进我们的平台。")
-        dialog.setNegativeButton("返回上一级") { v, dialog -> finish() }
+        dialog.setNegativeButton("返回上一级") { _, _ -> finish() }
         dialog.setPositiveButton("留在此页", null)
         dialog.show()
     }

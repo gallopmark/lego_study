@@ -1,65 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:fillViewport="true">
 
-    <com.haoyu.app.view.LoadingView
-        android:id="@+id/loadingView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
-    <com.haoyu.app.view.LoadFailView
-        android:id="@+id/loadFailView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
-
-    <ScrollView
-        android:id="@+id/contentView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/spaceColor"
-        android:fillViewport="false"
-        android:visibility="gone">
+        android:layout_height="match_parent">
+
+        <com.haoyu.app.view.LoadingView
+            android:id="@+id/loadingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
+
+        <com.haoyu.app.view.LoadFailView
+            android:id="@+id/loadFailView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone" />
 
         <LinearLayout
+            android:id="@+id/ll_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:background="@color/spaceColor"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_size_10"
-                android:layout_marginTop="@dimen/margin_size_10"
-                android:background="@color/defaultColor">
+                android:background="@color/defaultColor"
+                android:paddingBottom="@dimen/margin_size_12"
+                android:paddingTop="@dimen/margin_size_12">
 
-                <com.haoyu.app.view.ColorArcProgressBar
+                <com.haoyu.app.view.CircleProgressBar
                     android:id="@+id/progressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     android:layout_centerInParent="true"
-                    app:backArcColor="@color/pressedColor"
-                    app:back_width="5dp"
-                    app:current_value="70"
-                    app:diameter="100dp"
-                    app:front_color1="@color/course_progress"
-                    app:front_color2="@color/course_progress"
-                    app:front_color3="@color/course_progress"
-                    app:front_width="10dp"
-                    app:is_need_content="false"
-                    app:is_need_title="false"
-                    app:is_need_unit="false"
-                    app:max_value="150"
-                    app:total_angle="360" />
+                    app:CircleArcWidth="@dimen/margin_size_6"
+                    app:CircleColor="@color/pressedColor"
+                    app:CircleProgressColor="@color/course_progress"
+                    app:CircleProgressWidth="@dimen/margin_size_10" />
 
                 <RelativeLayout
-                    android:id="@+id/relativeLayout"
-                    android:layout_width="100dp"
+                    android:id="@+id/rl_center"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true">
 
@@ -68,31 +60,30 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:text="76.2"
                         android:textColor="@color/white"
-                        android:textSize="30sp" />
+                        android:textSize="@dimen/font_size_20" />
 
                     <TextView
+                        android:id="@+id/tv_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/tv_score"
                         android:layout_centerHorizontal="true"
-                        android:text="课程得分"
                         android:textColor="@color/white"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/font_size_14" />
                 </RelativeLayout>
 
                 <TextView
                     android:id="@+id/tv_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="-14dp"
-                    android:layout_marginTop="30dp"
-                    android:layout_toRightOf="@+id/relativeLayout"
+                    android:layout_marginLeft="@dimen/margin_minus_20"
+                    android:layout_marginTop="@dimen/margin_size_20"
+                    android:layout_toRightOf="@+id/rl_center"
                     android:background="@drawable/progress_state"
                     android:gravity="center"
                     android:textColor="@color/defaultColor"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/font_size_14" />
 
                 <TextView
                     android:id="@+id/tv_time"
@@ -100,58 +91,49 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/progressBar"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="@dimen/margin_size_30"
                     android:drawableLeft="@drawable/test_time_white"
-                    android:drawablePadding="4dp"
+                    android:drawablePadding="@dimen/margin_size_4"
                     android:gravity="center"
-                    android:text="距离课程结束还有1天10时26分"
                     android:textColor="@color/white"
-                    android:textSize="14sp" />
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="10dp"
-                    android:src="@drawable/progress_detail" />
+                    android:textSize="@dimen/font_size_14" />
             </RelativeLayout>
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
-                android:padding="10dp"
+                android:padding="@dimen/margin_size_10"
                 android:text="完成情况"
-                android:textSize="14sp" />
+                android:textSize="@dimen/font_size_16" />
 
             <LinearLayout
                 android:id="@+id/ll_video"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="@dimen/margin_size_1"
                 android:background="@color/white"
-                android:paddingBottom="16dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="16dp">
+                android:paddingBottom="@dimen/margin_size_16"
+                android:paddingLeft="@dimen/margin_size_10"
+                android:paddingRight="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_16">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:drawableLeft="@drawable/progress_video_press"
-                    android:drawablePadding="8dp"
+                    android:drawablePadding="@dimen/margin_size_8"
                     android:gravity="center"
                     android:text="视频"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/font_size_16" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_size_10"
+                    android:layout_marginRight="@dimen/margin_size_30"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -160,17 +142,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/gray"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/font_size_16" />
 
                     <com.haoyu.app.view.RoundRectProgressBar
                         android:id="@+id/videoProgress"
-                        android:layout_width="fill_parent"
-                        android:layout_height="7dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginTop="5dp"
-                        android:max="2"
-                        android:progress="1"
-                        android:visibility="visible"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_6"
+                        android:layout_marginRight="@dimen/margin_size_8"
+                        android:layout_marginTop="@dimen/margin_size_4"
                         app:progress_background_color="@color/spaceColor"
                         app:progress_color="@color/defaultColor" />
                 </LinearLayout>
@@ -186,29 +165,29 @@
                 android:id="@+id/ll_html"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="@dimen/margin_size_1"
                 android:background="@color/white"
-                android:paddingBottom="16dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="16dp">
+                android:paddingBottom="@dimen/margin_size_16"
+                android:paddingLeft="@dimen/margin_size_10"
+                android:paddingRight="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_16">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="3dp"
                     android:drawableLeft="@drawable/progress_courseware_press"
-                    android:drawablePadding="8dp"
+                    android:drawablePadding="@dimen/margin_size_8"
                     android:gravity="center"
                     android:text="课件"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/font_size_16" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/margin_size_10"
+                    android:layout_marginRight="@dimen/margin_size_30"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -217,17 +196,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/gray"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/font_size_16" />
 
                     <com.haoyu.app.view.RoundRectProgressBar
                         android:id="@+id/htmlProgress"
-                        android:layout_width="fill_parent"
-                        android:layout_height="7dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginTop="5dp"
-                        android:max="3"
-                        android:progress="1"
-                        android:visibility="visible"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_6"
+                        android:layout_marginRight="@dimen/margin_size_8"
+                        android:layout_marginTop="@dimen/margin_size_4"
                         app:progress_background_color="@color/spaceColor"
                         app:progress_color="@color/defaultColor" />
                 </LinearLayout>
@@ -243,28 +219,28 @@
                 android:id="@+id/ll_assignment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="@dimen/margin_size_1"
                 android:background="@color/white"
-                android:paddingBottom="16dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="16dp">
+                android:paddingBottom="@dimen/margin_size_16"
+                android:paddingLeft="@dimen/margin_size_10"
+                android:paddingRight="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_16">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:drawableLeft="@drawable/progress_homework_press"
-                    android:drawablePadding="6dp"
+                    android:drawablePadding="@dimen/margin_size_8"
                     android:gravity="center"
                     android:text="作业"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/font_size_16" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="@dimen/margin_size_10"
+                    android:layout_marginRight="@dimen/margin_size_30"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -273,17 +249,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/gray"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/font_size_16" />
 
                     <com.haoyu.app.view.RoundRectProgressBar
                         android:id="@+id/assignmentProgress"
-                        android:layout_width="fill_parent"
-                        android:layout_height="7dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginTop="5dp"
-                        android:max="5"
-                        android:progress="3"
-                        android:visibility="visible"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_6"
+                        android:layout_marginRight="@dimen/margin_size_8"
+                        android:layout_marginTop="@dimen/margin_size_4"
                         app:progress_background_color="@color/spaceColor"
                         app:progress_color="@color/defaultColor" />
                 </LinearLayout>
@@ -299,28 +272,28 @@
                 android:id="@+id/ll_test"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="@dimen/margin_size_1"
                 android:background="@color/white"
-                android:paddingBottom="16dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="16dp">
+                android:paddingBottom="@dimen/margin_size_16"
+                android:paddingLeft="@dimen/margin_size_10"
+                android:paddingRight="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_16">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:drawableLeft="@drawable/progress_test_press"
-                    android:drawablePadding="6dp"
+                    android:drawablePadding="@dimen/margin_size_8"
                     android:gravity="center"
                     android:text="测试"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/font_size_16" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="@dimen/margin_size_10"
+                    android:layout_marginRight="@dimen/margin_size_30"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -333,14 +306,10 @@
 
                     <com.haoyu.app.view.RoundRectProgressBar
                         android:id="@+id/testProgress"
-                        android:layout_width="fill_parent"
-                        android:layout_height="7dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginTop="5dp"
-                        android:indeterminate="false"
-                        android:max="3"
-                        android:progress="1"
-                        android:visibility="visible"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_6"
+                        android:layout_marginRight="@dimen/margin_size_8"
+                        android:layout_marginTop="@dimen/margin_size_4"
                         app:progress_background_color="@color/spaceColor"
                         app:progress_color="@color/defaultColor" />
                 </LinearLayout>
@@ -356,28 +325,28 @@
                 android:id="@+id/ll_discussion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="@dimen/margin_size_1"
                 android:background="@color/white"
-                android:paddingBottom="16dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="16dp">
+                android:paddingBottom="@dimen/margin_size_16"
+                android:paddingLeft="@dimen/margin_size_10"
+                android:paddingRight="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_16">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:drawableLeft="@drawable/progress_discuss_press"
-                    android:drawablePadding="6dp"
+                    android:drawablePadding="@dimen/margin_size_8"
                     android:gravity="center"
                     android:text="研讨"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/font_size_16" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="@dimen/margin_size_10"
+                    android:layout_marginRight="@dimen/margin_size_30"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -386,17 +355,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/gray"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/font_size_16" />
 
                     <com.haoyu.app.view.RoundRectProgressBar
                         android:id="@+id/discussionProgress"
-                        android:layout_width="fill_parent"
-                        android:layout_height="7dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginTop="5dp"
-                        android:max="2"
-                        android:progress="1"
-                        android:visibility="visible"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_6"
+                        android:layout_marginRight="@dimen/margin_size_8"
+                        android:layout_marginTop="@dimen/margin_size_4"
                         app:progress_background_color="@color/spaceColor"
                         app:progress_color="@color/defaultColor" />
                 </LinearLayout>
@@ -412,28 +378,28 @@
                 android:id="@+id/ll_survey"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="1dp"
+                android:layout_marginTop="@dimen/margin_size_1"
                 android:background="@color/white"
-                android:paddingBottom="16dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="16dp">
+                android:paddingBottom="@dimen/margin_size_16"
+                android:paddingLeft="@dimen/margin_size_10"
+                android:paddingRight="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_16">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:drawableLeft="@drawable/progress_questionnaire_press"
-                    android:drawablePadding="6dp"
+                    android:drawablePadding="@dimen/margin_size_8"
                     android:gravity="center"
                     android:text="问卷"
-                    android:textSize="14sp" />
+                    android:textSize="@dimen/font_size_16" />
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="30dp"
+                    android:layout_marginLeft="@dimen/margin_size_10"
+                    android:layout_marginRight="@dimen/margin_size_30"
                     android:layout_weight="1"
                     android:orientation="vertical">
 
@@ -442,17 +408,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/gray"
-                        android:textSize="14sp" />
+                        android:textSize="@dimen/font_size_16" />
 
                     <com.haoyu.app.view.RoundRectProgressBar
                         android:id="@+id/surveyProgress"
-                        android:layout_width="fill_parent"
-                        android:layout_height="7dp"
-                        android:layout_marginRight="8dp"
-                        android:layout_marginTop="5dp"
-                        android:max="5"
-                        android:progress="4"
-                        android:visibility="visible"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/margin_size_6"
+                        android:layout_marginRight="@dimen/margin_size_8"
+                        android:layout_marginTop="@dimen/margin_size_4"
                         app:progress_background_color="@color/spaceColor"
                         app:progress_color="@color/defaultColor" />
                 </LinearLayout>
@@ -464,5 +427,5 @@
                     android:src="@drawable/progress_goto" />
             </LinearLayout>
         </LinearLayout>
-    </ScrollView>
-</RelativeLayout>
+    </RelativeLayout>
+</ScrollView>

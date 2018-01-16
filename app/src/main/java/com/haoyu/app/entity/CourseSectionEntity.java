@@ -12,7 +12,7 @@ public class CourseSectionEntity implements MultiItemEntity, Serializable {
     private static final long serialVersionUID = 1L;
     @Expose
     @SerializedName("childMSections")
-    private List<CourseChildSectionEntity> childMSections = new ArrayList<>();
+    private List<CourseChildSectionEntity> childMSections;
     @Expose
     @SerializedName("id")
     private String id;
@@ -21,6 +21,9 @@ public class CourseSectionEntity implements MultiItemEntity, Serializable {
     private String title;
 
     public List<CourseChildSectionEntity> getChildSections() {
+        if(childMSections == null){
+            return new ArrayList<>();
+        }
         return childMSections;
     }
 

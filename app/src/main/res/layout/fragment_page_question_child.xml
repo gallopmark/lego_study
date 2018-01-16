@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
@@ -8,14 +8,14 @@
         android:id="@+id/loadingView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:visibility="gone" />
 
     <com.haoyu.app.view.LoadFailView
         android:id="@+id/loadFailView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_gravity="center"
         android:visibility="gone" />
 
     <com.haoyu.app.xrecyclerview.XRecyclerView
@@ -26,15 +26,15 @@
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/emptyView"
+        android:id="@+id/tv_empty"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:drawablePadding="@dimen/margin_size_16"
+        android:layout_gravity="center"
         android:drawableTop="@drawable/wenda_empty"
         android:gravity="center"
         android:text="@string/empty_questions"
         android:textColor="@color/blow_gray"
         android:textSize="@dimen/font_size_18"
         android:visibility="gone" />
-</RelativeLayout>
+</FrameLayout>

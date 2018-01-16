@@ -2,6 +2,7 @@ package com.haoyu.app.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.haoyu.app.base.BaseResponseResult;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,57 +11,12 @@ import java.util.List;
 /**
  * 讨论列表结果集
  */
-public class DiscussListResult implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Expose
-    @SerializedName("responseCode")
-    private String responseCode;
-    @Expose
-    @SerializedName("responseData")
-    private DiscussionResponseData responseData;
-    @Expose
-    @SerializedName("responseMsg")
-    private String responseMsg;
-    @Expose
-    @SerializedName("success")
-    private Boolean success;
+public class DiscussListResult extends BaseResponseResult<DiscussListResult.MData> {
 
-    public String getResponseCode() {
-        return responseCode;
-    }
-
-    public void setResponseCode(String responseCode) {
-        this.responseCode = responseCode;
-    }
-
-    public DiscussionResponseData getResponseData() {
-        return responseData;
-    }
-
-    public void setResponseData(DiscussionResponseData responseData) {
-        this.responseData = responseData;
-    }
-
-    public String getResponseMsg() {
-        return responseMsg;
-    }
-
-    public void setResponseMsg(String responseMsg) {
-        this.responseMsg = responseMsg;
-    }
-
-    public Boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-    public class DiscussionResponseData implements Serializable {
+    public class MData implements Serializable {
         @Expose
         @SerializedName("mDiscussions")
-        private List<DiscussEntity> mDiscussions = new ArrayList<>();
+        private List<DiscussEntity> mDiscussions;
         @Expose
         @SerializedName("paginator")
         private Paginator paginator;
@@ -70,6 +26,7 @@ public class DiscussListResult implements Serializable {
         @Expose
         @SerializedName("mDiscussionPosts")
         private List<DiscussEntity> mDiscussionPosts = new ArrayList<>();
+
         public Paginator getPaginator() {
             return paginator;
         }
@@ -87,6 +44,9 @@ public class DiscussListResult implements Serializable {
         }
 
         public List<DiscussEntity> getmLessons() {
+            if (mLessons == null) {
+                return new ArrayList<>();
+            }
             return mLessons;
         }
 
@@ -95,6 +55,9 @@ public class DiscussListResult implements Serializable {
         }
 
         public List<DiscussEntity> getmDiscussionPosts() {
+            if (mDiscussions == null) {
+                return new ArrayList<>();
+            }
             return mDiscussionPosts;
         }
 
