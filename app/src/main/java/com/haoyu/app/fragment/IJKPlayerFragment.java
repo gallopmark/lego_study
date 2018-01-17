@@ -658,11 +658,7 @@ public class IJKPlayerFragment extends BaseFragment implements View.OnClickListe
                         }
                     }
                     if (openPlayer && !NetStatusUtil.isWifi(context)) {
-                        //如果播放过程中网络状态进入移动网络，则记录当前播放位置（为下次播放seek）停止播放并回收资源
-                        if (lastDuration < 0) {
-                            lastDuration = videoView.getCurrentPosition();
-                        }
-                        release();
+                        pause();
                         netWorkTips();
                     }
                 }
