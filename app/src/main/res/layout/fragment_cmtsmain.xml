@@ -20,8 +20,8 @@
             android:checked="true"
             android:ellipsize="middle"
             android:gravity="center"
-            android:maxLines="1"
             android:padding="@dimen/margin_size_12"
+            android:singleLine="true"
             android:textColor="@color/teach_study_ftab" />
 
         <View
@@ -39,8 +39,8 @@
             android:button="@null"
             android:ellipsize="middle"
             android:gravity="center"
-            android:maxLines="1"
             android:padding="@dimen/margin_size_12"
+            android:singleLine="true"
             android:textColor="@color/teach_study_ftab" />
     </RadioGroup>
 

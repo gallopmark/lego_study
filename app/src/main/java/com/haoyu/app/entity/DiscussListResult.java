@@ -36,6 +36,9 @@ public class DiscussListResult extends BaseResponseResult<DiscussListResult.MDat
         }
 
         public List<DiscussEntity> getmDiscussions() {
+            if (mDiscussions == null) {
+                return new ArrayList<>();
+            }
             return mDiscussions;
         }
 

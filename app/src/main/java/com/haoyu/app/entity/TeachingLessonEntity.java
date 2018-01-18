@@ -130,6 +130,9 @@ public class TeachingLessonEntity implements Serializable {
     }
 
     public List<LessonRelation> getmDiscussionRelations() {
+        if (mDiscussionRelations == null) {
+            return new ArrayList<>();
+        }
         return mDiscussionRelations;
     }
 
@@ -145,7 +148,7 @@ public class TeachingLessonEntity implements Serializable {
         isSupport = support;
     }
 
-    public class LessonRelation implements Serializable{
+    public class LessonRelation implements Serializable {
         @Expose
         @SerializedName("id")
         private String id;

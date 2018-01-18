@@ -2,62 +2,19 @@ package com.haoyu.app.entity;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.haoyu.app.base.BaseResponseResult;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 创建日期：2017/1/11 on 19:09
- * 描述:
+ * 描述:教研创课列表
  * 作者:马飞奔 Administrator
  */
-public class TeachingLessonListResult {
-    @Expose
-    @SerializedName("responseCode")
-    private String responseCode;
-    @Expose
-    @SerializedName("responseData")
-    private TeachingLessonData responseData;
-    @Expose
-    @SerializedName("responseMsg")
-    private String responseMsg;
-    @Expose
-    @SerializedName("success")
-    private Boolean success;
+public class TeachingLessonListResult extends BaseResponseResult<TeachingLessonListResult.MData> {
 
-    public String getResponseCode() {
-        return responseCode;
-    }
-
-    public void setResponseCode(String responseCode) {
-        this.responseCode = responseCode;
-    }
-
-    public TeachingLessonData getResponseData() {
-        return responseData;
-    }
-
-    public void setResponseData(TeachingLessonData responseData) {
-        this.responseData = responseData;
-    }
-
-    public String getResponseMsg() {
-        return responseMsg;
-    }
-
-    public void setResponseMsg(String responseMsg) {
-        this.responseMsg = responseMsg;
-    }
-
-    public Boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-    public class TeachingLessonData {
+    public class MData {
         @Expose
         @SerializedName("paginator")
         private Paginator paginator;
@@ -74,6 +31,9 @@ public class TeachingLessonListResult {
         }
 
         public List<TeachingLessonEntity> getmLessons() {
+            if (mLessons == null) {
+                return new ArrayList<>();
+            }
             return mLessons;
         }
 
