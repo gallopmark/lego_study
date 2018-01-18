@@ -223,30 +223,28 @@ class PageCourseFragment : BaseFragment() {
 
             override fun onResponse(response: AppActivityViewResult?) {
                 hideTipDialog()
-                if (response != null) {
-                    orientationActivity(response)
-                }
+                response?.let { orientationActivity(it) }
             }
         }))
     }
 
     /*根据活动内容进入相关的activity*/
     private fun orientationActivity(response: AppActivityViewResult) {
-        if (response.responseData != null && response.responseData.getmActivityResult() != null
-                && response.responseData.getmActivityResult().getmActivity() != null) {
+        if (response.responseData?.getmActivityResult()?.getmActivity() != null) {
             val activity = response.responseData.getmActivityResult().getmActivity()
-            if (activity.type != null && activity.type == "video") {   //视频类型
-                playVideo(response, activity)
-            } else if (activity.type != null && activity.type == "html") {  //课件类型
-                openHtml(response, activity)
-            } else if (activity.type != null && activity.type == "discussion") {  //课程研讨
-                openDiscussion(response, activity)
-            } else if (activity.type != null && activity.type == "survey") {  //问卷调查
-                openSurvey(response, activity)
-            } else if (activity.type != null && activity.type == "test") {  //测验类型
-                openTest(response, activity)
-            } else if (activity.type != null && activity.type == "assignment") {  //作业类型
-                openAssignMent(activity)
+            val type = activity.type
+            if (type != null && type == "video") {
+                playVideo(response, activity) //视频类型
+            } else if (type != null && type == "html") {
+                openHtml(response, activity)//课件类型
+            } else if (type != null && type == "discussion") {
+                openDiscussion(response, activity) //课程研讨
+            } else if (type != null && type == "survey") {
+                openSurvey(response, activity) //问卷调查
+            } else if (type != null && type == "test") {
+                openTest(response, activity) //测验类型
+            } else if (type != null && type == "assignment") {
+                openAssignMent(activity)//作业类型
             } else {
                 toast("系统暂不支持浏览，请到网站完成。")
             }
@@ -257,25 +255,28 @@ class PageCourseFragment : BaseFragment() {
 
     /*播放视频*/
     private fun playVideo(response: AppActivityViewResult, activity: CourseSectionActivity) {
-        if (response.responseData != null && response.responseData.getmVideoUser() != null) {  //教学视频
+        if (response.responseData?.getmVideoUser() != null) {  //教学视频
             val videoEntity = response.responseData.getmVideoUser()
             val video = videoEntity.getmVideo()
             if (video != null) {
                 val intent = Intent(context, IJKPlayerActivity::class.java)
-                intent.putExtra("videoType", "course")
-                if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().state != null && activity.getmTimePeriod().state == "进行中")
+                val timePeriod = activity.getmTimePeriod()
+                if (training && timePeriod?.state != null && timePeriod.state == "进行中") {
                     intent.putExtra("running", true)
-                else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().minutes > 0)
-                    intent.putExtra("running", true)
-                else
-                    intent.putExtra("running", false)
+                } else {
+                    if (training && timePeriod != null && timePeriod.minutes > 0) {
+                        intent.putExtra("running", true)
+                    } else {
+                        intent.putExtra("running", false)
+                    }
+                }
                 intent.putExtra("activityId", activity.id)
                 intent.putExtra("videoTitle", activity.title)
                 intent.putExtra("videoId", videoEntity.id)
                 intent.putExtra("video", video)
                 if (!TextUtils.isEmpty(video.urls)) {
                     val fileInfo = FileDownloader.getDownloadFile(video.urls)
-                    if (fileInfo != null && fileInfo.filePath != null && File(fileInfo.filePath).exists()) {
+                    if (fileInfo?.filePath != null && File(fileInfo.filePath).exists()) {
                         intent.putExtra("videoUrl", fileInfo.filePath)
                     } else {
                         intent.putExtra("videoUrl", video.urls)
@@ -284,7 +285,7 @@ class PageCourseFragment : BaseFragment() {
                 } else if (video.videoFiles.size > 0) {
                     val url = video.videoFiles[0].url
                     val fileInfo = FileDownloader.getDownloadFile(url)
-                    if (fileInfo != null && fileInfo.filePath != null && File(fileInfo.filePath).exists()) {
+                    if (fileInfo?.filePath != null && File(fileInfo.filePath).exists()) {
                         intent.putExtra("videoUrl", fileInfo.filePath)
                     } else {
                         intent.putExtra("videoUrl", url)
@@ -296,51 +297,57 @@ class PageCourseFragment : BaseFragment() {
             } else {
                 toast("系统暂不支持浏览，请到网站完成。")
             }
+        } else {
+            toast("系统暂不支持浏览，请到网站完成。")
         }
     }
 
     /*打开课件*/
     private fun openHtml(response: AppActivityViewResult, activity: CourseSectionActivity) {
-        if (response.responseData != null && response.responseData.getmTextInfoUser() != null) {
+        if (response.responseData?.getmTextInfoUser() != null) {
             val mTextInfoUser = response.responseData.getmTextInfoUser()
-            val intent = Intent()
-            if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().state != null && activity.getmTimePeriod().state == "进行中")
+            val intent = Intent(context, CoursewareViewerActivity::class.java)
+            val timePeriod = activity.getmTimePeriod()
+            if (training && timePeriod?.state != null && timePeriod.state == "进行中") {
                 intent.putExtra("running", true)
-            else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().minutes > 0)
-                intent.putExtra("running", true)
-            else
-                intent.putExtra("running", false)
+            } else {
+                if (training && timePeriod != null && timePeriod.minutes > 0) {
+                    intent.putExtra("running", true)
+                } else {
+                    intent.putExtra("running", false)
+                }
+            }
             intent.putExtra("activityId", activity.id)
             intent.putExtra("mTextInfoUserId", mTextInfoUser.id)
             intent.putExtra("title", activity.title)
             intent.putExtra("viewNum", mTextInfoUser.viewNum)
-            if (mTextInfoUser.getmTextInfo() != null) {
-                intent.putExtra("interval", mTextInfoUser.getmTextInfo().interval)
-                intent.putExtra("needViewNum", mTextInfoUser.getmTextInfo().viewNum)
+            mTextInfoUser.getmTextInfo()?.let {
+                intent.putExtra("interval", it.interval)
+                intent.putExtra("needViewNum", it.viewNum)
             }
-            if (mTextInfoUser.getmTextInfo() != null && mTextInfoUser.getmTextInfo().type != null
-                    && mTextInfoUser.getmTextInfo().type == "file") {  //课件类型为pdf文件
+            val type = mTextInfoUser.getmTextInfo()?.type
+            if (type != null && type == "file") {  //课件类型为pdf文件
                 val pdfUrl = mTextInfoUser.getmTextInfo().pdfUrl
                 intent.putExtra("type", "file")
                 intent.putExtra("url", pdfUrl)
-                intent.setClass(context, CoursewareViewerActivity::class.java)
                 startActivityForResult(intent, requestCode)
-            } else if (mTextInfoUser.getmTextInfo() != null && mTextInfoUser.getmTextInfo().type != null
-                    && mTextInfoUser.getmTextInfo().type == "link") {  //课件类型为外链
+            } else if (type != null && type == "link") { //课件类型为外链
                 val webUrl = mTextInfoUser.getmTextInfo().content
-                intent.setClass(context, CoursewareViewerActivity::class.java)
                 intent.putExtra("type", "link")
                 intent.putExtra("url", webUrl)
                 startActivityForResult(intent, requestCode)
-            } else if (mTextInfoUser.getmTextInfo() != null && mTextInfoUser.getmTextInfo().type != null
-                    && mTextInfoUser.getmTextInfo().type == "editor") {  // 课件类型为文本
+            } else if (type != null && type == "editor") { //课件类型为文本
                 val editor = mTextInfoUser.getmTextInfo().content
-                intent.setClass(context, CoursewareViewerActivity::class.java)
                 intent.putExtra("type", "editor")
                 intent.putExtra("editor", editor)
                 startActivityForResult(intent, requestCode)
             } else {
-                toast("系统暂不支持浏览，请到网站完成。")
+                if (type != null) {
+                    intent.putExtra("type", type)
+                    startActivity(intent)
+                } else {
+                    toast("系统暂不支持浏览，请到网站完成。")
+                }
             }
         } else {
             toast("系统暂不支持浏览，请到网站完成。")
@@ -350,45 +357,54 @@ class PageCourseFragment : BaseFragment() {
     /*打开课程研讨*/
     private fun openDiscussion(response: AppActivityViewResult, activity: CourseSectionActivity) {
         if (response.responseData != null && response.responseData.getmDiscussionUser() != null) {
+            val discussionUser = response.responseData.getmDiscussionUser()
             val intent = Intent(context, TeachingDiscussionActivity::class.java)
-            if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().state != null && activity.getmTimePeriod().state == "进行中")
+            val timePeriod = activity.getmTimePeriod()
+            if (training && timePeriod?.state != null && timePeriod.state == "进行中") {
                 intent.putExtra("running", true)
-            else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().minutes > 0)
-                intent.putExtra("running", true)
-            else
-                intent.putExtra("running", false)
+            } else {
+                if (training && timePeriod != null && timePeriod.minutes > 0) {
+                    intent.putExtra("running", true)
+                } else {
+                    intent.putExtra("running", false)
+                }
+            }
             intent.putExtra("discussType", "course")
             intent.putExtra("relationId", courseId)
             intent.putExtra("activityId", activity.id)
             intent.putExtra("activityTitle", activity.title)
             intent.putExtra("timePeriod", activity.getmTimePeriod())
-            intent.putExtra("discussUser", response.responseData.getmDiscussionUser())
-            intent.putExtra("mainNum", response.responseData.getmDiscussionUser().mainPostNum)
-            intent.putExtra("subNum", response.responseData.getmDiscussionUser().subPostNum)
-            if (response.responseData.getmDiscussionUser().getmDiscussion() != null) {
-                val entity = response.responseData.getmDiscussionUser().getmDiscussion()
-                intent.putExtra("needMainNum", entity.mainPostNum)
-                intent.putExtra("needSubNum", entity.subPostNum)
+            intent.putExtra("discussUser", discussionUser)
+            intent.putExtra("mainNum", discussionUser.mainPostNum)
+            intent.putExtra("subNum", discussionUser.subPostNum)
+            discussionUser.getmDiscussion()?.let {
+                intent.putExtra("needMainNum", it.mainPostNum)
+                intent.putExtra("needSubNum", it.subPostNum)
             }
             startActivityForResult(intent, requestCode)
-        } else
+        } else {
             toast("系统暂不支持浏览，请到网站完成。")
+        }
     }
 
     /*打开问卷调查*/
     private fun openSurvey(response: AppActivityViewResult, activity: CourseSectionActivity) {
         val intent = Intent(context, AppSurveyHomeActivity::class.java)
-        if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().state != null && activity.getmTimePeriod().state == "进行中")
+        val timePeriod = activity.getmTimePeriod()
+        if (training && timePeriod?.state != null && timePeriod.state == "进行中") {
             intent.putExtra("running", true)
-        else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().minutes > 0)
-            intent.putExtra("running", true)
-        else
-            intent.putExtra("running", false)
+        } else {
+            if (training && timePeriod != null && timePeriod.minutes > 0) {
+                intent.putExtra("running", true)
+            } else {
+                intent.putExtra("running", false)
+            }
+        }
         intent.putExtra("relationId", courseId)
         intent.putExtra("type", "course")
         intent.putExtra("timePeriod", activity.getmTimePeriod())
-        if (response.responseData != null && response.responseData.getmSurveyUser() != null) {
-            intent.putExtra("surveyUser", response.responseData.getmSurveyUser())
+        response.responseData?.getmSurveyUser()?.let {
+            intent.putExtra("surveyUser", it)
         }
         intent.putExtra("activityId", activity.id)
         intent.putExtra("activityTitle", activity.title)
@@ -398,25 +414,28 @@ class PageCourseFragment : BaseFragment() {
     /*打开测验*/
     private fun openTest(response: AppActivityViewResult, activity: CourseSectionActivity) {
         val intent = Intent()
-        if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().state != null && activity.getmTimePeriod().state == "进行中")
+        val timePeriod = activity.getmTimePeriod()
+        if (training && timePeriod?.state != null && timePeriod.state == "进行中") {
             intent.putExtra("running", true)
-        else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().minutes > 0)
-            intent.putExtra("running", true)
-        else
-            intent.putExtra("running", false)
+        } else {
+            if (training && timePeriod != null && timePeriod.minutes > 0) {
+                intent.putExtra("running", true)
+            } else {
+                intent.putExtra("running", false)
+            }
+        }
         intent.putExtra("relationId", courseId)
         intent.putExtra("testType", "course")
         intent.putExtra("timePeriod", activity.getmTimePeriod())
         intent.putExtra("activityId", activity.id)
         intent.putExtra("activityTitle", activity.title)
-        if (response.responseData != null && response.responseData.getmTestUser() != null) {
-            intent.putExtra("testUser", response.responseData.getmTestUser())
+        response.responseData?.getmTestUser()?.let {
+            intent.putExtra("testUser", it)
         }
-        if (response.responseData != null && response.responseData.getmTestUser() != null
-                && response.responseData.getmTestUser().completionStatus != null
-                && response.responseData.getmTestUser().completionStatus == "completed") {
-            if (response.responseData.getmActivityResult() != null) {
-                intent.putExtra("score", response.responseData.getmActivityResult().score)
+        val completionStatus = response.responseData?.getmTestUser()?.completionStatus
+        if (completionStatus != null && completionStatus == "completed") {
+            response.responseData.getmActivityResult()?.let {
+                intent.putExtra("score", it.score)
             }
             intent.setClass(context, AppTestResultActivity::class.java)
         } else {
@@ -428,12 +447,16 @@ class PageCourseFragment : BaseFragment() {
     /*打开作业*/
     private fun openAssignMent(activity: CourseSectionActivity) {
         val intent = Intent(context, TestAssignmentActivity::class.java)
-        if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().state != null && activity.getmTimePeriod().state == "进行中")
+        val timePeriod = activity.getmTimePeriod()
+        if (training && timePeriod?.state != null && timePeriod.state == "进行中") {
             intent.putExtra("running", true)
-        else if (training && activity.getmTimePeriod() != null && activity.getmTimePeriod().minutes > 0)
-            intent.putExtra("running", true)
-        else
-            intent.putExtra("running", false)
+        } else {
+            if (training && timePeriod != null && timePeriod.minutes > 0) {
+                intent.putExtra("running", true)
+            } else {
+                intent.putExtra("running", false)
+            }
+        }
         intent.putExtra("timePeriod", activity.getmTimePeriod())
         intent.putExtra("activityId", activity.id)
         intent.putExtra("activityTitle", activity.title)

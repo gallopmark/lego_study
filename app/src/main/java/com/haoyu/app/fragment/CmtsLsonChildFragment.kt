@@ -175,7 +175,7 @@ class CmtsLsonChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
                         adapter.notifyDataSetChanged()
                     }
                     mDatas[position].isSupport = true
-                } else if (response?.responseMsg.isNullOrEmpty()) {
+                } else if (response?.responseMsg != null) {
                     mDatas[position].isSupport = true
                     toast("您已点赞过")
                 } else {

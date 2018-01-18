@@ -42,6 +42,7 @@
     <string name="select_all">全选</string>
     <string name="invert_selection">反选</string>
     <string name="empty_msg">暂无数据</string>
+    <string name ="nosupport_courseware">由于文件格式问题，\n暂不支持预览，\n请用电脑登录网站进行本节学习</string>
 
     <string name="scan_text">将二维码放入框内, 即可自动扫描</string>
 
