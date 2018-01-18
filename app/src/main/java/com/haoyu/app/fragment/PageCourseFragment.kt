@@ -255,45 +255,42 @@ class PageCourseFragment : BaseFragment() {
 
     /*播放视频*/
     private fun playVideo(response: AppActivityViewResult, activity: CourseSectionActivity) {
-        if (response.responseData?.getmVideoUser() != null) {  //教学视频
+        if (response.responseData?.getmVideoUser()?.getmVideo() != null) {  //教学视频
             val videoEntity = response.responseData.getmVideoUser()
             val video = videoEntity.getmVideo()
-            if (video != null) {
-                val intent = Intent(context, IJKPlayerActivity::class.java)
-                val timePeriod = activity.getmTimePeriod()
-                if (training && timePeriod?.state != null && timePeriod.state == "进行中") {
+            val intent = Intent(context, IJKPlayerActivity::class.java)
+            intent.putExtra("videoType", "course")
+            val timePeriod = activity.getmTimePeriod()
+            if (training && timePeriod?.state != null && timePeriod.state == "进行中") {
+                intent.putExtra("running", true)
+            } else {
+                if (training && timePeriod != null && timePeriod.minutes > 0) {
                     intent.putExtra("running", true)
                 } else {
-                    if (training && timePeriod != null && timePeriod.minutes > 0) {
-                        intent.putExtra("running", true)
-                    } else {
-                        intent.putExtra("running", false)
-                    }
+                    intent.putExtra("running", false)
                 }
-                intent.putExtra("activityId", activity.id)
-                intent.putExtra("videoTitle", activity.title)
-                intent.putExtra("videoId", videoEntity.id)
-                intent.putExtra("video", video)
-                if (!TextUtils.isEmpty(video.urls)) {
-                    val fileInfo = FileDownloader.getDownloadFile(video.urls)
-                    if (fileInfo?.filePath != null && File(fileInfo.filePath).exists()) {
-                        intent.putExtra("videoUrl", fileInfo.filePath)
-                    } else {
-                        intent.putExtra("videoUrl", video.urls)
-                    }
-                    startActivityForResult(intent, requestCode)
-                } else if (video.videoFiles.size > 0) {
-                    val url = video.videoFiles[0].url
-                    val fileInfo = FileDownloader.getDownloadFile(url)
-                    if (fileInfo?.filePath != null && File(fileInfo.filePath).exists()) {
-                        intent.putExtra("videoUrl", fileInfo.filePath)
-                    } else {
-                        intent.putExtra("videoUrl", url)
-                    }
-                    startActivityForResult(intent, requestCode)
+            }
+            intent.putExtra("activityId", activity.id)
+            intent.putExtra("videoTitle", activity.title)
+            intent.putExtra("videoId", videoEntity.id)
+            intent.putExtra("video", video)
+            if (!TextUtils.isEmpty(video.urls)) {
+                val fileInfo = FileDownloader.getDownloadFile(video.urls)
+                if (fileInfo?.filePath != null && File(fileInfo.filePath).exists()) {
+                    intent.putExtra("videoUrl", fileInfo.filePath)
                 } else {
-                    toast("系统暂不支持浏览，请到网站完成。")
+                    intent.putExtra("videoUrl", video.urls)
                 }
+                startActivityForResult(intent, requestCode)
+            } else if (video.videoFiles.size > 0) {
+                val url = video.videoFiles[0].url
+                val fileInfo = FileDownloader.getDownloadFile(url)
+                if (fileInfo?.filePath != null && File(fileInfo.filePath).exists()) {
+                    intent.putExtra("videoUrl", fileInfo.filePath)
+                } else {
+                    intent.putExtra("videoUrl", url)
+                }
+                startActivityForResult(intent, requestCode)
             } else {
                 toast("系统暂不支持浏览，请到网站完成。")
             }

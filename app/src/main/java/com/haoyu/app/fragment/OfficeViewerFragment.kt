@@ -2,31 +2,28 @@ package com.haoyu.app.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.net.http.SslError
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.*
+import android.webkit.WebChromeClient
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import com.haoyu.app.lego.student.R
-import com.haoyu.app.utils.Constants
 import com.haoyu.app.view.LoadFailView
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import java.util.*
-
 
 @Suppress("DEPRECATION")
 /**
- * 创建日期：2018/1/17.
- * 描述:课程学习教学课件外链查看
+ * 创建日期：2018/1/18.
+ * 描述:office文档查看
  * 作者:xiaoma
  */
-class CoursewareLinkFragment : Fragment() {
+class OfficeViewerFragment : Fragment() {
     private lateinit var flContent: FrameLayout
     private lateinit var webView: WebView
     private lateinit var progressBar: ProgressBar
@@ -35,7 +32,9 @@ class CoursewareLinkFragment : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        url = arguments?.getString("url")
+        arguments?.getString("url")?.let {
+            url = "https://view.officeapps.live.com/op/view.aspx?src=" + it
+        }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -59,9 +58,7 @@ class CoursewareLinkFragment : Fragment() {
         initWebViewSettings()
         webView.webViewClient = X5WebViewClient()
         webView.webChromeClient = X5WebChromeClient()
-        val map = HashMap<String, String>()
-        map.put("Referer", Constants.REFERER)
-        webView.loadUrl(url, map)
+        webView.loadUrl(url)
         webView.setOnKeyListener(View.OnKeyListener { _, keyCode, _ ->
             if (keyCode == KeyEvent.KEYCODE_BACK && webView.canGoBack()) {
                 webView.goBack()// 返回前一个页面
@@ -99,38 +96,6 @@ class CoursewareLinkFragment : Fragment() {
         override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
             view.loadUrl(url)
             return true
-        }
-
-        override fun shouldInterceptRequest(view: WebView, url: String): WebResourceResponse? {
-            return try {
-                handleHttp(url)
-            } catch (e: Exception) {
-                super.shouldInterceptRequest(view, url)
-            }
-        }
-
-        @Throws(Exception::class)
-        private fun handleHttp(url: String): WebResourceResponse {
-            val client = OkHttpClient()
-            val request = Request.Builder().addHeader("Referer", Constants.REFERER).url(url).build()
-            val response = client.newCall(request).execute()
-            var mimeType = ""
-            response?.header("content-type", response.body()?.contentType()?.type())?.let {
-                mimeType = it
-                if (it.contains(";")) {
-                    mimeType = it.substring(0, it.indexOf(";"))
-                }
-            }
-            var encoding = ""
-            response?.body()?.contentType()?.charset()?.name()?.let {
-                encoding = it
-            }
-            val inputStream = response?.body()?.byteStream()
-            return WebResourceResponse(mimeType, encoding, inputStream)
-        }
-
-        override fun onReceivedSslError(webView: WebView, handler: SslErrorHandler, sslError: SslError) {
-            handler.proceed()
         }
 
         override fun onReceivedError(view: WebView, errorCode: Int, description: String, failingUrl: String) {
