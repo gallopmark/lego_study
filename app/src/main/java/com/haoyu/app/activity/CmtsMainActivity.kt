@@ -28,6 +28,7 @@ class CmtsMainActivity : BaseActivity() {
     }
 
     override fun initView() {
+        context = this
         setToolBar()
         lines[0] = findViewById(R.id.line_says)
         lines[1] = findViewById(R.id.line_class)

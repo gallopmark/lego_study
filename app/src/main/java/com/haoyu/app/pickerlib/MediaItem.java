@@ -1,8 +1,10 @@
 package com.haoyu.app.pickerlib;
 
+import com.haoyu.app.entity.MultiItemEntity;
+
 import java.io.Serializable;
 
-public class MediaItem implements Serializable {
+public class MediaItem implements Serializable ,MultiItemEntity {
 
     private String name;       //图片的名字
     private String path;       //图片的路径
@@ -105,5 +107,10 @@ public class MediaItem implements Serializable {
             e.printStackTrace();
         }
         return super.equals(o);
+    }
+
+    @Override
+    public int getItemType() {
+        return 1;
     }
 }

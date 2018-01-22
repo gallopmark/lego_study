@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
     android:orientation="vertical">
 
     <com.haoyu.app.view.AppToolBar
@@ -38,7 +37,7 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:id="@+id/at_img"
+                    android:id="@+id/iv_image"
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:scaleType="centerCrop" />
@@ -51,7 +50,7 @@
                     android:padding="@dimen/margin_size_12">
 
                     <TextView
-                        android:id="@+id/at_title"
+                        android:id="@+id/tv_title"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="@dimen/font_size_16" />
@@ -81,7 +80,7 @@
                         android:textSize="@dimen/font_size_14" />
 
                     <TextView
-                        android:id="@+id/tv_atType"
+                        android:id="@+id/tv_type"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_size_2"
@@ -145,7 +144,7 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/at_content"
+                    android:id="@+id/tv_content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
@@ -178,7 +177,7 @@
                     android:paddingTop="@dimen/margin_size_10" />
 
                 <LinearLayout
-                    android:id="@+id/empty_resources"
+                    android:id="@+id/llEmptyFiles"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"

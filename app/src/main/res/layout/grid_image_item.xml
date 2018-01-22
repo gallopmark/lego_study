@@ -1,21 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/ivImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:src="@drawable/app_default" />
+        android:scaleType="centerCrop" />
 
     <ImageView
-        android:id="@+id/iv_delete"
-        android:layout_width="@dimen/margin_size_22"
-        android:layout_height="@dimen/margin_size_22"
-        android:layout_gravity="right|top"
-        android:layout_margin="@dimen/margin_size_4"
+        android:id="@+id/ivCancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top|right"
+        android:padding="@dimen/margin_size_6"
         android:src="@drawable/download_cancel" />
 </FrameLayout>

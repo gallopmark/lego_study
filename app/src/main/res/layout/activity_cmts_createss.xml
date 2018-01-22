@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/spaceColor"
     android:orientation="vertical">
 
     <com.haoyu.app.view.AppToolBar
@@ -15,34 +15,42 @@
         app:show_right_button="true"
         app:title_text="@string/study_says" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_size_16"
-        android:background="@color/spaceColor" />
-
-    <EditText
-        android:id="@+id/et_title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_size_16"
         android:background="@color/white"
-        android:drawablePadding="5dp"
-        android:drawableRight="@drawable/go_into"
-        android:gravity="left|center"
-        android:hint="请输入标题"
-        android:maxLength="128"
-        android:maxLines="1"
-        android:padding="@dimen/margin_size_16"
-        android:textColorHint="@color/gray"
-        android:textSize="@dimen/font_size_18" />
+        android:orientation="horizontal">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_size_16"
-        android:background="@color/spaceColor" />
+        <EditText
+            android:id="@+id/et_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@color/white"
+            android:gravity="left|center"
+            android:hint="请输入标题"
+            android:maxLength="128"
+            android:maxLines="1"
+            android:padding="@dimen/margin_size_16"
+            android:textColorHint="@color/gray"
+            android:textSize="@dimen/font_size_16" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/ivArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/margin_size_6"
+            android:layout_marginRight="@dimen/margin_size_12"
+            app:srcCompat="@drawable/ic_arrow_right_black_24dp" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/margin_size_16"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <EditText
@@ -53,11 +61,11 @@
             android:gravity="left"
             android:hint="内容描述"
             android:maxLength="1000"
-            android:maxLines="4"
-            android:minLines="4"
+            android:maxLines="6"
+            android:minLines="6"
             android:padding="@dimen/margin_size_16"
             android:textColorHint="@color/gray"
-            android:textSize="@dimen/font_size_18" />
+            android:textSize="@dimen/font_size_16" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -66,10 +74,5 @@
             android:layout_marginLeft="@dimen/margin_size_2"
             android:layout_marginRight="@dimen/margin_size_2"
             android:overScrollMode="never" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_size_1"
-            android:background="@color/spaceColor" />
     </LinearLayout>
 </LinearLayout>
