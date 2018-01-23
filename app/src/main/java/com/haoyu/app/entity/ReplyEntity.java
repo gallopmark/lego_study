@@ -78,6 +78,9 @@ public class ReplyEntity implements Serializable {
     }
 
     public List<ReplyEntity> getChildReplyEntityList() {
+        if (childReplyEntityList == null) {
+            return new ArrayList<>();
+        }
         return childReplyEntityList;
     }
 

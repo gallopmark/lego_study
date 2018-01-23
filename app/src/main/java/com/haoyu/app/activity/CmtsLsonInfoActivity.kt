@@ -64,12 +64,12 @@ class CmtsLsonInfoActivity : BaseActivity() {
     private lateinit var lessonEntity: CmtsLessonEntity
     private lateinit var lessonId: String //创课id
     private lateinit var relationId: String //关联关系id
-    private var supportNum: Int = 0
-    private var adviseNum: Int = 0  //点赞数，提建议数
+    private var supportNum = 0
+    private var adviseNum = 0  //点赞数，提建议数
     private val mDatas = ArrayList<ReplyEntity>()
     private lateinit var adapter: AppDiscussionAdapter
-    private var childPosition: Int = 0
-    private var replyPosition: Int = 0
+    private var childPosition = 0
+    private var replyPosition = 0
 
     override fun setLayoutResID(): Int {
         return R.layout.activity_cmtslsoninfo
@@ -157,7 +157,8 @@ class CmtsLsonInfoActivity : BaseActivity() {
         mRrogressBar.max = 60
         mRrogressBar.progress = 60 - remainDay
         if (remainDay > 0) {
-            tvDay.text = "还剩$remainDay 天"
+            val text = "还剩 $remainDay 天"
+            tvDay.text = text
         } else {
             tvDay.text = "已结束"
         }
@@ -177,7 +178,8 @@ class CmtsLsonInfoActivity : BaseActivity() {
             tvUserName.text = it.realName
         }
         val tvDate = findViewById<TextView>(R.id.tv_createTime)
-        tvDate.text = "发布于${TimeUtil.getSlashDate(mLesson.createTime)}"
+        val dateText = "发布于${TimeUtil.getSlashDate(mLesson.createTime)}"
+        tvDate.text = dateText
         var browseNum = 0
         var adviseNum = 0
         if (mLesson.getmDiscussionRelations().size > 0) {
@@ -188,10 +190,13 @@ class CmtsLsonInfoActivity : BaseActivity() {
         val tvHeatNum = findViewById<TextView>(R.id.tv_heatNum)
         val tvSupportNum = findViewById<TextView>(R.id.tv_supportNum)
         val tvAdviseNum = findViewById<TextView>(R.id.tv_adviseNum)
-        tvHeatNum.text = "热度（$browseNum）"
-        tvSupportNum.text = "赞（$supportNum）"
+        val heatText = "热度（$browseNum）"
+        tvHeatNum.text = heatText
+        val supportText = "赞（$supportNum）"
+        tvSupportNum.text = supportText
         tvSupportNum.setOnClickListener { createLike(tvSupportNum) }
-        tvAdviseNum.text = "提建议（$adviseNum）"
+        val adviseText = "提建议（$adviseNum）"
+        tvAdviseNum.text = adviseText
         if (!isEmpty(mLesson.content)) {
             val title = resources.getString(R.string.gen_class_topic)
             val llIntroduce = findViewById<LinearLayout>(R.id.ll_introduce)
@@ -200,7 +205,7 @@ class CmtsLsonInfoActivity : BaseActivity() {
     }
 
     private fun createLike(tvSupportNum: TextView) {
-        val url = Constants.OUTRT_NET + "/m/attitude"
+        val url = "${Constants.OUTRT_NET}/m/attitude"
         val map = HashMap<String, String>()
         map.put("attitude", "support")
         map.put("relation.id", lessonId)
@@ -217,7 +222,8 @@ class CmtsLsonInfoActivity : BaseActivity() {
                     goodView.setTextInfo("+1", defaultColor, 16f)
                     goodView.show(tvSupportNum)
                     supportNum++
-                    tvSupportNum.text = "赞（$supportNum）"
+                    val supportText = "赞（$supportNum）"
+                    tvSupportNum.text = supportText
                     val event = MessageEvent()
                     event.action = Action.SUPPORT_STUDY_CLASS
                     if (lessonEntity.getmDiscussionRelations().size > 0) {
@@ -394,7 +400,7 @@ class CmtsLsonInfoActivity : BaseActivity() {
     }
 
     private fun getFiles() {
-        val url = Constants.OUTRT_NET + "/m/file?fileRelations[0].relation.id=" + lessonId + "&fileRelations[0].relation.type=discussion&limit=2&orders=CREATE_TIME.DESC"
+        val url = "${Constants.OUTRT_NET}/m/file?fileRelations[0].relation.id=$lessonId&fileRelations[0].relation.type=discussion&limit=2&orders=CREATE_TIME.DESC"
         addSubscription(OkHttpClientManager.getAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<MFileInfoData>>() {
 
             override fun onError(request: Request, e: Exception) {
@@ -496,7 +502,7 @@ class CmtsLsonInfoActivity : BaseActivity() {
             adapter.notifyDataSetChanged()
             paginator?.let {
                 adviseNum = it.totalCount
-                setAdvise(adviseNum)
+                setAdvise()
                 if (it.hasNextPage) {
                     tvMoreReply.visibility = View.VISIBLE
                     tvMoreReply.setOnClickListener {
@@ -575,19 +581,20 @@ class CmtsLsonInfoActivity : BaseActivity() {
      * @param position
      */
     private fun createLike(position: Int, tvLike: TextView) {
-        val url = Constants.OUTRT_NET + "/m/attitude"
+        val url = "${Constants.OUTRT_NET}/m/attitude"
         val relationId = mDatas[position].id
-        val map = HashMap<String, String>()
-        map.put("attitude", "support")
-        map.put("relation.id", relationId)
-        map.put("relation.type", "discussion_post")
+        val map = HashMap<String, String>().apply {
+            put("attitude", "support")
+            put("relation.id", relationId)
+            put("relation.type", "discussion_post")
+        }
         addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<AttitudeMobileResult>() {
             override fun onError(request: Request, exception: Exception) {
                 onNetWorkError(context)
             }
 
             override fun onResponse(response: AttitudeMobileResult?) {
-                if (response != null && response.responseCode != null && response.responseCode == "00") {
+                if (response?.responseCode != null && response.responseCode == "00") {
                     val goodView = GoodView(context)
                     val defaultColor = ContextCompat.getColor(context, R.color.defaultColor)
                     goodView.setTextInfo("+1", defaultColor, 15f)
@@ -622,10 +629,10 @@ class CmtsLsonInfoActivity : BaseActivity() {
 
             override fun onResponse(response: ReplyResult?) {
                 hideTipDialog()
-                if (response != null && response.responseData != null) {
+                if (response?.responseData != null) {
                     val childPostCount = mDatas[position].childPostCount + 1
                     mDatas[position].childPostCount = childPostCount
-                    if (mDatas[position].childReplyEntityList != null && mDatas[position].childReplyEntityList.size < 10) {
+                    if (mDatas[position].childReplyEntityList.size < 10) {
                         val entity = response.responseData
                         entity.creator?.let {
                             entity.creator = getCreator(it)
@@ -641,11 +648,12 @@ class CmtsLsonInfoActivity : BaseActivity() {
     }
 
     private fun deleteReply(id: String, position: Int) {
-        val url = Constants.OUTRT_NET + "/m/discussion/post/" + id
-        val map = HashMap<String, String>()
-        map.put("_method", "delete")
-        map.put("discussionUser.discussionRelation.id", relationId)
-        map.put("mainPostId", id)
+        val url = "${Constants.OUTRT_NET}/m/discussion/post/$id"
+        val map = HashMap<String, String>().apply {
+            put("_method", "delete")
+            put("discussionUser.discussionRelation.id", relationId)
+            put("mainPostId", id)
+        }
         addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<*>>() {
             override fun onBefore(request: Request) {
                 showTipDialog()
@@ -666,7 +674,7 @@ class CmtsLsonInfoActivity : BaseActivity() {
                         rvAdvise.visibility = View.GONE
                     }
                     adviseNum--
-                    setAdvise(adviseNum)
+                    setAdvise()
                     getAdvise()
                 }
             }
@@ -686,10 +694,11 @@ class CmtsLsonInfoActivity : BaseActivity() {
     }
 
     private fun giveAdvice(content: String) {
-        val url = Constants.OUTRT_NET + "/m/discussion/post"
-        val map = HashMap<String, String>()
-        map.put("discussionUser.discussionRelation.id", relationId)
-        map.put("content", content)
+        val url = "${Constants.OUTRT_NET}/m/discussion/post"
+        val map = HashMap<String, String>().apply {
+            put("discussionUser.discussionRelation.id", relationId)
+            put("content", content)
+        }
         addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<ReplyResult>() {
             override fun onBefore(request: Request) {
                 showTipDialog()
@@ -717,7 +726,7 @@ class CmtsLsonInfoActivity : BaseActivity() {
                         toastFullScreen("发送成功", true)
                     }
                     adviseNum++
-                    setAdvise(adviseNum)
+                    setAdvise()
                     val event = MessageEvent()
                     event.action = Action.GIVE_STUDY_ADVICE
                     if (lessonEntity.getmDiscussionRelations().size > 0) {
@@ -739,8 +748,9 @@ class CmtsLsonInfoActivity : BaseActivity() {
         return creator
     }
 
-    private fun setAdvise(adviseNum: Int) {
-        tvAdviseCount.text = "收到 $adviseNum 条建议"
+    private fun setAdvise() {
+        val text = "收到 $adviseNum 条建议"
+        tvAdviseCount.text = text
     }
 
     private fun showBottomDialog() {
@@ -773,9 +783,9 @@ class CmtsLsonInfoActivity : BaseActivity() {
         LFilePicker().withActivity(context).withRequestCode(1).withMutilyMode(false).start()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 1 && resultCode == Activity.RESULT_OK && data != null) {
             val list = data.getStringArrayListExtra(RESULT_INFO)
             if (list != null && list.size > 0) {
                 val filePath = list[0]
@@ -909,7 +919,7 @@ class CmtsLsonInfoActivity : BaseActivity() {
     override fun obBusEvent(event: MessageEvent) {
         if (event.action == Action.CREATE_MAIN_REPLY && event.obj != null && event.obj is ReplyEntity) {
             adviseNum++
-            tvAdviseCount.text = "收到$adviseNum 条建议"
+            setAdvise()
             val entity = event.obj as ReplyEntity
             if (mDatas.size < 5) {
                 mDatas.add(entity)
@@ -957,7 +967,7 @@ class CmtsLsonInfoActivity : BaseActivity() {
                 getAdvise()
             }
             adviseNum--
-            setAdvise(adviseNum)
+            setAdvise()
         }
     }
 }
