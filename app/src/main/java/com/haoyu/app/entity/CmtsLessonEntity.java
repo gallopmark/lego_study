@@ -21,7 +21,7 @@ public class CmtsLessonEntity implements Serializable {
     private String content; // 讨论内容
     @Expose
     @SerializedName("createTime")
-    private Long createTime; // 讨论创建时间
+    private long createTime; // 讨论创建时间
     @Expose
     @SerializedName("creator")
     private MobileUser creator; // 讨论创建人
@@ -65,11 +65,11 @@ public class CmtsLessonEntity implements Serializable {
         this.content = content;
     }
 
-    public Long getCreateTime() {
+    public long getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Long createTime) {
+    public void setCreateTime(long createTime) {
         this.createTime = createTime;
     }
 

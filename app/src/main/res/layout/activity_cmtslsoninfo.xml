@@ -369,16 +369,8 @@
                     android:background="@color/white"
                     android:descendantFocusability="blocksDescendants">
 
-                    <com.haoyu.app.view.LoadingView
-                        android:id="@+id/loadingFile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:padding="@dimen/margin_size_30"
-                        android:visibility="gone" />
-
                     <com.haoyu.app.view.LoadFailView
-                        android:id="@+id/loadfileError"
+                        android:id="@+id/lfv1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
@@ -394,7 +386,7 @@
                         android:visibility="gone" />
 
                     <LinearLayout
-                        android:id="@+id/empty_resources"
+                        android:id="@+id/llEmptyFiles"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/margin_size_16"
@@ -452,21 +444,17 @@
                             android:textColor="@color/gray"
                             android:textSize="@dimen/font_size_14" />
                     </LinearLayout>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="@color/spaceColor" />
                 </LinearLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/margin_size_1"
                     android:background="@color/white"
                     android:descendantFocusability="blocksDescendants">
 
                     <com.haoyu.app.view.LoadFailView
-                        android:id="@+id/errorAdvise"
+                        android:id="@+id/lfv2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
@@ -482,7 +470,6 @@
                         android:drawablePadding="@dimen/margin_size_12"
                         android:drawableTop="@drawable/empty_list"
                         android:gravity="center"
-                        android:text="目前还没人提建议，\n赶紧去发表您的建议吧！"
                         android:textColor="@color/gray"
                         android:textSize="@dimen/font_size_16"
                         android:visibility="gone" />
