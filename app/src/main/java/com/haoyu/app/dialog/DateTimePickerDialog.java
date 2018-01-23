@@ -82,11 +82,11 @@ public class DateTimePickerDialog extends AlertDialog {
             @Override
             public void onClick(View view) {
                 if (dateListener != null) {
-                    dateListener.Date(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
+                    dateListener.date(datePicker.getYear(), datePicker.getMonth() + 1, datePicker.getDayOfMonth());
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                        dateListener.Time(timePicker.getHour(), timePicker.getMinute());
+                        dateListener.time(timePicker.getHour(), timePicker.getMinute());
                     else
-                        dateListener.Time(timePicker.getCurrentHour(), timePicker.getCurrentMinute());
+                        dateListener.time(timePicker.getCurrentHour(), timePicker.getCurrentMinute());
                 }
                 dismiss();
             }
@@ -159,9 +159,9 @@ public class DateTimePickerDialog extends AlertDialog {
 
 
     public interface DateListener {
-        void Date(int year, int month, int day);
+        void date(int year, int month, int day);
 
-        void Time(int hour, int minute);
+        void time(int hour, int minute);
     }
 
     public DateListener dateListener;

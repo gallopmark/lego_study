@@ -155,7 +155,7 @@ public class WSTSSubmitFragment extends BaseFragment implements View.OnClickList
         dialog.setPositiveButton("确定");
         dialog.setDateListener(new DateTimePickerDialog.DateListener() {
             @Override
-            public void Date(int year, int month, int day) {
+            public void date(int year, int month, int day) {
                 String mMonth = month < 10 ? "0" + month : String.valueOf(month);
                 String mDay = day < 10 ? "0" + day : String.valueOf(day);
                 String text = year + "-" + mMonth + "-" + mDay;
@@ -174,7 +174,7 @@ public class WSTSSubmitFragment extends BaseFragment implements View.OnClickList
             }
 
             @Override
-            public void Time(int hour, int minute) {
+            public void time(int hour, int minute) {
 
             }
         });
@@ -222,7 +222,7 @@ public class WSTSSubmitFragment extends BaseFragment implements View.OnClickList
                 message += startYear + "年" + startMonth + "月前";
                 showMaterialDialog(message);
                 return false;
-            } else {
+            } else if (endMonth == startMonth) {
                 if (endDay < startDay) {
                     message += startYear + "年" + startMonth + "月" + startDay + "日前";
                     showMaterialDialog(message);
@@ -234,10 +234,7 @@ public class WSTSSubmitFragment extends BaseFragment implements View.OnClickList
     }
 
     public boolean isAddItem() {
-        if (items.size() > 0) {
-            return true;
-        }
-        return false;
+        return items.size() > 0;
     }
 
     public String getStartTime() {
