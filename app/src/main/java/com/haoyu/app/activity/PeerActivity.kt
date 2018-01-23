@@ -6,8 +6,9 @@ import android.view.View
 import android.widget.TextView
 import com.haoyu.app.adapter.PeerAdapter
 import com.haoyu.app.base.BaseActivity
-import com.haoyu.app.entity.EducationConsultResult
+import com.haoyu.app.base.BaseResponseResult
 import com.haoyu.app.entity.MobileUser
+import com.haoyu.app.entity.MobileUserData
 import com.haoyu.app.entity.Paginator
 import com.haoyu.app.lego.student.R
 import com.haoyu.app.utils.Constants
@@ -58,8 +59,8 @@ class PeerActivity : BaseActivity(), XRecyclerView.LoadingListener {
     }
 
     override fun initData() {
-        val url = Constants.OUTRT_NET + "/m/user?page=" + page + "&limit=30"
-        addSubscription(OkHttpClientManager.getAsyn(context, url, object : OkHttpClientManager.ResultCallback<EducationConsultResult>() {
+        val url = "${Constants.OUTRT_NET}/m/user?page=$page&limit=30"
+        addSubscription(OkHttpClientManager.getAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<MobileUserData>>() {
             override fun onBefore(request: Request) {
                 if (isRefresh || isLoadMore)
                     loadingView.visibility = View.GONE
@@ -79,11 +80,10 @@ class PeerActivity : BaseActivity(), XRecyclerView.LoadingListener {
                 }
             }
 
-            override fun onResponse(response: EducationConsultResult?) {
+            override fun onResponse(response: BaseResponseResult<MobileUserData>?) {
                 loadingView.visibility = View.GONE
-                if (response != null && response.responseData != null
-                        && response.responseData.mUsers != null && response.responseData.mUsers.size > 0) {
-                    updateUI(response.responseData.mUsers, response.responseData.paginator)
+                if (response?.responseData?.getmUsers() != null && response.responseData.getmUsers().size > 0) {
+                    updateUI(response.responseData.getmUsers(), response.responseData.paginator)
                 } else {
                     when {
                         isRefresh -> xRecyclerView.refreshComplete(true)
