@@ -10,7 +10,7 @@ import java.io.Serializable;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class TeachingLessonAttribute implements Serializable{
+public class CmtsLessonAttribute implements Serializable{
     /**
      * id	ID
      * mStage	学段

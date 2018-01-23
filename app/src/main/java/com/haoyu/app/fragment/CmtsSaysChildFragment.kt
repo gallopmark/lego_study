@@ -6,7 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.TextView
 import com.haoyu.app.activity.CmtsSaysInfoActivity
-import com.haoyu.app.adapter.CtmsStatementAdapter
+import com.haoyu.app.adapter.CtmsSaysAdapter
 import com.haoyu.app.base.BaseFragment
 import com.haoyu.app.basehelper.BaseRecyclerAdapter
 import com.haoyu.app.dialog.CommentDialog
@@ -33,7 +33,7 @@ class CmtsSaysChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
     private lateinit var xRecyclerView: XRecyclerView
     private lateinit var tvEmpty: TextView
     private val mDatas = ArrayList<DiscussEntity>()
-    private lateinit var adapter: CtmsStatementAdapter
+    private lateinit var adapter: CtmsSaysAdapter
     private var isRefresh = false
     private var isLoadMore = false
     private var page = 1
@@ -64,7 +64,7 @@ class CmtsSaysChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
         val layoutManager = LinearLayoutManager(context)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         xRecyclerView.layoutManager = layoutManager
-        adapter = CtmsStatementAdapter(context, mDatas)
+        adapter = CtmsSaysAdapter(context, mDatas)
         xRecyclerView.adapter = adapter
         xRecyclerView.setLoadingListener(this)
         tvEmpty.text = resources.getString(R.string.study_says_emptylist)
@@ -144,7 +144,7 @@ class CmtsSaysChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
                 startActivity(intent)
             }
         }
-        adapter.setRequestClickCallBack(object : CtmsStatementAdapter.RequestClickCallBack {
+        adapter.setRequestClickCallBack(object : CtmsSaysAdapter.RequestClickCallBack {
             override fun support(entity: DiscussEntity, position: Int) {
                 if (entity.isSupport)
                     toast("您已点赞过")

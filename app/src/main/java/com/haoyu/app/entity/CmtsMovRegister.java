@@ -8,13 +8,13 @@ import com.google.gson.annotations.SerializedName;
  * 描述: 教研活动报名结果集
  * 作者:马飞奔 Administrator
  */
-public class TeachingRegistAtResult {
+public class CmtsMovRegister {
     @Expose
     @SerializedName("responseCode")
     private String responseCode;
     @Expose
     @SerializedName("responseData")
-    private TeachingMovementEntity.MovementRegisters responseData;
+    private CmtsMovement.MovementRegisters responseData;
     @Expose
     @SerializedName("responseMsg")
     private String responseMsg;
@@ -30,11 +30,11 @@ public class TeachingRegistAtResult {
         this.responseCode = responseCode;
     }
 
-    public TeachingMovementEntity.MovementRegisters getResponseData() {
+    public CmtsMovement.MovementRegisters getResponseData() {
         return responseData;
     }
 
-    public void setResponseData(TeachingMovementEntity.MovementRegisters responseData) {
+    public void setResponseData(CmtsMovement.MovementRegisters responseData) {
         this.responseData = responseData;
     }
 

@@ -25,7 +25,7 @@ import java.util.List;
  * participateNum	参加人数	Integer	Y
  * browseNum	浏览人数	Integer	Y
  */
-public class TeachingMovementEntity implements Serializable {
+public class CmtsMovement implements Serializable {
     private static final long serialVersionUID = 1L;
     @Expose
     @SerializedName("id")
@@ -274,8 +274,8 @@ public class TeachingMovementEntity implements Serializable {
             return false;
         if (this == obj)
             return true;
-        if (obj instanceof TeachingMovementEntity) {
-            TeachingMovementEntity entity = (TeachingMovementEntity) obj;
+        if (obj instanceof CmtsMovement) {
+            CmtsMovement entity = (CmtsMovement) obj;
             return entity.id.equals(this.id);
         }
         return false;

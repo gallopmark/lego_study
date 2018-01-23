@@ -39,9 +39,9 @@ import com.haoyu.app.entity.Paginator;
 import com.haoyu.app.entity.ReplyEntity;
 import com.haoyu.app.entity.ReplyListResult;
 import com.haoyu.app.entity.ReplyResult;
-import com.haoyu.app.entity.TeachingLessonAttribute;
-import com.haoyu.app.entity.TeachingLessonData;
-import com.haoyu.app.entity.TeachingLessonEntity;
+import com.haoyu.app.entity.CmtsLessonAttribute;
+import com.haoyu.app.entity.CmtsLessonData;
+import com.haoyu.app.entity.CmtsLessonEntity;
 import com.haoyu.app.filePicker.LFilePicker;
 import com.haoyu.app.imageloader.GlideImgManager;
 import com.haoyu.app.lego.student.R;
@@ -162,7 +162,7 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
     TextView tv_more_reply;  //更多建议按钮
     @BindView(R.id.bottomView)
     TextView bottomView; //底部提建议按钮
-    private TeachingLessonEntity lessonEntity;
+    private CmtsLessonEntity lessonEntity;
     private String lessonId, relationId;  //创课id，关联关系id
     private int supportNum, adviseNum;  //点赞数，提建议数
     private List<ReplyEntity> adviseList = new ArrayList<>();
@@ -213,7 +213,7 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
     @Override
     public void initData() {
         final String url = Constants.OUTRT_NET + "/m/lesson/cmts/view/" + lessonId;
-        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<TeachingLessonData>>() {
+        addSubscription(OkHttpClientManager.getAsyn(context, url, new OkHttpClientManager.ResultCallback<BaseResponseResult<CmtsLessonData>>() {
             @Override
             public void onBefore(Request request) {
                 loadingView.setVisibility(View.VISIBLE);
@@ -226,7 +226,7 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
             }
 
             @Override
-            public void onResponse(BaseResponseResult<TeachingLessonData> result) {
+            public void onResponse(BaseResponseResult<CmtsLessonData> result) {
                 loadingView.setVisibility(View.GONE);
                 if (result != null && result.getResponseData() != null && result.getResponseData().getmLesson() != null) {
                     updateUI(result.getResponseData().getmLesson(), result.getResponseData().getmLessonAttribute());
@@ -239,7 +239,7 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
         }));
     }
 
-    private void updateUI(TeachingLessonEntity mLesson, TeachingLessonAttribute attribute) {
+    private void updateUI(CmtsLessonEntity mLesson, CmtsLessonAttribute attribute) {
         ssv_content.setVisibility(View.VISIBLE);
         lessonEntity = mLesson;
         if (lessonEntity.getCreator() != null && lessonEntity.getCreator().getId() != null && lessonEntity.getCreator().getId().equals(getUserId())) {
@@ -266,7 +266,7 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-    public void setLesson(TeachingLessonEntity mLesson) {
+    public void setLesson(CmtsLessonEntity mLesson) {
         tv_title.setText(mLesson.getTitle());
         if (mLesson.getCreator() != null && mLesson.getCreator().getAvatar() != null)
             GlideImgManager.loadCircleImage(context, mLesson.getCreator().getAvatar(),
@@ -291,7 +291,7 @@ public class CmtsLsonInfoActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-    public void setLessonAttribute(TeachingLessonAttribute att) {
+    public void setLessonAttribute(CmtsLessonAttribute att) {
         if (!isEmpty(att.getRealia())) {
             String realia = getResources().getString(R.string.gen_class_realia);
             addView(realia, att.getRealia(), ll_introduce);

@@ -130,7 +130,7 @@ class CmtsSaysEditActivity : BaseActivity() {
                         hideTipDialog()
                         icoItems.remove(cameraItem)
                         icoItems.addAll(mediaItems)
-                        if (icoItems.size < 9) {
+                        if (icoItems.size < 9 && !icoItems.contains(cameraItem)) {
                             icoItems.add(cameraItem)
                         }
                         adapter.notifyDataSetChanged()
@@ -255,7 +255,7 @@ class CmtsSaysEditActivity : BaseActivity() {
                 GlideImgManager.loadImage(context, path, R.drawable.app_default, R.drawable.app_default, ivImage)
                 ivCancel.setOnClickListener({
                     mDatas.removeAt(position)
-                    if (mDatas.size <= 9) {
+                    if (mDatas.size <= 9 && !mDatas.contains(cameraItem)) {
                         mDatas.add(cameraItem)
                     }
                     notifyDataSetChanged()

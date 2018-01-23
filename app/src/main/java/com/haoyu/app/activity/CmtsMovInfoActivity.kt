@@ -42,6 +42,7 @@ import okhttp3.Request
 import org.sufficientlysecure.htmltextview.HtmlHttpImageGetter
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * 创建日期：2018/1/19.
@@ -62,7 +63,7 @@ class CmtsMovInfoActivity : BaseActivity() {
     private lateinit var tvMoreReply: TextView
     private lateinit var btType: Button
     private lateinit var movementId: String
-    private lateinit var movEntity: TeachingMovementEntity
+    private lateinit var movEntity: CmtsMovement
     private val fileInfos = ArrayList<MFileInfo>()
     private lateinit var fileAdapter: FileAdapter
     private var viewNum = 0
@@ -115,7 +116,7 @@ class CmtsMovInfoActivity : BaseActivity() {
 
     override fun initData() {
         val url = "${Constants.OUTRT_NET}/m/movement/view/$movementId"
-        addSubscription(OkHttpClientManager.getAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<TeachingMovementEntity>>() {
+        addSubscription(OkHttpClientManager.getAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<CmtsMovement>>() {
             override fun onBefore(request: Request) {
                 loadingView.visibility = View.VISIBLE
             }
@@ -125,7 +126,7 @@ class CmtsMovInfoActivity : BaseActivity() {
                 loadFailView.visibility = View.VISIBLE
             }
 
-            override fun onResponse(result: BaseResponseResult<TeachingMovementEntity>?) {
+            override fun onResponse(result: BaseResponseResult<CmtsMovement>?) {
                 loadingView.visibility = View.GONE
                 if (result?.getResponseData() != null) {
                     updateUI(result.getResponseData())
@@ -136,7 +137,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         }))
     }
 
-    private fun updateUI(entity: TeachingMovementEntity) {
+    private fun updateUI(entity: CmtsMovement) {
         movEntity = entity
         ssvContent.visibility = View.VISIBLE
         if (movEntity.creator?.id != null && movEntity.creator.id == userId) {
@@ -159,7 +160,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         GlideImgManager.loadImage(context, url, R.drawable.app_default, R.drawable.app_default, imageView)
     }
 
-    private fun setTopText(entity: TeachingMovementEntity) {
+    private fun setTopText(entity: CmtsMovement) {
         val tvTitle = findViewById<TextView>(R.id.tv_title)
         tvTitle.text = entity.title
         val tvTime = findViewById<TextView>(R.id.tv_time)
@@ -198,7 +199,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         if (entity.participationType != null && entity.participationType == "ticket") {
             tvPart.text = "参与：须报名预约，凭电子票入场"
             tvLimit.visibility = View.VISIBLE
-            tvLimit.text = "限额：$participateNum/${limit}人"
+            tvLimit.text = "限额：$participateNum /$limit 人"
         } else if (entity.participationType != null && entity.participationType == "free") {
             tvPart.text = "参与：在线报名，免费入场"
         } else if (entity.participationType != null && entity.participationType == "chair") {
@@ -212,7 +213,7 @@ class CmtsMovInfoActivity : BaseActivity() {
     @Suppress("DEPRECATION")
     private fun setContentText(content: String?) {
         val llContent = findViewById<LinearLayout>(R.id.ll_content)
-        if (content != null && content.isNotEmpty()) {
+        if (content != null) {
             llContent.visibility = View.VISIBLE
             val tvContent = findViewById<TextView>(R.id.tv_content)
             val ivExpand = findViewById<ImageView>(R.id.iv_expand)
@@ -247,15 +248,23 @@ class CmtsMovInfoActivity : BaseActivity() {
         if (list.isNotEmpty()) {
             fileInfos.addAll(list)
             fileAdapter.notifyDataSetChanged()
-            videoRV.visibility = View.VISIBLE
-            llEmptyFiles.visibility = View.GONE
+            if (videoRV.visibility != View.VISIBLE) videoRV.visibility = View.VISIBLE
+            if (llEmptyFiles.visibility != View.GONE) llEmptyFiles.visibility = View.GONE
+            fileAdapter.setOnItemClickListener({ _, _, _, position ->
+                val photos = ArrayList<String>()
+                fileInfos.mapTo(photos) { it.url }
+                val intent = Intent(context, AppMultiImageShowActivity::class.java)
+                intent.putStringArrayListExtra("photos", photos)
+                intent.putExtra("position", position)
+                startActivity(intent)
+            })
         } else {
             videoRV.visibility = View.GONE
             llEmptyFiles.visibility = View.VISIBLE
         }
     }
 
-    private fun setBottomText(entity: TeachingMovementEntity) {
+    private fun setBottomText(entity: CmtsMovement) {
         val llBottom = findViewById<LinearLayout>(R.id.ll_bottom)
         llBottom.visibility = View.VISIBLE
         setNumText()
@@ -299,10 +308,21 @@ class CmtsMovInfoActivity : BaseActivity() {
     }
 
     private inner class FileAdapter(mDatas: List<MFileInfo>) : BaseArrayRecyclerAdapter<MFileInfo>(mDatas) {
+        private var width = 0
+        private var height = 0
+
+        init {
+            val screenWidth = resources.displayMetrics.widthPixels
+            val densityDpi = resources.displayMetrics.densityDpi
+            var cols = screenWidth / densityDpi
+            cols = if (cols < 3) 3 else cols
+            val columnSpace = 4 * context.resources.displayMetrics.density
+            width = ((screenWidth - columnSpace * (cols - 1)) / cols).toInt()
+            height = (width * 4) / 5
+        }
 
         override fun onBindHoder(holder: BaseRecyclerAdapter.RecyclerHolder, mFileInfo: MFileInfo, position: Int) {
-            val layoutParams = LinearLayout.LayoutParams(ScreenUtils.getScreenWidth(context) / 3, ScreenUtils.getScreenWidth(context) / 4)
-            holder.itemView.layoutParams = layoutParams
+            holder.itemView.layoutParams = LinearLayout.LayoutParams(width, height)
             val ivImg = holder.obtainView<ImageView>(R.id.iv_img)
             val ivVideo = holder.obtainView<ImageView>(R.id.iv_video)
             if (mFileInfo.url != null && MediaFile.isVideoFileType(mFileInfo.url)) {
@@ -314,7 +334,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         }
 
         override fun bindView(viewtype: Int): Int {
-            return R.layout.teaching_research_at_file_item
+            return R.layout.cmtsmovres_item
         }
     }
 
@@ -596,7 +616,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         val url = "${Constants.OUTRT_NET}/m/movement/register"
         val map = HashMap<String, String>()
         map["movement.id"] = movementId
-        addSubscription(postAsyn(context, url, object : OkHttpClientManager.ResultCallback<TeachingRegistAtResult>() {
+        addSubscription(postAsyn(context, url, object : OkHttpClientManager.ResultCallback<CmtsMovRegister>() {
             override fun onBefore(request: Request) {
                 showTipDialog()
             }
@@ -606,7 +626,7 @@ class CmtsMovInfoActivity : BaseActivity() {
                 onNetWorkError(context)
             }
 
-            override fun onResponse(response: TeachingRegistAtResult?) {
+            override fun onResponse(response: CmtsMovRegister?) {
                 hideTipDialog()
                 if (response?.responseData != null) {
                     registerId = response.responseData.id

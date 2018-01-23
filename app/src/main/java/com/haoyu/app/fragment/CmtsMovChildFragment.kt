@@ -8,10 +8,12 @@ import android.widget.TextView
 import com.haoyu.app.activity.CmtsMovInfoActivity
 import com.haoyu.app.adapter.CtmsMovementAdapter
 import com.haoyu.app.base.BaseFragment
+import com.haoyu.app.base.BaseResponseResult
 import com.haoyu.app.basehelper.BaseRecyclerAdapter
+import com.haoyu.app.entity.CmtsMovRegister
+import com.haoyu.app.entity.CmtsMovement
+import com.haoyu.app.entity.CmtsMovements
 import com.haoyu.app.entity.Paginator
-import com.haoyu.app.entity.TeachingMovementEntity
-import com.haoyu.app.entity.TeachingMovementListResult
 import com.haoyu.app.lego.student.R
 import com.haoyu.app.rxBus.MessageEvent
 import com.haoyu.app.utils.Action
@@ -33,7 +35,7 @@ class CmtsMovChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
     private lateinit var loadFailView: LoadFailView
     private lateinit var xRecyclerView: XRecyclerView
     private lateinit var tvEmpty: TextView
-    private val mDatas = ArrayList<TeachingMovementEntity>()
+    private val mDatas = ArrayList<CmtsMovement>()
     private lateinit var adapter: CtmsMovementAdapter
     private var isRefresh = false
     private var isLoadMore = false
@@ -73,7 +75,7 @@ class CmtsMovChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
 
     override fun initData() {
         val url = baseUrl + "&page=" + page
-        addSubscription(OkHttpClientManager.getAsyn(context, url, object : OkHttpClientManager.ResultCallback<TeachingMovementListResult>() {
+        addSubscription(OkHttpClientManager.getAsyn(context, url, object : OkHttpClientManager.ResultCallback<CmtsMovements>() {
             override fun onBefore(request: Request) {
                 if (isRefresh || isLoadMore) {
                     loadingView.visibility = View.GONE
@@ -97,7 +99,7 @@ class CmtsMovChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
                 }
             }
 
-            override fun onResponse(response: TeachingMovementListResult?) {
+            override fun onResponse(response: CmtsMovements?) {
                 loadingView.visibility = View.GONE
                 if (response?.responseData != null && response.responseData.getmMovements().size > 0) {
                     updateUI(response.responseData.getmMovements(), response.responseData.paginator)
@@ -115,7 +117,7 @@ class CmtsMovChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
         }))
     }
 
-    private fun updateUI(list: List<TeachingMovementEntity>, paginator: Paginator?) {
+    private fun updateUI(list: List<CmtsMovement>, paginator: Paginator?) {
         if (xRecyclerView.visibility != View.VISIBLE) xRecyclerView.visibility = View.VISIBLE
         if (isRefresh) {
             mDatas.clear()
@@ -144,6 +146,71 @@ class CmtsMovChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
                 startActivity(intent)
             }
         }
+        adapter.setOnButtonClick(object : CtmsMovementAdapter.OnButtonClick {
+            override fun onClick(position: Int, entity: CmtsMovement) {
+                val movementId = entity.id
+                val intent = Intent(context, CmtsMovInfoActivity::class.java)
+                intent.putExtra("movementId", movementId)
+                startActivity(intent)
+            }
+
+            override fun register(position: Int, activityId: String) {
+                registerActivity(position, activityId)
+            }
+
+            override fun unregister(position: Int, registerId: String) {
+                unRegisterActivity(position, registerId)
+            }
+
+        })
+    }
+
+    private fun registerActivity(position: Int, movementId: String) {
+        val url = "${Constants.OUTRT_NET}/m/movement/register"
+        val map = HashMap<String, String>()
+        map["movement.id"] = movementId
+        addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<CmtsMovRegister>() {
+            override fun onBefore(request: Request) {
+                showTipDialog()
+            }
+
+            override fun onError(request: Request, e: Exception) {
+                hideTipDialog()
+                onNetWorkError()
+            }
+
+            override fun onResponse(response: CmtsMovRegister?) {
+                hideTipDialog()
+                response?.responseData?.let {
+                    mDatas[position].getmMovementRegisters().add(it)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }, map))
+    }
+
+    private fun unRegisterActivity(position: Int, registerId: String) {
+        val url = "${Constants.OUTRT_NET}/m/movement/register/$registerId"
+        val map = HashMap<String, String>()
+        map["_method"] = "delete"
+        addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<*>>() {
+            override fun onBefore(request: Request) {
+                showTipDialog()
+            }
+
+            override fun onError(request: Request, e: Exception) {
+                hideTipDialog()
+                onNetWorkError()
+            }
+
+            override fun onResponse(response: BaseResponseResult<*>?) {
+                hideTipDialog()
+                if (response?.getResponseCode() != null && response.getResponseCode() == "00") {
+                    mDatas[position].getmMovementRegisters().clear()
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }, map))
     }
 
     override fun onRefresh() {
@@ -162,8 +229,8 @@ class CmtsMovChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
 
     override fun onEvent(event: MessageEvent) {
         if (event.getAction() == Action.DELETE_MOVEMENT) {   //删除活动
-            if (event.obj != null && event.obj is TeachingMovementEntity) {
-                val entity = event.obj as TeachingMovementEntity
+            if (event.obj != null && event.obj is CmtsMovement) {
+                val entity = event.obj as CmtsMovement
                 mDatas.remove(entity)
                 adapter.notifyDataSetChanged()
             }
@@ -172,8 +239,8 @@ class CmtsMovChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
                 tvEmpty.visibility = View.VISIBLE
             }
         } else if (event.getAction() == Action.REGIST_MOVEMENT) {   //活动报名
-            if (event.obj != null && event.obj is TeachingMovementEntity) {
-                val entity = event.obj as TeachingMovementEntity
+            if (event.obj != null && event.obj is CmtsMovement) {
+                val entity = event.obj as CmtsMovement
                 val selected = mDatas.indexOf(entity)
                 if (selected != -1) {
                     mDatas[selected] = entity
@@ -181,8 +248,8 @@ class CmtsMovChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
                 }
             }
         } else if (event.getAction() == Action.UNREGIST_MOVEMENT) {  //取消活动报名
-            if (event.obj != null && event.obj is TeachingMovementEntity) {
-                val entity = event.obj as TeachingMovementEntity
+            if (event.obj != null && event.obj is CmtsMovement) {
+                val entity = event.obj as CmtsMovement
                 val selected = mDatas.indexOf(entity)
                 if (selected != -1) {
                     mDatas[selected] = entity

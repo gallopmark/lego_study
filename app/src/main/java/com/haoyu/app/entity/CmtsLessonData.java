@@ -10,27 +10,27 @@ import java.io.Serializable;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class TeachingLessonData implements Serializable {
+public class CmtsLessonData implements Serializable {
     @Expose
     @SerializedName("mLesson")
-    private TeachingLessonEntity mLesson;
+    private CmtsLessonEntity mLesson;
     @Expose
     @SerializedName("mLessonAttribute")
-    private TeachingLessonAttribute mLessonAttribute;
+    private CmtsLessonAttribute mLessonAttribute;
 
-    public TeachingLessonEntity getmLesson() {
+    public CmtsLessonEntity getmLesson() {
         return mLesson;
     }
 
-    public void setmLesson(TeachingLessonEntity mLesson) {
+    public void setmLesson(CmtsLessonEntity mLesson) {
         this.mLesson = mLesson;
     }
 
-    public TeachingLessonAttribute getmLessonAttribute() {
+    public CmtsLessonAttribute getmLessonAttribute() {
         return mLessonAttribute;
     }
 
-    public void setmLessonAttribute(TeachingLessonAttribute mLessonAttribute) {
+    public void setmLessonAttribute(CmtsLessonAttribute mLessonAttribute) {
         this.mLessonAttribute = mLessonAttribute;
     }
 }

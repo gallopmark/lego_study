@@ -12,7 +12,7 @@ import java.util.List;
  * 描述:教研创课实体类
  * 作者:马飞奔 Administrator
  */
-public class TeachingLessonEntity implements Serializable {
+public class CmtsLessonEntity implements Serializable {
     @Expose
     @SerializedName("title")
     private String title; // 讨论标题
@@ -223,8 +223,8 @@ public class TeachingLessonEntity implements Serializable {
             return false;
         if (this == obj)
             return true;
-        if (obj instanceof TeachingLessonEntity) {
-            TeachingLessonEntity entity = (TeachingLessonEntity) obj;
+        if (obj instanceof CmtsLessonEntity) {
+            CmtsLessonEntity entity = (CmtsLessonEntity) obj;
             return entity.id.equals(this.id);
         }
         return false;

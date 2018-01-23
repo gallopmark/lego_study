@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/item_click_selector"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="centerCrop" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_size_10"
+            android:textSize="@dimen/font_size_16" />
+
+        <TextView
+            android:id="@+id/tv_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|top"
+            android:background="@drawable/teaching_research_apply"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="@dimen/font_size_14" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:layout_marginRight="@dimen/margin_size_10"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/font_size_14" />
+
+    <TextView
+        android:id="@+id/tv_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:layout_marginRight="@dimen/margin_size_10"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/font_size_14" />
+
+    <TextView
+        android:id="@+id/tv_creator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:layout_marginRight="@dimen/margin_size_10"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/font_size_14" />
+
+    <TextView
+        android:id="@+id/tv_host"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_size_10"
+        android:layout_marginRight="@dimen/margin_size_10"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/font_size_14" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:layout_marginTop="@dimen/margin_size_12"
+        android:background="@color/spaceColor" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/margin_size_10">
+
+        <TextView
+            android:id="@+id/tvBottom"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:textSize="@dimen/font_size_14" />
+
+        <Button
+            android:id="@+id/bt_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center"
+            android:background="@drawable/round_blue_label"
+            android:paddingBottom="@dimen/margin_size_6"
+            android:paddingLeft="@dimen/margin_size_12"
+            android:paddingRight="@dimen/margin_size_12"
+            android:paddingTop="@dimen/margin_size_6"
+            android:text="报名参与"
+            android:textColor="@color/qianlan"
+            android:textSize="@dimen/font_size_14" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_8"
+        android:background="@color/spaceColor" />
+</LinearLayout>

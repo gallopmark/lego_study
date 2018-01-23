@@ -8,21 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 创建日期：2017/1/11 on 10:56
- * 描述:
+ * 创建日期：2017/1/11 on 19:09
+ * 描述:教研创课列表
  * 作者:马飞奔 Administrator
  */
-public class TeachingMovementListResult extends BaseResponseResult<TeachingMovementListResult.MData> {
+public class CmtsLessonEntities extends BaseResponseResult<CmtsLessonEntities.MData> {
+
     public class MData {
-        /*mMovements	活动List	List	Y
-        paginator	分页信息	Object	Y	paginator详见公共对象
-        */
-        @Expose
-        @SerializedName("mMovements")
-        private List<TeachingMovementEntity> mMovements;
         @Expose
         @SerializedName("paginator")
         private Paginator paginator;
+        @Expose
+        @SerializedName("mLessons")
+        private List<CmtsLessonEntity> mLessons = new ArrayList<>();
 
         public Paginator getPaginator() {
             return paginator;
@@ -32,15 +30,16 @@ public class TeachingMovementListResult extends BaseResponseResult<TeachingMovem
             this.paginator = paginator;
         }
 
-        public List<TeachingMovementEntity> getmMovements() {
-            if (mMovements == null) {
+        public List<CmtsLessonEntity> getmLessons() {
+            if (mLessons == null) {
                 return new ArrayList<>();
             }
-            return mMovements;
+            return mLessons;
         }
 
-        public void setmMovements(List<TeachingMovementEntity> mMovements) {
-            this.mMovements = mMovements;
+        public void setmLessons(List<CmtsLessonEntity> mLessons) {
+            this.mLessons = mLessons;
         }
     }
+
 }

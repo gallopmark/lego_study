@@ -32,7 +32,7 @@ class CmtsLsonChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
     private lateinit var loadFailView: LoadFailView
     private lateinit var xRecyclerView: XRecyclerView
     private lateinit var tvEmpty: TextView
-    private val mDatas = ArrayList<TeachingLessonEntity>()
+    private val mDatas = ArrayList<CmtsLessonEntity>()
     private lateinit var adapter: CtmsLessonAdapter
     private var isRefresh = false
     private var isLoadMore = false
@@ -72,7 +72,7 @@ class CmtsLsonChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
 
     override fun initData() {
         val url = baseUrl + "&page=" + page
-        addSubscription(OkHttpClientManager.getAsyn(context, url, object : OkHttpClientManager.ResultCallback<TeachingLessonListResult>() {
+        addSubscription(OkHttpClientManager.getAsyn(context, url, object : OkHttpClientManager.ResultCallback<CmtsLessonEntities>() {
             override fun onBefore(request: Request) {
                 if (isRefresh || isLoadMore) {
                     loadingView.visibility = View.GONE
@@ -96,7 +96,7 @@ class CmtsLsonChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
                 }
             }
 
-            override fun onResponse(response: TeachingLessonListResult?) {
+            override fun onResponse(response: CmtsLessonEntities?) {
                 loadingView.visibility = View.GONE
                 if (response?.responseData != null && response.responseData.getmLessons().size > 0) {
                     updateUI(response.responseData.getmLessons(), response.responseData.paginator)
@@ -114,7 +114,7 @@ class CmtsLsonChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
         }))
     }
 
-    private fun updateUI(list: List<TeachingLessonEntity>, paginator: Paginator?) {
+    private fun updateUI(list: List<CmtsLessonEntity>, paginator: Paginator?) {
         if (xRecyclerView.visibility != View.VISIBLE) xRecyclerView.visibility = View.VISIBLE
         if (isRefresh) {
             mDatas.clear()
@@ -144,12 +144,12 @@ class CmtsLsonChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
             }
         }
         adapter.setRequestClickCallBack(object : CtmsLessonAdapter.RequestClickCallBack {
-            override fun support(entity: TeachingLessonEntity, position: Int) {
+            override fun support(entity: CmtsLessonEntity, position: Int) {
                 if (entity.isSupport) toast("您已点赞过")
                 else createLike(position)
             }
 
-            override fun giveAdvice(entity: TeachingLessonEntity, position: Int) {
+            override fun giveAdvice(entity: CmtsLessonEntity, position: Int) {
                 showInputDialog(position)
             }
         })
@@ -239,17 +239,17 @@ class CmtsLsonChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
     }
 
     override fun onEvent(event: MessageEvent) {
-        if (event.getAction() == Action.CREATE_GEN_CLASS && event.obj != null && event.obj is TeachingLessonEntity) {  //创建创课
+        if (event.getAction() == Action.CREATE_GEN_CLASS && event.obj != null && event.obj is CmtsLessonEntity) {  //创建创课
             if (xRecyclerView.visibility == View.GONE) {
                 xRecyclerView.visibility = View.VISIBLE
                 tvEmpty.visibility = View.GONE
             }
-            val entity = event.obj as TeachingLessonEntity
+            val entity = event.obj as CmtsLessonEntity
             mDatas.add(0, entity)
             adapter.notifyDataSetChanged()
         } else if (event.getAction() == Action.DELETE_GEN_CLASS) {   //删除创课
-            if (event.obj != null && event.obj is TeachingLessonEntity) {
-                val entity = event.obj as TeachingLessonEntity
+            if (event.obj != null && event.obj is CmtsLessonEntity) {
+                val entity = event.obj as CmtsLessonEntity
                 mDatas.remove(entity)
                 adapter.notifyDataSetChanged()
             }
@@ -258,8 +258,8 @@ class CmtsLsonChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
                 tvEmpty.visibility = View.VISIBLE
             }
         } else if (event.getAction() == Action.SUPPORT_STUDY_CLASS) {    //创课点赞
-            if (event.obj != null && event.obj is TeachingLessonEntity) {
-                val entity = event.obj as TeachingLessonEntity
+            if (event.obj != null && event.obj is CmtsLessonEntity) {
+                val entity = event.obj as CmtsLessonEntity
                 val selected = mDatas.indexOf(entity)
                 if (selected != -1) {
                     mDatas[selected] = entity
@@ -267,8 +267,8 @@ class CmtsLsonChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
                 }
             }
         } else if (event.getAction() == Action.GIVE_STUDY_ADVICE) {   //创课提建议
-            if (event.obj != null && event.obj is TeachingLessonEntity) {
-                val entity = event.obj as TeachingLessonEntity
+            if (event.obj != null && event.obj is CmtsLessonEntity) {
+                val entity = event.obj as CmtsLessonEntity
                 val selected = mDatas.indexOf(entity)
                 if (selected != -1) {
                     mDatas[selected] = entity
