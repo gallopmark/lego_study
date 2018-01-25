@@ -40,7 +40,7 @@ class MyTrainWSAdapter(private val context: Context, mDatas: List<WorkShopMobile
         GlideImgManager.loadImage(context, entity.imageUrl, R.drawable.app_default, R.drawable.app_default, ivImage)
         tvTitle.text = entity.title
         tvPeriod.text = "${entity.studyHours}学时"
-        tvScore.text = "获得${entity.point.toInt()} / ${entity.qualifiedPoint}积分"
+        tvScore.text = "获得${entity.point.toInt()}/${entity.qualifiedPoint}积分"
         if (position != itemCount - 1) {
             divider.visibility = View.VISIBLE
         } else {

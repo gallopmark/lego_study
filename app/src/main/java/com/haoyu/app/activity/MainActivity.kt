@@ -358,12 +358,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             tvPeriod.text = text
         }
         val tvHour = findViewById<TextView>(R.id.tv_cmtsStudyHour)
-        if (cmts.getmCommunityRelation() != null) {
-            tvHour.text = "${cmts.getmCommunityRelation().studyHours}学时"
-            tvHour.text = "获得${cmts.score} / ${cmts.getmCommunityRelation().score}积分"
-        } else {
-            tvHour.text = "0学时"
-            tvHour.text = "获得${cmts.score} / 0积分"
+        val tvScore = findViewById<TextView>(R.id.tv_cmtsScore)
+        cmts.getmCommunityRelation()?.let {
+            tvHour.text = "${it.studyHours}学时"
+            tvScore.text = "获得${cmts.score}/${it.score}积分"
         }
         val llCmts = findViewById<LinearLayout>(R.id.ll_cmts)
         llCmts.setOnClickListener { startActivity(Intent(context, CmtsMainActivity::class.java)) }
