@@ -520,14 +520,15 @@ public class OkHttpClientManager {
             public Object apply(Request request) throws Exception {
                 Response response = mOkHttpClient.newCall(request).execute();
                 String json = response.body().string();
-                Log.e("json", json);
                 if (json.contains("\"responseMsg\":\"no session\"")) {
                     login(context);
                     response.body().close();
                     response = mOkHttpClient.newCall(request).execute();
                     json = response.body().string();
+                    Log.e("json", json);
                     return onResponse(json, resCallBack);
                 } else {
+                    Log.e("json", json);
                     return onResponse(json, resCallBack);
                 }
             }

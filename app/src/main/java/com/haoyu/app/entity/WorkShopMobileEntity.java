@@ -15,26 +15,26 @@ import java.util.List;
 
 /**
  * id	工作坊id	String	Y
- title	标题	String	Y
- summary	描述	String	N
- imageUrl	封面链接	String	N
- type	类型	String	Y	personal：个人工作坊 train：项目工作坊   template:示范性工作坊
- qualifiedPoint	工作坊达标分数	BigDecimal	N
- studentNum	学员数量	int	N
- memberNum	成员数量	Int	N
- activityNum	活动数量	int	N
- faqQuestionNum	问答数量	int	N
- resourceNum	资源数量	int	N
- studyHours	学时	Int	N
- mWorkshopSections	工作坊阶段列表	List	N
- timePeriod	工作坊开放时间	Object	N
- summaryExamine	学员考核说明	String	N
- trainName	所属培训	String	N
- createTime	创建时间	long	N
- creator	创建人	MUser	N
- masters	坊主集合	List<MUser>	N
+ * title	标题	String	Y
+ * summary	描述	String	N
+ * imageUrl	封面链接	String	N
+ * type	类型	String	Y	personal：个人工作坊 train：项目工作坊   template:示范性工作坊
+ * qualifiedPoint	工作坊达标分数	BigDecimal	N
+ * studentNum	学员数量	int	N
+ * memberNum	成员数量	Int	N
+ * activityNum	活动数量	int	N
+ * faqQuestionNum	问答数量	int	N
+ * resourceNum	资源数量	int	N
+ * studyHours	学时	Int	N
+ * mWorkshopSections	工作坊阶段列表	List	N
+ * timePeriod	工作坊开放时间	Object	N
+ * summaryExamine	学员考核说明	String	N
+ * trainName	所属培训	String	N
+ * createTime	创建时间	long	N
+ * creator	创建人	MUser	N
+ * masters	坊主集合	List<MUser>	N
  */
-public class WorkShopMobileEntity implements Serializable{
+public class WorkShopMobileEntity implements Serializable {
     @Expose
     @SerializedName("id")
     private String id;
@@ -96,6 +96,7 @@ public class WorkShopMobileEntity implements Serializable{
     @SerializedName("masters")
     private List<MobileUser> masters = new ArrayList<>();
 
+    private double point;  //工作坊得分
 
     public String getId() {
         return id;
@@ -255,5 +256,13 @@ public class WorkShopMobileEntity implements Serializable{
 
     public void setMasters(List<MobileUser> masters) {
         this.masters = masters;
+    }
+
+    public double getPoint() {
+        return point;
+    }
+
+    public void setPoint(double point) {
+        this.point = point;
     }
 }

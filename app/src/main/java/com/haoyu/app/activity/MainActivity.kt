@@ -58,8 +58,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private lateinit var rvWorkshop: RecyclerView
     private lateinit var courseAdapter: MyTrainCourseAdapter
     private lateinit var wsAdapter: MyTrainWSAdapter
-    private val courseDatas = ArrayList<MyTrainInfo.CourseRegisters>()
-    private val wsDatas = ArrayList<WorkShopMobileUser>()
+    private val courseDatas = ArrayList<CourseMobileEntity>()
+    private val wsDatas = ArrayList<WorkShopMobileEntity>()
     private val myTrains = ArrayList<MyTrainMobileEntity>()
     private lateinit var menu: SlidingMenu
     private val menuViews = arrayOfNulls<TextView>(8)
@@ -119,7 +119,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     private fun initMenuView(menuView: View) {
         val llUserInfo = menuView.findViewById<LinearLayout>(R.id.ll_userInfo)
-        llUserInfo.setOnClickListener{ startActivityForResult(Intent(context, AppUserInfoActivity::class.java), 2) }
+        llUserInfo.setOnClickListener { startActivityForResult(Intent(context, AppUserInfoActivity::class.java), 2) }
         val ivUserIco = menuView.findViewById<ImageView>(R.id.iv_userIco)
         GlideImgManager.loadCircleImage(context, avatar, R.drawable.user_default, R.drawable.user_default, ivUserIco)
         val tvUserName = menuView.findViewById<TextView>(R.id.tv_userName)
@@ -296,7 +296,12 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     /*更新课程列表*/
     private fun updateCourseListUI(list: List<MyTrainInfo.CourseRegisters>) {
         courseDatas.clear()
-        list.filterTo(courseDatas) { it.state != null && it.state == "pass" }
+        for (register in list) {
+            register.getmCourse()?.let {
+                it.state = register.state
+                courseDatas.add(it)
+            }
+        }
         val tvEmpty = findViewById<TextView>(R.id.tv_emptyCourse)
         if (courseDatas.isNotEmpty()) {
             courseAdapter.notifyDataSetChanged()
@@ -311,10 +316,15 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     /*更新工作坊列表*/
     private fun updateWorkShopListUI(mDatas: List<WorkShopMobileUser>) {
+        wsDatas.clear()
+        for (wsUser in mDatas) {
+            wsUser.getmWorkshop()?.let {
+                it.point = wsUser.point
+                wsDatas.add(it)
+            }
+        }
         val tvEmpty = findViewById<TextView>(R.id.tv_emptyWS)
-        if (mDatas.isNotEmpty()) {
-            wsDatas.clear()
-            wsDatas.addAll(mDatas)
+        if (wsDatas.isNotEmpty()) {
             wsAdapter.notifyDataSetChanged()
             rvWorkshop.visibility = View.VISIBLE
             rvWorkshop.isFocusable = false
@@ -370,8 +380,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }
         courseAdapter.setOnItemClickListener { _, _, _, position ->
             val state = courseDatas[position].state
-            if (state != null && state == "pass" && courseDatas[position].getmCourse() != null) {
-                val entity = courseDatas[position].getmCourse()
+            if (state != null && state == "pass") {
+                val entity = courseDatas[position]
                 if (entity.getmTimePeriod()?.state != null && entity.getmTimePeriod().state == "未开始") {
                     showDialog("未开始")
                 } else {
@@ -397,27 +407,23 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             }
         }
         wsAdapter.setOnItemClickListener({ _, _, _, position ->
-            val entity = wsDatas[position].getmWorkshop()
-            val point = wsDatas[position].point.toInt()
-            entity?.let {
-                val workshopId = it.id
-                val workshopTitle = it.title
-                val intent = Intent(context, WSHomePageActivity::class.java)
-                trainingTime?.state?.let {
-                    if (it == "进行中") {
-                        intent.putExtra("training", true)
-                    }
-                }
-                trainingTime?.minutes?.let {
-                    if (it > 0) {
-                        intent.putExtra("training", true)
-                    }
-                }
-                intent.putExtra("workshopId", workshopId)
-                intent.putExtra("point", point)
-                intent.putExtra("workshopTitle", workshopTitle)
-                startActivity(intent)
+            val entity = wsDatas[position]
+            val intent = Intent(context, WSHomePageActivity::class.java).apply {
+                putExtra("workshopId", entity.id)
+                putExtra("point", entity.point)
+                putExtra("workshopTitle", entity.title)
             }
+            trainingTime?.state?.let {
+                if (it == "进行中") {
+                    intent.putExtra("training", true)
+                }
+            }
+            trainingTime?.minutes?.let {
+                if (it > 0) {
+                    intent.putExtra("training", true)
+                }
+            }
+            startActivity(intent)
         })
     }
 

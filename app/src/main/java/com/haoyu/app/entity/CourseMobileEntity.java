@@ -47,6 +47,8 @@ public class CourseMobileEntity implements Serializable {
     @Expose
     private List<CourseSectionEntity> mSections = new ArrayList<>();
 
+    private String state;     //课程状态
+
     /**
      * @return The id
      */
@@ -173,5 +175,13 @@ public class CourseMobileEntity implements Serializable {
 
     public void setmTimePeriod(TimePeriod mTimePeriod) {
         this.mTimePeriod = mTimePeriod;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
     }
 }
