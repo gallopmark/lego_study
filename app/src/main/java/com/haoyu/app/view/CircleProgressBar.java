@@ -11,7 +11,6 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 
 import com.haoyu.app.lego.student.R;
 
@@ -29,7 +28,9 @@ public class CircleProgressBar extends View {
     private Paint progressPaint;
     private float startAngle = -90;
     private float sweepAngle = 360;
+    private float currentAngle = 0;
     private int aniSpeed = 1000;
+    private float k;
 
     public CircleProgressBar(Context context) {
         super(context, null);
@@ -93,8 +94,10 @@ public class CircleProgressBar extends View {
         bgRect.right = centerX + paintRadius; // 右下角x
         bgRect.bottom = centerX + paintRadius; // 右下角y
 //        //整个弧
-        canvas.drawCircle(centerX, centerX, paintRadius, allArcPaint); // 画出圆环
-        canvas.drawArc(bgRect, startAngle, currentValue, false, progressPaint); // 绘制进度圆弧，这里是蓝色
+        //整个弧
+        canvas.drawArc(bgRect, startAngle, sweepAngle, false, allArcPaint);
+        canvas.drawArc(bgRect, startAngle, currentAngle, false, progressPaint);
+        invalidate();
     }
 
     public float getMaxProgress() {
@@ -103,6 +106,7 @@ public class CircleProgressBar extends View {
 
     public void setMaxProgress(float maxProgress) {
         this.maxProgress = maxProgress;
+        k = sweepAngle / maxProgress;
     }
 
     public void setProgress(float progress) {
@@ -116,23 +120,23 @@ public class CircleProgressBar extends View {
         if (progress < 0) {
             progress = 0;
         }
-        currentValue = (progress / maxProgress) * sweepAngle;
-        if (animate) {
-            setAnimation();
-        } else {
-            invalidate();
+        currentValue = progress;
+        currentAngle = progress * k;
+        if(animate){
+            setAnimation(progress, currentAngle);
         }
     }
 
-    private void setAnimation() {
-        ValueAnimator animator = ValueAnimator.ofFloat(0, currentValue);
+    private void setAnimation(float last, float current) {
+        ValueAnimator animator = ValueAnimator.ofFloat(last, current);
         animator.setDuration(aniSpeed);
-        animator.setInterpolator(new OvershootInterpolator());
+        animator.setTarget(currentAngle);
         animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                currentValue = (float) animation.getAnimatedValue();
-                postInvalidate();
+                currentAngle = (Float) animation.getAnimatedValue();
+                currentValue = currentAngle / k;
             }
         });
         animator.start();

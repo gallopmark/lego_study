@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
-import com.haoyu.app.entity.MyTrainWorkShopResult;
+import com.haoyu.app.entity.WorkShopMobileUser;
 import com.haoyu.app.imageloader.GlideImgManager;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.ScreenUtils;
@@ -19,12 +19,12 @@ import java.util.List;
  * 描述: 我的培训工作坊列表适配器
  * 作者:马飞奔 Administrator
  */
-public class MyTrainWSAdapter extends BaseArrayRecyclerAdapter<MyTrainWorkShopResult> {
+public class MyTrainWSAdapter extends BaseArrayRecyclerAdapter<WorkShopMobileUser> {
     private Activity context;
     private int width;
     private int height;
 
-    public MyTrainWSAdapter(Activity context, List<MyTrainWorkShopResult> mDatas) {
+    public MyTrainWSAdapter(Activity context, List<WorkShopMobileUser> mDatas) {
         super(mDatas);
         this.context = context;
         width = ScreenUtils.getScreenWidth(context) / 3 - 20;
@@ -32,7 +32,7 @@ public class MyTrainWSAdapter extends BaseArrayRecyclerAdapter<MyTrainWorkShopRe
     }
 
     @Override
-    public void onBindHoder(RecyclerHolder holder, final MyTrainWorkShopResult result, int position) {
+    public void onBindHoder(RecyclerHolder holder, final WorkShopMobileUser result, int position) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
         ImageView img = holder.obtainView(R.id.workshop_img);
         img.setLayoutParams(params);

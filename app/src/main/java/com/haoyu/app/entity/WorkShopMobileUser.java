@@ -13,21 +13,20 @@ import java.io.Serializable;
 
 /**
  * mWorkshop	工作坊	MWorkshop	N
- mUser	用户	Object	Y
- role	角色	String	Y	member:助理
- master:坊主
- student:学员
- evaluate	评价	String	N	null:未评价
- excellent：优秀
- qualified：合格
- fail：不合格
- point	积分	BigDecimal	N
- completeActivityNum	完成活动数量	int	N
- faqQuestionNum	提出问题数量	int	 N
- uploadResourceNum	上传资源数	Int	N
-
+ * mUser	用户	Object	Y
+ * role	角色	String	Y	member:助理
+ * master:坊主
+ * student:学员
+ * evaluate	评价	String	N	null:未评价
+ * excellent：优秀
+ * qualified：合格
+ * fail：不合格
+ * point	积分	BigDecimal	N
+ * completeActivityNum	完成活动数量	int	N
+ * faqQuestionNum	提出问题数量	int	 N
+ * uploadResourceNum	上传资源数	Int	N
  */
-public class WorkShopMobileUser implements Serializable{
+public class WorkShopMobileUser implements Serializable {
     @Expose
     @SerializedName("mWorkshop")
     private WorkShopMobileEntity mWorkshop;
@@ -52,6 +51,12 @@ public class WorkShopMobileUser implements Serializable{
     @Expose
     @SerializedName("uploadResourceNum")
     private int uploadResourceNum;
+    @Expose
+    @SerializedName("state")
+    private String state;
+    @Expose
+    @SerializedName("studyHours")
+    private int studyHours;
 
     public WorkShopMobileEntity getmWorkshop() {
         return mWorkshop;
@@ -115,5 +120,21 @@ public class WorkShopMobileUser implements Serializable{
 
     public void setUploadResourceNum(int uploadResourceNum) {
         this.uploadResourceNum = uploadResourceNum;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public int getStudyHours() {
+        return studyHours;
+    }
+
+    public void setStudyHours(int studyHours) {
+        this.studyHours = studyHours;
     }
 }

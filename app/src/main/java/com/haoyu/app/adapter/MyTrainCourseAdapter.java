@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.haoyu.app.basehelper.BaseArrayRecyclerAdapter;
-import com.haoyu.app.entity.MyTrainCourseResult;
+import com.haoyu.app.entity.MyTrainInfo;
 import com.haoyu.app.imageloader.GlideImgManager;
 import com.haoyu.app.lego.student.R;
 import com.haoyu.app.utils.ScreenUtils;
@@ -19,12 +19,12 @@ import java.util.List;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class MyTrainCourseAdapter extends BaseArrayRecyclerAdapter<MyTrainCourseResult> {
+public class MyTrainCourseAdapter extends BaseArrayRecyclerAdapter<MyTrainInfo.CourseRegisters> {
     private Activity context;
     private int width;
     private int height;
 
-    public MyTrainCourseAdapter(Activity context, List<MyTrainCourseResult> mDatas) {
+    public MyTrainCourseAdapter(Activity context, List<MyTrainInfo.CourseRegisters> mDatas) {
         super(mDatas);
         this.context = context;
         width = ScreenUtils.getScreenWidth(context) / 3 - 20;
@@ -32,7 +32,7 @@ public class MyTrainCourseAdapter extends BaseArrayRecyclerAdapter<MyTrainCourse
     }
 
     @Override
-    public void onBindHoder(RecyclerHolder holder, final MyTrainCourseResult entity, int position) {
+    public void onBindHoder(RecyclerHolder holder, final MyTrainInfo.CourseRegisters entity, int position) {
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(width, height);
         ImageView course_img = holder.obtainView(R.id.course_img);
         TextView course_title = holder.obtainView(R.id.course_title);

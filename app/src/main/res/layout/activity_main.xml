@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/defaultColor">
 
         <ImageView
-            android:id="@+id/toggle"
+            android:id="@+id/ivToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/tv_title"
@@ -34,6 +34,18 @@
             android:textSize="@dimen/title_textsize" />
 
         <ImageView
+            android:id="@+id/iv_scan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tv_title"
+            android:layout_alignTop="@+id/tv_title"
+            android:layout_toLeftOf="@+id/iv_msg"
+            android:background="@drawable/app_toolbar_selector"
+            android:paddingLeft="@dimen/margin_size_16"
+            android:paddingRight="@dimen/margin_size_16"
+            android:src="@drawable/shaoshao" />
+
+        <ImageView
             android:id="@+id/iv_msg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,402 +56,387 @@
             android:paddingLeft="@dimen/margin_size_16"
             android:paddingRight="@dimen/margin_size_16"
             android:src="@drawable/xiaoxi" />
-
-        <ImageView
-            android:id="@+id/iv_scan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/tv_title"
-            android:layout_alignTop="@+id/tv_title"
-            android:layout_toLeftOf="@+id/iv_msg"
-            android:background="@drawable/app_toolbar_selector"
-            android:paddingLeft="@dimen/margin_size_16"
-            android:paddingRight="@dimen/margin_size_16"
-            android:src="@drawable/shaoshao"
-            android:visibility="visible" />
     </RelativeLayout>
 
-    <com.haoyu.app.view.LoadingView
-        android:id="@+id/loadingView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
-
-    <com.haoyu.app.view.LoadFailView
-        android:id="@+id/loadFailView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@+id/ll_emptyTrain"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/title"
-        android:background="@color/spaceColor"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_height="match_parent">
 
-        <LinearLayout
+        <com.haoyu.app.view.LoadingView
+            android:id="@+id/loadingView"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:visibility="gone" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:drawablePadding="@dimen/margin_size_12"
-                android:drawableTop="@drawable/empty_train_list"
-                android:gravity="center"
-                android:text="暂无参与培训信息"
-                android:textColor="@color/gray"
-                android:textSize="@dimen/font_size_16" />
-        </LinearLayout>
+        <com.haoyu.app.view.LoadFailView
+            android:id="@+id/loadFailView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
         <LinearLayout
+            android:id="@+id/ll_emptyTrain"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/spaceColor"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:padding="@dimen/margin_size_16"
-                android:text="你可以选择自主研修方式："
-                android:textSize="@dimen/font_size_18" />
-
-            <TextView
-                android:id="@+id/tv_createWs"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_size_1"
-                android:background="@drawable/item_click_selector"
-                android:drawableLeft="@drawable/workshop_learn"
-                android:drawablePadding="@dimen/margin_size_10"
-                android:drawableRight="@drawable/go_into"
-                android:gravity="center|left"
-                android:padding="@dimen/margin_size_12"
-                android:text="创建工作坊，组织共同研修"
-                android:textColor="@color/blow_gray"
-                android:textSize="@dimen/font_size_18"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tv_cmtsLearn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_size_1"
-                android:background="@drawable/item_click_selector"
-                android:drawableLeft="@drawable/commuity_learn"
-                android:drawablePadding="@dimen/margin_size_10"
-                android:drawableRight="@drawable/go_into"
-                android:gravity="center|left"
-                android:padding="@dimen/margin_size_12"
-                android:text="进入社区，交流教学经验"
-                android:textColor="@color/blow_gray"
-                android:textSize="@dimen/font_size_18" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <ScrollView
-        android:id="@+id/svPersonalInfo"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/title"
-        android:overScrollMode="never"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/spaceColor"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_myTrain"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:drawablePadding="@dimen/margin_size_12"
-                android:drawableRight="@drawable/course_dictionary_xiala"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                android:padding="@dimen/margin_size_14"
-                android:textSize="@dimen/font_size_16" />
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <LinearLayout
-                android:id="@+id/ll_content"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:drawablePadding="@dimen/margin_size_12"
+                    android:drawableTop="@drawable/empty_train_list"
+                    android:gravity="center"
+                    android:text="暂无参与培训信息"
+                    android:textColor="@color/gray"
+                    android:textSize="@dimen/font_size_16" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/spaceColor"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:padding="@dimen/margin_size_16"
+                    android:text="你可以选择自主研修方式："
+                    android:textSize="@dimen/font_size_18" />
+
+                <TextView
+                    android:id="@+id/tv_cmtsLearn"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_size_1"
+                    android:background="@drawable/item_click_selector"
+                    android:drawableLeft="@drawable/commuity_learn"
+                    android:drawablePadding="@dimen/margin_size_10"
+                    android:drawableRight="@drawable/go_into"
+                    android:gravity="center|left"
+                    android:padding="@dimen/margin_size_12"
+                    android:text="进入社区，交流教学经验"
+                    android:textColor="@color/blow_gray"
+                    android:textSize="@dimen/font_size_18" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/nsv_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            android:visibility="gone">
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:visibility="gone">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/margin_size_8"
-                    android:background="@color/white"
-                    android:orientation="horizontal"
-                    android:paddingBottom="@dimen/margin_size_12"
-                    android:paddingTop="@dimen/margin_size_12">
-
-                    <LinearLayout
-                        android:id="@+id/ll_course"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/course_learn_name"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawablePadding="@dimen/margin_size_6"
-                            android:drawableTop="@drawable/kechengxuexi"
-                            android:gravity="center"
-                            android:text="课程学习"
-                            android:textSize="@dimen/font_size_16" />
-
-                        <TextView
-                            android:id="@+id/tv_courseResult"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_size_6"
-                            android:ellipsize="middle"
-                            android:singleLine="true"
-                            android:textColor="@color/light_font_color"
-                            android:textSize="@dimen/font_size_12" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_workshop"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawablePadding="@dimen/margin_size_6"
-                            android:drawableTop="@drawable/gongzuofanyanxiu"
-                            android:gravity="center"
-                            android:text="工作坊研修"
-                            android:textSize="@dimen/font_size_16" />
-
-                        <TextView
-                            android:id="@+id/tv_workShopResult"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_size_6"
-                            android:ellipsize="middle"
-                            android:singleLine="true"
-                            android:textColor="@color/light_font_color"
-                            android:textSize="@dimen/font_size_12" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_community"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawablePadding="@dimen/margin_size_6"
-                            android:drawableTop="@drawable/shehuituozhan"
-                            android:text="研修社区"
-                            android:textSize="@dimen/font_size_16" />
-
-                        <TextView
-                            android:id="@+id/tv_communityResult"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/margin_size_6"
-                            android:ellipsize="middle"
-                            android:singleLine="true"
-                            android:textColor="@color/light_font_color"
-                            android:textSize="@dimen/font_size_12" />
-                    </LinearLayout>
-                </LinearLayout>
+                android:background="@color/spaceColor"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_course"
+                    android:id="@+id/tv_myTrain"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_size_1"
-                    android:layout_marginTop="@dimen/margin_size_8"
                     android:background="@color/white"
-                    android:drawableLeft="@drawable/biaotiyuan"
-                    android:drawablePadding="@dimen/margin_size_6"
-                    android:padding="@dimen/margin_size_12"
-                    android:text="课程学习"
+                    android:drawablePadding="@dimen/margin_size_12"
+                    android:drawableRight="@drawable/course_dictionary_xiala"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:padding="@dimen/margin_size_14"
                     android:textSize="@dimen/font_size_16" />
 
-                <RelativeLayout
+                <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:descendantFocusability="blocksDescendants">
+                    android:layout_height="match_parent">
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rv_course"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never" />
-
-                    <TextView
-                        android:id="@+id/tv_emptyCourse"
+                    <com.haoyu.app.view.LoadFailView
+                        android:id="@+id/lfv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_margin="@dimen/margin_size_30"
-                        android:drawableLeft="@drawable/empty_course"
-                        android:drawablePadding="@dimen/margin_size_16"
-                        android:gravity="center"
-                        android:text="没有课程信息"
-                        android:textColor="@color/blow_gray"
-                        android:textSize="@dimen/font_size_18"
+                        android:layout_gravity="center"
                         android:visibility="gone" />
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/tv_workshop"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_size_1"
-                    android:layout_marginTop="@dimen/margin_size_8"
-                    android:background="@color/white"
-                    android:drawableLeft="@drawable/biaotiyuan"
-                    android:drawablePadding="@dimen/margin_size_6"
-                    android:padding="@dimen/margin_size_12"
-                    android:text="工作坊研修"
-                    android:textSize="@dimen/font_size_16" />
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:descendantFocusability="blocksDescendants">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rv_workshop"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never" />
-
-                    <TextView
-                        android:id="@+id/tv_emptyWS"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_margin="@dimen/margin_size_30"
-                        android:drawableLeft="@drawable/empty_workshop"
-                        android:drawablePadding="@dimen/margin_size_16"
-                        android:gravity="center"
-                        android:text="没有工作坊信息"
-                        android:textColor="@color/blow_gray"
-                        android:textSize="@dimen/font_size_18"
-                        android:visibility="gone" />
-                </RelativeLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_cmtsLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/tv_cmts"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_size_1"
-                        android:layout_marginTop="@dimen/margin_size_8"
-                        android:background="@color/white"
-                        android:drawableLeft="@drawable/biaotiyuan"
-                        android:drawablePadding="@dimen/margin_size_6"
-                        android:padding="@dimen/margin_size_12"
-                        android:text="研修社区"
-                        android:textSize="@dimen/font_size_16" />
 
                     <LinearLayout
-                        android:id="@+id/ll_cmts"
+                        android:id="@+id/ll_content"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/item_click_selector"
-                        android:orientation="horizontal"
-                        android:paddingBottom="@dimen/margin_size_14"
-                        android:paddingLeft="@dimen/margin_size_12"
-                        android:paddingRight="@dimen/margin_size_12"
-                        android:paddingTop="@dimen/margin_size_14">
-
-                        <ImageView
-                            android:id="@+id/iv_cmts"
-                            android:layout_width="100dp"
-                            android:layout_height="70dp"
-                            android:layout_gravity="center"
-                            android:scaleType="centerCrop" />
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginLeft="@dimen/margin_size_12"
-                            android:orientation="vertical">
+                            android:layout_marginTop="@dimen/margin_size_8"
+                            android:background="@color/white"
+                            android:orientation="horizontal"
+                            android:paddingBottom="@dimen/margin_size_12"
+                            android:paddingTop="@dimen/margin_size_12">
 
-                            <TextView
-                                android:id="@+id/tv_cmtsPeriod"
+                            <LinearLayout
+                                android:id="@+id/ll_course"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:drawablePadding="@dimen/margin_size_6"
+                                    android:drawableTop="@drawable/kechengxuexi"
+                                    android:gravity="center"
+                                    android:text="课程学习"
+                                    android:textSize="@dimen/font_size_16" />
+
+                                <TextView
+                                    android:id="@+id/tv_courseResult"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/margin_size_6"
+                                    android:ellipsize="middle"
+                                    android:singleLine="true"
+                                    android:textColor="@color/light_font_color"
+                                    android:textSize="@dimen/font_size_12" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/ll_workshop"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:drawablePadding="@dimen/margin_size_6"
+                                    android:drawableTop="@drawable/gongzuofanyanxiu"
+                                    android:gravity="center"
+                                    android:text="工作坊研修"
+                                    android:textSize="@dimen/font_size_16" />
+
+                                <TextView
+                                    android:id="@+id/tv_workShopResult"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/margin_size_6"
+                                    android:ellipsize="middle"
+                                    android:singleLine="true"
+                                    android:textColor="@color/light_font_color"
+                                    android:textSize="@dimen/font_size_12" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/ll_community"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:drawablePadding="@dimen/margin_size_6"
+                                    android:drawableTop="@drawable/shehuituozhan"
+                                    android:text="研修社区"
+                                    android:textSize="@dimen/font_size_16" />
+
+                                <TextView
+                                    android:id="@+id/tv_communityResult"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/margin_size_6"
+                                    android:ellipsize="middle"
+                                    android:singleLine="true"
+                                    android:textColor="@color/light_font_color"
+                                    android:textSize="@dimen/font_size_12" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tv_course"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_size_1"
+                            android:layout_marginTop="@dimen/margin_size_8"
+                            android:background="@color/white"
+                            android:drawableLeft="@drawable/biaotiyuan"
+                            android:drawablePadding="@dimen/margin_size_6"
+                            android:padding="@dimen/margin_size_12"
+                            android:text="课程学习"
+                            android:textSize="@dimen/font_size_16" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:descendantFocusability="blocksDescendants">
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/rv_course"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_alignParentTop="true"
-                                android:drawableLeft="@drawable/community_period"
-                                android:drawablePadding="@dimen/margin_size_6"
-                                android:ellipsize="end"
-                                android:maxLines="1"
-                                android:textColor="@color/blow_gray"
-                                android:textSize="@dimen/font_size_16" />
+                                android:nestedScrollingEnabled="false"
+                                android:overScrollMode="never" />
 
                             <TextView
-                                android:id="@+id/tv_cmtsStudyHour"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:drawableLeft="@drawable/course_period"
-                                android:drawablePadding="@dimen/margin_size_6"
-                                android:gravity="left"
-                                android:textColor="@color/blow_gray"
-                                android:textSize="@dimen/font_size_14" />
-
-                            <TextView
-                                android:id="@+id/tv_cmtsScore"
+                                android:id="@+id/tv_emptyCourse"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/margin_size_6"
-                                android:drawableLeft="@drawable/workshop_score"
-                                android:drawablePadding="@dimen/margin_size_6"
+                                android:layout_centerInParent="true"
+                                android:layout_margin="@dimen/margin_size_30"
+                                android:drawableLeft="@drawable/empty_course"
+                                android:drawablePadding="@dimen/margin_size_16"
+                                android:gravity="center"
+                                android:text="没有课程信息"
                                 android:textColor="@color/blow_gray"
+                                android:textSize="@dimen/font_size_18"
+                                android:visibility="gone" />
+                        </RelativeLayout>
+
+                        <TextView
+                            android:id="@+id/tv_workshop"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_size_1"
+                            android:layout_marginTop="@dimen/margin_size_8"
+                            android:background="@color/white"
+                            android:drawableLeft="@drawable/biaotiyuan"
+                            android:drawablePadding="@dimen/margin_size_6"
+                            android:padding="@dimen/margin_size_12"
+                            android:text="工作坊研修"
+                            android:textSize="@dimen/font_size_16" />
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@color/white"
+                            android:descendantFocusability="blocksDescendants">
+
+                            <android.support.v7.widget.RecyclerView
+                                android:id="@+id/rv_workshop"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:nestedScrollingEnabled="false"
+                                android:overScrollMode="never" />
+
+                            <TextView
+                                android:id="@+id/tv_emptyWS"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:layout_margin="@dimen/margin_size_30"
+                                android:drawableLeft="@drawable/empty_workshop"
+                                android:drawablePadding="@dimen/margin_size_16"
+                                android:gravity="center"
+                                android:text="没有工作坊信息"
+                                android:textColor="@color/blow_gray"
+                                android:textSize="@dimen/font_size_18"
+                                android:visibility="gone" />
+                        </RelativeLayout>
+
+                        <LinearLayout
+                            android:id="@+id/ll_cmtsLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/tv_cmts"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/margin_size_1"
+                                android:layout_marginTop="@dimen/margin_size_8"
+                                android:background="@color/white"
+                                android:drawableLeft="@drawable/biaotiyuan"
+                                android:drawablePadding="@dimen/margin_size_6"
+                                android:padding="@dimen/margin_size_12"
+                                android:text="研修社区"
                                 android:textSize="@dimen/font_size_16" />
+
+                            <LinearLayout
+                                android:id="@+id/ll_cmts"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/item_click_selector"
+                                android:orientation="horizontal"
+                                android:paddingBottom="@dimen/margin_size_14"
+                                android:paddingLeft="@dimen/margin_size_12"
+                                android:paddingRight="@dimen/margin_size_12"
+                                android:paddingTop="@dimen/margin_size_14">
+
+                                <ImageView
+                                    android:id="@+id/iv_cmts"
+                                    android:layout_width="100dp"
+                                    android:layout_height="70dp"
+                                    android:layout_gravity="center"
+                                    android:scaleType="centerCrop" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="@dimen/margin_size_12"
+                                    android:orientation="vertical">
+
+                                    <TextView
+                                        android:id="@+id/tv_cmtsPeriod"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_alignParentTop="true"
+                                        android:drawableLeft="@drawable/community_period"
+                                        android:drawablePadding="@dimen/margin_size_6"
+                                        android:ellipsize="end"
+                                        android:maxLines="1"
+                                        android:textColor="@color/blow_gray"
+                                        android:textSize="@dimen/font_size_16" />
+
+                                    <TextView
+                                        android:id="@+id/tv_cmtsStudyHour"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:drawableLeft="@drawable/course_period"
+                                        android:drawablePadding="@dimen/margin_size_6"
+                                        android:gravity="left"
+                                        android:textColor="@color/blow_gray"
+                                        android:textSize="@dimen/font_size_14" />
+
+                                    <TextView
+                                        android:id="@+id/tv_cmtsScore"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="@dimen/margin_size_6"
+                                        android:drawableLeft="@drawable/workshop_score"
+                                        android:drawablePadding="@dimen/margin_size_6"
+                                        android:textColor="@color/blow_gray"
+                                        android:textSize="@dimen/font_size_16" />
+                                </LinearLayout>
+                            </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
+                </FrameLayout>
             </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-
-</RelativeLayout>
+        </android.support.v4.widget.NestedScrollView>
+    </FrameLayout>
+</LinearLayout>
