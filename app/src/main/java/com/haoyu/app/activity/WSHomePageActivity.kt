@@ -902,7 +902,7 @@ class WSHomePageActivity : BaseActivity(), View.OnClickListener, RecyclerTouchLi
         }
         llIntroduct.setOnClickListener {
             pw.dismiss()
-            val intent = Intent(context, WorkShopDetailActivity::class.java)
+            val intent = Intent(context, WSDetailActivity::class.java)
             intent.putExtra("workshopId", workshopId)
             startActivity(intent)
         }

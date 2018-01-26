@@ -58,6 +58,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@color/blow_gray"
+                        android:visibility="gone"
                         android:textSize="@dimen/font_size_14" />
 
                     <TextView
@@ -66,6 +67,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_size_6"
                         android:textColor="@color/blow_gray"
+                        android:visibility="gone"
                         android:textSize="@dimen/font_size_14" />
 
                     <TextView
@@ -75,6 +77,7 @@
                         android:layout_marginTop="@dimen/margin_size_6"
                         android:gravity="right"
                         android:textColor="@color/blow_gray"
+                        android:visibility="gone"
                         android:textSize="@dimen/font_size_14" />
 
                     <TextView
@@ -83,6 +86,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/margin_size_6"
                         android:gravity="right"
+                        android:visibility="gone"
                         android:textColor="@color/blow_gray"
                         android:textSize="@dimen/font_size_14" />
 
