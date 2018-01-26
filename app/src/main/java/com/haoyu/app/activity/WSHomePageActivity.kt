@@ -93,7 +93,6 @@ class WSHomePageActivity : BaseActivity(), View.OnClickListener, RecyclerTouchLi
         recyclerView = findViewById(R.id.recyclerView)
         tvEmptyTask = findViewById(R.id.tv_emptyTask)
         tvBottom = findViewById(R.id.tv_bottom)
-        tvBottom.setOnClickListener(context)
     }
 
     private fun setToolBar() {
@@ -843,6 +842,11 @@ class WSHomePageActivity : BaseActivity(), View.OnClickListener, RecyclerTouchLi
             val activity = data.getSerializableExtra("activity") as MWorkshopActivity
             taskEditAdapter.addActivity(activityIndex, activity)
         }
+    }
+
+    override fun setListener() {
+        loadFailView.setOnRetryListener { initData() }
+        tvBottom.setOnClickListener(context)
     }
 
     override fun onClick(v: View) {
