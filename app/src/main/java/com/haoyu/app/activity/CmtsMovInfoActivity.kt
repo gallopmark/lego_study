@@ -33,7 +33,6 @@ import com.haoyu.app.pickerlib.MediaPicker
 import com.haoyu.app.rxBus.MessageEvent
 import com.haoyu.app.rxBus.RxBus
 import com.haoyu.app.utils.*
-import com.haoyu.app.utils.OkHttpClientManager.postAsyn
 import com.haoyu.app.view.*
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -448,13 +447,15 @@ class CmtsMovInfoActivity : BaseActivity() {
     private fun showCommentDialog(sendChild: Boolean) {
         val dialog = CommentDialog(context, "请输入评论内容")
         dialog.show()
-        dialog.setSendCommentListener { content ->
-            if (sendChild) {
-                sendChildComment(content)
-            } else {
-                sendMainComment(content)
+        dialog.setSendCommentListener(object : CommentDialog.OnSendCommentListener {
+            override fun sendComment(content: String) {
+                if (sendChild) {
+                    sendChildComment(content)
+                } else {
+                    sendMainComment(content)
+                }
             }
-        }
+        })
     }
 
     /*发送主评论*/
@@ -464,7 +465,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         map["relation.id"] = movementId
         map["relation.type"] = "movement"
         map["content"] = content
-        addSubscription(postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<CommentEntity>>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<CommentEntity>>() {
             override fun onBefore(request: Request) {
                 showTipDialog()
             }
@@ -512,7 +513,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         map["relation.type"] = "movement"
         map["content"] = content
         map["mainId"] = mDatas[childPosition].id
-        addSubscription(postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<CommentEntity>>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<CommentEntity>>() {
             override fun onBefore(request: Request) {
                 showTipDialog()
             }
@@ -554,7 +555,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         map["attitude"] = "support"
         map["relation.id"] = relationId
         map["relation.type"] = "discussion_post"
-        addSubscription(postAsyn(context, url, object : OkHttpClientManager.ResultCallback<AttitudeMobileResult>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<AttitudeMobileResult>() {
             override fun onError(request: Request, exception: Exception) {
                 onNetWorkError(context)
             }
@@ -587,7 +588,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         val url = "${Constants.OUTRT_NET}/m/comment/$id"
         val map = HashMap<String, String>()
         map["_method"] = "delete"
-        addSubscription(postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<*>>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<*>>() {
             override fun onBefore(request: Request) {
                 showTipDialog()
             }
@@ -616,7 +617,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         val url = "${Constants.OUTRT_NET}/m/movement/register"
         val map = HashMap<String, String>()
         map["movement.id"] = movementId
-        addSubscription(postAsyn(context, url, object : OkHttpClientManager.ResultCallback<CmtsMovRegister>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<CmtsMovRegister>() {
             override fun onBefore(request: Request) {
                 showTipDialog()
             }
@@ -653,7 +654,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         val url = "${Constants.OUTRT_NET}/m/movement/register/$registerId"
         val map = HashMap<String, String>()
         map["_method"] = "delete"
-        addSubscription(postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<*>>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<*>>() {
             override fun onBefore(request: Request) {
                 showTipDialog()
             }
@@ -856,7 +857,7 @@ class CmtsMovInfoActivity : BaseActivity() {
         val url = "${Constants.OUTRT_NET}/m/movement/$movementId"
         val map = HashMap<String, String>()
         map["_method"] = "delete"
-        addSubscription(postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<*>>() {
+        addSubscription(OkHttpClientManager.postAsyn(context, url, object : OkHttpClientManager.ResultCallback<BaseResponseResult<*>>() {
             override fun onBefore(request: Request) {
                 showTipDialog()
             }

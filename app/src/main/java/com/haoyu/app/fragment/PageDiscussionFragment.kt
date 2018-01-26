@@ -140,7 +140,11 @@ class PageDiscussionFragment : BaseFragment(), XRecyclerView.LoadingListener {
 
             override fun comment(position: Int) {
                 val dialog = CommentDialog(context, "输入评论内容")
-                dialog.setSendCommentListener { content -> createComment(content, position) }
+                dialog.setSendCommentListener(object : CommentDialog.OnSendCommentListener {
+                    override fun sendComment(content: String) {
+                        createComment(content, position)
+                    }
+                })
                 dialog.show()
             }
         })

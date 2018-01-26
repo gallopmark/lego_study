@@ -188,7 +188,11 @@ class CmtsLsonChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
     private fun showInputDialog(position: Int) {
         val dialog = CommentDialog(context)
         dialog.show()
-        dialog.setSendCommentListener { content -> giveAdvice(content, position) }
+        dialog.setSendCommentListener(object : CommentDialog.OnSendCommentListener {
+            override fun sendComment(content: String) {
+                giveAdvice(content, position)
+            }
+        })
     }
 
     private fun giveAdvice(content: String, position: Int) {

@@ -294,13 +294,15 @@ class CmtsSaysInfoActivity : BaseActivity() {
     private fun showCommentDialog(sendChild: Boolean) {
         val dialog = CommentDialog(context, "请输入评论内容")
         dialog.show()
-        dialog.setSendCommentListener { content ->
-            if (sendChild) {
-                sendChildReply(childPosition, content)
-            } else {
-                sendMainReply(content)
+        dialog.setSendCommentListener(object :CommentDialog.OnSendCommentListener{
+            override fun sendComment(content: String) {
+                if (sendChild) {
+                    sendChildReply(childPosition, content)
+                } else {
+                    sendMainReply(content)
+                }
             }
-        }
+        })
     }
 
     /* 创建观点（点赞） */

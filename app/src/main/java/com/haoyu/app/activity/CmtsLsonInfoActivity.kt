@@ -684,13 +684,15 @@ class CmtsLsonInfoActivity : BaseActivity() {
     private fun showCommentDialog(sendChild: Boolean) {
         val dialog = CommentDialog(context, "请输入您的建议")
         dialog.show()
-        dialog.setSendCommentListener { content ->
-            if (sendChild) {
-                sendChildReply(childPosition, content)
-            } else {
-                giveAdvice(content)
+        dialog.setSendCommentListener(object : CommentDialog.OnSendCommentListener {
+            override fun sendComment(content: String) {
+                if (sendChild) {
+                    sendChildReply(childPosition, content)
+                } else {
+                    giveAdvice(content)
+                }
             }
-        }
+        })
     }
 
     private fun giveAdvice(content: String) {

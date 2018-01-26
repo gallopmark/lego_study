@@ -192,7 +192,11 @@ class CmtsSaysChildFragment : BaseFragment(), XRecyclerView.LoadingListener {
     private fun showInputDialog(position: Int) {
         val dialog = CommentDialog(context)
         dialog.show()
-        dialog.setSendCommentListener { content -> createComment(content, position) }
+        dialog.setSendCommentListener(object :CommentDialog.OnSendCommentListener{
+            override fun sendComment(content: String) {
+                createComment(content, position)
+            }
+        })
     }
 
     private fun createComment(content: String, position: Int) {
