@@ -280,11 +280,8 @@
         <activity android:name="com.haoyu.app.activity.AppMoreReplyActivity" />
 
 
-        <activity android:name="com.haoyu.app.activity.FreeChatActiviy" />
-        <activity
-            android:name="com.haoyu.app.activity.FreeChatEditActivity"
-            android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity android:name="com.haoyu.app.activity.FreeChatDetailActivity" />
+        <activity android:name="com.haoyu.app.activity.WSFreeChatActiviy" />
+        <activity android:name="com.haoyu.app.activity.WSFreeChatDetailActivity" />
         <!--提交作业-->
         <activity android:name="com.haoyu.app.activity.AppSubmitAssignmentActivity" />
 

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:descendantFocusability="blocksDescendants"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
@@ -12,55 +12,64 @@
         android:padding="@dimen/margin_size_12">
 
         <TextView
-            android:id="@+id/tv_discussion_text"
-            android:layout_width="match_parent"
+            android:id="@+id/tvContent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:lineSpacingExtra="@dimen/margin_size_1"
-            android:maxLines="3"
-            android:textSize="@dimen/font_size_18" />
+            android:lineSpacingExtra="@dimen/margin_size_4"
+            android:textSize="@dimen/font_size_16" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/margin_size_12">
+            android:layout_marginTop="@dimen/margin_size_16">
 
             <ImageView
-                android:id="@+id/ic_user"
-                android:layout_width="@dimen/margin_size_35"
-                android:layout_height="@dimen/margin_size_35"
+                android:id="@+id/icUser"
+                android:layout_width="@dimen/margin_size_30"
+                android:layout_height="@dimen/margin_size_30"
                 android:layout_gravity="center"
                 android:scaleType="centerCrop" />
 
             <TextView
-                android:id="@+id/tv_userName"
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/margin_size_10"
+                android:layout_marginLeft="@dimen/margin_size_8"
                 android:gravity="center"
                 android:maxLength="8"
-                android:maxLines="1"
                 android:textColor="@color/defaultColor"
                 android:textSize="@dimen/font_size_16" />
 
             <TextView
-                android:id="@+id/tv_createTime"
+                android:id="@+id/tvTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/margin_size_10"
+                android:layout_marginLeft="@dimen/margin_size_8"
                 android:gravity="center|right"
                 android:textColor="@color/blow_gray"
                 android:textSize="@dimen/font_size_16" />
         </LinearLayout>
-
     </LinearLayout>
 
-    <View
-        android:id="@+id/spaceView"
+    <TextView
+        android:id="@+id/tvCount"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/margin_size_1"
-        android:background="@color/spaceColor" />
+        android:layout_height="wrap_content"
+        android:background="@color/spaceColor"
+        android:drawableLeft="@drawable/discussion_pinglun"
+        android:drawablePadding="@dimen/margin_size_6"
+        android:padding="@dimen/margin_size_12"
+        android:textSize="@dimen/font_size_16" />
 
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/margin_size_16"
+        android:text="暂时没有人发表评论，你可以点击下面的按钮发表您的评论！"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
 </LinearLayout>

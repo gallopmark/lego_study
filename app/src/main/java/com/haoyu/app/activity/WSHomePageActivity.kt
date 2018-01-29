@@ -857,7 +857,7 @@ class WSHomePageActivity : BaseActivity(), View.OnClickListener, RecyclerTouchLi
                 startActivity(intent)
             }
             R.id.ll_exchange -> {
-                val intent = Intent(context, FreeChatActiviy::class.java)
+                val intent = Intent(context, WSFreeChatActiviy::class.java)
                 intent.putExtra("relationId", workshopId)
                 intent.putExtra("role", role)
                 startActivity(intent)

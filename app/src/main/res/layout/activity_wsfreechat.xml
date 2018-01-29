@@ -13,22 +13,23 @@
         app:show_right_button="false"
         app:title_text="自由交流" />
 
-    <RelativeLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
         <com.haoyu.app.view.LoadingView
             android:id="@+id/loadingView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:visibility="gone" />
 
         <com.haoyu.app.view.LoadFailView
             android:id="@+id/loadFailView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:visibility="gone" />
 
         <com.haoyu.app.xrecyclerview.XRecyclerView
@@ -42,23 +43,21 @@
             android:id="@+id/tv_empty"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
+            android:layout_gravity="center"
             android:drawablePadding="@dimen/margin_size_12"
             android:drawableTop="@drawable/empty_list"
             android:gravity="center"
-            android:text="目前没有人发起言论，\n赶紧去发起您的言论吧！"
-            android:textColor="@color/blow_gray"
             android:textSize="@dimen/font_size_18"
             android:visibility="gone" />
+    </FrameLayout>
 
-        <Button
-            android:id="@+id/bt_create"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/margin_size_12"
-            android:background="@drawable/discussion_fabiao" />
-    </RelativeLayout>
-
+    <TextView
+        android:id="@+id/tvBottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_size_10"
+        android:background="@drawable/edit_border_gray"
+        android:hint="请输入您的疑问"
+        android:textSize="@dimen/font_size_16"
+        android:padding="@dimen/margin_size_10" />
 </LinearLayout>
