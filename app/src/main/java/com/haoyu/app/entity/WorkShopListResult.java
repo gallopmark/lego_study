@@ -5,8 +5,8 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
+import com.haoyu.app.base.BaseResponseResult;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,53 +17,8 @@ import java.util.Map;
  * 描述:
  * 作者:马飞奔 Administrator
  */
-public class WorkShopListResult {
-    @Expose
-    @SerializedName("responseCode")
-    private String responseCode;
-    @Expose
-    @SerializedName("responseData")
-    private WorkShopListResponseData responseData;
-    @Expose
-    @SerializedName("responseMsg")
-    private String responseMsg;
-    @Expose
-    @SerializedName("success")
-    private Boolean success;
-
-    public String getResponseCode() {
-        return responseCode;
-    }
-
-    public void setResponseCode(String responseCode) {
-        this.responseCode = responseCode;
-    }
-
-    public WorkShopListResponseData getResponseData() {
-        return responseData;
-    }
-
-    public void setResponseData(WorkShopListResponseData responseData) {
-        this.responseData = responseData;
-    }
-
-    public String getResponseMsg() {
-        return responseMsg;
-    }
-
-    public void setResponseMsg(String responseMsg) {
-        this.responseMsg = responseMsg;
-    }
-
-    public Boolean getSuccess() {
-        return success;
-    }
-
-    public void setSuccess(Boolean success) {
-        this.success = success;
-    }
-
-    public class WorkShopListResponseData implements Serializable {
+public class WorkShopListResult extends BaseResponseResult<WorkShopListResult.MData> {
+    public class MData {
         /**
          * mWorkshops	工作坊列表
          * notTemplateNum	全部工作坊数量
@@ -87,6 +42,9 @@ public class WorkShopListResult {
         private Object mWorkshopUserMap;
 
         public List<WorkShopMobileEntity> getmWorkshops() {
+            if (mWorkshops == null) {
+                return new ArrayList<>();
+            }
             return mWorkshops;
         }
 

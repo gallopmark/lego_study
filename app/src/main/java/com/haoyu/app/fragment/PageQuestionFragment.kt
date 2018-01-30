@@ -10,7 +10,7 @@ import android.widget.RadioGroup
 import com.haoyu.app.activity.AppQuestionEditActivity
 import com.haoyu.app.base.BaseFragment
 import com.haoyu.app.lego.student.R
-import java.math.BigDecimal
+import com.haoyu.app.utils.Common
 
 /**
  * 创建日期：2018/1/15.
@@ -121,36 +121,6 @@ class PageQuestionFragment : BaseFragment(), PageAllQuestionFragment.OnResponseL
     }
 
     override fun getTotalCount(totalCount: Int) {
-        rbAllQuestion.text = "全部" + " (" + getCount(totalCount) + ")"
-    }
-
-    private fun getCount(count: Int): String {
-        if (count < 10000) {
-            return count.toString()
-        }
-        var num = count.toDouble() / 10000
-        var bd = BigDecimal(num)
-        num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).toDouble()
-        if (num < 10000) {
-            when {
-                num / 1000 > 1 -> {
-                    bd = BigDecimal(num / 1000)
-                    num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).toDouble()
-                    return num.toString() + "千万"
-                }
-                num / 100 > 1 -> {
-                    bd = BigDecimal(num / 100)
-                    num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).toDouble()
-                    return num.toString() + "百万"
-                }
-                num / 10 > 1 -> {
-                    bd = BigDecimal(num / 10)
-                    num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).toDouble()
-                    return num.toString() + "十万"
-                }
-                else -> return num.toString() + "万"
-            }
-        }
-        return "大于1亿"
+        rbAllQuestion.text = "全部 (${Common.formatNum(totalCount)})"
     }
 }

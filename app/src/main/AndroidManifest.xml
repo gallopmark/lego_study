@@ -243,7 +243,7 @@
         <!--选课中心-->
         <!--已选课程-->
         <!--工作坊群-->
-        <activity android:name="com.haoyu.app.activity.WorkshopGroupActivity" />
+        <activity android:name="com.haoyu.app.activity.WSGroupActivity" />
         <!--短息消息-->
         <activity android:name="com.haoyu.app.activity.MessageActivity" />
         <!--消息详情-->

@@ -50,18 +50,8 @@
             android:textSize="@dimen/font_size_15" />
     </RadioGroup>
 
-    <com.haoyu.app.xrecyclerview.XRecyclerView
-        android:id="@+id/xRelatedView"
+    <FrameLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/radioGroup"
-        android:overScrollMode="never" />
-
-    <com.haoyu.app.xrecyclerview.XRecyclerView
-        android:id="@+id/xAllView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/radioGroup"
-        android:overScrollMode="never"
-        android:visibility="gone" />
+        android:layout_height="match_parent" />
 </LinearLayout>

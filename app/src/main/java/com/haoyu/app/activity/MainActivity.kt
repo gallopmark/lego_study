@@ -456,7 +456,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.ll_cmts -> startActivity(Intent(context, CmtsMainActivity::class.java))
             R.id.tv_learn -> menu.toggle(true)  //侧滑菜单学习
             R.id.tv_teaching -> startActivity(Intent(context, CmtsMainActivity::class.java)) //侧滑菜单教研
-            R.id.tv_workshop -> startActivity(Intent(context, WorkshopGroupActivity::class.java))  //侧滑菜单工作坊群
+            R.id.tv_workshop -> startActivity(Intent(context, WSGroupActivity::class.java))  //侧滑菜单工作坊群
             R.id.tv_peer -> startActivity(Intent(context, PeerActivity::class.java)) //侧滑菜单同行
             R.id.tv_message -> startActivity(Intent(context, MessageActivity::class.java)) //侧滑菜单消息
             R.id.tv_consulting -> startActivity(Intent(context, EducationConsultActivity::class.java)) //侧滑菜单教务咨询

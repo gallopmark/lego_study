@@ -7,7 +7,7 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import com.haoyu.app.base.BaseFragment
 import com.haoyu.app.lego.student.R
-import java.math.BigDecimal
+import com.haoyu.app.utils.Common
 
 /**
  * 创建日期：2018/1/18.
@@ -89,39 +89,11 @@ class CmtsLsonMainFragment : BaseFragment(), CmtsLsonChildFragment.OnResponseLis
     override fun getTotalCount(totalCount: Int) {
         when (tab) {
             1 -> {
-                radioButtons[0]?.text = texts[0] + "（" + getCount(totalCount) + "）"
+                radioButtons[0]?.text = "${texts[0]}（${Common.formatNum(totalCount)}）"
             }
             2 -> {
-                radioButtons[1]?.text = texts[1] + "（" + getCount(totalCount) + "）"
+                radioButtons[1]?.text = "${texts[1]}（${Common.formatNum(totalCount)}）"
             }
         }
-    }
-
-    private fun getCount(count: Int): String {
-        if (count < 10000) return count.toString()
-        var num = count.toDouble() / 10000
-        var bd = BigDecimal(num)
-        num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).toDouble()
-        if (num < 10000) {
-            when {
-                num / 1000 > 1 -> {
-                    bd = BigDecimal(num / 1000)
-                    num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).toDouble()
-                    return num.toString() + "千万"
-                }
-                num / 100 > 1 -> {
-                    bd = BigDecimal(num / 100)
-                    num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).toDouble()
-                    return num.toString() + "百万"
-                }
-                num / 10 > 1 -> {
-                    bd = BigDecimal(num / 10)
-                    num = bd.setScale(1, BigDecimal.ROUND_HALF_UP).toDouble()
-                    return num.toString() + "十万"
-                }
-                else -> return num.toString() + "万"
-            }
-        }
-        return "大于1亿"
     }
 }

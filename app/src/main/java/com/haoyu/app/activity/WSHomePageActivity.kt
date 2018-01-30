@@ -115,7 +115,7 @@ class WSHomePageActivity : BaseActivity(), View.OnClickListener, RecyclerTouchLi
                     updateUI(response)
                 }, {
                     loadingView.visibility = View.GONE
-                    loadFailView.visibility = View.GONE
+                    loadFailView.visibility = View.VISIBLE
                 }))
     }
 
