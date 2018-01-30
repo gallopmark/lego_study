@@ -103,6 +103,7 @@ class WSFreeChatActiviy : BaseActivity(), XRecyclerView.LoadingListener, Recycle
             result
         }.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
             loadingView.visibility = View.GONE
+            if (tvBottom.visibility != View.VISIBLE) tvBottom.visibility = View.VISIBLE
             if (it?.getResponseData()?.getmComments() != null && it.getResponseData().getmComments().size > 0) {
                 updateUI(it.getResponseData().getmComments(), it.getResponseData().paginator)
             } else {
@@ -196,7 +197,7 @@ class WSFreeChatActiviy : BaseActivity(), XRecyclerView.LoadingListener, Recycle
                     entity.creator?.let {
                         entity.creator = getCreator(it)
                     }
-                    mDatas.add(0,entity)
+                    mDatas.add(0, entity)
                     adapter.notifyDataSetChanged()
                 }
             }
