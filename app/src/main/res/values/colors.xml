@@ -217,4 +217,7 @@
     <color name="startColor">@color/defaultColor</color>
     <color name="centerColor">#1095E4</color>
     <color name="endColor">#1980E3</color>
+
+    <color name="message_system">#E0F0D9</color>
+    <color name="message_mUser">#FEEBD8</color>
 </resources>

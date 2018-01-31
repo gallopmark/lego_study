@@ -17,12 +17,15 @@ public class Messages extends BaseResponseResult<Messages.MData> {
     public class MData {
         @Expose
         @SerializedName("mMessages")
-        private List<Message> mMessages = new ArrayList<>();
+        private List<Message> mMessages;
         @Expose
         @SerializedName("paginator")
         private Paginator paginator;
 
         public List<Message> getmMessages() {
+            if (mMessages == null) {
+                return new ArrayList<>();
+            }
             return mMessages;
         }
 

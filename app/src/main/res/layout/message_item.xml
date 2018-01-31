@@ -8,53 +8,52 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin_size_12"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/margin_size_12">
 
-        <RelativeLayout
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/message_type"
+                android:id="@+id/tvType"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:background="@drawable/message_system"
+                android:layout_gravity="center|left"
+                android:background="@drawable/shape_message_system"
                 android:gravity="center"
-                android:paddingBottom="@dimen/margin_size_3"
-                android:paddingLeft="@dimen/margin_size_5"
-                android:paddingRight="@dimen/margin_size_5"
-                android:paddingTop="@dimen/margin_size_3"
-                android:text="系统通知"
+                android:paddingBottom="@dimen/margin_size_4"
+                android:paddingLeft="@dimen/margin_size_10"
+                android:paddingRight="@dimen/margin_size_10"
+                android:paddingTop="@dimen/margin_size_4"
                 android:textColor="@color/defaultColor"
                 android:textSize="@dimen/font_size_16" />
 
             <TextView
-                android:id="@+id/createTime"
+                android:id="@+id/tvTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:drawableLeft="@drawable/message_time"
+                android:layout_gravity="right|center"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/announcements_createdate"
                 android:drawablePadding="@dimen/margin_size_5"
-                android:textColor="@color/gray"
+                android:gravity="right"
+                android:textColor="@color/blow_gray"
                 android:textSize="@dimen/font_size_15" />
-        </RelativeLayout>
+        </FrameLayout>
 
         <TextView
-            android:id="@+id/message_content"
+            android:id="@+id/tvContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_size_10"
             android:ellipsize="end"
             android:lineSpacingExtra="@dimen/margin_size_2"
             android:maxLines="3"
-            android:text="在信息技术环境下,教学内容的呈现、教学媒体的选择、教学策略的应用、师生之间的交互模式等，呈现与常规教学不同的气氛。"
             android:textSize="@dimen/font_size_16" />
 
         <Button
-            android:id="@+id/message_reply"
+            android:id="@+id/btReply"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
