@@ -222,7 +222,12 @@ class QuestionDetaiActivity : BaseActivity(), XRecyclerView.LoadingListener {
             }
 
             override fun onRightClick(view: View?) {
-                onDialog()
+                val dialog = MaterialDialog(context)
+                dialog.setTitle("提示")
+                dialog.setMessage("确定删除此问答吗？")
+                dialog.setNegativeButton("取消", null)
+                dialog.setPositiveButton("确定", { _, _ -> delete() })
+                dialog.show()
             }
         })
         val onTouchListener = RecyclerTouchListener(context, xRecyclerView)
@@ -245,31 +250,6 @@ class QuestionDetaiActivity : BaseActivity(), XRecyclerView.LoadingListener {
                 }
             })
             dialog.show()
-        }
-    }
-
-    private fun onDialog() {
-        val view = LayoutInflater.from(context).inflate(R.layout.dialog_delete, LinearLayout(context), false)
-        val alertDialog = AlertDialog.Builder(context).create()
-        val rvDelete = view.findViewById<RippleView>(R.id.rv_delete)
-        val rvCancel = view.findViewById<RippleView>(R.id.rv_cancel)
-        rvDelete.setOnRippleCompleteListener {
-            val dialog = MaterialDialog(context)
-            dialog.setTitle("提示")
-            dialog.setMessage("确定删除此问答吗？")
-            dialog.setNegativeButton("取消", null)
-            dialog.setPositiveButton("确定", { _, _ -> delete() })
-            dialog.show()
-        }
-        rvCancel.setOnRippleCompleteListener { alertDialog.dismiss() }
-        alertDialog.setCanceledOnTouchOutside(true)
-        alertDialog.setCancelable(true)
-        alertDialog.show()
-        alertDialog.window?.let {
-            it.setLayout(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-            it.setWindowAnimations(R.style.dialog_anim)
-            it.setContentView(view)
-            it.setGravity(Gravity.BOTTOM)
         }
     }
 
@@ -306,6 +286,7 @@ class QuestionDetaiActivity : BaseActivity(), XRecyclerView.LoadingListener {
         val rvDelete = view.findViewById<RippleView>(R.id.rv_delete)
         val rvCancel = view.findViewById<RippleView>(R.id.rv_cancel)
         rvDelete.setOnRippleCompleteListener {
+            alertDialog.dismiss()
             val dialog = MaterialDialog(context)
             dialog.setTitle("提示")
             dialog.setMessage("确定删除此答案吗？")
