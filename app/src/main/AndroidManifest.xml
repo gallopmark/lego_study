@@ -176,10 +176,9 @@
         <!--课程章节节点选择-->
         <!--提问问题或者回答问题-->
         <activity
-            android:name="com.haoyu.app.activity.AppQuestionEditActivity"
+            android:name="com.haoyu.app.activity.CourseFaqEditActivity"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <!--回答详情-->
-        <activity android:name="com.haoyu.app.activity.AppQuestionDetailActivity" />
         <!--创建讨论，修改讨论，创建回复等-->
         <activity
             android:name="com.haoyu.app.activity.CourseDiscussEditActivity"
@@ -236,7 +235,11 @@
         <!--更多工作坊简报-->
         <activity android:name="com.haoyu.app.activity.BriefingActivity" />
         <!--工作坊互助问答-->
-        <activity android:name="com.haoyu.app.activity.WorkshopQuestionActivity" />
+        <activity android:name="com.haoyu.app.activity.WSQuestionActivity" />
+        <activity
+            android:name="com.haoyu.app.activity.WSQuestionEditActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name="com.haoyu.app.activity.QuestionDetaiActivity" />
         <!--工作坊问卷调查-->
 
 

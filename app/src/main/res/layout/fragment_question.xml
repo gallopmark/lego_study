@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.haoyu.app.view.LoadingView
+            android:id="@+id/loadingView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <com.haoyu.app.view.LoadFailView
+            android:id="@+id/loadFailView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="@dimen/margin_size_12"
+            android:drawableTop="@drawable/wenda_empty"
+            android:gravity="center"
+            android:textColor="@color/blow_gray"
+            android:textSize="@dimen/font_size_16"
+            android:visibility="gone" />
+
+        <com.haoyu.app.xrecyclerview.XRecyclerView
+            android:id="@+id/xRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never" />
+    </FrameLayout>
+</LinearLayout>

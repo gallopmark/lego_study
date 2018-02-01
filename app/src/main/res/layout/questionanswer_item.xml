@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_size_16">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/ivIco"
+                android:layout_width="@dimen/margin_size_35"
+                android:layout_height="@dimen/margin_size_35"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/tvName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_size_12"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:paddingRight="@dimen/margin_size_12"
+                android:textColor="@color/defaultColor"
+                android:textSize="@dimen/font_size_16" />
+
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/margin_size_10"
+                android:gravity="left"
+                android:textColor="@color/blow_gray"
+                android:textSize="@dimen/font_size_14" />
+        </LinearLayout>
+
+        <com.haoyu.app.view.ExpandableTextView
+            android:id="@+id/tvContent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_6"
+            android:orientation="vertical"
+            app:collapseDrawable="@drawable/course_shouqi"
+            app:collapseText="收起内容"
+            app:expandDrawable="@drawable/course_zhankai"
+            app:expandText="展开内容"
+            app:maxCollapsedLines="3">
+
+            <TextView
+                android:id="@id/expandable_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/margin_size_4"
+                android:textSize="@dimen/font_size_16" />
+
+            <Button
+                android:id="@id/expand_collapse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:background="@color/transparent"
+                android:drawablePadding="@dimen/margin_size_4"
+                android:textColor="@color/defaultColor"
+                android:textSize="@dimen/font_size_16"
+                android:visibility="gone" />
+        </com.haoyu.app.view.ExpandableTextView>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/margin_size_1"
+        android:background="@color/spaceColor" />
+</LinearLayout>

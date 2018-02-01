@@ -27,7 +27,7 @@ public class FAQsEntity implements Serializable {
     private int faqAnswerCount; // 回答数
     @Expose
     @SerializedName("faqAnswers")
-    private List<FaqAnswerMobileEntity> faqAnswers = new ArrayList<FaqAnswerMobileEntity>(); // 回答列表
+    private List<FAQsAnswerEntity> faqAnswers = new ArrayList<>(); // 回答列表
     @Expose
     @SerializedName("follow")
     private FollowMobileEntity follow;      //收藏实体类
@@ -81,11 +81,11 @@ public class FAQsEntity implements Serializable {
         this.faqAnswerCount = faqAnswerCount;
     }
 
-    public List<FaqAnswerMobileEntity> getFaqAnswers() {
+    public List<FAQsAnswerEntity> getFaqAnswers() {
         return faqAnswers;
     }
 
-    public void setFaqAnswers(List<FaqAnswerMobileEntity> faqAnswers) {
+    public void setFaqAnswers(List<FAQsAnswerEntity> faqAnswers) {
         this.faqAnswers = faqAnswers;
     }
 

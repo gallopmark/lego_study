@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <com.haoyu.app.view.AppToolBar
@@ -16,7 +17,6 @@
         android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/toolBar"
         android:background="@color/spaceColor"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/margin_size_10"
@@ -34,8 +34,8 @@
             android:checked="true"
             android:ellipsize="marquee"
             android:gravity="center"
-            android:maxLines="1"
             android:padding="@dimen/margin_size_8"
+            android:singleLine="true"
             android:text="@string/allQuestion"
             android:textColor="@color/tab_faq_textcolor_selector"
             android:textSize="@dimen/font_size_16" />
@@ -58,20 +58,19 @@
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/bottomView"
-        android:layout_below="@+id/radioGroup" />
-
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/bottomView"
+        android:id="@+id/tvBottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:layout_margin="@dimen/margin_size_12"
-        android:layout_weight="1"
         android:background="@drawable/edit_border_gray"
-        android:hint="向老师和同学提问"
-        android:padding="@dimen/margin_size_10" />
-</RelativeLayout>
+        android:padding="@dimen/margin_size_10"
+        android:textColor="@color/blow_gray"
+        android:text="向老师和同学提问"
+        android:textSize="@dimen/font_size_16"
+        android:visibility="gone" />
+</LinearLayout>

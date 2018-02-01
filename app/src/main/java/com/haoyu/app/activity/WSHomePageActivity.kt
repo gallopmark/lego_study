@@ -852,7 +852,7 @@ class WSHomePageActivity : BaseActivity(), View.OnClickListener, RecyclerTouchLi
     override fun onClick(v: View) {
         when (v.id) {
             R.id.ll_question -> {
-                val intent = Intent(context, WorkshopQuestionActivity::class.java)
+                val intent = Intent(context, WSQuestionActivity::class.java)
                 intent.putExtra("relationId", workshopId)
                 startActivity(intent)
             }

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:right_button_text="提交"
+        app:show_right_button="true"
+        app:title_text="提问" />
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_size_12"
+        android:background="@drawable/square_gray"
+        android:gravity="top"
+        android:hint="提问请简洁，建议不超过30字"
+        android:maxLength="4000"
+        android:maxLines="7"
+        android:minLines="7"
+        android:padding="@dimen/margin_size_10"
+        android:textSize="@dimen/font_size_16">
+
+        <requestFocus />
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/seaShell"
+        android:orientation="vertical"
+        android:padding="@dimen/margin_size_12">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/publish_failure"
+            android:drawablePadding="@dimen/margin_size_4"
+            android:text="提问注意事项"
+            android:textColor="@color/orangered"
+            android:textSize="@dimen/font_size_18" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_size_12"
+            android:background="@color/seaShell"
+            android:lineSpacingExtra="@dimen/margin_size_4"
+            android:text="1、学员每天可以免费提出1个问题，从第二个问题起，每个问题扣除1点研修积分；\n2、提问前请先搜索是否已经有同类问题吧。这样您就省心少打字。\n3、禁止发布本工作坊课题研修无关的信息，一经发现将一律清理并扣研修积分。\n4、不在培训或工作坊开展时间内将不进行积分计算；"
+            android:textSize="@dimen/font_size_16" />
+    </LinearLayout>
+</LinearLayout>

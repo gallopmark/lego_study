@@ -8,7 +8,7 @@ public class FollowMobileEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Expose
 	@SerializedName("followNum")
-	private Integer followNum;
+	private int followNum;
 	@Expose
 	@SerializedName("id")
 	private String id;

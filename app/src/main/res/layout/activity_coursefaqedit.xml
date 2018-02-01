@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <com.haoyu.app.view.AppToolBar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:right_button_text="提交"
+        app:show_right_button="true"
+        app:title_text="提问" />
+
+    <EditText
+        android:id="@+id/et_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_size_12"
+        android:background="@drawable/square_gray"
+        android:gravity="top"
+        android:hint="提问请简洁，建议不超过30字"
+        android:maxLength="4000"
+        android:maxLines="7"
+        android:minLines="7"
+        android:padding="@dimen/margin_size_10"
+        android:textSize="@dimen/font_size_16">
+
+        <requestFocus />
+    </EditText>
+
+</LinearLayout>
